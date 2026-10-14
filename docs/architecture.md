@@ -1,6 +1,6 @@
 # mai architecture
 
-This is the authoritative design for the Rust 0.0.1 implementation. Public behavior is a centralized revision protocol for agents, with a trusted-local Git adapter today. CI targets Linux, macOS, and Windows; native Windows qualification remains experimental. Targets and implemented capabilities are distinguished below.
+This is the authoritative design for the Rust 0.0.1 implementation and its accepted agent-native direction. The existing implementation is described first; the separately labeled target section describes future functionality. Public behavior is a centralized revision protocol for agents, with a trusted-local Git adapter today. CI targets Linux, macOS, and Windows; native Windows qualification remains experimental. Targets and implemented capabilities are distinguished below.
 
 ## Layers and deployment
 
@@ -95,4 +95,75 @@ Moving coordination from Python to Rust alone cannot remove repeated Git process
 
 Clap provides CLI parsing; rusqlite retains exact existing SQLite formats and bundled deployment; serde/base64 preserve machine responses; fs2 provides native local process locking; tempfile cleans temporary indexes. Git subprocesses retain mature worktree/index/fetch/push behavior. Native gitoxide is a future measured optimization, not a migration prerequisite. Tokio, tracing, Axum, and a custom content database are deferred until a tested service/observability use case exists. Current dependency API review used [Clap documentation](https://docs.rs/clap/latest/clap/), [rusqlite transactions](https://docs.rs/rusqlite/latest/rusqlite/struct.Transaction.html), and [gitoxide documentation](https://docs.rs/gix/latest/gix/); build verification applies to the exact Cargo.lock versions, not every future release.
 
-Rejected alternatives and rationale are in [ADR 0001](adr/0001-foundation.md). Next: qualify interruption/backup recovery, instrument real Git costs, design a versioned protocol and daemon slice, then a secure single-node shared server. Distributed consensus and custom storage are not initial requirements.
+Rejected alternatives and rationale are in [ADR 0001](adr/0001-foundation.md) and [ADR 0002](adr/0002-changesets-and-publication.md). The [capability contract](agent-native-capabilities.md) defines the accepted functionality and completion gates. Distributed consensus and custom storage are not initial requirements.
+
+
+## Target architecture: accepted direction, not implemented
+
+The target is a source service with optional workspaces, not only remote invocation of the current CLI. The [capability contract](agent-native-capabilities.md) records public reference categories, our independent requirements, current gaps, and acceptance criteria. None of the services or contracts in this section are available APIs today.
+
+```mermaid
+flowchart TD
+    Agents[Agents and automation] --> Client[CLI or programmatic client]
+    Client --> Local[Optional local daemon and bounded cache]
+    Client --> API[Authenticated source interface]
+    Local --> Cache[Optional read-cache tiers]
+    Cache --> API
+    API --> Queries[Exact source and graph queries]
+    API --> Drafts[Immutable changeset recording]
+    API --> Landing[Bounded authoritative publication]
+    Queries --> Derived[Versioned derived indexes]
+    Drafts --> Store[Git-backed immutable source storage]
+    Queries --> Store
+    Landing --> Store
+    Landing --> Accepted[Ordered accepted history and durable outcomes]
+    Accepted --> Outbox[Retryable events and integrations]
+```
+
+### Domain model and authority
+
+Accepted revision and immutable changeset identity are different concepts. Published `r0` remains the import baseline; subsequent `rN` values describe acceptance order in one repository. A checkpoint can exist on a private DAG without changing main. Rebase/merge produces another immutable candidate; a successful landing maps it to the exact resulting accepted object/tree. The accepted chain retains a single first parent even when private candidates have richer graph provenance. Authenticated actor, claimed agent/task context, request identity, and content identity are distinct fields.
+
+Proposed domain contracts are changeset descriptors, revision receipts, file deltas, object manifests, query results, workspace descriptors, validation evidence, policy versions, and request outcomes. These names describe design types, not new CLI commands or a released wire schema. Preserve existing JSON while introducing any versioned protocol deliberately.
+
+Candidate recording persists explicit puts/deletes/modes against a known base and checks ownership, object completeness, size limits, and canonical encoding. API writes do not require workspace creation. Same-file and path-component overlap remains conservative during landing; absence outside a sparse selection cannot be interpreted as deletion. Rename/copy metadata and optional text-merge policies must not silently weaken publication safety.
+
+### Three coordination boundaries
+
+Immutable object and changeset ingestion accepts independent work concurrently. Required acknowledgement durability is defined separately from cache/index availability; incomplete uploads are resumable and unacknowledged. No accepted revision or globally agreed mutable ref is needed for every checkpoint. The Git adapter must protect durable private source roots from garbage collection without a ref per draft; retention and storage migration need tests before exposure.
+
+Read/query traffic uses immutable identities and exact revision mappings. It can scale separately from publication, with bounded caches and derived computations. Request pagination, query budgets, and a versioned source contract prevent clients from depending on index internals. Cache hits are not authorization decisions. Pending derived work must be visible; publication-critical conflict/policy checks cannot use incomplete indexes as proof of safety.
+
+Authoritative landing remains ordered. A bounded admission path owns fairness, cancellation, retry-after behavior, lease fencing, policy revalidation, and durable request outcomes. Revalidate against the head whose tree will actually be accepted. Idempotency keys are scoped by repository and verified actor; payload mismatches reject. Publication is not claimed lock-free: the required ordering has a coordination boundary, while unrelated ingest/query operations should avoid it. Current SQLite timeout/retry behavior is not that admission system.
+
+### Exact-source queries and derived data
+
+Start with checkout-free file reads, tree listing, revision diffs, ancestry, and merge-base queries over Git. Add versioned path history, blame, and path search indexes when fixtures and profiles justify them. Derived results are rebuildable from source; keys identify source content, computation version, and options. Worker retries must be idempotent, and persistent materializations must never become a second undeclared source of truth.
+
+Record a direct accepted-revision lookup and publication outcome index when the new format is introduced. Current first-parent counting and recovery scans remain compatible fallbacks, not the intended query strategy at long histories. Exact lookup, reconstruction, retention, and cross-store reconciliation require explicit format upgrade/export design; there is no automatic metadata migration in this task.
+
+### Clients, workspaces, and caching
+
+Remote clients depend on an available authority for uncached metadata, writes, and acceptance; they do not need a full repository clone. Direct local operation remains available, and existing full worktrees stay a compatible materializer. First add explicit sparse selections with ordinary files. Qualify optional lazy providers, symlink/case behavior, ignored/untracked files, watcher overflow, and hydration errors separately on each platform. A workspace is a lifecycle/provenance descriptor, not an OS sandbox.
+
+A local daemon can share bounded verified object data across jobs. Restricted Unix sockets and Windows named pipes need access-control and version-negotiation tests. Keep startup predictable; explicit controls precede auto-discovery/start. Direct operation and daemon operation must share domain rules and safe retry behavior.
+
+Define an exact-object read subset for authority, node daemon, and optional intermediate caches. Typed identifiers avoid hardcoding SHA-1 as the public object contract. Batches/chunks are bounded and resumable; validate digests, prevent cross-repository object access, and account for authorization revocation. Optional cache tiers enforce upstream budgets, timeout/cancellation, circuit breaking, and bounded fallback; a cold or failed tier must not fan out unlimited requests. Small self-hosted deployments may collapse tiers into one process.
+
+### Validation and ecosystem contracts
+
+Review and test attestations identify exact source objects, scope, policy version, and relevant dependency inputs. Candidate changes require rechecking evidence applicability. A pre-land policy validates the candidate it will accept; post-land checks observe an already accepted revision; pre-deploy evidence gates deployment separately. These states must not be collapsed into a single green boolean or substituted for each other. No global lock spans arbitrary CI execution.
+
+External review/build/search systems consume versioned APIs and durable retryable events. Revert creates a new compensating candidate and accepted revision, respecting current conflicts/leases; bisect uses exact graph queries and an external runner. Do not rewrite accepted history, execute client-supplied server scripts, require a model to merge, or embed an agent orchestration framework. A review UI is optional to the engine.
+
+### Authorization, recovery, and operations
+
+A shared service needs verified principal identities, repository/path policies, fenced lease ownership, bounded resources, redacted audit records, and permission checks for source, cached blobs, tree listings, query results, and draft visibility. A content digest alone never grants access. Reads through a denied subtree must not disclose its metadata through derived results or error messages. Shared cache authorization and revocation need explicit tests.
+
+Source, durable draft/request records, publication outcomes, and retryable downstream events have separate durability roles. Keep one accepted authority; a SQL journal and Git refs require a recoverable protocol with explicit acknowledgement and replay boundaries. The current loose-ref recovery aid is not a remote exactly-once request journal. Crash simulation, backup/restore, disk-full, index rebuild, and garbage-collection tests precede adoption.
+
+Independent read/object workers and derived-data workers can later scale horizontally. Accepted-history replication, failover, and multi-writer safety require their own ADR and qualification; they do not follow automatically from adding caches or HTTP servers. Keep the first shared deployment single-node. The long-term source-storage target includes object/history capacity beyond one authority host without full repository copies on clients/caches. Git packing and maintenance remain real authority costs today; cache topology alone does not remove them. Partitioning, replication, and retention must be qualified before claiming that capacity. A non-Git backend is an evidence-gated evaluation that must preserve conformance, import/export, r0, and upgrade recovery; no new database is implemented by this design.
+
+### Delivery and evidence
+
+Implement the [project milestones](project.md#roadmap) in capability-sized vertical slices. Use [performance requirements](performance.md#capability-oriented-workloads) for source/query/materialization measurements, not only accepted commits per second. C01–C12 are completion gates: source-coded behavior, tests, resource limits, and operational evidence must exist before a feature is labeled complete.

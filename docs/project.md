@@ -8,7 +8,7 @@ The Rust CLI supports detached agent workspaces, ordered revisions, conservative
 
 SVN inspires the revision model: `r0` is the original snapshot, then accepted changes become `r1`, `r2`, and onward. mai does not implement SVN storage or wire protocols. Git provides proven content storage and interoperability, while agents interact through workspaces and submissions.
 
-Scalability concerns in agent systems such as Scion motivate the goals; this project does not claim to recreate an undocumented internal system. Rust supports native deployment, resource ownership, and future persistent services. It does not itself remove Git subprocesses, filesystem scans, full checkout costs, or lock contention. See [architecture](architecture.md) and [measurements](performance.md).
+The [agent-native capability contract](agent-native-capabilities.md) defines our Apache-2.0 answer to agent-scale source control: checkout-free operations, immutable checkpoints, indexed source queries, sparse workspaces, reusable caches, authenticated publication, and open integration contracts. Public reference categories are recorded there; implementation and operational parity are not claimed. Rust supports native deployment, resource ownership, and future persistent services. It does not itself remove Git subprocesses, filesystem scans, full checkout costs, or lock contention. See [architecture](architecture.md) and [measurements](performance.md).
 
 ## Current limits
 
@@ -20,13 +20,17 @@ Large independent bursts can exhaust the bounded contention budget; rejected att
 
 ## Roadmap
 
-1. Qualify interruption, backup/restore, and filesystem failure recovery.
-2. Improve fair admission, backpressure, observability, and retry amplification with measured workloads.
-3. Define a versioned agent protocol and add a tested optional local daemon for persistent caches and incremental tracking.
-4. Add an authenticated, bounded single-node shared server for multi-machine agents, keeping the engine independent of transport.
-5. Optimize workspace materialization/native Git operations where profiles justify it; add a durable downstream outbox.
+Capabilities below refer to [C01–C12](agent-native-capabilities.md). Each milestone needs running code, success/error regressions, recovery/resource-limit evidence, and documentation before completion. Milestones do not determine version promotion automatically.
 
-These are planned milestones, not commands or guarantees in the current executable. GitHub stays optional and downstream. A custom object database, distributed consensus system, or agent orchestration framework is not an initial goal.
+1. **Reliable local foundation (C08/C11/C12):** qualify acknowledgement/crash/restore/GC behavior, define fair bounded admission, and measure full completion/rejection under contention. Preserve existing stores, source export, r0, and current CLI behavior.
+2. **Source/query contracts (C01/C03/C04):** extract typed engine operations for file/tree reads, revision diffs, ancestry, merge bases, exact revision lookup, and bounded results. Demonstrate metadata-only jobs without worktrees using the Git adapter before choosing remote transport.
+3. **Durable changesets and API-native writes (C01/C02/C08):** add immutable candidate recording, scoped request-key outcomes, put/delete/mode requests, and controlled landing. Checkpoints must leave main unchanged and remain protected from GC. Introduce formats only through tested explicit upgrades. Conservative conflicts remain the default.
+4. **Selective clients and shared local state (C05/C06/C07):** add sparse ordinary-file workspaces, lifecycle descriptors, incremental detection with fallback, exact object requests, and a bounded optional daemon cache. Test daemon/direct equivalence; qualify lazy files separately per OS.
+5. **Secure single-node shared service (C08/C09/C11):** expose those contracts through authenticated bounded transport; enforce repository/directory authorization, lease fencing, audit outcomes, and durable retries. Existing local mode stays available. Do not expose a shell-execution endpoint.
+6. **Indexed queries and ecosystem workflows (C03/C04/C10):** build versioned history/blame/search indexes and review/test evidence, compensating reverts, bisect query support, and retryable integration events. Keep review UI, build/test execution, deployment, and agent runners external.
+7. **Measured fleet deployment (C07/C11/C12):** qualify optional cache tiers, independent read/index workers, network failure budgets, and migration/restore. Only then evaluate authority failover or another storage adapter under explicit conformance and operational requirements.
+
+No network, checkpoint, query, sparse, daemon, or service API in that sequence ships merely because it appears here. GitHub stays optional and downstream. Git remains the storage foundation until evidence justifies an alternative; distributed consensus and a custom content database are not immediate deliverables.
 
 ## Versioning
 

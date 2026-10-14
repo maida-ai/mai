@@ -20,4 +20,6 @@ Qualify authenticated agents, least-privilege access, secrets handling, and exec
 
 Measure p50/p95/p99 submission latency, accepted revisions per second, workspace/cold-start latency, contention/retry rates, lock hold time, CPU, RSS, and storage growth for 1/16/64/256 agents and 1,024 where hardware permits. Set workload-specific targets from evidence. Never promote solely because unit tests or a synthetic throughput number pass.
 
+For adoption of future services, additionally qualify durable draft/request outcomes, source export, reachable-object retention, sparse views, directory authorization through caches/indexes, and attestation/revert behavior from [the capability contract](agent-native-capabilities.md). A local full-worktree test is not evidence for those capabilities.
+
 Publish the migration/rollback playbook and obtain explicit sign-off from every affected repository owner. External adopters receive the same open interfaces and capabilities as Maida.

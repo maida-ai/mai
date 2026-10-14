@@ -22,6 +22,8 @@ Real-Git tests use disposable repositories and local bare remotes, never credent
 
 ## Design and performance contributions
 
+Use [capability IDs C01–C12](docs/agent-native-capabilities.md) to connect source-service work to concrete completion gates. Read [ADR 0002](docs/adr/0002-changesets-and-publication.md) before adding checkpoint or remote APIs. A network wrapper around today's CLI does not complete checkout-free writes, indexed queries, sparse clients, or cache topology.
+
 Document behavioral changes in README and authoritative architecture; record significant alternatives in ADRs. Distinguish implemented capabilities, measured observations, targets, and plans. Preserve revision ordering, r0, conservative component overlap, active foreign lease enforcement, agent attribution, and Git CAS. Do not weaken correctness to increase throughput or build a new object database without evidence.
 
 Run the native workload in [Performance](docs/performance.md) for performance changes; record hardware, filesystem, build profile, Git/Rust versions, worker/fanout settings, cold/warm conditions, rejection rates, and raw output. Compare equivalent modes; Git subprocesses and disk work often dominate pure Rust computation. Add production dependencies only for concrete uses; review current upstream documentation and licensing, pin reproducibly with Cargo.lock, and avoid unnecessary runtime services.

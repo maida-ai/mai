@@ -1,6 +1,6 @@
 # Agent instructions for contributing to `mai` (maida-ai family)
 
-This repository is an open-source Rust CLI for a local centralized Git-backed source control authority. Keep the design **small, deterministic, and scriptable**. [Architecture](docs/architecture.md) is authoritative; [docs/adr/0001-foundation.md](docs/adr/0001-foundation.md) records decisions and [Performance](docs/performance.md) defines measurement.
+This repository is an open-source Rust CLI for a local centralized Git-backed source control authority. Keep the design **small, deterministic, and scriptable**. [Architecture](docs/architecture.md) is authoritative; [agent-native capabilities](docs/agent-native-capabilities.md) define target functionality and completion gates; [docs/adr/0001-foundation.md](docs/adr/0001-foundation.md) records decisions and [Performance](docs/performance.md) defines measurement.
 
 * Follow the version policy in docs/project.md and CONTRIBUTING.md: MVP begins at `0.0.1` and uses `0.0.x`; promote to `0.1.0` after MVP and `1.0.0` at stability. Preserve historical fixture/measurement labels.
 * Use Rust first; do not restore Python runtime/packaging. Read source, Cargo.toml, Cargo.lock, nearby tests, and all relevant documentation before editing. Preserve uncommitted user changes.
@@ -12,6 +12,7 @@ This repository is an open-source Rust CLI for a local centralized Git-backed so
 * Publication changes require separate-process disjoint and contended tests, same-workspace coordination tests, and relevant interrupted-state recovery tests. Preserve Git main as authoritative; SQLite and Git are not one transaction. Keep preparation and checkout reset outside the publication gate.
 * Preserve `.mai` and `.agenttrunk` compatibility and Python-generated fixtures; never silently convert existing metadata. Reject unsupported input before publication. Document any changed compatibility expectation.
 * Never imply a local Git worktree is an OS sandbox or that an advisory lease enforces filesystem permissions.
+* Keep immutable checkpoint recording, exact source/query operations, and authoritative publication distinct in future interfaces. Only accepted publication allocates `rN`; no public per-draft Git branch/ref is required. Follow ADR 0002 and prove retention/idempotency/recovery before exposing drafts.
 * Optimize for high-fanout agent clients, but do not present unmeasured throughput as established. Run reproducible native benchmarks for performance changes and explain bottlenecks beyond language overhead.
 * Keep the protocol and working implementation entirely open source and self-hostable; GitHub remains optional. Daemon/server modes are planned, not implemented; do not publish nonfunctional commands.
 * Never migrate production Maida assets implicitly; follow docs/maida-migration.md.

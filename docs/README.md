@@ -11,10 +11,11 @@ Start with one working submission, then add the parts your workflow needs.
 
 ## Understand and contribute
 
+- [Agent-native capabilities](agent-native-capabilities.md): public reference categories, current gaps, and concrete acceptance gates for the full source-service vision.
 - [Project status and roadmap](project.md): working features, limits, versioning, and planned services.
 - [Architecture](architecture.md): authoritative revision, concurrency, storage, security, and durability decisions.
 - [Performance](performance.md): methodology, recorded findings, and remaining bottlenecks.
-- [Architecture decisions](adr/0001-foundation.md): the rationale and alternatives behind the foundation.
+- Architecture decisions: [Rust/Git foundation](adr/0001-foundation.md) and [changesets versus publication](adr/0002-changesets-and-publication.md).
 - [Contributing](../CONTRIBUTING.md): local builds, tests, platform coverage, and contribution expectations.
 - [Branding](branding.md): the curly-brace symbol, palette, provenance, and usage.
 - [Maida adoption plan](maida-migration.md): staged evaluation and production migration gates.
