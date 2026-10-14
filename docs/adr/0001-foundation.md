@@ -19,4 +19,4 @@ The Python 0.1.1 prototype established useful behavior with 17 passing real-Git 
 
 ## Consequences
 
-The implementation is small and transport-independent, but not a stable remote protocol or hardened server. Existing `.mai` and legacy `.agenttrunk` metadata open without conversion. The supported local POSIX trust model remains; no Maida production assets migrate. Next decisions should follow interruption/backup qualification and profiles, then versioned idempotent protocol design, daemon caching, a secure single-node server, and evidence-based materialization/storage improvements.
+The implementation is small and transport-independent, but not a stable remote protocol or hardened server. Existing `.mai` and legacy `.agenttrunk` metadata open without conversion. The trusted-local filesystem model remains; Windows CI coverage is experimental; no Maida production assets migrate. Next decisions should follow interruption/backup qualification and profiles, then versioned idempotent protocol design, daemon caching, a secure single-node server, and evidence-based materialization/storage improvements.

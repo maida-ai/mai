@@ -37,7 +37,11 @@ pub fn command() -> Command {
     let mut c = Command::new("git");
     c.args([
         "-c",
-        "core.hooksPath=/dev/null",
+        if cfg!(windows) {
+            "core.hooksPath=NUL"
+        } else {
+            "core.hooksPath=/dev/null"
+        },
         "-c",
         "core.fsmonitor=false",
         "-c",
@@ -45,6 +49,8 @@ pub fn command() -> Command {
         "-c",
         "core.fsyncMethod=fsync",
     ]);
+    #[cfg(windows)]
+    c.args(["-c", "core.longpaths=true"]);
     // Prevent inherited Git location/index settings from redirecting operations.
     for key in [
         "GIT_DIR",
@@ -98,4 +104,23 @@ impl Git {
 }
 pub fn text(bytes: Vec<u8>) -> Result<String> {
     Ok(String::from_utf8(bytes)?.trim_end().to_owned())
+}
+
+/// Canonical filesystem location in a spelling Git for Windows can consume.
+/// Rust canonicalization returns verbatim paths; Git paths need ordinary drive/UNC syntax.
+pub fn canonical_git_path(path: impl AsRef<Path>) -> Result<PathBuf> {
+    let path = std::fs::canonicalize(path)?;
+    #[cfg(windows)]
+    {
+        let value = path
+            .to_str()
+            .ok_or_else(|| anyhow::anyhow!("Non-UTF-8 filesystem path is unsupported"))?;
+        if let Some(unc) = value.strip_prefix(r"\\?\UNC\") {
+            return Ok(PathBuf::from(format!(r"\\{unc}")));
+        }
+        if let Some(drive) = value.strip_prefix(r"\\?\") {
+            return Ok(PathBuf::from(drive));
+        }
+    }
+    Ok(path)
 }

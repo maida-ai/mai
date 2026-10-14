@@ -16,16 +16,18 @@ Rust enables native deployment, low-overhead coordination, explicit ownership, a
 
 ## Requirements and installation
 
-Use Rust 1.85+ with Cargo to build and Git 2.36+ at runtime on a trusted local POSIX host (Linux or macOS). Bundled SQLite requires a C compiler during the build, but no separate SQLite installation. Python is not required to build, test, benchmark, install, or run this version. Windows support has not been qualified.
+Use Rust 1.85+ with Cargo to build and Git 2.36+ at runtime on a trusted local host (Linux, macOS, or Windows). Bundled SQLite requires a C compiler during the build, but no separate SQLite installation. Python is not required to build, test, benchmark, install, or run this version. CI covers Linux, macOS, and Windows; Windows remains experimental until native CI and filesystem behavior are qualified. Windows builds need Git for Windows and C build tools (MSVC for the native MSVC target).
 
 ```sh
 cargo build --release --locked --bin mai
 cargo install --path . --locked --bin mai
 mai --help
 bash examples/demo.sh
+# On Windows PowerShell:
+# ./examples/demo.ps1
 ```
 
-Keep the authority and SQLite metadata on one local filesystem with working POSIX locks. Do not place it on NFS/SMB or expose it to untrusted tenants.
+Keep the authority and SQLite metadata on one local filesystem with working native file locks. Do not place it on NFS/SMB or expose it to untrusted tenants.
 
 ## Quick start
 
@@ -45,7 +47,7 @@ mai history /tmp/mai-project
 mai show /tmp/mai-project r1 web/index.txt
 ```
 
-The backend remains based on r0 but its independent path can become r2 without manual rebasing. `--check` runs an explicitly supplied, trusted local shell command before preparation; it does not validate the eventual integrated trunk.
+The backend remains based on r0 but its independent path can become r2 without manual rebasing. `--check` runs an explicitly supplied, trusted local shell command before preparation; it does not validate the eventual integrated trunk. Checks use `sh -c` on Unix and `cmd.exe /D /S /C` on Windows, so supply platform-appropriate shell syntax.
 
 ## CLI reference
 

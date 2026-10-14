@@ -67,7 +67,7 @@ fn string_path(p: &Path) -> Result<&str> {
 }
 impl Repository {
     pub fn open(root: impl AsRef<Path>) -> Result<Self> {
-        let root = fs::canonicalize(root)?;
+        let root = crate::storage_git::canonical_git_path(root)?;
         let control = root.join(if root.join(".mai").exists() {
             ".mai"
         } else {
@@ -99,7 +99,7 @@ impl Repository {
             );
         }
         fs::create_dir_all(root)?;
-        let root = fs::canonicalize(root)?;
+        let root = crate::storage_git::canonical_git_path(root)?;
         let control = root.join(".mai");
         fs::create_dir(&control)?;
         let git = Git {
@@ -178,7 +178,7 @@ impl Repository {
             .create(true)
             .truncate(false)
             .open(locks.join(format!("{agent}.lock")))?;
-        file.lock_exclusive()?;
+        FileExt::lock_exclusive(&file)?;
         Ok(file)
     }
     fn base_ref(&self) -> &str {
@@ -512,10 +512,7 @@ impl Repository {
             });
         }
         if let Some(check) = check {
-            let output = std::process::Command::new("sh")
-                .args(["-c", check])
-                .current_dir(&path)
-                .output()?;
+            let output = verification_command(check).current_dir(&path).output()?;
             if !output.status.success() {
                 let mut bytes = output.stdout;
                 bytes.extend(output.stderr);
@@ -672,4 +669,39 @@ fn trailers_match(body: &str, agent: &str, base: &str) -> bool {
             .rev()
             .find_map(|l| l.strip_prefix("Workspace-Base: "))
             == Some(base)
+}
+
+// A check is explicitly trusted shell input, never a remote server script.
+fn verification_command(check: &str) -> std::process::Command {
+    #[cfg(windows)]
+    {
+        use std::os::windows::process::CommandExt;
+        let mut command = std::process::Command::new("cmd.exe");
+        // cmd has its own quoting grammar; raw_arg preserves the caller's shell
+        // syntax. /S removes our outer quotes, including for quoted executable paths.
+        command
+            .args(["/D", "/S", "/C"])
+            .raw_arg(format!("\"{check}\""));
+        command
+    }
+    #[cfg(not(windows))]
+    {
+        let mut command = std::process::Command::new("sh");
+        command.args(["-c", check]);
+        command
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::paths;
+
+    #[test]
+    fn git_path_lists_reject_invalid_utf8_without_a_filesystem() {
+        assert_eq!(
+            paths(b"src/valid\0binary\0").unwrap(),
+            ["src/valid", "binary"]
+        );
+        assert!(paths(b"valid\0\xff\0").is_err());
+    }
 }

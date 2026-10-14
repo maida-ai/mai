@@ -101,6 +101,7 @@ fn path_prefixes_are_components_not_text_prefixes() {
     assert!(!overlap("src", "src-utils"));
     assert!(overlap("src", "src/file"));
 }
+#[cfg(unix)]
 #[test]
 fn commit_deletion_and_executable_flag() {
     use std::os::unix::fs::PermissionsExt;
@@ -139,9 +140,17 @@ fn check_gate_rejects_and_preserves_changes() {
     );
     assert_eq!(r.revision().unwrap(), 0);
     assert_eq!(
-        r.submit("alpha", "pass", Some("test -f file"))
-            .unwrap()
-            .revision,
+        r.submit(
+            "alpha",
+            "pass",
+            Some(if cfg!(windows) {
+                "if not exist file exit /b 1"
+            } else {
+                "test -f file"
+            })
+        )
+        .unwrap()
+        .revision,
         1
     );
 }
@@ -424,22 +433,23 @@ fn validation_and_expired_exact_release() {
 }
 #[test]
 fn binary_rename_symlink_and_path_collision() {
-    use std::os::unix::fs::symlink;
     let (_t, r) = setup();
     for a in ["a", "b"] {
         r.create_workspace(a).unwrap();
     }
     let p = r.workspace_path("a").unwrap();
     fs::write(p.join("binary"), [0, 255, 1]).unwrap();
-    symlink("/does/not/exist", p.join("link")).unwrap();
+    #[cfg(unix)]
+    std::os::unix::fs::symlink("/does/not/exist", p.join("link")).unwrap();
     r.submit("a", "binary", None).unwrap();
     assert_eq!(r.show("HEAD", "binary").unwrap(), [0, 255, 1]);
+    #[cfg(unix)]
     assert_eq!(r.show("HEAD", "link").unwrap(), b"/does/not/exist");
     fs::rename(p.join("binary"), p.join("renamed")).unwrap();
     r.submit("a", "rename", None).unwrap();
     assert!(r.show("HEAD", "binary").is_err());
     assert_eq!(r.show("HEAD", "renamed").unwrap(), [0, 255, 1]);
-    write(&r, "b", "link/file", "collision");
+    write(&r, "b", "renamed/file", "collision");
     assert!(
         r.submit("b", "collision", None)
             .unwrap_err()
@@ -604,8 +614,9 @@ fn lease_acquired_during_preparation_is_checked_at_publication() {
         r.create_workspace(a).unwrap();
     }
     write(&r, "b", "file", "draft");
+    let quote = if cfg!(windows) { '"' } else { '\'' };
     let check = format!(
-        "'{}' lease '{}' a file",
+        "{quote}{}{quote} lease {quote}{}{quote} a file",
         env!("CARGO_BIN_EXE_mai"),
         r.root.display()
     );
@@ -624,12 +635,16 @@ fn git_hooks_are_not_executed() {
     let (_t, r) = setup();
     let hook = r.git.bare.join("hooks/post-checkout");
     fs::write(&hook, "#!/bin/sh\nexit 99\n").unwrap();
-    use std::os::unix::fs::PermissionsExt;
-    fs::set_permissions(hook, fs::Permissions::from_mode(0o755)).unwrap();
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        fs::set_permissions(hook, fs::Permissions::from_mode(0o755)).unwrap();
+    }
     r.create_workspace("a").unwrap();
     write(&r, "a", "file", "data");
     r.submit("a", "accepted", None).unwrap();
 }
+#[cfg(unix)]
 #[test]
 fn process_termination_after_acceptance_preserves_revision_and_draft() {
     use std::{
@@ -689,6 +704,7 @@ fn process_termination_after_acceptance_preserves_revision_and_draft() {
         b"preserve"
     );
 }
+#[cfg(unix)]
 #[test]
 fn benchmark_emits_json_when_submissions_are_rejected() {
     use std::os::unix::fs::PermissionsExt;
@@ -763,6 +779,8 @@ fn divergent_remote_is_never_force_pushed() {
     assert_eq!(String::from_utf8(o.stdout).unwrap().trim(), remote_head);
     assert_eq!(r.revision().unwrap(), 2);
 }
+// Linux filesystems permit raw bytes; APFS rejects them at file creation.
+#[cfg(target_os = "linux")]
 #[test]
 fn non_utf8_names_reject_before_publication_and_preserve_files() {
     use std::{ffi::OsString, os::unix::ffi::OsStringExt};
@@ -777,6 +795,7 @@ fn non_utf8_names_reject_before_publication_and_preserve_files() {
     assert_eq!(r.revision().unwrap(), 0);
     assert_eq!(fs::read(path).unwrap(), b"draft");
 }
+#[cfg(unix)]
 #[test]
 fn workspace_symlink_and_foreign_git_directory_are_rejected() {
     use std::os::unix::fs::symlink;
@@ -793,6 +812,7 @@ fn workspace_symlink_and_foreign_git_directory_are_rejected() {
     assert!(r.refresh("a", false).is_err());
     assert_eq!(r.revision().unwrap(), 0);
 }
+#[cfg(unix)]
 #[test]
 fn symlinked_workspace_registry_rejects_creation() {
     use std::os::unix::fs::symlink;
@@ -804,4 +824,30 @@ fn symlinked_workspace_registry_rejects_creation() {
     assert!(r.create_workspace("a").is_err());
     assert!(!moved.join("a").exists());
     assert_eq!(r.revision().unwrap(), 0);
+}
+
+#[test]
+fn quoted_verification_command_handles_repository_paths_with_spaces() {
+    let tmp = tempfile::tempdir().unwrap();
+    let r = Repository::init(tmp.path().join("project with spaces"), None).unwrap();
+    for a in ["owner", "writer"] {
+        r.create_workspace(a).unwrap();
+    }
+    write(&r, "writer", "file", "draft");
+    let quote = if cfg!(windows) { '"' } else { '\'' };
+    let check = format!(
+        "{quote}{}{quote} lease {quote}{}{quote} owner file",
+        env!("CARGO_BIN_EXE_mai"),
+        r.root.display()
+    );
+    assert!(
+        r.submit("writer", "blocked", Some(&check))
+            .unwrap_err()
+            .to_string()
+            .contains("reserved")
+    );
+    assert_eq!(r.revision().unwrap(), 0);
+    r.release("owner", &[]).unwrap();
+    assert_eq!(r.submit("writer", "accepted", None).unwrap().revision, 1);
+    assert_eq!(r.show("HEAD", "file").unwrap(), b"draft");
 }
