@@ -1,6 +1,6 @@
 # Contributing
 
-`mai` is an Apache-2.0 Rust project in the maida-ai family, independent of Maida infrastructure and proprietary services. Start with [Architecture](docs/architecture.md) and [AGENTS.md](AGENTS.md). Keep changes focused on agent version control, not agent orchestration.
+`mai` is an Apache-2.0 Rust project in the maida-ai family, independent of Maida infrastructure and proprietary services. Start with [Architecture](docs/architecture.md) and [AGENTS.md](AGENTS.md). Focus on coordination for 3–30 local coding agents sharing one repository.
 
 ## Local workflow
 
@@ -22,7 +22,7 @@ Real-Git tests use disposable repositories and local bare remotes, never credent
 
 ## Design and performance contributions
 
-Use [capability IDs C01–C12](docs/agent-native-capabilities.md) to connect source-service work to concrete completion gates. Read [ADR 0002](docs/adr/0002-changesets-and-publication.md) before adding checkpoint or remote APIs. A network wrapper around today's CLI does not complete checkout-free writes, indexed queries, sparse clients, or cache topology.
+Start with the local workflow in [project direction](docs/project.md): ordinary Git use, dirty updates, integrated validation, truthful recovery and environment setup. [ADR 0002](docs/adr/0002-changesets-and-publication.md) permits Git-native checkpoints and serialized candidate assembly. C01–C12 are deferred ideas, not a checklist every contribution must satisfy.
 
 Document behavioral changes in README and authoritative architecture; record significant alternatives in ADRs. Distinguish implemented capabilities, measured observations, targets, and plans. Preserve revision ordering, r0, conservative component overlap, active foreign lease enforcement, agent attribution, and Git CAS. Do not weaken correctness to increase throughput or build a new object database without evidence.
 
@@ -38,4 +38,4 @@ The current MVP starts at `0.0.1`; increment `0.0.x` during MVP development. Pro
 
 ## Security and release boundaries
 
-Do not deploy this trusted-local milestone to hostile tenants. Never claim worktrees are sandboxes, leases are OS permissions, or declared agent names are authenticated identities. Do not run repository hooks or checks automatically, expose secrets, force-push customer remotes, migrate Maida assets, deploy, or publish packages without explicit authorization. Report security concerns privately to maintainers when a public contact is established. External contributors must receive the same open core as Maida users.
+Do not deploy this trusted-local milestone to hostile tenants. Never claim worktrees are sandboxes, leases are OS permissions, or declared agent names are authenticated identities. Do not run repository hooks or checks automatically, expose secrets, force-push customer remotes, migrate Maida assets, deploy, or publish packages without explicit authorization. Report vulnerabilities through [GitHub private reporting](https://github.com/maida-ai/mai/security/advisories/new). External contributors must receive the same open core as Maida users.

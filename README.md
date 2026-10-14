@@ -7,7 +7,7 @@
 
 <h1 align="center">mai</h1>
 
-<p align="center"><strong>Version control for coding agents. One history. Fewer integration chores.</strong></p>
+<p align="center"><strong>Coordinate local coding agents. One history. Fewer integration chores.</strong></p>
 
 <p align="center">
   <a href="docs/getting-started.md">Get started</a> ·
@@ -55,6 +55,6 @@ Want a guided demo? Run `bash examples/demo.sh`, or `./examples/demo.ps1` in Win
 
 [Connect an agent](examples/agent-prompt.md) · [CLI reference](docs/cli.md) · [Import a Git project](docs/getting-started.md#import-an-existing-project) · [How it works](docs/architecture.md)
 
-**MVP · 0.0.1.** Use disposable, trusted local repositories while evaluating. Workspaces are not sandboxes. Daemon/server modes are planned, and large bursts can hit contention limits. [Current limits and roadmap →](docs/project.md)
+**MVP · 0.0.1.** Use disposable, trusted local repositories while evaluating. Workspaces are not sandboxes. Local Git commits, dirty updates, and integrated-tree validation are not supported yet; large bursts can hit contention limits. [Current limits and roadmap →](docs/project.md)
 
 Part of the **maida-ai** family. Useful on its own; GitHub mirroring is optional. [Report an issue](https://github.com/maida-ai/mai/issues) or [help build it](CONTRIBUTING.md).

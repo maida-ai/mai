@@ -1,6 +1,6 @@
 # Performance engineering
 
-Correctness, durable ordered history, and recoverability constrain every throughput optimization. Thousands of independent agents are a target; Rust 0.0.1 has not established production high-fanout capacity. Rust removes interpreter startup and creates a coherent native service foundation, but Git subprocesses, filesystem traversal, full worktrees, lock scheduling, and retries remain dominant candidates for profiling.
+Correctness, durable ordered history, and recoverability constrain every throughput optimization. The target workflow is 3–30 agents on one machine; thousand-agent runs are stress tests, not a product requirement or established capacity. Rust removes interpreter startup and creates a coherent native service foundation, but Git subprocesses, filesystem traversal, full worktrees, lock scheduling, and retries remain dominant candidates for profiling.
 
 ## Reproducible native harness
 
@@ -51,21 +51,14 @@ Larger burst results and their completion status are recorded in [the results no
 
 Preparation is parallel, but each stale head can cause candidate trees/commits to be rebuilt. SQLite's scheduling can starve a request during repeated competing publications, and the bounded 64-attempt retry budget can reject independent requests under sustained bursts. Supported acceptance stays safe; throughput/fairness is not yet satisfactory at high population. Worktree creation is sequential and holds the registry transaction; full trees scale disk and startup costs. Revision counting/history scans grow with accepted history. Separate pure Rust validation/hash benchmarks from Git/index/ref/checkout timing before selecting native replacements.
 
-Next measure 1/16/64/256/1,024 clients where feasible, both fully disjoint and fully contended, across 1k/100k/1M-file repositories and binary sizes, sustained and burst arrivals, cold/warm caches, admission limits, interruption/restore, and storage growth. Record repeated distributions, available RAM, filesystem/mount, CPU load, worker limits, all error classes, request waiting time, per-attempt lock duration, and rejected-request retries. Current receipt metrics aggregate lock time across attempts and omit rejected-request metrics; they are not a full contention profile.
+Next measure 3/10/30 local agents on representative repositories, both disjoint and same-file work, with sustained and burst arrivals. Record repeated distributions, hardware/filesystem, cold/warm state, every outcome, build counts, lock wait/hold and rejected-request retries. Keep larger fanout as stress testing. Current receipt metrics omit rejected-request timing and aggregate lock time across attempts.
 
-Prioritize fairness/admission/backpressure and reduced retry amplification, persistent daemon caches, incremental change tracking, sparse or copy-on-write materialization, native Git operations where measured useful, and a retryable downstream outbox. Avoid blocking a future async executor with filesystem/Git work; use bounded blocking execution. Optimize accepted ordered changes and tail latency without weakening conflict/lease checks or fsync/recovery policy. Define production acceptance targets only after representative workloads and recovery qualification.
+## Local workflow measurements
 
+- Separate checkout time from dependency installation, virtualenv/node_modules setup and warmed build caches. The existing 1,000-file workload does not measure environment readiness.
+- Compare optimistic construction with in-gate candidate assembly; evaluate bounded group commit separately with crash recovery and per-request outcomes.
+- Measure integrated-check duration, parent changes and revalidation cost. Never improve throughput by accepting stale validation evidence.
+- Exercise dirty updates, conflict resolution and recovery after new edits; count useful completed tasks rather than only accepted commits.
+- Profile repeated revision counting, history subprocesses and all-workspace status scans before adding indexes or a daemon.
 
-## Capability-oriented workloads
-
-The [capability contract](agent-native-capabilities.md) expands measurement beyond main publication. The following workloads are requirements for future implementations, not results from the current harness:
-
-- **C01/C02 ingest:** checkout-free delta writes and private checkpoint creation at 1/16/64/256/1,024 clients; vary changed bytes, number of paths, ancestor depth, request duplication, and incomplete uploads. Measure durable acknowledgements/s, p50/p95/p99, bytes copied, object/metadata amplification, and ingest contention separately from accepted revisions.
-- **C03/C04 queries:** file reads, bounded tree/path search, revision diffs, merge bases, ancestry, path history, and blame across growing file/history sizes. Compare cold/warm indexes, exact versus pending computation, rebuild costs, graph depth, and denied-path cases. Detect accidental full-history traversals and use source fixtures as an exactness oracle.
-- **C05 materialization:** full, sparse, and later lazy layouts with zero checkout where possible. Measure requested/transferred/materialized bytes, readiness, disk use, hydration tail latency, watcher loss recovery, and sparse deletion correctness. Reuse the same immutable source across many jobs to expose duplicate work.
-- **C06/C07 cache topology:** daemon absent/present, bounded node caches, optional intermediate tiers, cold restart, cache miss storms, corruption, revocation, interrupted transfer, and upstream failure. Record per-tier hit/miss rates, memory/RSS, admission wait, upstream request/byte amplification, and whether a failed tier exceeds its configured budget.
-- **C08 landing:** mixed checkpoints and publication, fixed/long-running validators, lease expiry/fencing races, policy changes, retries, cancellation before/after acceptance, and sustained/burst load. Record completion/fairness and outcomes for rejected requests as well as accepted requests; validation duration must not become publication lock duration.
-- **C09/C10 integration:** policy checks, attestation applicability after rebase, review event replay, compensating revert conflicts, and bisect graph queries with external runners. Measure authorization overhead and index/event lag while checking that no denied content or stale evidence is treated as valid.
-- **C11/C12 recovery:** process kills, disk-full/qualified filesystem faults, object/record/ref interruption windows, cache/index rebuild, draft GC, request-outcome restore, and current-format integrity. Measure recovery time and retained acknowledged state; include receipts/drafts in integrity checks, not only the final main revision.
-
-Keep CLI startup, pure Rust computation, Git spawning/index/ref work, bytes transferred, and remote waiting in separate measurements. Record worker count independently of client population; a thousand jobs behind sixteen workers is not a thousand simultaneous writers. Prototype one-node source/query contracts first, then compare deployed cache and server slices with identical workloads. No external system's performance figures establish mai capacity.
+Explicit bootstrap commands and safe shared package caches come before sparse/lazy checkout. Copy-on-write templates need platform and isolation tests; hard-linked mutable environments are not interchangeable with copy-on-write. Test ports and databases need caller-assigned isolation. The harness does not currently measure these workflows; add measurements alongside their implementations.

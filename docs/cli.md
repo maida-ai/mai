@@ -51,9 +51,13 @@ Successful commands return `{"ok":true,"result":...}`; failures return `{"ok":fa
 
 Success includes `revision`, `commit`, `agent`, `files`, `rebased`, `recovered`, `workspace_updated`, `retries`, `lock_wait_ms`, and `lock_hold_ms`. `rebased:true` means disjoint candidate paths were transplanted onto newer main, not that same-file text was merged.
 
-Check both acceptance and workspace state. `recovered:true` returns an already accepted revision after interrupted checkout; it does not create another revision. `workspace_updated:false` means the working directory needs reconciliation before continued work. Copy drafts/later edits outside the workspace, inspect accepted history/content, and follow [the recovery procedure](architecture.md#durability-and-recovery). Never interpret a recovered receipt as permission to reset files.
+Check both acceptance and workspace state. `recovered:true` returns an already accepted revision after interrupted checkout; it does not create another revision and does not prove current edits were submitted. The current recovery path can return `ok:true` before examining new edits. Do not report that old receipt as acceptance of new work. `workspace_updated:false` means the working directory needs reconciliation before continued work. Copy drafts/later edits outside the workspace, inspect accepted history/content, and follow [the recovery procedure](architecture.md#durability-and-recovery). Never interpret a recovered receipt as permission to reset files.
 
 Contention-budget errors explicitly mean that attempt did not publish. Retry the same submission after backoff. Foreign lease errors require release/expiration. Overlapping changes require preserving the draft and manually reconciling from a fresh base. Other infrastructure failures may need inspecting authoritative history before retrying.
+
+## Current workspace precautions
+
+Do not commit, amend, rebase or switch branches inside mai workspaces yet: submit derives its base from HEAD, and linked worktrees share authority refs. In particular, committing on main bypasses mai publication checks. Both `diff` and `submit` stage all nonignored files; inspect untracked files before invoking them. There is no `--paths` option or non-destructive dirty `update` command yet. Refresh and post-submit reset can overwrite ignored files when accepted paths collide; preserve valuable local files separately.
 
 ## Conflict rules
 

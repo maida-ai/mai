@@ -1,6 +1,6 @@
 # Project status and direction
 
-`mai` is an Apache-2.0, agent-native version control system in the maida-ai family. Its upstream is `maida-ai/mai`. Any individual or organization can use it without Maida infrastructure, a GitHub account, or proprietary services. Maida is an early adopter, not a runtime dependency; no production assets migrate implicitly.
+`mai` is an Apache-2.0 coordination tool for local coding agents in the maida-ai family. Its upstream is `maida-ai/mai`. Any individual or organization can use it without Maida infrastructure, a GitHub account, or proprietary services. Maida is an early adopter, not a runtime dependency; no production assets migrate implicitly.
 
 ## Working today
 
@@ -8,11 +8,11 @@ The Rust CLI supports detached agent workspaces, ordered revisions, conservative
 
 SVN inspires the revision model: `r0` is the original snapshot, then accepted changes become `r1`, `r2`, and onward. mai does not implement SVN storage or wire protocols. Git provides proven content storage and interoperability, while agents interact through workspaces and submissions.
 
-The [agent-native capability contract](agent-native-capabilities.md) defines our Apache-2.0 answer to agent-scale source control: checkout-free operations, immutable checkpoints, indexed source queries, sparse workspaces, reusable caches, authenticated publication, and open integration contracts. Public reference categories are recorded there; implementation and operational parity are not claimed. Rust supports native deployment, resource ownership, and future persistent services. It does not itself remove Git subprocesses, filesystem scans, full checkout costs, or lock contention. See [architecture](architecture.md) and [measurements](performance.md).
+The immediate audience is 3–30 agents working on one machine and one repository. The value is coordination before conflict through leases, an ordered acceptance history, attribution and recoverable outcomes. Exact integrated validation and normal local Git use are priorities, not shipped guarantees. See [architecture](architecture.md) and [measurements](performance.md).
 
 ## Current limits
 
-This is an MVP for trusted local workflows on one machine and a local filesystem. Workspaces are not sandboxes. Declared agent IDs are not authenticated identities. Leases block foreign publication through supported operations but do not enforce OS permissions. Administrators with filesystem access can bypass Git/SQLite policy.
+This is an MVP for trusted local workflows on one machine and a local filesystem. Workspaces are not sandboxes. Declared agent IDs are not authenticated identities. Leases block foreign publication through supported operations but do not enforce OS permissions. Ordinary Git commits after checking out main in a linked workspace can bypass publication policy; no accidental-write guard is installed yet. Local commits also move HEAD away from the submit base. Avoid both until fixed.
 
 There is no daemon, server, authentication, distributed locking, sparse materialization, automatic lease renewal, or durable downstream job queue. Windows CI coverage is experimental pending native qualification. Do not expose the authority to untrusted tenants or use NFS/SMB. Quiesce a workspace while submitting or refreshing it.
 
@@ -20,17 +20,17 @@ Large independent bursts can exhaust the bounded contention budget; rejected att
 
 ## Roadmap
 
-Capabilities below refer to [C01–C12](agent-native-capabilities.md). Each milestone needs running code, success/error regressions, recovery/resource-limit evidence, and documentation before completion. Milestones do not determine version promotion automatically.
+Ship small local workflows with success/error regressions and recovery evidence. This order expresses product priorities; independent fixes can proceed in parallel.
 
-1. **Reliable local foundation (C08/C11/C12):** qualify acknowledgement/crash/restore/GC behavior, define fair bounded admission, and measure full completion/rejection under contention. Retain source export and prove r0 and publication correctness in the current format.
-2. **Source/query contracts (C01/C03/C04):** extract typed engine operations for file/tree reads, revision diffs, ancestry, merge bases, exact revision lookup, and bounded results. Demonstrate metadata-only jobs without worktrees using the Git adapter before choosing remote transport.
-3. **Durable changesets and API-native writes (C01/C02/C08):** add immutable candidate recording, scoped request-key outcomes, put/delete/mode requests, and controlled landing. Checkpoints must leave main unchanged and remain protected from GC. Choose the simplest tested format; no prior format needs an upgrade path. Conservative conflicts remain the default.
-4. **Selective clients and shared local state (C05/C06/C07):** add sparse ordinary-file workspaces, lifecycle descriptors, incremental detection with fallback, exact object requests, and a bounded optional daemon cache. Test daemon/direct equivalence; qualify lazy files separately per OS.
-5. **Secure single-node shared service (C08/C09/C11):** expose those contracts through authenticated bounded transport; enforce repository/directory authorization, lease fencing, audit outcomes, and durable retries. Existing local mode stays available. Do not expose a shell-execution endpoint.
-6. **Indexed queries and ecosystem workflows (C03/C04/C10):** build versioned history/blame/search indexes and review/test evidence, compensating reverts, bisect query support, and retryable integration events. Keep review UI, build/test execution, deployment, and agent runners external.
-7. **Measured fleet deployment (C07/C11/C12):** qualify optional cache tiers, independent read/index workers, network failure budgets, and migration/restore. Only then evaluate authority failover or another storage adapter under explicit conformance and operational requirements.
+1. **Ordinary Git use:** separate the workspace base from HEAD, guard authority refs and preserve private checkpoints through workspace updates.
+2. **Dirty updates:** merge trunk into existing work without discard, with explicit conflict resolution and continuation/abort behavior.
+3. **Integrated validation:** check the exact candidate tree outside the publication gate; revalidate or stop if its parent changes. No checkout-free API or custom changeset format is needed.
+4. **Efficient publication:** assemble candidates under the gate for unchecked submissions, remove worktree creation from that gate, then measure bounded group commit separately.
+5. **Truthful recovery:** distinguish accepted retries from new edits and return actionable machine outcomes. This correctness fix need not wait for performance work.
+6. **Safe evaluation and distribution:** preserve ignored/untracked work, support explicit path capture, qualify object formats and bounded checks, then prepare verified native archives.
+7. **Useful environments:** support explicit post-create bootstrap outside publication locks; measure dependency setup before investing in sparse or lazy materialization.
 
-No network, checkpoint, query, sparse, daemon, or service API in that sequence ships merely because it appears here. GitHub stays optional and downstream. Git remains the storage foundation until evidence justifies an alternative; distributed consensus and a custom content database are not immediate deliverables.
+Opt-in same-file textual merges follow integrated validation. Remote services, custom changesets, tiered caches and partitioned storage are [possible futures](agent-native-capabilities.md), not local MVP requirements. No dates or automatic version promotions follow from this sequence.
 
 ## Development policy
 

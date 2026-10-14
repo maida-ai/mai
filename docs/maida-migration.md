@@ -18,8 +18,8 @@ Accepted revisions must survive process termination and qualified filesystem fai
 
 Qualify authenticated agents, least-privilege access, secrets handling, and execution isolation before hostile multi-machine use. Current worktrees are not sandboxes; current identities are declarations. Keep GitHub optional and test Git export/restore with all relevant revisions, binary files, modes, renames, and provenance.
 
-Measure p50/p95/p99 submission latency, accepted revisions per second, workspace/cold-start latency, contention/retry rates, lock hold time, CPU, RSS, and storage growth for 1/16/64/256 agents and 1,024 where hardware permits. Set workload-specific targets from evidence. Never promote solely because unit tests or a synthetic throughput number pass.
+Measure p50/p95/p99 submission latency, accepted revisions per second, workspace/cold-start latency, contention/retry rates, lock hold time, CPU, RSS, and storage growth for representative 3–30-agent workloads; use larger fanout only as additional stress testing. Set workload-specific targets from evidence. Never promote solely because unit tests or a synthetic throughput number pass.
 
-For adoption of future services, additionally qualify durable draft/request outcomes, source export, reachable-object retention, sparse views, directory authorization through caches/indexes, and attestation/revert behavior from [the capability contract](agent-native-capabilities.md). A local full-worktree test is not evidence for those capabilities.
+For adoption of future services, additionally qualify durable draft/request outcomes, source export, reachable-object retention, sparse views, directory authorization through caches/indexes, and attestation/revert behavior if the [possible future services](agent-native-capabilities.md) are implemented; these are not local-adoption prerequisites. A local full-worktree test is not evidence for those capabilities.
 
 Publish the migration/rollback playbook and obtain explicit sign-off from every affected repository owner. External adopters receive the same open interfaces and capabilities as Maida.
