@@ -1,0 +1,1 @@
+{"accepted":13,"accepted_per_second":15.18,"agents":16,"conflicts":3,"final_revision":13,"hotspot_agents":4,"implementation":"mai v0.1.1 local prototype","integrity_ok":true,"other_errors":[],"submit_latency_ms_p50":22.94,"submit_latency_ms_p95":854.45,"submit_wall_seconds":0.856,"workers":8,"workspace_setup_seconds":0.334}
