@@ -1,6 +1,6 @@
 # Recorded local benchmark evidence
 
-The recorded Rust JSON retains the original unreleased `0.2.0` label used when these measurements were collected. The project version has since been reset to `0.0.1` for the MVP; this label is historical evidence, not a released version or the current version. Python fixture and baseline labels likewise remain historical.
+The recorded Rust JSON retains the original unreleased `0.2.0` label used when these measurements were collected. The project version has since been reset to `0.0.1` for the MVP; this label is historical evidence, not a released version or the current version. Python baseline labels likewise remain historical.
 
 These are individual development-host samples, not performance guarantees. See [Performance](../../docs/performance.md) for methodology and caveats. The Python baseline was recorded before implementation removal; Rust `core` samples use direct library calls and `cli` samples launch the native executable. All Rust samples use an optimized release build with committed Git fsync. CPU/RSS information is in sibling GNU time `.resources` logs, including setup and verification.
 

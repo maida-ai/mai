@@ -7,7 +7,7 @@ Start with one working submission, then add the parts your workflow needs.
 - [Getting started](getting-started.md): install, create a workspace, submit, and inspect your first revision. Includes Windows instructions and Git import/export.
 - [CLI reference](cli.md): commands, JSON responses, checks, leases, conflict handling, and recovery.
 - [Agent integration prompt](../examples/agent-prompt.md): a starting contract for your agent harness.
-- [Compatibility](compatibility.md): existing Python/AgentTrunk stores, filename rules, and client transitions.
+- [Development policy](project.md#development-policy): a new MVP with no backward-compatibility obligations.
 
 ## Understand and contribute
 

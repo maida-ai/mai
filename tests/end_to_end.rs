@@ -362,53 +362,26 @@ fn import_existing_git_head_at_r0() {
     assert_eq!(r.submit("a", "change", None).unwrap().revision, 1);
 }
 #[test]
-fn python_format_and_legacy_prototype_are_readable() {
-    for legacy in [false, true] {
-        let t = tempfile::tempdir().unwrap();
-        let control = t.path().join(if legacy { ".agenttrunk" } else { ".mai" });
-        fs::create_dir(&control).unwrap();
-        fs::create_dir(t.path().join("workspaces")).unwrap();
-        let bare = control.join("repo.git");
-        assert!(
-            Command::new("git")
-                .args(["init", "--bare", "--quiet", "--initial-branch=main"])
-                .arg(&bare)
-                .status()
-                .unwrap()
-                .success()
-        );
-        let bundle =
-            Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/python-v0.1.1.bundle");
-        let mut c = Command::new("git");
-        let o = c
-            .arg("--git-dir")
-            .arg(&bare)
-            .args(["fetch", "--quiet"])
-            .arg(bundle)
-            .arg("refs/*:refs/*")
-            .output()
-            .unwrap();
-        assert!(o.status.success());
-        fs::write(
-            control.join("metadata.sqlite3"),
-            include_bytes!("fixtures/python-v0.1.1.sqlite3"),
-        )
-        .unwrap();
-        let r = Repository::open(t.path()).unwrap();
-        if legacy {
-            let base = r.git.text(&["rev-parse", "refs/mai/base"]).unwrap();
-            r.git
-                .run(&["update-ref", "refs/agenttrunk/base", &base])
-                .unwrap();
-            r.git.run(&["update-ref", "-d", "refs/mai/base"]).unwrap();
-        }
-        assert_eq!(r.revision().unwrap(), 1);
-        assert_eq!(r.show("r1", "original.txt").unwrap(), b"Python baseline\n");
-        r.create_workspace("rust").unwrap();
-        write(&r, "rust", "new.txt", "Rust\n");
-        assert_eq!(r.submit("rust", "compat", None).unwrap().revision, 2);
-        assert_eq!(r.history(10).unwrap()[1]["agent"], "fixture");
-    }
+fn only_current_control_layout_is_recognized() {
+    let (_tmp, r) = setup();
+    r.create_workspace("agent").unwrap();
+    write(&r, "agent", "file.txt", "current format\n");
+    r.submit("agent", "record current state", None).unwrap();
+    let reopened = Repository::open(&r.root).unwrap();
+    assert_eq!(reopened.control, r.root.join(".mai"));
+    assert_eq!(reopened.revision().unwrap(), 1);
+    assert_eq!(
+        reopened.show("r1", "file.txt").unwrap(),
+        b"current format\n"
+    );
+    assert_eq!(
+        reopened.status().unwrap()["workspaces"][0]["agent"],
+        "agent"
+    );
+    // Unsupported directory names must not be auto-discovered as authorities.
+    fs::rename(&r.control, r.root.join(".agenttrunk")).unwrap();
+    let error = Repository::open(&r.root).unwrap_err();
+    assert!(error.to_string().contains("No mai repository"));
 }
 #[test]
 fn validation_and_expired_exact_release() {

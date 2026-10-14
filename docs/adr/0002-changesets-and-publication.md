@@ -1,6 +1,6 @@
 # ADR 0002: Agent work and authoritative publication are distinct operations
 
-Status: accepted architectural direction; not implemented in the 0.0.1 protocol or repository format. This extends [ADR 0001](0001-foundation.md) without changing current CLI behavior, accepted main semantics, r0, or Git-backed storage. [Capability contract](../agent-native-capabilities.md) defines the product requirements.
+Status: accepted architectural direction; not implemented in the 0.0.1 protocol or repository format. This extends [ADR 0001](0001-foundation.md) while retaining accepted main semantics, r0, and Git-backed storage. [Capability contract](../agent-native-capabilities.md) defines the product requirements.
 
 ## Context
 
@@ -18,30 +18,30 @@ Use Git blobs/trees/commits initially. The protocol describes domain identities 
 
 Keep the authority-side publication gate narrowly focused on head, lease/policy revalidation, revision assignment, and durable acceptance. Candidate preparation and source queries must not acquire that gate. A single-node authority is the next deployment target; replication/HA and a different accepted-history ledger require separate evidence and design. A future multi-node read fleet does not make publication lock-free or globally distributed automatically.
 
-Current Git main remains the sole acceptance ledger. If a new metadata journal is introduced, explicitly define intent, object durability, ref update, acknowledgement, and reconciliation order. Git and SQLite are not one atomic transaction. Do not silently switch an existing repository's authority or format; conversion and downgrade/export need an approved, tested path.
+Current Git main remains the sole acceptance ledger. If a new metadata journal is introduced, explicitly define intent, object durability, ref update, acknowledgement, and reconciliation order. Git and SQLite are not one atomic transaction. No older metadata format or client needs support; choose the current format directly and document breaking changes. Backward compatibility is not a reason to duplicate authority records or add conversion machinery.
 
 ## Alternatives
 
 - Assign `rN` to every checkpoint: rejected because it confuses exploration with accepted history and serializes unnecessary work.
 - Keep one heavyweight Git branch/worktree per saved draft: rejected as the required public model; temporary Git internals remain acceptable until a better measured materializer exists.
 - Add an HTTP wrapper around current `submit` and call it agent-native parity: insufficient for checkout-free writes, stable queries, bounded client data, indexed metadata, or shared caching.
-- Replace Git with a custom distributed database now: rejected without measured need, storage conformance, migration, recovery, and operational qualification.
+- Replace Git with a custom distributed database now: rejected without measured need, storage conformance, recovery, and operational qualification.
 - Require every operation to use a daemon: rejected; direct local access remains valuable and uses the same domain invariants.
 
 ## Consequences and implementation gates
 
 Separate source/query/publication ports should be extracted when their first tested consumers require them, not as empty crates. Prototype metadata-only operations before remote transport. Then qualify durable candidate/outcome recording and checkpoint-free submission. Sparse workspaces and shared bounded object caches follow the stable source contract; an authenticated single-node service follows authorization and request-limit tests.
 
-Required tests cover checkpoint saves with unchanged main, disjoint/conflicting landing, repeated request keys, mismatched retry payloads, interruption after object writes, missing outcome/ref records, reachable-draft retention, publication policy/lease races, unauthorized reads through caches/indexes, and explicit format conversion. Safe conservative conflict rejection is retained unless a separate tested merge policy is enabled. No LLM, GitHub, or proprietary infrastructure is essential.
+Required tests cover checkpoint saves with unchanged main, disjoint/conflicting landing, repeated request keys, mismatched retry payloads, interruption after object writes, missing outcome/ref records, reachable-draft retention, publication policy/lease races, unauthorized reads through caches/indexes, and current-format integrity. Safe conservative conflict rejection is retained unless a separate tested merge policy is enabled. No LLM, GitHub, or proprietary infrastructure is essential.
 
 
 ## Decisions still required before implementation
 
 - Canonical changeset encoding and typed identifier/hash policy, including how Git object identities are exposed or mapped.
-- Explicit metadata format versioning, upgrade/export/downgrade, durable request-key retention, and the journal/Git reconciliation state machine.
+- Current metadata layout, durable request-key retention, source export, and the journal/Git reconciliation state machine. No format converters or downgrade routes are required.
 - Reachable private-source roots, retention/quotas, and garbage collection that survives interrupted maintenance without relying on one ref per draft.
 - Authentication adapters, directory-policy semantics, cache revocation, and how authorized filtered views expose graph/history metadata.
 - Attestation dependency/scope rules, the first optional deterministic merge policy, and the boundary between pre-land checks and post-land/pre-deploy observation.
 - Lazy materialization mechanisms per OS and the profiles/restore evidence required to evaluate partitioned source storage or authority failover.
 
-These are follow-up ADRs and tested vertical slices, not unspecified behavior that implementations may silently choose for existing stores.
+These are follow-up ADRs and tested vertical slices, not unspecified behavior that implementations may leave untested. There are no backward-compatibility obligations.

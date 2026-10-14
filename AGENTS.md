@@ -2,7 +2,7 @@
 
 This repository is an open-source Rust CLI for a local centralized Git-backed source control authority. Keep the design **small, deterministic, and scriptable**. [Architecture](docs/architecture.md) is authoritative; [agent-native capabilities](docs/agent-native-capabilities.md) define target functionality and completion gates; [docs/adr/0001-foundation.md](docs/adr/0001-foundation.md) records decisions and [Performance](docs/performance.md) defines measurement.
 
-* Follow the version policy in docs/project.md and CONTRIBUTING.md: MVP begins at `0.0.1` and uses `0.0.x`; promote to `0.1.0` after MVP and `1.0.0` at stability. Preserve historical fixture/measurement labels.
+* Follow the version policy in docs/project.md and CONTRIBUTING.md: MVP begins at `0.0.1` and uses `0.0.x`; promote to `0.1.0` after MVP and `1.0.0` at stability. Preserve historical measurement labels.
 * Use Rust first; do not restore Python runtime/packaging. Read source, Cargo.toml, Cargo.lock, nearby tests, and all relevant documentation before editing. Preserve uncommitted user changes.
 * Do not introduce network services, dependencies, databases, or LLM calls without a concrete use case and tests. Do not build a custom storage engine or elaborate plugin system without measured need.
 * Never force-push to a customer's GitHub remote. Treat the bare authority's `main` branch as the only accepted writer. `r0` is always the original baseline snapshot.
@@ -10,7 +10,7 @@ This repository is an open-source Rust CLI for a local centralized Git-backed so
 * Preserve non-overlapping submission semantics, path-component overlap checks, Git compare-and-swap, and per-agent attribution. Avoid anything that silently overwrites other agents' work.
 * Add regression tests covering success and failure for significant changes. Prefer a failing regression before fixing bugs. Run `cargo fmt --check`, `cargo clippy --all-targets --locked -- -D warnings`, and `cargo test --all-targets --locked` before finalizing.
 * Publication changes require separate-process disjoint and contended tests, same-workspace coordination tests, and relevant interrupted-state recovery tests. Preserve Git main as authoritative; SQLite and Git are not one transaction. Keep preparation and checkout reset outside the publication gate.
-* Preserve `.mai` and `.agenttrunk` compatibility and Python-generated fixtures; never silently convert existing metadata. Reject unsupported input before publication. Document any changed compatibility expectation.
+* This new MVP has no backward-compatibility requirements for repository formats, metadata, CLI syntax, or JSON/protocol schemas. Prefer the simplest current design; do not add legacy readers, deprecated aliases, migration shims, or compatibility fixtures. Document breaking changes. Reject unsupported input before publication.
 * Never imply a local Git worktree is an OS sandbox or that an advisory lease enforces filesystem permissions.
 * Keep immutable checkpoint recording, exact source/query operations, and authoritative publication distinct in future interfaces. Only accepted publication allocates `rN`; no public per-draft Git branch/ref is required. Follow ADR 0002 and prove retention/idempotency/recovery before exposing drafts.
 * Optimize for high-fanout agent clients, but do not present unmeasured throughput as established. Run reproducible native benchmarks for performance changes and explain bottlenecks beyond language overhead.

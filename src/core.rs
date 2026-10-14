@@ -68,11 +68,7 @@ fn string_path(p: &Path) -> Result<&str> {
 impl Repository {
     pub fn open(root: impl AsRef<Path>) -> Result<Self> {
         let root = crate::storage_git::canonical_git_path(root)?;
-        let control = root.join(if root.join(".mai").exists() {
-            ".mai"
-        } else {
-            ".agenttrunk"
-        });
+        let control = root.join(".mai");
         ensure!(
             control.join("metadata.sqlite3").is_file() && control.join("repo.git").is_dir(),
             "No mai repository at {} (run 'mai init' first)",
@@ -181,13 +177,6 @@ impl Repository {
         FileExt::lock_exclusive(&file)?;
         Ok(file)
     }
-    fn base_ref(&self) -> &str {
-        if self.control.ends_with(".mai") {
-            "refs/mai/base"
-        } else {
-            "refs/agenttrunk/base"
-        }
-    }
     pub fn head(&self) -> Result<String> {
         self.git.text(&["rev-parse", "refs/heads/main"])
     }
@@ -198,7 +187,7 @@ impl Repository {
                 "rev-list",
                 "--first-parent",
                 "--count",
-                &format!("{}..{head}", self.base_ref()),
+                &format!("refs/mai/base..{head}"),
             ])?
             .parse()?)
     }

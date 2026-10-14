@@ -73,7 +73,7 @@ mai workspace imported alice
 mai show imported r0 README.md
 ```
 
-The source history is retained, but mai numbering begins at the imported HEAD snapshot. No source repository is migrated in place. A Git URL can also be supplied explicitly; local paths need no network. Existing mai stores are covered by [compatibility](compatibility.md).
+The source history is retained, but mai numbering begins at the imported HEAD snapshot. No source repository is migrated in place. A Git URL can also be supplied explicitly; local paths need no network.
 
 ## Optional Git mirror
 
@@ -87,6 +87,8 @@ The remote can be a local bare Git repository or a GitHub-compatible URL. It mus
 ## Connect your agent
 
 Give each agent a unique identity, create its workspace, and point its editor/tools there. Use `mai --json` for machine responses. Begin with the [integration prompt](../examples/agent-prompt.md); add leases and checks only where needed. A lease coordinates and blocks foreign publication while active; it is not filesystem access control.
+
+Repository paths and tracked filenames must be UTF-8; file contents may be arbitrary bytes. Quoted `~` paths are literal; use normal shell expansion. Windows filesystem case/name restrictions and Unix-only permissions/symlink behavior need qualification before important use.
 
 The authority and metadata must stay on one local filesystem with working native locks. Do not use NFS/SMB or expose the store to hostile tenants. See [current limits](project.md#current-limits) before evaluating important data.
 

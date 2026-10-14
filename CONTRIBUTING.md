@@ -18,7 +18,7 @@ bash examples/demo.sh
 
 CI runs formatting, Clippy, tests, release builds, a native-platform demo, and a CLI benchmark smoke test on Linux, macOS, and Windows. Unix executable-mode/process-control/symlink tests run on Unix; Linux additionally tests raw invalid filename bytes, which APFS cannot create. A filesystem-independent unit test checks invalid Git path bytes on every platform. Common conflict, lease, binary/rename, recovery-state, hook suppression, and separate-process publication coverage runs on all platforms.
 
-Real-Git tests use disposable repositories and local bare remotes, never credentials or customer repositories. Preserve compatibility fixtures and add success/error regressions for semantics changes. Concurrent changes need disjoint, contended, same-workspace, and separate-process coverage as appropriate. Durability changes require interruption-state and recovery tests; state simulation alone does not certify power-loss safety.
+Real-Git tests use disposable repositories and local bare remotes, never credentials or customer repositories. Add success/error regressions for current semantics. Concurrent changes need disjoint, contended, same-workspace, and separate-process coverage as appropriate. Durability changes require interruption-state and recovery tests; state simulation alone does not certify power-loss safety.
 
 ## Design and performance contributions
 
@@ -28,9 +28,13 @@ Document behavioral changes in README and authoritative architecture; record sig
 
 Run the native workload in [Performance](docs/performance.md) for performance changes; record hardware, filesystem, build profile, Git/Rust versions, worker/fanout settings, cold/warm conditions, rejection rates, and raw output. Compare equivalent modes; Git subprocesses and disk work often dominate pure Rust computation. Add production dependencies only for concrete uses; review current upstream documentation and licensing, pin reproducibly with Cargo.lock, and avoid unnecessary runtime services.
 
+## Development policy
+
+This project has no existing users and no backward-compatibility obligations. Repository formats, metadata, CLI syntax, and JSON/protocol schemas may change freely during MVP development. Do not add legacy readers, deprecated aliases, compatibility fixtures, format converters, or downgrade paths. Recreate disposable test repositories when the current format changes; document the change and update current tests/examples. This policy does not relax data integrity, acknowledged-write recovery, or the requirement to preserve uncommitted user changes.
+
 ## Versioning
 
-The current MVP starts at `0.0.1`; increment `0.0.x` during MVP development. Promote to `0.1.0` when leaving MVP and to `1.0.0` when stable. Keep Cargo package metadata, CLI output tests, and current documentation consistent; benchmark labels derive from Cargo metadata. Preserve original version labels in historical benchmark records and compatibility fixtures. See [version policy](docs/project.md#versioning).
+The current MVP starts at `0.0.1`; increment `0.0.x` during MVP development. Promote to `0.1.0` when leaving MVP and to `1.0.0` when stable. Keep Cargo package metadata, CLI output tests, and current documentation consistent; benchmark labels derive from Cargo metadata. Preserve original version labels in historical benchmark records. See [version policy](docs/project.md#versioning).
 
 ## Security and release boundaries
 

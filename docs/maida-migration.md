@@ -10,7 +10,7 @@
 4. Dual-system validation: reconcile hashes, revision exports, backup restoration, and divergence handling. Specify one accepted writer per repository to prevent split brain.
 5. Recoverability and performance qualification: crash/power-loss drills, disk-full cases, access policy review, realistic fanout, documented soak period, and rollback playbook.
 6. Incremental migration of selected assets: owner-approved low-risk canaries, explicit cutover and freeze points, recoverable Git export, monitored resource use.
-7. Broader adoption: opt in repository by repository only after demonstrated reliability, security, and recoverability. Maintain a documented export/downgrade route.
+7. Broader adoption: opt in repository by repository only after demonstrated reliability, security, and recoverability. Maintain a documented source export and recovery procedure.
 
 ## Gates before production writes
 

@@ -16,7 +16,7 @@ Reference: Anthropic's [Redesigning source control at Anthropic](https://www.ant
 - **S6:** Repository/directory permissions, simulations, fuzzing, and rate limiting.
 - **S7:** Adjacent review/IAM/search tooling and post-merge/pre-deploy validation.
 
-The article is not a complete protocol specification. Merge policy, approval schema, replication guarantees, and wire compatibility cannot be inferred fully. The requirements below are **mai design decisions**, not claims about undisclosed Scion behavior. Review UI and build/execution systems are integrations around our source authority, not reasons to make the core an agent runner. No Scion implementation, internal artifact, or vendor-specific service is required.
+The article is not a complete protocol specification. Merge policy, approval schema, replication guarantees, and wire behavior cannot be inferred fully. The requirements below are **mai design decisions**, not claims about undisclosed Scion behavior. Review UI and build/execution systems are integrations around our source authority, not reasons to make the core an agent runner. No Scion implementation, internal artifact, or vendor-specific service is required.
 
 ## C01: Work without a checkout
 
@@ -32,7 +32,7 @@ The article is not a complete protocol specification. Merge policy, approval sch
 
 **Target:** An immutable changeset records a base/parent, normalized file delta, content references, declared provenance, and a stable identity. Persisting it shares a checkpoint without allocating an `rN`, updating main, or requiring a Git branch/ref for each draft. Rebase/merge produces another immutable candidate; published history still has a single first-parent acceptance chain. A draft's presence never means acceptance.
 
-**Completion:** Save and inspect concurrent drafts while main stays unchanged; retry with the same scoped request identity returns the same outcome, while a different payload under that identity rejects. Partial upload/record crashes recover or remain explicitly incomplete. Retention/garbage collection cannot delete reachable drafts. Exact encoding and format migration need their own implementation ADR. Relates to S3.
+**Completion:** Save and inspect concurrent drafts while main stays unchanged; retry with the same scoped request identity returns the same outcome, while a different payload under that identity rejects. Partial upload/record crashes recover or remain explicitly incomplete. Retention/garbage collection cannot delete reachable drafts. Exact encoding and current-format integrity need their own implementation ADR. Relates to S3.
 
 ## C03: Authority-side graph and source queries
 
@@ -110,9 +110,9 @@ The article is not a complete protocol specification. Merge policy, approval sch
 
 **Current:** Git import and explicit fast-forward mirroring work. Basic operation is self-hosted and Apache-2.0; the implementation still uses Git-specific storage commands and local paths.
 
-**Target:** Start advanced capabilities over Git objects rather than replacing storage immediately. Fleet-scale storage must eventually accommodate object/history volumes beyond one authority host's capacity without requiring complete copies at clients or caches; this is an unqualified target, not a property of today's bare Git repository. Separate candidate/query/materialization contracts from Git refs/pack formats. Add stable source/receipt export, restore, and migration tooling before any backend replacement. Native binaries and straightforward onboarding should be available to small teams, not only operators of large fleets.
+**Target:** Start advanced capabilities over Git objects rather than replacing storage immediately. Fleet-scale storage must eventually accommodate object/history volumes beyond one authority host's capacity without requiring complete copies at clients or caches; this is an unqualified target, not a property of today's bare Git repository. Separate candidate/query/materialization contracts from Git refs/pack formats. Qualify source/receipt export and restore before adopting another backend; old-format support is not required. Native binaries and straightforward onboarding should be available to small teams, not only operators of large fleets.
 
-**Completion:** Conformance fixtures pass against the deployed adapter; partition/replica failure and restore tests qualify any distributed storage mode, and clients/caches do not need repository GC or packing; import/export/restore retains baseline, accepted revisions, contents, modes, and attribution. Upgrades require explicit, reviewable conversion when formats change. No required Spanner, proprietary object store, GitHub account, Maida service, or telemetry endpoint. Another backend requires profiles and a concrete recoverability/conformance case, not architectural purity.
+**Completion:** Conformance fixtures pass against the deployed adapter; partition/replica failure and restore tests qualify any distributed storage mode, and clients/caches do not need repository GC or packing; import/export/restore retains baseline, accepted revisions, contents, modes, and attribution. Formats may change without converters or older-client support during MVP development. No required Spanner, proprietary object store, GitHub account, Maida service, or telemetry endpoint. Another backend requires profiles and a concrete recoverability/conformance case, not architectural purity.
 
 ## What functional coverage means
 
