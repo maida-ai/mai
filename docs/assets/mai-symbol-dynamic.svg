@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="144" height="128" viewBox="0 0 144 128" role="img" aria-labelledby="title desc">
+  <style>
+    :root {
+      --maida-paper: #F2F1EB;
+      --maida-ink: #171A17;
+      --maida-coral: #ED7958;
+      --maida-logo-bracket: var(--maida-ink);
+      --maida-logo-dot: var(--maida-coral);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --maida-logo-bracket: var(--maida-paper);
+      }
+    }
+    #left-bracket,
+    #right-bracket {
+      fill: var(--maida-logo-bracket);
+    }
+    #core-dot {
+      fill: var(--maida-logo-dot);
+    }
+  </style>
+  <title id="title">Maida curly braces symbol</title>
+  <desc id="desc">A solid circle inside curly braces. Follows the OS light or dark color scheme.</desc>
+  <g transform="translate(16 16) scale(1)">
+    <g id="maida-symbol">
+      <path id="left-bracket" d="M36 0H28C12 0 8 8 8 24V28C8 36 6 40 0 40V56C6 56 8 60 8 68V72C8 88 12 96 28 96H36V80H28C24 80 24 76 24 72V68C24 58 22 52 16 48C22 44 24 38 24 28V24C24 20 24 16 28 16H36Z"/>
+      <circle id="core-dot" cx="56" cy="48" r="20"/>
+      <path id="right-bracket" d="M36 0H28C12 0 8 8 8 24V28C8 36 6 40 0 40V56C6 56 8 60 8 68V72C8 88 12 96 28 96H36V80H28C24 80 24 76 24 72V68C24 58 22 52 16 48C22 44 24 38 24 28V24C24 20 24 16 28 16H36Z" transform="translate(112 0) scale(-1 1)"/>
+    </g>
+  </g>
+</svg>

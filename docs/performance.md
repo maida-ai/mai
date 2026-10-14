@@ -35,7 +35,7 @@ Use `cargo test process_termination_after_acceptance` for an actual process-kill
 
 ## Recorded local observations
 
-Raw JSON and resource logs are in [benchmarks/results](benchmarks/results). The 2026-10-14 environment used Linux x86_64, AMD Ryzen 9 7950X (16 cores, 32 logical CPUs), Rust/Cargo 1.97.0, Git 2.43.0, and an ext4 source filesystem on NVMe. These are single samples in an active development environment, not statistically controlled comparisons. Some initial runs overlapped compilation or another benchmark; cache state and background workload were not controlled. No production or network workload was measured.
+Raw JSON and resource logs are in [benchmarks/results](../benchmarks/results). The 2026-10-14 environment used Linux x86_64, AMD Ryzen 9 7950X (16 cores, 32 logical CPUs), Rust/Cargo 1.97.0, Git 2.43.0, and an ext4 source filesystem on NVMe. These are single samples in an active development environment, not statistically controlled comparisons. Some initial runs overlapped compilation or another benchmark; cache state and background workload were not controlled. No production or network workload was measured.
 
 Before removal, Python 0.1.1 passed 17 tests in 2.583 seconds. Its 16-agent/8-worker disjoint core run accepted 16 at 18.72 revisions/s, service p50 25.19 ms and p95 853.14 ms, workspace setup 0.347 seconds. With four hotspot agents it accepted 13 and rejected three conflicts at 15.18 revisions/s, p50 22.94 ms and p95 854.45 ms, setup 0.334 seconds. These recorded baseline outputs came from the original unmodified harness.
 
@@ -45,7 +45,7 @@ The 64-agent/16-worker CLI sample accepted all 64 at 19.18 revisions/s, service 
 
 At 1,024 agents with 16 workers, 978 accepted and 46 safely rejected at the contention budget; accepted-history integrity passed and full-workload completion failed. Submission throughput was 14.12 accepted revisions/s with service p99 6.69 seconds and burst p99 68.15 seconds. Workspace setup took 50.46 seconds. These measurements make fairness, retry amplification, and materialization priority work.
 
-Larger burst results and their completion status are recorded in [the results notes](benchmarks/results/README.md). Initial 256/1,024-agent experiments exposed safe contention-budget rejections. The harness originally aborted content checking on an unaccepted file before printing JSON; this reporting defect received a failing regression and was fixed. The final reports retain operational errors, accepted-history integrity, and unsuccessful full-workload status. Do not present a partially accepted burst as established capacity.
+Larger burst results and their completion status are recorded in [the results notes](../benchmarks/results/README.md). Initial 256/1,024-agent experiments exposed safe contention-budget rejections. The harness originally aborted content checking on an unaccepted file before printing JSON; this reporting defect received a failing regression and was fixed. The final reports retain operational errors, accepted-history integrity, and unsuccessful full-workload status. Do not present a partially accepted burst as established capacity.
 
 ## Bottlenecks and next measurements
 

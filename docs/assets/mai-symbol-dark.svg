@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="144" height="128" viewBox="0 0 144 128" role="img" aria-labelledby="title desc">
+<title id="title">Maida curly braces symbol</title><desc id="desc">A solid circle inside curly braces.</desc>
+<g transform="translate(16 16) scale(1)"><g id="maida-symbol"><path id="left-bracket" fill="#F2F1EB" d="M36 0H28C12 0 8 8 8 24V28C8 36 6 40 0 40V56C6 56 8 60 8 68V72C8 88 12 96 28 96H36V80H28C24 80 24 76 24 72V68C24 58 22 52 16 48C22 44 24 38 24 28V24C24 20 24 16 28 16H36Z"/><circle id="core-dot" fill="#ED7958" cx="56" cy="48" r="20"/><path id="right-bracket" fill="#F2F1EB" d="M36 0H28C12 0 8 8 8 24V28C8 36 6 40 0 40V56C6 56 8 60 8 68V72C8 88 12 96 28 96H36V80H28C24 80 24 76 24 72V68C24 58 22 52 16 48C22 44 24 38 24 28V24C24 20 24 16 28 16H36Z" transform="translate(112 0) scale(-1 1)"/></g></g>
+</svg>

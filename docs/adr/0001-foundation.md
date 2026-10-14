@@ -1,6 +1,6 @@
 # ADR 0001: Rust agent-native revision authority
 
-Status: accepted for 0.0.1. Service deployment and storage replacements remain proposals. License: Apache-2.0. See [architecture](../../ARCHITECTURE.md) for exact implemented boundaries.
+Status: accepted for 0.0.1. Service deployment and storage replacements remain proposals. License: Apache-2.0. See [architecture](../architecture.md) for exact implemented boundaries.
 
 ## Context
 
