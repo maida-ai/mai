@@ -18,7 +18,7 @@ The engine owns `refs/heads/main`, `refs/mai/changes/<n>`, `refs/mai/candidates/
 
 Reference submitted objects before reporting receive success, including quarantine/ref-visibility crash windows qualified by S1/S7. A repeated identical commit returns its existing change. A newer version with the same Change-Id may supersede a queued version, but a validating version finishes first. Each version has one terminal result: landed, rejected, superseded or cancelled. Blocked and awaiting_approval are nonterminal. Define post-validation replacement and dependency retargeting explicitly; never silently substitute unvalidated content under an existing outcome.
 
-SQLite WAL is the queue and metadata store, not the acceptance ledger. Refuse schema-version mismatch; no migrations. An exclusive lock enforces one engine, with local IPC, CLI auto-start and foreground supervision. If registration is unavailable, the hook rejects. Startup uses accepted-history evidence to reconcile landing, rebuild candidates and restore notes without duplicate publication. A Change-Id alone must not confuse superseded submission versions: match their accepted identity as well. Git ref transactions do not imply cross-store or power-loss atomicity.
+SQLite WAL is the queue and metadata store, not the acceptance ledger. Refuse schema-version mismatch; no migrations. An exclusive lock enforces one engine, with local IPC, CLI auto-start and foreground supervision. If registration is unavailable, proc-receive rejects admission. The incoming-ref/post-receive fallback can report transport success without queued admission; retain incoming refs until registration and reconcile them explicitly, as qualified below. Startup uses accepted-history evidence to reconcile landing, rebuild candidates and restore notes without duplicate publication. A Change-Id alone must not confuse superseded submission versions: match their accepted identity as well. Git ref transactions do not imply cross-store or power-loss atomicity.
 
 ## Validation and trust
 
@@ -44,6 +44,19 @@ Priority never weakens exact-tree/parent/configuration evidence. A narrower `che
 | Automatic revert targets an innocent change | Medium | Medium | Reproduce before/after culprit evidence; never auto-revert flaky attribution; return evidence with outcome | S4, S7 |
 
 ## Qualification and open decisions
+
+### S1 qualification: accepted 2026-10-15
+
+[S1 (#51)](https://github.com/maida-ai/mai/issues/51) is closed following maintainer confirmation of the [qualification report](../spikes/s1/README.md) and [recorded evidence](../spikes/s1/evidence/README.md). Native Linux, macOS and Windows host runs passed; Linux Docker Desktop evidence covers container clients. This accepts the tested transport approach and the constraints below, not a production implementation. S2–S7, remaining maintainer decisions and overall ADR/M0 acceptance are still pending.
+
+- **Registration timing:** pre-receive quarantine visibility does not establish object visibility to a clean, separate engine process. The tested proc-receive phase permits that process to read and reference submitted objects before acknowledgment. Preserve this ordering; S7 still owns broader crash-recovery qualification.
+- **Fallback reconciliation:** post-receive transport success does not establish queued admission. When registration fails, keep the incoming ref reachable and reconcile it through startup/background recovery. An identical retry is already up to date and does not rerun post-receive, so push retry alone is insufficient.
+- **Per-ref outcomes:** a mixed push may admit an allowed submission while rejecting another ref and exiting nonzero overall. Clients must inspect per-ref status or query the submission identity; retries must remain idempotent. Do not treat a failed push as proof that nothing was registered.
+- **Dependent sync mapping:** syncing a squash-landed parent rewrites the local IDs of subsequent work, including a submitted pending child. Preserve a mapping from the submitted child to its rewritten local boundary so a later squash sync replays only subsequent work. S1 demonstrated the mapping requirement with explicit fixture data; its persistence and recovery remain implementation work.
+
+Coverage is limited to the report's scenarios and versions. Exact Git 2.40 compatibility, HTTP/container client disconnects, container hosts beyond Linux Docker Desktop, production authentication/grants and cross-store/power-loss durability remain unverified. File-transport identity remains declared and best-effort. S1 does not establish a full platform/transport support matrix or select any pending product default.
+
+### Remaining qualification and decisions
 
 M0 requires S1 transport (Linux/macOS and recorded Windows/fallback results), S2 differential merges, S3 warm validators, S4 queue simulation including priority mix, starvation and fix-window comparisons, S5 forge cycles, S6 lockfile regeneration and S7 crash windows. Throwaway harnesses belong under `experiments/`; reports and selected evidence belong under `docs/spikes/`. Failure requires an ADR redesign before product code. Git ≥2.40, SHA-1-only authority, unsupported submodules/LFS and best-effort Windows are qualification targets, not tested support claims.
 
