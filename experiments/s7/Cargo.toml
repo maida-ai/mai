@@ -1,0 +1,12 @@
+[package]
+name = "s7-crash-experiment"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+anyhow = "1"
+fs2 = "0.4"
+rusqlite = { version = "0.40", features = ["bundled"] }
+
+[workspace]
