@@ -15,7 +15,7 @@ bash experiments/s1/collect.sh .throwaway/s1-new-run .throwaway/s1-new-evidence
 
 Both the fixture and adjacent `.build` directories must be new. `run.sh` captures provenance, source hashes, compiler output, policy-unit results and scenario assertions. The harness retains Git repositories and per-fixture push/audit logs. `collect.sh` copies only logs and source hashes to a new directory, including whatever exists after a failed run. It excludes binaries, object stores, configs and source checkouts. Nothing cleans existing fixtures automatically.
 
-The host experiment uses an ephemeral loopback port and invokes many short Git processes. The previous Linux implementation ran 115 scenario assertions; the wrapper now has three policy/path unit checks. No benchmark threshold or timing guarantee is implied. The optional Docker Desktop client mode is described in the qualification report; it remains Unix-only, needs an explicitly selected digest-pinned image, and is not enabled in the manual hosted workflow.
+The host experiment uses an ephemeral loopback port and invokes many short Git processes. The previous Linux implementation ran 115 scenario assertions; the wrapper now has four policy/path/HTTP unit checks. No benchmark threshold or timing guarantee is implied. The optional Docker Desktop client mode is described in the qualification report; it remains Unix-only, needs an explicitly selected digest-pinned image, and is not enabled in the manual hosted workflow.
 
 ## Manual GitHub execution
 
