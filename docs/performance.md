@@ -62,3 +62,18 @@ Next measure 3/10/30 local agents on representative repositories, both disjoint 
 - Profile repeated revision counting, history subprocesses and all-workspace status scans before adding indexes or a daemon.
 
 Explicit bootstrap commands and safe shared package caches come before sparse/lazy checkout. Copy-on-write templates need platform and isolation tests; hard-linked mutable environments are not interchangeable with copy-on-write. Test ports and databases need caller-assigned isolation. The harness does not currently measure these workflows; add measurements alongside their implementations.
+
+## Differentiation metrics (planned)
+
+The following measurements are not implemented in the current harness and have no recorded results. Add instrumentation with each feature and collect user-trial evidence for 3–30 agents on real repositories. Publication throughput alone does not establish useful agent coordination.
+
+| Metric | Definition and reporting boundary | Related work |
+| --- | --- | --- |
+| Late-conflict waste | Elapsed agent work time between the conflicting edit and detection; report how edit times are observed and exclude unknown intervals rather than treating them as zero. | M3 intent/activity |
+| False-conflict rate | Rejected overlaps that a replayed structural merge plus passing configured integrated checks would accept, divided by evaluated overlap rejections. Report replay coverage; a passing check is not proof of semantic equivalence. | M2 structural merging |
+| Semantic-break rate | Accepted revisions failing configured post-land checks divided by accepted revisions with observed check results; report untested/missing results separately and retain failure causes. | Integrated validation and M2 interaction checks |
+| Resume success | Orphaned tasks completed by a resumed agent without redoing accepted work, divided by evaluated resumed tasks; record abandonment and missing outcomes separately. | M4 recovery |
+| Workspace readiness | Time from workspace request to runnable code including dependency/bootstrap work; split checkout, dependencies and warm-cache/template setup. Compare cold and warm cases on real dependency fixtures. | M1 environment bootstrap |
+| Publication | Accepted revisions/s; retries, builds and rejections by class; service and end-to-end p50/p95/p99 for accepted and rejected requests. Compare before/after in-gate construction and bounded group commit. | M1 publication and #11 |
+
+The external-users gate requires 5–10 external users on real repositories and reported failures, not a throughput threshold. Record repository/workload characteristics, feature configuration and observation gaps with each trial. Do not collect raw agent context merely to populate metrics. Port and database collisions belong to caller environment isolation; document them as trial factors rather than expanding mai into an orchestrator.

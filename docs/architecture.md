@@ -29,10 +29,10 @@ Receipts are checked against main; missing receipts can be reconstructed from fi
 
 Refresh rejects dirty workspaces; explicit discard destroys work. Ordinary refresh/post-submit reset can also overwrite ignored files at incoming paths. Local commits move HEAD away from the submit base; committing on main bypasses mai through shared refs. Until fixed, avoid commits, amend, rebase and branch switching in mai workspaces. Preserve valuable ignored/untracked files separately.
 
-## Next changes and boundaries
+## Planned direction and boundaries
 
-Prioritize explicit workspace bases and guarded authority refs, dirty updates, exact integrated checks, truthful recovery and scoped capture. Move candidate assembly inside the gate while keeping staging, long checks, checkout and bootstrap outside. Checked candidates require revalidation if their parent changes. Measure group commit separately; opt-in textual merging follows integrated validation.
+Prioritize explicit workspace bases and guarded authority refs, dirty updates, exact integrated checks, truthful recovery and scoped capture. Move candidate assembly inside the gate while keeping staging, long checks, checkout and bootstrap outside. Checked candidates require revalidation if their parent changes. Measure group commit separately; opt-in textual merging follows integrated validation. After the external-user gate, plan shared symbol/key-path units, live intent, explicit context checkpoints/resume and a private draft DAG. Models never approve or remove conflicts; raw context is not shared through awareness. [ADRs 0003–0009](README.md#architecture-decisions) record proposals and unresolved policies.
 
 mai scrubs inherited Git environment variables and disables hooks, fsmonitor, external diff and textconv for relevant operations; it checks workspace symlinks and common-directory identity. Worktrees are not sandboxes, declared agent IDs are not authentication, and trusted Git filters/helpers can execute. Ports, databases and test-process isolation belong to callers.
 
-[Project direction](project.md) · [Performance](performance.md) · [Foundation ADR](adr/0001-foundation.md) · [Private work ADR](adr/0002-changesets-and-publication.md) · [Possible futures](agent-native-capabilities.md)
+[Project direction](project.md) · [Performance](performance.md) · [Foundation ADR](adr/0001-foundation.md) · [Private work ADR](adr/0002-changesets-and-publication.md) · [Agent-native direction and futures](agent-native-capabilities.md)

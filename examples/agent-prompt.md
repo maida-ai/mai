@@ -11,3 +11,7 @@ You are a coding agent working against an **`mai`** centralized repository. You 
 7. Report an accepted revision (`rN`) and file paths only after confirming the reported commit contains the intended work; use `mai show PROJECT rN path` to inspect content. Distinguish earlier recovered acceptance from pending new work. If you couldn't submit, report the precise error instead of claiming completion.
 
 mai v0.0.1 is a single-machine tool, not a secure remote source-control server. Never place secrets in these workspaces.
+
+## Planned harness flow — do not run yet
+
+Once the corresponding features ship, the harness can allow normal local Git commits, use `mai update` plus continue/abort for stale work, and distinguish `accepted_with_pending_changes` from full acceptance. Add `mai intent` only when implemented. Resume belongs to M4 and requires the explicit context-access/handoff policy; do not infer permission to read another agent's raw context. Until then, follow the current precautions above. Track the [planned interfaces](../docs/agent-native-capabilities.md) instead of inventing commands.

@@ -20,17 +20,23 @@ Large independent bursts can exhaust the bounded contention budget; rejected att
 
 ## Roadmap
 
-Ship small local workflows with success/error regressions and recovery evidence. This order expresses product priorities; independent fixes can proceed in parallel.
+Deliver reliable integration for 3–30 local agents first; then earn symbol-aware coordination, live intent, tree-bound context and draft composition through real use. These are plans, not shipped capabilities. [Agent-native direction](agent-native-capabilities.md) defines planned scope, design principles and unresolved decisions; the [GitHub roadmap](https://github.com/maida-ai/mai/issues/1) tracks implementation.
 
-1. **Ordinary Git use:** separate the workspace base from HEAD, guard authority refs and preserve private checkpoints through workspace updates.
-2. **Dirty updates:** merge trunk into existing work without discard, with explicit conflict resolution and continuation/abort behavior.
-3. **Integrated validation:** check the exact candidate tree outside the publication gate; revalidate or stop if its parent changes. No checkout-free API or custom changeset format is needed.
-4. **Efficient publication:** assemble candidates under the gate for unchecked submissions, remove worktree creation from that gate, then measure bounded group commit separately.
-5. **Truthful recovery:** distinguish accepted retries from new edits and return actionable machine outcomes. This correctness fix need not wait for performance work.
-6. **Safe evaluation and distribution:** preserve ignored/untracked work, support explicit path capture, qualify object formats and bounded checks, then prepare verified native archives.
-7. **Useful environments:** support explicit post-create bootstrap outside publication locks; measure dependency setup before investing in sparse or lazy materialization.
+| Stage | Outcome |
+| --- | --- |
+| M1 — Usable local integration | Explicit workspace bases and accidental-write guards; dirty updates; truthful recovery; integrated-candidate validation; scoped capture; efficient publication; environment bootstrap and local safety fixes |
+| Gate — External users | 5–10 external users on real repositories, usable releases/client examples, and failures recorded as issues |
+| M2 — Symbol-aware integration | Symbol/key-path extraction, leases, structural merge and deterministic definition/reference interaction checks |
+| M3 — Live awareness | Structured intent, activity and deterministic conflict ownership |
+| M4 — Resumable, explainable work | Opt-in context checkpoints, orphan recovery and attribution queries |
+| M5 — Draft DAG | Anonymous branching, draft composition and atomic group landing |
+| M6 — Policy guards | Optional external checks on instruction and policy changes |
 
-Opt-in same-file textual merges follow integrated validation. Remote services, custom changesets, tiered caches and partitioned storage are [possible futures](agent-native-capabilities.md), not local MVP requirements. No dates or automatic version promotions follow from this sequence.
+Do not start M2 before the users gate without an explicit maintainer override. Milestones have no invented deadlines or automatic version promotions. Integrated validation is P0 and unblocked; no checkout-free protocol or custom changeset format is a prerequisite. In-gate construction and bounded group commit are separate measured steps; long checks, hashing and environment setup stay outside the gate.
+
+Exact validation requires the accepted candidate's tree and parent to match the checked candidate. The proposed weaker “validated on parent” alternative needs an explicit decision and cannot silently weaken that invariant. Context storage is planned as opt-in and harness-owned; cross-agent context handoff, retention and size limits remain unresolved. Local commits, update/resume commands and context storage must not be advertised as usable until their implementations ship.
+
+Final tagline, untracked-file policy default, initial parser languages/config formats and context limits remain maintainer decisions. Fleet-scale services, caches and distributed storage are deferred until after M4 and demonstrated user demand. Measure late-conflict waste, false-conflict rejection, post-land failures, resume success and runnable environment readiness alongside publication performance; see [measurement definitions](performance.md#differentiation-metrics-planned).
 
 ## Development policy
 
