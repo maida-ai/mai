@@ -16,7 +16,7 @@ Design choices are proposed for implementation, M0 mechanisms are spike pending,
 
 | Stage | Exit criteria |
 | --- | --- |
-| M0 — Design lock | Accept [ADR 0003](https://github.com/maida-ai/mai/issues/58); accept [ADR 0004](https://github.com/maida-ai/mai/issues/70) for objects, manifests and priority; complete S1–S7 with go evidence or redesign failed assumptions before any product code |
+| M0 — Design lock | Accept [ADR 0003](adr/0003-git-native-integration-queue.md) (acceptance task [#58](https://github.com/maida-ai/mai/issues/58)); accept [ADR 0004](adr/0004-objects-manifests-and-priority.md) (acceptance task [#70](https://github.com/maida-ai/mai/issues/70)) for objects, manifests and priority; complete S1–S7 with go evidence or redesign failed assumptions before any product code |
 | M1 — Agent integration queue, local | Single-writer engine; durable receive registration; typed outcomes; dependent squash landing; pipeline checks, protected paths and approval; merge rules and limits; clones, drafts, sync and bootstrap; [file-unit manifests/indexing](https://github.com/maida-ai/mai/issues/71); [priority grants, inheritance and aging](https://github.com/maida-ai/mai/issues/72), plus [path-lease preemption](https://github.com/maida-ai/mai/issues/73); metrics; three harness snippets; five agents on a real repository with zero manual integration and zero broken trunk |
 | M1b — Containers and forge | Loopback smart HTTP and per-agent tokens; upstream sync revisions and export branch/PR; full-tier culprit confirmation, bounded `sev` fix-forward with full confirmation, validated revert backstop and freeze fallback |
 | Gate — External users | 5–10 users on real repositories; compare worktrees plus PRs with mai on human minutes, time to land and broken trunk |
@@ -27,6 +27,8 @@ Design choices are proposed for implementation, M0 mechanisms are spike pending,
 | M6 — Policy guards | #50: external policy checks using the protected-path approval boundary |
 
 M1b before the users gate is recommended, not settled. Do not begin M2 before the external-users gate without an explicit maintainer override. There are no invented dates or automatic version promotions. Track implementation through [issues and subissues](https://github.com/maida-ai/mai/issues/1), [milestones](https://github.com/maida-ai/mai/milestones) and the [Project](https://github.com/orgs/maida-ai/projects/9).
+
+Architecture decisions and their rationale live in versioned ADRs. Discussions can host unresolved debate; acceptance tasks close once the reviewed decision and evidence are committed. Implementation issues, subissues, milestones and the Project track delivery.
 
 ## M0 qualification
 
