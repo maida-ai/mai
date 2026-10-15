@@ -1,0 +1,157 @@
+refs=["HEAD:refs/for/main"] options=["mai.wait=true", "mai.priority=low", "mai.touches=first"] exit=exit status: 0 elapsed_ms=81
+To http://127.0.0.1:35225/http-proc/authority.git
+*	HEAD:refs/mai/changes/8ee9cb2bc05d85df6ed999ab85c08739b72a0d39	[new reference]
+Done
+
+refs=["HEAD:refs/for/main"] options=[] exit=exit status: 0 elapsed_ms=37
+To http://127.0.0.1:35225/http-proc/authority.git
+*	HEAD:refs/mai/changes/8ee9cb2bc05d85df6ed999ab85c08739b72a0d39	[new reference]
+Done
+
+refs=["HEAD:refs/drafts/alice"] options=[] exit=exit status: 0 elapsed_ms=40
+To http://127.0.0.1:35225/http-proc/authority.git
+*	HEAD:refs/drafts/alice	[new reference]
+Done
+
+refs=[":refs/drafts/alice"] options=[] exit=exit status: 1 elapsed_ms=26
+To http://127.0.0.1:35225/http-proc/authority.git
+!	:refs/drafts/alice	[remote rejected] (DELETE_FORBIDDEN)
+Done
+error: failed to push some refs to 'http://127.0.0.1:35225/http-proc/authority.git'
+
+refs=["HEAD:refs/heads/main"] options=[] exit=exit status: 1 elapsed_ms=33
+To http://127.0.0.1:35225/http-proc/authority.git
+!	HEAD:refs/heads/main	[remote rejected] (REF_FORBIDDEN)
+Done
+error: failed to push some refs to 'http://127.0.0.1:35225/http-proc/authority.git'
+
+refs=["HEAD:refs/mai/candidates/evil"] options=[] exit=exit status: 1 elapsed_ms=32
+To http://127.0.0.1:35225/http-proc/authority.git
+!	HEAD:refs/mai/candidates/evil	[remote rejected] (REF_FORBIDDEN)
+Done
+error: failed to push some refs to 'http://127.0.0.1:35225/http-proc/authority.git'
+
+refs=["HEAD:refs/notes/mai"] options=[] exit=exit status: 1 elapsed_ms=32
+To http://127.0.0.1:35225/http-proc/authority.git
+!	HEAD:refs/notes/mai	[remote rejected] (REF_FORBIDDEN)
+Done
+error: failed to push some refs to 'http://127.0.0.1:35225/http-proc/authority.git'
+
+refs=["HEAD:refs/drafts/bob"] options=[] exit=exit status: 1 elapsed_ms=33
+To http://127.0.0.1:35225/http-proc/authority.git
+!	HEAD:refs/drafts/bob	[remote rejected] (REF_FORBIDDEN)
+Done
+error: failed to push some refs to 'http://127.0.0.1:35225/http-proc/authority.git'
+
+refs=["HEAD:refs/for/other"] options=[] exit=exit status: 1 elapsed_ms=33
+To http://127.0.0.1:35225/http-proc/authority.git
+!	HEAD:refs/for/other	[remote rejected] (REF_FORBIDDEN)
+Done
+error: failed to push some refs to 'http://127.0.0.1:35225/http-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=["mai.priority=high"] exit=exit status: 1 elapsed_ms=32
+To http://127.0.0.1:35225/http-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (GRANT_REQUIRED)
+Done
+error: failed to push some refs to 'http://127.0.0.1:35225/http-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=["mai.priority=sev"] exit=exit status: 1 elapsed_ms=32
+To http://127.0.0.1:35225/http-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (GRANT_REQUIRED)
+Done
+error: failed to push some refs to 'http://127.0.0.1:35225/http-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=["mai.priority=bogus"] exit=exit status: 1 elapsed_ms=32
+To http://127.0.0.1:35225/http-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (INVALID_PRIORITY)
+Done
+error: failed to push some refs to 'http://127.0.0.1:35225/http-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=["mai.fixes=expired"] exit=exit status: 1 elapsed_ms=32
+To http://127.0.0.1:35225/http-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (INACTIVE_INCIDENT)
+Done
+error: failed to push some refs to 'http://127.0.0.1:35225/http-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=["mai.grant=sev"] exit=exit status: 1 elapsed_ms=33
+To http://127.0.0.1:35225/http-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (UNKNOWN_OPTION)
+Done
+error: failed to push some refs to 'http://127.0.0.1:35225/http-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=["mai.touches=a,,b"] exit=exit status: 1 elapsed_ms=33
+To http://127.0.0.1:35225/http-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (INVALID_TOUCHES)
+Done
+error: failed to push some refs to 'http://127.0.0.1:35225/http-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=["mai.wait=true", "mai.wait=false"] exit=exit status: 1 elapsed_ms=32
+To http://127.0.0.1:35225/http-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (DUPLICATE_OPTION)
+Done
+error: failed to push some refs to 'http://127.0.0.1:35225/http-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=["mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true"] exit=exit status: 1 elapsed_ms=32
+To http://127.0.0.1:35225/http-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (OPTION_LIMIT)
+Done
+error: failed to push some refs to 'http://127.0.0.1:35225/http-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=["mai.touches=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"] exit=exit status: 1 elapsed_ms=32
+To http://127.0.0.1:35225/http-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (OPTION_LIMIT)
+Done
+error: failed to push some refs to 'http://127.0.0.1:35225/http-proc/authority.git'
+
+refs=["HEAD:refs/drafts/bob"] options=["mai.agent=bob"] exit=exit status: 1 elapsed_ms=33
+To http://127.0.0.1:35225/http-proc/authority.git
+!	HEAD:refs/drafts/bob	[remote rejected] (IDENTITY_MISMATCH)
+Done
+error: failed to push some refs to 'http://127.0.0.1:35225/http-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=["mai.priority=sev", "mai.fixes=incident-1"] exit=exit status: 0 elapsed_ms=36
+To http://127.0.0.1:35225/http-proc/authority.git
+*	HEAD:refs/mai/changes/8ee9cb2bc05d85df6ed999ab85c08739b72a0d39	[new reference]
+Done
+
+refs=["HEAD:refs/for/main", "HEAD:refs/heads/main"] options=[] exit=exit status: 1 elapsed_ms=40
+To http://127.0.0.1:35225/http-proc/authority.git
+*	HEAD:refs/mai/changes/4c270de2b4b88c076dca08187feb8941127b5bec	[new reference]
+!	HEAD:refs/heads/main	[remote rejected] (REF_FORBIDDEN)
+Done
+error: failed to push some refs to 'http://127.0.0.1:35225/http-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=[] exit=exit status: 1 elapsed_ms=36
+To http://127.0.0.1:35225/http-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (ENGINE_UNAVAILABLE)
+Done
+error: failed to push some refs to 'http://127.0.0.1:35225/http-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=[] exit=exit status: 0 elapsed_ms=37
+To http://127.0.0.1:35225/http-proc/authority.git
+*	HEAD:refs/mai/changes/1175ebe444d1845dd6831357fc4127f46168d7b5	[new reference]
+Done
+
+refs=["HEAD:refs/for/main"] options=[] exit=exit status: 1 elapsed_ms=39
+To http://127.0.0.1:35225/http-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (INTERRUPTED_AFTER_REF)
+Done
+error: failed to push some refs to 'http://127.0.0.1:35225/http-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=[] exit=exit status: 0 elapsed_ms=35
+To http://127.0.0.1:35225/http-proc/authority.git
+*	HEAD:refs/mai/changes/fb07923c1a654723b16714d63c53a3d81dcaa5dd	[new reference]
+Done
+
+lost-reply exit=exit status: 1
+To http://127.0.0.1:35225/http-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (fail to run proc-receive hook)
+Done
+remote: error: proc-receive exited abnormally        
+error: failed to push some refs to 'http://127.0.0.1:35225/http-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=[] exit=exit status: 0 elapsed_ms=35
+To http://127.0.0.1:35225/http-proc/authority.git
+*	HEAD:refs/mai/changes/d18dd7dd51120fc356320c9e7c4d24baf02dc725	[new reference]
+Done
+

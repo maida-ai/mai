@@ -4,7 +4,7 @@ Question: can the proposed receive/registration and sync protocol satisfy the ob
 
 ## Local execution
 
-Requirements: Rust with rustfmt, Git >=2.40, and Bash. On Windows use Git for Windows and Git Bash with a native Windows Rust toolchain; this is not a WSL qualification. The portability changes are locally checked on Linux, but macOS and Windows execution remains pending until evidence is collected. Windows fixtures must use a local drive rather than a UNC share.
+Requirements: Rust with rustfmt, Git >=2.40, and Bash. On Windows use Git for Windows and Git Bash with a native Windows Rust toolchain; this is not a WSL qualification. Native Linux, macOS and Windows runs are recorded in the [evidence index](../../docs/spikes/s1/evidence/README.md), including the Windows HTTP harness failure and its successful reruns after the fix. Windows fixtures must use a local drive rather than a UNC share.
 
 From the repository root:
 

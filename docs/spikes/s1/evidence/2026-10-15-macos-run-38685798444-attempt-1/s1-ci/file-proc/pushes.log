@@ -1,0 +1,162 @@
+refs=["HEAD:refs/for/main"] options=["mai.wait=true", "mai.priority=low", "mai.touches=first"] exit=exit status: 0 elapsed_ms=95
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+*	HEAD:refs/mai/changes/5a14966494a2d27a6284fa14ee88f632417a45ef	[new reference]
+Done
+
+refs=["HEAD:refs/for/main"] options=[] exit=exit status: 0 elapsed_ms=95
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+*	HEAD:refs/mai/changes/5a14966494a2d27a6284fa14ee88f632417a45ef	[new reference]
+Done
+
+refs=["HEAD:refs/drafts/alice"] options=[] exit=exit status: 0 elapsed_ms=78
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+*	HEAD:refs/drafts/alice	[new reference]
+Done
+
+refs=[":refs/drafts/alice"] options=[] exit=exit status: 1 elapsed_ms=86
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+!	:refs/drafts/alice	[remote rejected] (DELETE_FORBIDDEN)
+Done
+error: failed to push some refs to 'file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git'
+
+refs=["HEAD:refs/heads/main"] options=[] exit=exit status: 1 elapsed_ms=83
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+!	HEAD:refs/heads/main	[remote rejected] (REF_FORBIDDEN)
+Done
+error: failed to push some refs to 'file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git'
+
+refs=["HEAD:refs/mai/candidates/evil"] options=[] exit=exit status: 1 elapsed_ms=68
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+!	HEAD:refs/mai/candidates/evil	[remote rejected] (REF_FORBIDDEN)
+Done
+error: failed to push some refs to 'file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git'
+
+refs=["HEAD:refs/notes/mai"] options=[] exit=exit status: 1 elapsed_ms=63
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+!	HEAD:refs/notes/mai	[remote rejected] (REF_FORBIDDEN)
+Done
+error: failed to push some refs to 'file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git'
+
+refs=["HEAD:refs/drafts/bob"] options=[] exit=exit status: 1 elapsed_ms=62
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+!	HEAD:refs/drafts/bob	[remote rejected] (REF_FORBIDDEN)
+Done
+error: failed to push some refs to 'file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git'
+
+refs=["HEAD:refs/for/other"] options=[] exit=exit status: 1 elapsed_ms=62
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+!	HEAD:refs/for/other	[remote rejected] (REF_FORBIDDEN)
+Done
+error: failed to push some refs to 'file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=["mai.priority=high"] exit=exit status: 1 elapsed_ms=62
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (GRANT_REQUIRED)
+Done
+error: failed to push some refs to 'file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=["mai.priority=sev"] exit=exit status: 1 elapsed_ms=66
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (GRANT_REQUIRED)
+Done
+error: failed to push some refs to 'file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=["mai.priority=bogus"] exit=exit status: 1 elapsed_ms=73
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (INVALID_PRIORITY)
+Done
+error: failed to push some refs to 'file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=["mai.fixes=expired"] exit=exit status: 1 elapsed_ms=71
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (INACTIVE_INCIDENT)
+Done
+error: failed to push some refs to 'file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=["mai.grant=sev"] exit=exit status: 1 elapsed_ms=62
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (UNKNOWN_OPTION)
+Done
+error: failed to push some refs to 'file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=["mai.touches=a,,b"] exit=exit status: 1 elapsed_ms=61
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (INVALID_TOUCHES)
+Done
+error: failed to push some refs to 'file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=["mai.wait=true", "mai.wait=false"] exit=exit status: 1 elapsed_ms=60
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (DUPLICATE_OPTION)
+Done
+error: failed to push some refs to 'file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=["mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true", "mai.wait=true"] exit=exit status: 1 elapsed_ms=61
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (OPTION_LIMIT)
+Done
+error: failed to push some refs to 'file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=["mai.touches=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"] exit=exit status: 1 elapsed_ms=62
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (OPTION_LIMIT)
+Done
+error: failed to push some refs to 'file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git'
+
+refs=["HEAD:refs/drafts/bob"] options=["mai.agent=bob"] exit=exit status: 0 elapsed_ms=75
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+*	HEAD:refs/drafts/bob	[new reference]
+Done
+
+refs=["HEAD:refs/for/main"] options=["mai.priority=sev", "mai.fixes=incident-1"] exit=exit status: 1 elapsed_ms=71
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (GRANT_REQUIRED)
+Done
+error: failed to push some refs to 'file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git'
+
+refs=["HEAD:refs/for/main", "HEAD:refs/heads/main"] options=[] exit=exit status: 1 elapsed_ms=105
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+*	HEAD:refs/mai/changes/5e2fc9e1f8cea62db39c2d0449374d8a4aa75c62	[new reference]
+!	HEAD:refs/heads/main	[remote rejected] (REF_FORBIDDEN)
+Done
+error: failed to push some refs to 'file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=[] exit=exit status: 1 elapsed_ms=78
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (ENGINE_UNAVAILABLE)
+Done
+error: failed to push some refs to 'file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=[] exit=exit status: 0 elapsed_ms=100
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+*	HEAD:refs/mai/changes/ee984fefcacf52b2b89e87ca712be3882466927b	[new reference]
+Done
+
+refs=["HEAD:refs/for/main"] options=[] exit=exit status: 1 elapsed_ms=102
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (INTERRUPTED_AFTER_REF)
+Done
+error: failed to push some refs to 'file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=[] exit=exit status: 0 elapsed_ms=77
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+*	HEAD:refs/mai/changes/d30e646f4593e96bdcc3e1a20d21c915a8a53a12	[new reference]
+Done
+
+lost-reply exit=exit status: 1
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+!	HEAD:refs/for/main	[remote rejected] (fail to run proc-receive hook)
+Done
+remote: error: proc-receive exited abnormally        
+error: failed to push some refs to 'file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git'
+
+refs=["HEAD:refs/for/main"] options=[] exit=exit status: 0 elapsed_ms=79
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+*	HEAD:refs/mai/changes/4ed050f8ea2ce0bdeb2313eafd4f40ee1c3ffeac	[new reference]
+Done
+
+refs=["HEAD:refs/for/main"] options=[] exit=exit status: 0 elapsed_ms=94
+To file:///Users/runner/work/mai/mai/.throwaway/s1-ci/file-proc/authority.git
+*	HEAD:refs/mai/changes/14290f60403eb338a7e6fa7303d9c8faa28c5e15	[new reference]
+Done
+
