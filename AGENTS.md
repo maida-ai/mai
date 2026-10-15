@@ -35,5 +35,12 @@ mai is a standalone Apache-2.0 Rust project targeting 3–30 coding agents on on
 
 * No backwards compatibility required until version 0.1+
 * Use Rust and the existing toolchain. Read source, Cargo.toml, Cargo.lock, nearby tests and relevant docs before code changes. Add no production dependency without a concrete need and authorization. Prefer Git CLI merges/ref updates; in-process readers require profiling evidence.
-* Task / Work should be split into commits in its own branch.
-* Commits must be atomic and self-contained if possible.
+
+## Branches, commits and pull requests
+
+* Use GitHub issues and the Project to establish scope and acceptance criteria. Before making changes, create a descriptive task branch from the intended base, or reuse the existing branch for the same task. Do not commit task work directly to `main`; preserve unrelated user changes.
+* Split work into atomic, self-contained commits. Commit messages must explain the change and its rationale, checks run and their results, and material limitations so this information remains in Git history independently of the PR.
+* When changes are ready for review, push the task branch and use `gh pr create --base <base> --head <branch> --title <title> --body-file <file>`. Use `--draft` for unfinished work. Respect explicit local-only or no-push instructions; in that case prepare the PR title/body locally and report that it was not published.
+* Before creating a PR, check whether one already exists for the task branch. Update that PR with `gh pr edit` instead of creating a duplicate. Keep its title and body aligned with the final changes, including later evidence or scope changes; do not copy stale progress reports.
+* Write a descriptive PR title and a body covering the problem, resulting changes, verification commands/results, evidence locations, and remaining risks or followups. Distinguish measured results from simulations and missing verification. Reference the issue with `Refs #N` for partial work; use `Closes #N` only when all acceptance criteria are met. Merging partial evidence does not complete a qualification gate.
+* Report the branch, commits and PR URL at handoff, plus checks not run and anything requiring maintainer review. PR creation does not authorize approval, merge, issue closure or changes to maintainer decisions.
