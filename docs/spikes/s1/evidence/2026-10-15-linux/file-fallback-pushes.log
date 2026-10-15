@@ -1,0 +1,44 @@
+fallback engine down exit=exit status: 0
+To file://<RUN_ROOT>/file-fallback/authority.git
+*	HEAD:refs/incoming/alice/8b16ad8202191ba33fbf8bf0b774c6b861579aa2	[new reference]
+Done
+remote: RETAINED_PENDING_REGISTRATION 8b16ad8202191ba33fbf8bf0b774c6b861579aa2 ENGINE_UNAVAILABLE
+
+refs=["HEAD:refs/incoming/alice/8b16ad8202191ba33fbf8bf0b774c6b861579aa2"] options=[] exit=exit status: 0 elapsed_ms=3
+To file://<RUN_ROOT>/file-fallback/authority.git
+=	HEAD:refs/incoming/alice/8b16ad8202191ba33fbf8bf0b774c6b861579aa2	[up to date]
+Done
+
+refs=["HEAD:refs/heads/main"] options=[] exit=exit status: 1 elapsed_ms=12
+To file://<RUN_ROOT>/file-fallback/authority.git
+!	HEAD:refs/heads/main	[remote rejected] (pre-receive hook declined)
+Done
+remote: REF_FORBIDDEN
+error: failed to push some refs to 'file://<RUN_ROOT>/file-fallback/authority.git'
+
+refs=["HEAD:refs/for/main"] options=[] exit=exit status: 1 elapsed_ms=11
+To file://<RUN_ROOT>/file-fallback/authority.git
+!	HEAD:refs/for/main	[remote rejected] (pre-receive hook declined)
+Done
+remote: REF_FORBIDDEN
+error: failed to push some refs to 'file://<RUN_ROOT>/file-fallback/authority.git'
+
+refs=["HEAD:refs/incoming/bob/8b16ad8202191ba33fbf8bf0b774c6b861579aa2"] options=[] exit=exit status: 1 elapsed_ms=12
+To file://<RUN_ROOT>/file-fallback/authority.git
+!	HEAD:refs/incoming/bob/8b16ad8202191ba33fbf8bf0b774c6b861579aa2	[remote rejected] (pre-receive hook declined)
+Done
+remote: REF_FORBIDDEN
+error: failed to push some refs to 'file://<RUN_ROOT>/file-fallback/authority.git'
+
+refs=["HEAD:refs/incoming/alice/7820040e58d783d90e181d2620be436b3cc780e7"] options=["mai.priority=sev"] exit=exit status: 1 elapsed_ms=29
+To file://<RUN_ROOT>/file-fallback/authority.git
+!	HEAD:refs/incoming/alice/7820040e58d783d90e181d2620be436b3cc780e7	[remote rejected] (pre-receive hook declined)
+Done
+remote: GRANT_REQUIRED
+error: failed to push some refs to 'file://<RUN_ROOT>/file-fallback/authority.git'
+
+refs=["HEAD:refs/incoming/alice/7820040e58d783d90e181d2620be436b3cc780e7"] options=[] exit=exit status: 0 elapsed_ms=42
+To file://<RUN_ROOT>/file-fallback/authority.git
+*	HEAD:refs/incoming/alice/7820040e58d783d90e181d2620be436b3cc780e7	[new reference]
+Done
+remote: QUEUED 7820040e58d783d90e181d2620be436b3cc780e7
