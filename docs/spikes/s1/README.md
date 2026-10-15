@@ -12,7 +12,16 @@ bash docs/spikes/s1/run.sh .throwaway/s1-my-run
 
 The output and adjacent `.build` directories must not exist. The script compiles directly with `rustc`, runs two policy unit tests, then runs real Git experiments. It uses only Rust's standard library, Git CLI and `/bin/sh`; no Cargo dependency or container image is downloaded. It binds an ephemeral loopback port. Existing repositories, including `.throwaway/dummy_repo`, are not opened or modified. Fixtures remain available for inspection, and hooks point to the binary in the adjacent build directory. Nothing is automatically deleted.
 
-The harness is Unix-only: native Windows needs a port or equivalent independently recorded experiment. A Linux run inside WSL would not establish native Windows support. macOS compatibility is intended but untested. The successful observed run is recorded in [evidence](evidence/2026-10-15-linux/). The observation date is UTC; it was October 14 locally in America/Los_Angeles.
+The harness is Unix-only: native Windows needs a port or equivalent independently recorded experiment. A Linux run inside WSL would not establish native Windows support. macOS compatibility is intended but untested. The initial host run is recorded in [host evidence](evidence/2026-10-15-linux/), and the follow-up run including containers is recorded in [container evidence](evidence/2026-10-15-container/). Each source checksum manifest describes its historical source snapshot, not every later revision. The observation date is UTC; it was October 14 locally in America/Los_Angeles.
+
+To include Docker Desktop container clients, pull the recorded image once, then select its immutable digest (the runner itself uses `--pull=never`):
+
+```sh
+docker pull alpine/git@sha256:ce84fd6a057b4dc5cf5009da2dd832f1c6d096c1984bf50496cf3c256402264d
+S1_CONTAINER_IMAGE=alpine/git@sha256:ce84fd6a057b4dc5cf5009da2dd832f1c6d096c1984bf50496cf3c256402264d bash docs/spikes/s1/run.sh .throwaway/s1-container-run
+```
+
+This optional mode adds two fixtures. Each container mounts only its disposable client directory as `/work`, runs with that directory owner's UID/GID, and is removed on exit. Clone and push use the image's Git over HTTP; the host prepares subsequent fixture commits and checks authority state. The authority stays on the host and is never mounted into a container. Docker Desktop's [host service networking](https://docs.docker.com/desktop/features/networking/) routes `host.docker.internal` to the host receiver, which stays bound to `127.0.0.1`. No host-network mode, port publication, daemon configuration change or production credential is used. This topology was tested on Docker Desktop for Linux; native Docker Engine bridge networking is not qualified. The pulled image and bind-mounted fixtures remain after the run.
 
 ## Fixture and evidence boundaries
 
@@ -33,7 +42,7 @@ Sync uses explicit simulated outcomes and handcrafted squash commits installed b
 | Surface | Observed result | Scope |
 | --- | --- | --- |
 | Linux x86_64, Git 2.43.0 | 115 integration assertions and 2 unit tests passed | File transport and host loopback smart HTTP |
-| Linux container client | Pending | Docker Desktop socket unavailable; no container experiment ran |
+| Linux container client | 52 additional assertions passed; 167 total plus 2 unit tests | Docker 29.8.2; digest-pinned Git image; host loopback HTTP proc-receive and fallback |
 | macOS, Git >=2.40 | Pending | No macOS host available in this session |
 | Native Windows | Pending / untested | No Windows host; Unix harness needs adaptation |
 | Exact Git 2.40 minimum | Pending | Installed Git is 2.43.0; no minimum-version claim |
@@ -42,11 +51,11 @@ The host reported Linux 7.0.0-34-generic x86_64 and rustc 1.97.0 (2d8144b78 2026
 
 | Issue requirement | Evidence / remaining work |
 | --- | --- |
-| pkt-line negotiation, options, per-ref status, virtual submission, owned draft | Passed on file and host HTTP; protected/internal/cross-agent/unknown submission refs rejected; draft deletion rejected |
-| Host and container over loopback HTTP | Host passed; container pending |
+| pkt-line negotiation, options, per-ref status, virtual submission, owned draft | Passed on file, host HTTP and container HTTP; protected/internal/cross-agent/unknown submission refs rejected; draft deletion rejected |
+| Host and container over loopback HTTP | Both passed in the recorded Docker Desktop topology |
 | Linux/macOS and Windows record | Linux observed; macOS and native Windows explicitly untested |
 | Separate-engine visibility and refs before acknowledgment | Passed with clean subprocess and ordered audit; queue/storage durability not established |
-| Engine down, retry, mixed refs, lost replies | Passed on file and host HTTP; a mixed push may fail overall while its allowed submission was admitted |
+| Engine down, retry, mixed refs, lost replies | Passed on file, host HTTP and container HTTP; a mixed push may fail overall while its allowed submission was admitted |
 | Client disconnect | File client killed after registration, before reply; retained submission survives and retry is idempotent; HTTP/container disconnect pending |
 | Incoming-ref plus post-receive fallback | Healthy path passed; engine-down transport succeeded without admission; incoming ref retained; explicit reconciliation registered once |
 | Squash sync, later work, pending/rejected parent, dirty/untracked | Fixture-level assertions passed, including second dependent squash and ignored files; no production lifecycle or mapping implementation claimed |
@@ -61,6 +70,6 @@ The host reported Linux 7.0.0-34-generic x86_64 and rustc 1.97.0 (2d8144b78 2026
 3. **Dependent sync needs local rewrite mapping.** After syncing a squash-landed parent, the pending child's local ID changes. When that child later lands, the original submitted ID is no longer an ancestor of the local tip. An explicit mapping to the rewritten local child lets a second `rebase --onto` replay only the subsequent commit. The experiment rejects the stale boundary without changing HEAD.
 4. **Pre-receive is too early for the clean registration process in this setup.** Its inherited quarantine visibility must not be mistaken for visibility in a separate engine. The tested proc-receive phase provides object visibility and permits retention before acknowledgment on Git 2.43.0.
 
-**Go/no-go:** continue S1 qualification; no M0/product go decision. The Linux observations support the tested protocol approach, subject to the fallback reconciliation and sync-mapping constraints. Container and macOS evidence remain required; record a Windows outcome, qualify the supported Git minimum and review the fixture's limitations before acceptance. Do not close #51 or mark ADRs accepted based on this report.
+**Go/no-go:** continue S1 qualification; no M0/product go decision. The Linux observations support the tested protocol approach, subject to the fallback reconciliation and sync-mapping constraints. macOS evidence remains required; record a Windows outcome, qualify the supported Git minimum and review the fixture's limitations before acceptance. Do not close #51 or mark ADRs accepted based on this report.
 
 Git's [hook protocol documentation](https://git-scm.com/docs/githooks#_proc_receive), [post-receive contract](https://git-scm.com/docs/githooks#_post_receive), and [quarantine description](https://git-scm.com/docs/git-receive-pack#_quarantine_environment) guided the experiment. The conclusions above are tied to the recorded local runs rather than inferred solely from documentation.

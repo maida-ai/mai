@@ -1,6 +1,6 @@
 use super::*;
 use std::{
-    os::unix::fs::PermissionsExt,
+    os::unix::fs::{MetadataExt, PermissionsExt},
     time::{Duration, Instant},
 };
 struct Fixture {
@@ -11,6 +11,7 @@ struct Fixture {
     url: String,
     log: fs::File,
     checks: usize,
+    container_image: Option<String>,
 }
 impl Fixture {
     fn new(root: PathBuf, http: Option<&str>, fallback: bool) -> Self {
@@ -85,7 +86,18 @@ impl Fixture {
             })
             .unwrap_or_else(|| format!("file://{}", authority.display()));
         let log = fs::File::create(root.join("pushes.log")).unwrap();
-        Self {
+        let container_image = if root
+            .file_name()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .starts_with("container-")
+        {
+            Some(env::var("S1_CONTAINER_IMAGE").expect("container image required"))
+        } else {
+            None
+        };
+        let mut fixture = Self {
             root,
             authority,
             alice,
@@ -93,7 +105,29 @@ impl Fixture {
             url,
             log,
             checks: 0,
+            container_image,
+        };
+        if fixture.container_image.is_some() {
+            fixture.url = fixture.url.replace("127.0.0.1", "host.docker.internal");
+            let client = fixture.root.join("container-alice");
+            fs::create_dir(&client).unwrap();
+            let out = fixture
+                .client_command(&client, true)
+                .args(["clone", "--template=", &fixture.url, "."])
+                .output()
+                .unwrap();
+            writeln!(
+                fixture.log,
+                "container clone exit={}\n{}{}",
+                out.status,
+                String::from_utf8_lossy(&out.stdout),
+                String::from_utf8_lossy(&out.stderr)
+            )
+            .unwrap();
+            fixture.check("container cloned authority over HTTP", out.status.success());
+            fixture.alice = client;
         }
+        fixture
     }
     fn check(&mut self, label: &str, value: bool) {
         assert!(value, "FAIL {label} in {}", self.root.display());
@@ -109,10 +143,36 @@ impl Fixture {
         g(&self.alice, &["commit", "-m", file]);
         g(&self.alice, &["rev-parse", "HEAD"])
     }
-    fn push_command(&self, client: &Path, specs: &[&str], options: &[&str]) -> Command {
-        let mut c = command("git");
-        c.arg("-C").arg(client);
-        if self.url.starts_with("http:") {
+    fn client_command(&self, client: &Path, authenticated: bool) -> Command {
+        let mut c = if let Some(image) = &self.container_image {
+            let owner = fs::metadata(client).unwrap();
+            let mut c = command("docker");
+            c.args([
+                "run",
+                "--rm",
+                "--pull=never",
+                "--entrypoint=git",
+                "--workdir=/work",
+                "--user",
+                &format!("{}:{}", owner.uid(), owner.gid()),
+                "--mount",
+                &format!("type=bind,source={},target=/work", client.display()),
+                "-e",
+                "GIT_CONFIG_NOSYSTEM=1",
+                "-e",
+                "GIT_CONFIG_GLOBAL=/dev/null",
+                "-e",
+                "GIT_TERMINAL_PROMPT=0",
+                image,
+            ]);
+            c
+        } else {
+            let mut c = command("git");
+            c.arg("-C").arg(client);
+            c
+        };
+        c.args(["-c", "http.lowSpeedLimit=1", "-c", "http.lowSpeedTime=15"]);
+        if authenticated && self.url.starts_with("http:") {
             c.args([
                 "-c",
                 "http.extraHeader=Authorization: Bearer s1-fixture-alice",
@@ -120,6 +180,10 @@ impl Fixture {
                 "http.postBuffer=2097152",
             ]);
         }
+        c
+    }
+    fn push_command(&self, client: &Path, specs: &[&str], options: &[&str]) -> Command {
+        let mut c = self.client_command(client, true);
         c.args(["push", "--porcelain"]);
         for opt in options {
             c.args(["-o", opt]);
@@ -245,9 +309,8 @@ fn proc_suite(root: PathBuf, http: Option<&str>) -> usize {
             true,
             "synthetic authenticated scoped incident grant",
         );
-        let unauthorized = command("git")
-            .arg("-C")
-            .arg(&f.bob)
+        let unauthorized = f
+            .client_command(&f.bob, false)
             .args(["push", &f.url, "HEAD:refs/for/main"])
             .output()
             .unwrap();
@@ -640,8 +703,49 @@ pub fn run(root: &Path) {
     let server = transport::Server::start(root.clone());
     count += proc_suite(root.join("http-proc"), Some(&server.url));
     count += fallback_suite(root.join("http-fallback"), Some(&server.url));
+    if let Ok(image) = env::var("S1_CONTAINER_IMAGE") {
+        assert!(
+            image.contains("@sha256:"),
+            "pin the container image by digest"
+        );
+        println!("Container image: {image}");
+        println!(
+            "Docker server: {}",
+            text(
+                command("docker")
+                    .args(["version", "--format", "{{.Server.Version}}"])
+                    .output()
+                    .unwrap()
+            )
+        );
+        println!(
+            "Container client: {}",
+            text(
+                command("docker")
+                    .args([
+                        "run",
+                        "--rm",
+                        "--pull=never",
+                        "--entrypoint=git",
+                        &image,
+                        "--version"
+                    ])
+                    .output()
+                    .unwrap()
+            )
+        );
+        count += proc_suite(root.join("container-proc"), Some(&server.url));
+        count += fallback_suite(root.join("container-fallback"), Some(&server.url));
+        println!(
+            "Container clone/push policy and recovery scenarios passed (Docker Desktop host.docker.internal)."
+        );
+    } else {
+        println!(
+            "PENDING: container transport (set S1_CONTAINER_IMAGE to an already-pulled image digest)."
+        );
+    }
     drop(server);
     println!(
-        "PASS: {count} assertions. PENDING: container, macOS, Windows, Git 2.40 minimum, production durability/IPC/grant lifecycle; S1 NOT QUALIFIED."
+        "PASS: {count} assertions. PENDING: macOS, Windows, Git 2.40 minimum, production durability/IPC/grant lifecycle; S1 NOT QUALIFIED."
     );
 }
