@@ -47,6 +47,9 @@ impl Drop for Server {
     }
 }
 fn serve(mut stream: TcpStream, root: &Path) {
+    // Windows accepted sockets inherit the nonblocking listener mode.
+    // Request parsing uses blocking I/O, bounded by the timeouts below.
+    stream.set_nonblocking(false).unwrap();
     stream
         .set_read_timeout(Some(Duration::from_secs(15)))
         .unwrap();
@@ -142,4 +145,41 @@ fn serve(mut stream: TcpStream, root: &Path) {
         body.len()
     );
     let _ = stream.write_all(body);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn nonblocking_connection_waits_for_request_and_denies_missing_credentials() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let mut client = TcpStream::connect(listener.local_addr().unwrap()).unwrap();
+        client
+            .set_read_timeout(Some(Duration::from_secs(5)))
+            .unwrap();
+        let (stream, _) = listener.accept().unwrap();
+        // Reproduce Windows inheritance even on hosts whose accept returns blocking sockets.
+        stream.set_nonblocking(true).unwrap();
+        let (done_tx, done_rx) = std::sync::mpsc::channel();
+        let worker = thread::spawn(move || {
+            serve(stream, Path::new("."));
+            done_tx.send(()).unwrap();
+        });
+        // No request bytes yet: serving must wait, not panic on WouldBlock.
+        let early = done_rx.recv_timeout(Duration::from_millis(100));
+        client
+            .write_all(b"GET / HTTP/1.1\r\nHost: localhost\r\n\r\n")
+            .ok();
+        let mut response = String::new();
+        let read = client.read_to_string(&mut response);
+        let joined = worker.join();
+        assert!(joined.is_ok(), "request worker panicked");
+        assert!(matches!(
+            early,
+            Err(std::sync::mpsc::RecvTimeoutError::Timeout)
+        ));
+        read.unwrap();
+        assert!(response.starts_with("HTTP/1.1 403 Forbidden\r\n"));
+    }
 }
