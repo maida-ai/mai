@@ -7,18 +7,18 @@ Status: partial Linux evidence; **S1 is not qualified and #51 remains open**. Th
 Run from the repository root on Linux or macOS with Rust and Git >=2.40:
 
 ```sh
-bash docs/spikes/s1/run.sh .throwaway/s1-my-run
+bash experiments/s1/run.sh .throwaway/s1-my-run
 ```
 
-The output and adjacent `.build` directories must not exist. The script compiles directly with `rustc`, runs two policy unit tests, then runs real Git experiments. It uses only Rust's standard library, Git CLI and `/bin/sh`; no Cargo dependency or container image is downloaded. It binds an ephemeral loopback port. Existing repositories, including `.throwaway/dummy_repo`, are not opened or modified. Fixtures remain available for inspection, and hooks point to the binary in the adjacent build directory. Nothing is automatically deleted.
+The output and adjacent `.build` directories must not exist. The script compiles directly with `rustc`, runs standalone policy/path unit checks, then runs real Git experiments. It uses only Rust's standard library, Git CLI and `/bin/sh`; no Cargo dependency or container image is downloaded. It binds an ephemeral loopback port. Existing repositories, including `.throwaway/dummy_repo`, are not opened or modified. Fixtures remain available for inspection, and hooks point to the binary in the adjacent build directory. Nothing is automatically deleted.
 
-The harness is Unix-only: native Windows needs a port or equivalent independently recorded experiment. A Linux run inside WSL would not establish native Windows support. macOS compatibility is intended but untested. The initial host run is recorded in [host evidence](evidence/2026-10-15-linux/), and the follow-up run including containers is recorded in [container evidence](evidence/2026-10-15-container/). Each source checksum manifest describes its historical source snapshot, not every later revision. The observation date is UTC; it was October 14 locally in America/Los_Angeles.
+The harness now lives under [`experiments/s1/`](../../../experiments/s1/README.md), with native Windows path/hook adaptations and a manual CI workflow. Those adaptations do not establish Windows or macOS support until executed there; both platforms remain unverified. A Linux run inside WSL would not establish native Windows support. The initial host run is recorded in [host evidence](evidence/2026-10-15-linux/), and the follow-up run including containers is recorded in [container evidence](evidence/2026-10-15-container/). Each source checksum manifest describes its historical source snapshot, not every later revision. The observation date is UTC; it was October 14 locally in America/Los_Angeles.
 
 To include Docker Desktop container clients, pull the recorded image once, then select its immutable digest (the runner itself uses `--pull=never`):
 
 ```sh
 docker pull alpine/git@sha256:ce84fd6a057b4dc5cf5009da2dd832f1c6d096c1984bf50496cf3c256402264d
-S1_CONTAINER_IMAGE=alpine/git@sha256:ce84fd6a057b4dc5cf5009da2dd832f1c6d096c1984bf50496cf3c256402264d bash docs/spikes/s1/run.sh .throwaway/s1-container-run
+S1_CONTAINER_IMAGE=alpine/git@sha256:ce84fd6a057b4dc5cf5009da2dd832f1c6d096c1984bf50496cf3c256402264d bash experiments/s1/run.sh .throwaway/s1-container-run
 ```
 
 This optional mode adds two fixtures. Each container mounts only its disposable client directory as `/work`, runs with that directory owner's UID/GID, and is removed on exit. Clone and push use the image's Git over HTTP; the host prepares subsequent fixture commits and checks authority state. The authority stays on the host and is never mounted into a container. Docker Desktop's [host service networking](https://docs.docker.com/desktop/features/networking/) routes `host.docker.internal` to the host receiver, which stays bound to `127.0.0.1`. No host-network mode, port publication, daemon configuration change or production credential is used. This topology was tested on Docker Desktop for Linux; native Docker Engine bridge networking is not qualified. The pulled image and bind-mounted fixtures remain after the run.
@@ -44,7 +44,7 @@ Sync uses explicit simulated outcomes and handcrafted squash commits installed b
 | Linux x86_64, Git 2.43.0 | 115 integration assertions and 2 unit tests passed | File transport and host loopback smart HTTP |
 | Linux container client | 52 additional assertions passed; 167 total plus 2 unit tests | Docker 29.8.2; digest-pinned Git image; host loopback HTTP proc-receive and fallback |
 | macOS, Git >=2.40 | Pending | No macOS host available in this session |
-| Native Windows | Pending / untested | No Windows host; Unix harness needs adaptation |
+| Native Windows | Pending / untested | Portability adaptation prepared; no native execution evidence yet |
 | Exact Git 2.40 minimum | Pending | Installed Git is 2.43.0; no minimum-version claim |
 
 The host reported Linux 7.0.0-34-generic x86_64 and rustc 1.97.0 (2d8144b78 2026-07-07). `cargo fmt --check`, `cargo clippy --all-targets --locked -- -D warnings`, and `cargo test --all-targets --locked` passed for the unchanged existing product (1 library test and 33 end-to-end tests). Those tests do not qualify the rewrite. The standalone spike is separately formatted, compiled with `-D warnings`, and exercised by `run.sh`.

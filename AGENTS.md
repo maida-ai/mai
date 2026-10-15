@@ -35,6 +35,7 @@ mai is a standalone Apache-2.0 Rust project targeting 3–30 coding agents on on
 
 * No backwards compatibility required until version 0.1+
 * Use Rust and the existing toolchain. Read source, Cargo.toml, Cargo.lock, nearby tests and relevant docs before code changes. Add no production dependency without a concrete need and authorization. Prefer Git CLI merges/ref updates; in-process readers require profiling evidence.
+* Keep research harnesses and experiment setups in `experiments/`, separate from product tests and benchmarks; keep reviewed results under `docs/spikes/`. Experiment CI must be manual-only (`workflow_dispatch`), with explicit platform selection and bounded artifact retention. Do not dispatch expensive experiments without a request to collect that evidence.
 
 ## Branches, commits and pull requests
 

@@ -1,8 +1,7 @@
 use super::*;
-use std::{
-    os::unix::fs::{MetadataExt, PermissionsExt},
-    time::{Duration, Instant},
-};
+#[cfg(unix)]
+use std::os::unix::fs::{MetadataExt, PermissionsExt};
+use std::time::{Duration, Instant};
 struct Fixture {
     root: PathBuf,
     authority: PathBuf,
@@ -22,14 +21,14 @@ impl Fixture {
         text(
             command("git")
                 .args(["init", "--bare", "--initial-branch=main", "--template="])
-                .arg(&authority)
+                .arg(git_path(&authority))
                 .output()
                 .unwrap(),
         );
         text(
             command("git")
                 .args(["init", "--initial-branch=main", "--template="])
-                .arg(&alice)
+                .arg(git_path(&alice))
                 .output()
                 .unwrap(),
         );
@@ -39,14 +38,14 @@ impl Fixture {
         // Bootstrap only, before receive policy is installed.
         g(
             &alice,
-            &["push", authority.to_str().unwrap(), "HEAD:refs/heads/main"],
+            &["push", &git_path(&authority), "HEAD:refs/heads/main"],
         );
         text(
             command("git")
                 .arg("clone")
                 .arg("--template=")
-                .arg(&authority)
-                .arg(&bob)
+                .arg(git_path(&authority))
+                .arg(git_path(&bob))
                 .output()
                 .unwrap(),
         );
@@ -73,8 +72,9 @@ impl Fixture {
                 continue;
             }
             let p = authority.join("hooks").join(hook);
-            let quoted = binary.to_str().unwrap().replace('\'', "'\"'\"'");
+            let quoted = git_path(&binary).replace('\'', "'\"'\"'");
             fs::write(&p, format!("#!/bin/sh\nexec '{quoted}' {mode}\n")).unwrap();
+            #[cfg(unix)]
             fs::set_permissions(p, fs::Permissions::from_mode(0o755)).unwrap();
         }
         let url = http
@@ -84,7 +84,7 @@ impl Fixture {
                     root.file_name().unwrap().to_str().unwrap()
                 )
             })
-            .unwrap_or_else(|| format!("file://{}", authority.display()));
+            .unwrap_or_else(|| file_url(&git_path(&authority)));
         let log = fs::File::create(root.join("pushes.log")).unwrap();
         let container_image = if root
             .file_name()
@@ -145,30 +145,10 @@ impl Fixture {
     }
     fn client_command(&self, client: &Path, authenticated: bool) -> Command {
         let mut c = if let Some(image) = &self.container_image {
-            let owner = fs::metadata(client).unwrap();
-            let mut c = command("docker");
-            c.args([
-                "run",
-                "--rm",
-                "--pull=never",
-                "--entrypoint=git",
-                "--workdir=/work",
-                "--user",
-                &format!("{}:{}", owner.uid(), owner.gid()),
-                "--mount",
-                &format!("type=bind,source={},target=/work", client.display()),
-                "-e",
-                "GIT_CONFIG_NOSYSTEM=1",
-                "-e",
-                "GIT_CONFIG_GLOBAL=/dev/null",
-                "-e",
-                "GIT_TERMINAL_PROMPT=0",
-                image,
-            ]);
-            c
+            container_command(client, image)
         } else {
             let mut c = command("git");
-            c.arg("-C").arg(client);
+            c.arg("-C").arg(git_path(client));
             c
         };
         c.args(["-c", "http.lowSpeedLimit=1", "-c", "http.lowSpeedTime=15"]);
@@ -589,7 +569,7 @@ fn sync_suite(root: PathBuf) -> usize {
         &f.authority,
         &["update-ref", "refs/heads/main", &landed, &base],
     );
-    g(&f.alice, &["fetch", f.authority.to_str().unwrap(), "main"]);
+    g(&f.alice, &["fetch", &git_path(&f.authority), "main"]);
     fs::write(f.alice.join("base"), "dirty work\n").unwrap();
     f.check(
         "dirty sync refuses without losing work",
@@ -662,7 +642,7 @@ fn sync_suite(root: PathBuf) -> usize {
         &f.authority,
         &["update-ref", "refs/heads/main", &child_landed, &landed],
     );
-    g(&f.alice, &["fetch", f.authority.to_str().unwrap(), "main"]);
+    g(&f.alice, &["fetch", &git_path(&f.authority), "main"]);
     let before = g(&f.alice, &["rev-parse", "HEAD"]);
     f.check(
         "original submitted child is no longer a valid local replay boundary",
@@ -689,12 +669,8 @@ pub fn run(root: &Path) {
     fs::create_dir_all(root).unwrap();
     let root = root.canonicalize().unwrap();
     println!("S1 fixture run: {}", root.display());
-    for (p, args) in [
-        ("git", vec!["--version"]),
-        ("rustc", vec!["--version"]),
-        ("uname", vec!["-srm"]),
-        ("date", vec!["-u", "+%Y-%m-%dT%H:%M:%SZ"]),
-    ] {
+    println!("Native platform: {}/{}", env::consts::OS, env::consts::ARCH);
+    for (p, args) in [("git", vec!["--version"]), ("rustc", vec!["--version"])] {
         println!("{}", text(command(p).args(args).output().unwrap()));
     }
     let mut count = proc_suite(root.join("file-proc"), None);
@@ -746,6 +722,36 @@ pub fn run(root: &Path) {
     }
     drop(server);
     println!(
-        "PASS: {count} assertions. PENDING: macOS, Windows, Git 2.40 minimum, production durability/IPC/grant lifecycle; S1 NOT QUALIFIED."
+        "PASS: {count} assertions on this runner. Other platforms, Git 2.40 minimum and production durability/IPC/grant lifecycle require separate evidence; S1 NOT QUALIFIED."
     );
+}
+
+#[cfg(unix)]
+fn container_command(client: &Path, image: &str) -> Command {
+    let owner = fs::metadata(client).unwrap();
+    let mut c = command("docker");
+    c.args([
+        "run",
+        "--rm",
+        "--pull=never",
+        "--entrypoint=git",
+        "--workdir=/work",
+        "--user",
+        &format!("{}:{}", owner.uid(), owner.gid()),
+        "--mount",
+        &format!("type=bind,source={},target=/work", client.display()),
+        "-e",
+        "GIT_CONFIG_NOSYSTEM=1",
+        "-e",
+        "GIT_CONFIG_GLOBAL=/dev/null",
+        "-e",
+        "GIT_TERMINAL_PROMPT=0",
+        image,
+    ]);
+    c
+}
+
+#[cfg(not(unix))]
+fn container_command(_client: &Path, _image: &str) -> Command {
+    panic!("container mode currently requires a Unix Docker Desktop host");
 }
