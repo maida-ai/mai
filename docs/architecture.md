@@ -1,38 +1,37 @@
 # mai architecture
 
-mai coordinates 3–30 coding agents in one repository on one machine. This is the product focus, not a measured capacity guarantee. It is a standalone Apache-2.0 Rust CLI backed by Git and SQLite; GitHub mirroring is optional.
+Status: decided rewrite direction, unimplemented. The existing 0.0.1 binary still uses linked worktrees, workspace-only checks and a SQLite publication gate; see [current CLI precautions](cli.md). M0 qualification and ADR acceptance precede any product-code replacement. [Philosophy](philosophy.md) motivates recovery speed with a strong trunk gate; [ADR 0003](adr/0003-git-native-integration-queue.md) defines the design and open decisions.
 
-## Five invariants
+```mermaid
+flowchart LR
+  A[Agent clones] -->|push refs/for/main| R[receive-pack hook]
+  R -->|durable registration| E[mai serve: single writer]
+  E <--> Q[(state.db: queue and metadata)]
+  E --> V[Warm validator clones]
+  V -->|candidate evidence| E
+  E -->|CAS landing| T[(authority.git: trunk and refs)]
+  U[Forge upstream] -->|validated sync| E
+  E -->|export branch or PR| U
+  T -->|fetch and explicit sync| A
+```
 
-1. **One acceptance ledger:** first-parent main defines accepted revisions; `r0` is the immutable import baseline. Private work does not allocate `rN`.
-2. **Publish against a known parent:** recheck live leases and compare-and-swap main with Git's ref transaction. Never overwrite accepted changes on a stale assumption.
-3. **Prove acceptance from history:** receipt refs require main ancestry verification. Git and SQLite are not one transaction; neither an auxiliary ref nor a SQL row proves acceptance alone.
-4. **Preserve work:** rejection and recovery must retain drafts and distinguish earlier acceptance from unsubmitted edits. Current reset/recovery defects still violate this requirement.
-5. **Describe validation honestly:** disjoint paths can break each other. Today's `--check` tests the workspace only; integrated validation must bind to the exact accepted candidate tree and parent.
+## Data and ownership
 
-## Current pipeline
+Agents use ordinary independent Git clones; mai never shares their mutable branch refs. Host transport is file Git; M1b adds loopback smart HTTP with per-agent tokens. A thin proc-receive client registers changes with one long-running engine per authority. The engine owns trunk, immutable submission refs, candidate refs, notes and upstream bookkeeping. Agents may submit virtual refs/for/* or update their own refs/drafts/<agent>. File transport identity is declared, not authenticated; filesystem owners can bypass hooks.
 
-`src/core.rs` owns coordination, `src/storage_git.rs` executes Git, `src/protocol.rs` defines receipts, and `src/main.rs` presents the CLI. `.mai/repo.git` stores source and authority refs; `.mai/metadata.sqlite3` stores leases and workspace registration. Detached agent worktrees share Git objects and refs.
+Git's first-parent trunk is the acceptance ledger, with r0 as import baseline. Landed changes are squash commits; validated upstream syncs alone introduce merge commits with trunk as first parent. Mai-Revision trailers assign rN. SQLite WAL stores queue, dependencies, validations, leases and intents; unsupported schema versions refuse startup. Git and SQLite are not one transaction.
 
-1. Lock the agent workspace. Read HEAD as its base, attempt receipt recovery, and run any explicitly requested workspace check.
-2. Stage nonignored files, compare changed paths with trunk, and build an immutable candidate outside the gate. Equal or ancestor/descendant paths conflict; renames are delete/add pairs.
-3. Acquire SQLite's write gate, recheck main and leases, and CAS main plus the receipt. If main moved, rebuild; stop after 64 attempts.
-4. Release the gate and reset the workspace. Reset failure reports `workspace_updated:false` without undoing acceptance.
+## Pipeline
 
-Workspace creation currently holds the gate across checkout. Per-agent locks coordinate mai commands, not ordinary editing; quiesce workspaces during submit/refresh.
+1. Enforce receive limits, identity/namespace policy and idempotency; retain submitted objects before acknowledging registration. Success means received, not landed. Typed states include queued, blocked, awaiting_approval, validating and exactly one terminal outcome per submission version.
+2. Resolve dependencies from pushed ancestry. Build candidates using Git merge-base and merge-tree with an explicit base. Map a pending parent's submitted commit to its landed squash; rejection/supersession invalidates descendant candidates. Merge policy defaults await qualification/maintainer confirmation: textual needs a gate, otherwise use path rejection.
+3. Warm validator clones run configured regeneration then the gate on the final immutable tree. Pin policy and executable check inputs to approved trunk; protected changes require approval. Pipeline candidates accumulate preceding changes; failures discard/rebuild descendants. Landing requires matching tree, parent and configuration evidence. Explicit batch mode records weaker batch-tip coverage for intermediate revisions.
+4. The single writer rechecks policy/leases and CAS-publishes the validated commit, records notes and reconciles queue state. Sync fetches and safely replays only commits after the submitted commit; it never silently overwrites dirty/untracked work.
 
-## Durability and recovery
+## Failure and recovery
 
-Receipts are checked against main; missing receipts can be reconstructed from first-parent history and agent/base trailers. Process-kill tests cover specific recovery windows. Object fsync and ref transactions do not establish filesystem-wide power-loss atomicity.
+An exclusive authority lock prevents duplicate engines. Startup reconciles interrupted landing against accepted history, reconstructs evidence and requeues unlanded work without duplicates. Hooks reject if the engine cannot register durably. Retained submission/draft/candidate refs support reproduction and recovery; unpushed work is not backed up.
 
-`recovered:true` identifies an earlier acceptance and can return before inspecting new edits. Never report it as acceptance of current work. Inspect accepted content, preserve the complete remaining draft outside the workspace, and reconcile its base before continuing. `workspace_updated:false` also requires reconciliation. See [CLI recovery and precautions](cli.md#submission-results-and-recovery).
+Slots have bounded logs, process-group timeout cleanup, private temporary directories and resource-allocation variables; they are not sandboxes. A post-landing full tier confirms a culprit with reproducible before/after checks before a gated compensating revert. Flaky/uncertain attribution cannot trigger automatic reversion; failed/conflicting reverts freeze and notify. Defaults remain open.
 
-Refresh rejects dirty workspaces; explicit discard destroys work. Ordinary refresh/post-submit reset can also overwrite ignored files at incoming paths. Local commits move HEAD away from the submit base; committing on main bypasses mai through shared refs. Until fixed, avoid commits, amend, rebase and branch switching in mai workspaces. Preserve valuable ignored/untracked files separately.
-
-## Planned direction and boundaries
-
-Prioritize explicit workspace bases and guarded authority refs, dirty updates, exact integrated checks, truthful recovery and scoped capture. Move candidate assembly inside the gate while keeping staging, long checks, checkout and bootstrap outside. Checked candidates require revalidation if their parent changes. Measure group commit separately; opt-in textual merging follows integrated validation. After the external-user gate, plan shared symbol/key-path units, live intent, explicit context checkpoints/resume and a private draft DAG. Models never approve or remove conflicts; raw context is not shared through awareness. [ADRs 0003–0009](README.md#architecture-decisions) record proposals and unresolved policies.
-
-mai scrubs inherited Git environment variables and disables hooks, fsmonitor, external diff and textconv for relevant operations; it checks workspace symlinks and common-directory identity. Worktrees are not sandboxes, declared agent IDs are not authentication, and trusted Git filters/helpers can execute. Ports, databases and test-process isolation belong to callers.
-
-[Project direction](project.md) · [Performance](performance.md) · [Foundation ADR](adr/0001-foundation.md) · [Private work ADR](adr/0002-changesets-and-publication.md) · [Agent-native direction and futures](agent-native-capabilities.md)
+M1b validates upstream syncs and exports a branch or maintained PR. Sync conflicts get a configured owner; the queue can continue on the old upstream base where safe. S1–S7 must qualify transport, merges, validators, queue economics, forge cycles, regeneration and crash recovery. Git ≥2.40 and SHA-1-only authority support are proposed qualification requirements; submodules/LFS and distributed services are excluded.

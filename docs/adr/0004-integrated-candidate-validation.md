@@ -1,17 +1,9 @@
-# ADR 0004: Validate the exact integrated candidate
+# ADR 0004: Integrated validation evidence
 
-Status: proposed, 2026-10-14. Integrated-candidate checks described here are not implemented. Existing exact-tree and exact-parent safety requirements remain binding.
+Status: revised proposal under [ADR 0003](0003-git-native-integration-queue.md); unimplemented. The former scratch-worktree/publication-gate retry design and parent-only policy are superseded.
 
-## Proposal
+Pipeline validation binds the exact final candidate tree, accepted parent and approved base-trunk configuration to the result and attempts. Warm slots run gate commands with bounded output and process-group timeout cleanup; they are not sandboxes. Rebuild speculative descendants after rejection, supersession, changed dependencies or upstream advancement. Required checks cannot be replaced by workspace checks or stale-parent evidence.
 
-Materialize an immutable candidate in an isolated scratch worktree or reusable pool and run configured checks outside the publication gate. Bind the result to candidate tree, parent, check configuration and outcome. At publication, recheck authority head, leases and other deterministic requirements, then publish through CAS only if that validated tree and parent are still the candidate being accepted.
+Pin executable check policy as well as its command string to approved trunk. Candidate modifications to scripts, affected-test hooks, merge drivers and regeneration commands cannot authorize themselves. Protected changes need explicit approval. Regeneration captures its resulting tree before checking and publication; do not validate one tree and commit another.
 
-Strict policy rebuilds and reruns checks when main changes, or returns a typed non-published retry outcome. Bound retries and cancellation without weakening validation or losing the submitted delta. A passing workspace check cannot substitute for a check of the integrated tree. Checks may execute repository code; define environment, output limits, timeout, cleanup and scratch isolation without claiming an OS sandbox.
-
-A proposed `parent` policy that accepts after the checked parent becomes stale. This is an unresolved, weaker mode requiring an explicit maintainer decision. A label such as “validated on parent rN” does not satisfy required integrated validation; never silently fall back to it or present it as proof that the eventual tree passed. Optional post-land observations cannot retroactively authorize a failed or unchecked landing.
-
-## Consequences and verification
-
-Keep this work independent of checkout-free descriptors, structural merge and batching. Opt-in Git textual merge and later [structural merge](0006-units-of-change.md) must validate their actual results. [Batch publication](0005-serialized-publication-and-batching.md) cannot reuse checks bound to a different accumulated tree or parent.
-
-Test cross-file incompatibility, check failure and timeout, parent changes during checking, restart, and successful exact-candidate publication. Required checks and deterministic conflicts cannot be overridden by a model. Optional human policy exceptions must be separate, explicit and audited; they cannot bypass required deterministic checks.
+Batch mode records batch-tip coverage and never claims each intermediate revision passed individually. Flake retries require an actual pass on the same candidate and retain failure evidence. Full-tier culprit discovery must reproduce before/after failure before a gated revert; failed reverts freeze and notify. Defaults and queue economics await M0 and maintainer decisions.

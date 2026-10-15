@@ -4,11 +4,11 @@ Status: proposed, 2026-10-14; access and retention decisions unresolved. Context
 
 ## Proposal
 
-A future checkpoint operation creates a private commit, retains the latest checkpoint at `refs/mai/workspaces/<agent>/checkpoint`, and attaches a context envelope through `refs/notes/mai-context`. Bind the envelope to exact commit/tree, base revision, agent/task, harness, model and creation time. Include schema version, payload media type, object identity, byte length and digest, with a harness-written summary and redaction declaration.
+A future checkpoint operation binds an explicitly pushed private commit retained through `refs/drafts/<agent>` and the retention policy to a context envelope through `refs/notes/mai-context`. Ordinary Git drafts precede M4; context envelopes do not. Bind the envelope to exact commit/tree, base revision, agent/task, harness, model and creation time. Include schema version, payload media type, object identity, byte length and digest, with a harness-written summary and redaction declaration.
 
 mai validates structure, binding and configured limits, stores payloads opaquely, and never transmits, compresses, summarizes or redacts them. Harnesses own content preparation; a `redacted` flag is an assertion, not proof that secrets are absent. Context storage is explicit opt-in. Default retention period and size cap require maintainer decisions. Define reachability, older-checkpoint retention, notes/blob cleanup, export and retirement behavior before promising durability or erasure.
 
-Heartbeat and lease expiry can mark a workspace potentially orphaned; expiry alone does not authorize takeover, transfer leases or grant access to context. A proposed resume operation can reconstruct code from a permitted checkpoint and report trunk changes since its base, using symbols where available. Handoff must be explicit and cannot steal active ownership or silently expose payloads.
+Heartbeat and lease expiry can mark an agent potentially orphaned; expiry alone does not authorize takeover, transfer leases or grant access to context. A proposed resume operation can reconstruct code from a permitted checkpoint and report trunk changes since its base, using symbols where available. Handoff must be explicit and cannot steal active ownership or silently expose payloads.
 
 ## Unresolved access boundary
 

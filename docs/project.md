@@ -1,53 +1,70 @@
 # Project status and direction
 
-`mai` is an Apache-2.0 coordination tool for local coding agents in the maida-ai family. Its upstream is `maida-ai/mai`. Any individual or organization can use it without Maida infrastructure, a GitHub account, or proprietary services. Maida is an early adopter, not a runtime dependency; no production assets migrate implicitly.
+mai is an Apache-2.0 Rust project for 3–30 coding agents working on one repository, independent of core Maida. The proposed rewrite is a Git-native integration queue between agents and their existing forge. It does not run agents, call models in core, replace review or CI, or sandbox tests.
 
 ## Working today
 
-The Rust CLI supports detached agent workspaces, ordered revisions, conservative conflicts, disjoint stale submission, time-limited path leases, per-agent provenance, Git HEAD import, revision inspection, JSON responses, recovery receipts, and optional fast-forward Git mirroring. Preparation runs outside the publication gate; head/lease revalidation and Git compare-and-swap protect publication.
-
-SVN inspires the revision model: `r0` is the original snapshot, then accepted changes become `r1`, `r2`, and onward. mai does not implement SVN storage or wire protocols. Git provides proven content storage and interoperability, while agents interact through workspaces and submissions.
-
-The immediate audience is 3–30 agents working on one machine and one repository. The value is coordination before conflict through leases, an ordered acceptance history, attribution and recoverable outcomes. Exact integrated validation and normal local Git use are priorities, not shipped guarantees. See [architecture](architecture.md) and [measurements](performance.md).
+The existing 0.0.1 engine uses linked worktrees, path leases, conservative path conflicts, numbered revisions, workspace checks and optional downstream mirroring. It is retained during design qualification and will be replaced entirely when M1 begins. The proposed daemon, clone protocol, integrated queue and inbound forge synchronization are not implemented. [Getting started](getting-started.md) and the current section of [CLI reference](cli.md) document the existing binary.
 
 ## Current limits
 
-This is an MVP for trusted local workflows on one machine and a local filesystem. Workspaces are not sandboxes. Declared agent IDs are not authenticated identities. Leases block foreign publication through supported operations but do not enforce OS permissions. Ordinary Git commits after checking out main in a linked workspace can bypass publication policy; no accidental-write guard is installed yet. Local commits also move HEAD away from the submit base. Avoid both until fixed.
+Use only disposable trusted repositories. Linked worktrees share authority refs; committing on main can bypass publication checks, and local commits break the submission base assumption. Checks run in the agent workspace, not the integrated candidate. Recovery receipts can refer to earlier accepted work while new edits remain pending. There is no daemon, authentication, automatic dirty update or remote multi-tenant support. Preserve drafts before recovery and follow the [current CLI precautions](cli.md#current-workspace-precautions).
 
-There is no daemon, server, authentication, distributed locking, sparse materialization, automatic lease renewal, or durable downstream job queue. Windows CI coverage is experimental pending native qualification. Do not expose the authority to untrusted tenants or use NFS/SMB. Quiesce a workspace while submitting or refreshing it.
+## Rewrite sequence
 
-Large independent bursts can exhaust the bounded contention budget; rejected attempts need client backoff/retry. Accepted history remained intact in recorded samples, but thousand-agent capacity is not established. Crash-state/process-kill tests exist; power-loss, disk-full, interrupted initialization, and backup restoration still need qualification. `--check` tests the agent's workspace, not the eventual integrated trunk. Details and operator recovery are in [architecture](architecture.md#durability-and-recovery).
+Design choices are proposed for implementation, M0 mechanisms are spike pending, and six defaults/order choices below remain open. Qualification is not established by a prototype or a report from one platform.
 
-## Roadmap
-
-Deliver reliable integration for 3–30 local agents first; then earn symbol-aware coordination, live intent, tree-bound context and draft composition through real use. These are plans, not shipped capabilities. [Agent-native direction](agent-native-capabilities.md) defines planned scope, design principles and unresolved decisions; the [GitHub roadmap](https://github.com/maida-ai/mai/issues/1) tracks implementation.
-
-| Stage | Outcome |
+| Stage | Exit criteria |
 | --- | --- |
-| M1 — Usable local integration | Explicit workspace bases and accidental-write guards; dirty updates; truthful recovery; integrated-candidate validation; scoped capture; efficient publication; environment bootstrap and local safety fixes |
-| Gate — External users | 5–10 external users on real repositories, usable releases/client examples, and failures recorded as issues |
-| M2 — Symbol-aware integration | Symbol/key-path extraction, leases, structural merge and deterministic definition/reference interaction checks |
-| M3 — Live awareness | Structured intent, activity and deterministic conflict ownership |
-| M4 — Resumable, explainable work | Opt-in context checkpoints, orphan recovery and attribution queries |
-| M5 — Draft DAG | Anonymous branching, draft composition and atomic group landing |
-| M6 — Policy guards | Optional external checks on instruction and policy changes |
+| M0 — Design lock | Accept [ADR 0003](https://github.com/maida-ai/mai/issues/58); complete S1–S7 with go evidence or redesign failed assumptions before any product code |
+| M1 — Agent integration queue, local | Single-writer engine; durable receive registration; typed outcomes; dependent squash landing; pipeline checks, protected paths and approval; merge rules and limits; clones, drafts, sync, bootstrap, leases and metrics; three harness snippets; five agents on a real repository with zero manual integration and zero broken trunk |
+| M1b — Containers and forge | Loopback smart HTTP and per-agent tokens; upstream sync revisions and export branch/PR; full-tier culprit confirmation, validated compensating revert and freeze fallback |
+| Gate — External users | 5–10 users on real repositories; compare worktrees plus PRs with mai on human minutes, time to land and broken trunk |
+| M2 — Symbol-aware integration | Rebase #38–#41 onto pushed commits and candidate trees |
+| M3 — Live awareness | #42–#44: intent, draft-derived activity and deterministic conflict ownership |
+| M4 — Resumable, explainable work | #45–#47: opt-in context, recovery from authority drafts and attribution queries |
+| M5 — Cross-agent groups | #49: atomic topic landing across agents; fork/fuse uses native Git and documentation |
+| M6 — Policy guards | #50: external policy checks using the protected-path approval boundary |
 
-Do not start M2 before the users gate without an explicit maintainer override. Milestones have no invented deadlines or automatic version promotions. Integrated validation is P0 and unblocked; no checkout-free protocol or custom changeset format is a prerequisite. In-gate construction and bounded group commit are separate measured steps; long checks, hashing and environment setup stay outside the gate.
+M1b before the users gate is recommended, not settled. Do not begin M2 before the external-users gate without an explicit maintainer override. There are no invented dates or automatic version promotions. Track implementation through [issues and subissues](https://github.com/maida-ai/mai/issues/1), [milestones](https://github.com/maida-ai/mai/milestones) and the [Project](https://github.com/orgs/maida-ai/projects/9).
 
-Exact validation requires the accepted candidate's tree and parent to match the checked candidate. The proposed weaker “validated on parent” alternative needs an explicit decision and cannot silently weaken that invariant. Context storage is planned as opt-in and harness-owned; cross-agent context handoff, retention and size limits remain unresolved. Local commits, update/resume commands and context storage must not be advertised as usable until their implementations ship.
+## M0 qualification
 
-Final tagline, untracked-file policy default, initial parser languages/config formats and context limits remain maintainer decisions. Fleet-scale services, caches and distributed storage are deferred until after M4 and demonstrated user demand. Measure late-conflict waste, false-conflict rejection, post-land failures, resume success and runnable environment readiness alongside publication performance; see [measurement definitions](performance.md#differentiation-metrics-planned).
+| Spike | Required evidence |
+| --- | --- |
+| [S1](https://github.com/maida-ai/mai/issues/51) Transport | Host and container receive, options, status, draft policy and fallback on Linux/macOS Git ≥ 2.40; record Windows result |
+| [S2](https://github.com/maida-ai/mai/issues/52) Merge | Differential corpus matching cherry-pick for disjoint/same hunks, rename/edit, delete/edit, modes, binary and file/directory; median below 100 ms on 100k files |
+| [S3](https://github.com/maida-ai/mai/issues/53) Validators | Rust, Python and TypeScript real repositories; two-slot warm-switch overhead below 15% of gate time; documented resource isolation |
+| [S4](https://github.com/maida-ai/mai/issues/54) Queue model | Realistic 30-agent simulation of sequential, pipeline and batch policies; default selection and time-to-land table; pipeline-2 beats sequential at realistic failure rates |
+| [S5](https://github.com/maida-ai/mai/issues/55) Upstream loop | Three export/squash/sync cycles including concurrent human changes, without spurious conflicts |
+| [S6](https://github.com/maida-ai/mai/issues/56) Lockfiles | Concurrent Cargo, npm and uv dependency additions regenerate and pass the gate |
+| [S7](https://github.com/maida-ai/mai/issues/57) Crash windows | Interrupt registration and every landing step; no lost or duplicate landing; terminal outcomes after restart |
+
+Throwaway scripts and short results belong under `docs/spikes/` when performed. No results are asserted here. Failed go criteria require an ADR design correction before M1.
+
+## Open maintainer decisions
+
+1. Final tagline; the proposed wording is “The local integration queue for coding agents. Push with Git; mai validates, lands, and keeps every agent in sync.”
+2. Default merge mode with a configured gate; `textual` is recommended. Without a gate, use conservative path rejection.
+3. Default validation mode and slot count; pipeline with two slots is recommended, pending S4.
+4. Default full-tier failure policy; validated `revert` with freeze fallback is recommended.
+5. Whether M1b precedes the external-users gate; recommended, not an accepted sequencing constraint yet.
+6. Initial merge-rule example ecosystems; Cargo, npm and uv are recommended.
+
+These decisions do not authorize weakened validation evidence. Batch tips and intermediate revisions must not be reported as equivalent evidence. M4 raw-context access/handoff and concrete retention limits still require a design before implementation; sharing intent does not authorize sharing raw context.
+
+## Success measurements
+
+Collect from M1 and expose through the proposed `mai status --metrics`; no rewrite measurements exist yet. Record p50/p95 rejection-to-reland, detected-breakage-to-green, and (from M4) agent-death-to-resumed-landing. Track full-tier failures per landed change and revert rate as trunk guardrails. Split time to land into queue wait and validation; include gate duration, slot utilization, discarded speculation, reason-code mix, flaky rate and human interventions. Add late-conflict waste from M3 and resume success from M4. Compare equivalent repository workloads, hardware, suite versions and warm/cold conditions against a worktree/PR baseline.
+
+## Possible futures
+
+Profiled in-process Git reads may justify gitoxide. Overlay/lazy materialization requires evidence that checkout dominates bootstrap and tests. Remote agents can extend Git transport; multi-tenant authorization, cache tiers and distributed storage remain outside the MVP. Affected-test selection stays a user-owned hook rather than an inferred build graph.
 
 ## Development policy
 
-This is a brand-new project with no users and no backward-compatibility requirements. Repository formats, metadata, CLI syntax, and JSON/protocol schemas may change freely. There are no legacy readers, compatibility fixtures, migration shims, downgrade routes, or promises that an older store/client will work. Recreate disposable evaluation repositories when formats change. Document breaking changes and keep tests/examples aligned with the current implementation.
-
-Data integrity and recovery within the current implementation remain correctness requirements. This policy does not authorize deleting user work or migrating Maida production assets. Git import/export and self-hosting are product features, not historical-format support.
+There are no backward-compatibility obligations. Do not build legacy readers, schema migrations, converters, deprecated aliases or downgrade paths. A mismatched rewrite state schema refuses startup; disposable evaluation repositories are recreated. This policy does not relax acknowledged-write recovery or authorize destroying user work. Delete the old `src/`, `tests/`, `benchmarks/` and `examples/` only when M1 implementation starts after M0; keep licensing, assets, contribution guidance and the CI skeleton.
 
 ## Versioning
 
-Start at **0.0.1** for the MVP. MVP releases use `0.0.x`; leaving MVP promotes to `0.1.0` (the `0.1` line), and demonstrated stability promotes to `1.0.0` (the `1.0` line). Maturity milestones are not automatic dates or feature-count thresholds. Historical measurement labels remain as originally recorded.
-
-For Maida adoption, follow [the staged migration plan](maida-migration.md). For implementation choices and alternatives, see [ADR 0001](adr/0001-foundation.md).
-
-[All docs →](README.md)
+The prototype is 0.0.1. MVP releases use 0.0.x; leaving MVP uses 0.1.0 and demonstrated stability uses 1.0.0. Milestone completion alone does not promote a version. Keep package metadata, CLI tests and implemented documentation consistent.

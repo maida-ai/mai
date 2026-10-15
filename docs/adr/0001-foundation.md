@@ -1,22 +1,5 @@
-# ADR 0001: Rust agent-native revision authority
+# ADR 0001: Original Rust revision authority
 
-Status: accepted for 0.0.1. [ADR 0002](0002-changesets-and-publication.md) records the revised local-agent direction while preserving this milestone's invariants. Service deployment and storage replacements remain proposals. License: Apache-2.0. See [architecture](../architecture.md) for exact implemented boundaries.
+Status: superseded by [ADR 0003](0003-git-native-integration-queue.md). Do not implement the former proposal.
 
-## Context
-
-The Python 0.1.1 prototype established useful behavior with 17 passing real-Git tests, SQLite leases, and detached worktrees. Agent workflows need ordered publication, transparent rejection, cheap independent submissions, and eventual multi-machine authority. Language overhead is only one cost; Git processes, filesystem scans, full checkouts, and serialized work remain architectural constraints.
-
-## Decisions and alternatives
-
-1. **Rust now.** Use a native executable and one implementation language for CLI/core/future services. Python retained a runtime requirement; wrapping it in Rust would not fulfill native deployment. Rust ownership and resource management support the long-term design, but no speed claim follows from language choice alone. Cost: compilation, dependency/toolchain management, and an explicit UTF-8 filename restriction.
-2. **SVN-inspired globally ordered revisions.** Keep r0 as import baseline and one single-parent publication chain. Traditional agent-managed Git branches/rebases expose avoidable coordination complexity; SVN storage/wire protocol is not required to obtain clear revision semantics. Cost: authoritative publication remains serialized.
-3. **Git-backed storage.** Retain mature objects, packs, worktrees, index operations, fetch/push, and Git import. A custom content database would impose unjustified reliability/ecosystem work. Native gitoxide remains a possible measured adapter improvement; full worktree/index/remote parity takes priority over avoiding subprocesses now.
-4. **Optional daemon, no placeholder service.** CLI-only operation is useful and deterministic. A mandatory daemon adds lifecycle/IPC failure modes before persistent caching is justified. Future Unix-socket service should reuse the engine and have explicit startup behavior; Tokio/Axum are deferred until a tested vertical slice needs them.
-5. **Centralized authoritative publication.** Current code prepares candidates optimistically, then revalidates under SQLite and Git CAS. The next local optimization moves candidate assembly inside the gate to avoid wasted builds, while staging/hashing, long checks and checkout stay outside. Checked candidates require parent-bound evidence and revalidation if main moves. Group commit is a separately measured follow-up; distributed consensus is unnecessary for this deployment.
-6. **Conservative conflicts by default.** Reject equal or ancestor/descendant changed paths, including rename delete/add pairs. This prevents overwriting overlapping edits but does not establish semantic correctness across files. Git's deterministic three-way textual merge and syntax-aware structural merge are distinct from a model/semantic judgment. Neither a model nor an `UNCERTAIN` result may accept or approve a merge. An opt-in textual mode may accept disjoint same-file hunks after exact integrated validation; neither a clean merge nor tests prove arbitrary program correctness.
-7. **GitHub is optional and downstream.** Explicit fast-forward export preserves interoperability without requiring accounts, SaaS, or proprietary authentication. Bidirectional authority risks split brain; remote outage must never invalidate local acceptance. A retryable durable outbox is future work.
-8. **Correctness and agent throughput together.** Measure useful accepted revisions, rejection rates, tail latency, workspace cost, retries, resource use, and lock scope. Weakening lease/conflict/durability checks for synthetic throughput is rejected. Git main is the single acceptance ledger; auxiliary refs aid recovery and SQLite retains leases/registry rather than duplicating revision state. Multi-ref filesystem crash atomicity remains a qualification limit.
-
-## Consequences
-
-The implementation is small and transport-independent, but not a stable remote protocol or hardened server. Only the current `.mai` format is recognized. There are no backward-compatibility requirements; future formats and interfaces can replace the current ones without legacy support. The trusted-local filesystem model remains; Windows CI coverage is experimental; no Maida production assets migrate. Next work targets ordinary local Git use, dirty updates, integrated validation, truthful recovery and environment setup for 3–30 agents. Service and storage expansion require a demonstrated need.
+Rust, Apache-2.0, Git objects, deterministic outcomes and an acceptance ledger remain. The former single-parent-only history, optional daemon, worktree ownership and path-default decisions are superseded. Current 0.0.1 still implements the old worktree engine; this is not a migration promise.

@@ -1,4 +1,6 @@
-# Your first mai revision
+# Evaluate the current 0.0.1 prototype
+
+**Current implementation only.** The proposed Git-push queue is not implemented. Use these commands only with disposable repositories; M0 qualification precedes the replacement engine. See the [rewrite plan](project.md) and [planned agent protocol](agents.md).
 
 `mai` has one authority and an independent workspace per agent. Start in a disposable local directory. You can use it without GitHub, a daemon, or a Python runtime.
 
@@ -49,7 +51,7 @@ The final command prints your greeting. `submit` creates `r1` and updates Alice'
 [IO.File]::WriteAllText('demo/workspaces/alice/hello.txt', "Hello from Alice`n")
 ```
 
-Create two workspaces before submitting to see independent changes integrate from a shared base; the [front-page example](../README.md#two-agents-one-history) demonstrates this. Both files remain at HEAD even though the second agent started at r0. Same-file and ancestor/descendant conflicts reject conservatively; there is no automatic text merge.
+Create two workspaces before submitting to see independent changes integrate from a shared base; repeat the current commands above with a second workspace before either submission. Both files remain at HEAD even though the second agent started at r0. Same-file and ancestor/descendant conflicts reject conservatively; there is no automatic text merge.
 
 ## Review and repeat
 
@@ -86,7 +88,7 @@ The remote can be a local bare Git repository or a GitHub-compatible URL. It mus
 
 ## Connect your agent
 
-Give each agent a unique identity, create its workspace, and point its editor/tools there. Use `mai --json` for machine responses. Begin with the [integration prompt](../examples/agent-prompt.md); add leases and checks only where needed. A lease coordinates and blocks foreign publication while active; it is not filesystem access control.
+Give each agent a unique identity, create its workspace, and point its editor/tools there. Use `mai --json` for machine responses. Begin with the [current agent precautions](agents.md#current-001-precautions); add leases and checks only where needed. A lease coordinates and blocks foreign publication while active; it is not filesystem access control.
 
 Repository paths and tracked filenames must be UTF-8; file contents may be arbitrary bytes. Quoted `~` paths are literal; use normal shell expansion. Windows filesystem case/name restrictions and Unix-only permissions/symlink behavior need qualification before important use.
 

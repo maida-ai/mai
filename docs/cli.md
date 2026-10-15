@@ -1,5 +1,7 @@
 # CLI reference
 
+**Current 0.0.1 behavior.** These commands describe the existing engine retained during M0. They are not the proposed clone/receive/queue interface.
+
 Every repository command takes an authority directory (`PROJECT`). An agent works in `PROJECT/workspaces/AGENT`; it does not manage Git branches. Use `mai --help` or `mai COMMAND --help` for argument help.
 
 ## Commands
@@ -51,7 +53,7 @@ Successful commands return `{"ok":true,"result":...}`; failures return `{"ok":fa
 
 Success includes `revision`, `commit`, `agent`, `files`, `rebased`, `recovered`, `workspace_updated`, `retries`, `lock_wait_ms`, and `lock_hold_ms`. `rebased:true` means disjoint candidate paths were transplanted onto newer main, not that same-file text was merged.
 
-Check both acceptance and workspace state. `recovered:true` returns an already accepted revision after interrupted checkout; it does not create another revision and does not prove current edits were submitted. The current recovery path can return `ok:true` before examining new edits. Do not report that old receipt as acceptance of new work. `workspace_updated:false` means the working directory needs reconciliation before continued work. Copy drafts/later edits outside the workspace, inspect accepted history/content, and follow [the recovery procedure](architecture.md#durability-and-recovery). Never interpret a recovered receipt as permission to reset files.
+Check both acceptance and workspace state. `recovered:true` returns an already accepted revision after interrupted checkout; it does not create another revision and does not prove current edits were submitted. The current recovery path can return `ok:true` before examining new edits. Do not report that old receipt as acceptance of new work. `workspace_updated:false` means the working directory needs reconciliation before continued work. Copy drafts/later edits outside the workspace, inspect accepted history/content, before deciding how to reconcile the workspace. Verify intended files with `mai show PROJECT rN PATH`; do not refresh with `--discard` until all pending work has been preserved. Never interpret a recovered receipt as permission to reset files.
 
 Contention-budget errors explicitly mean that attempt did not publish. Retry the same submission after backoff. Foreign lease errors require release/expiration. Overlapping changes require preserving the draft and manually reconciling from a fresh base. Other infrastructure failures may need inspecting authoritative history before retrying.
 
@@ -62,5 +64,11 @@ Do not commit, amend, rebase or switch branches inside mai workspaces yet: submi
 ## Conflict rules
 
 The same changed file, or an ancestor/descendant path, conflicts with net upstream changes since the workspace base. `src` overlaps `src/file`, but not `src-utils`. Renames use deletion/addition semantics; binary files are not automatically merged. Different edits within one file reject conservatively. Successful independent submissions retain earlier accepted content.
+
+## Proposed rewrite interface — not implemented
+
+M1 replaces the workspace-era protocol with ordinary clones and `git push mai HEAD:refs/for/main`. Planned commands are `init`, `serve`, `workspace`, `submit`, `wait`, `sync`, `status`, `queue`, `lease` and `approve`; exact flags and output schemas must be implemented and tested before use. `submit` is optional auto-commit/push convenience, `wait` distinguishes registration from landing, and explicit `sync` replays post-submission work after squash landing. M3 adds `intent`/`activity`; M4 adds `checkpoint`/`resume`/`why`. See [agent protocol](agents.md), [configuration](configuration.md) and [operations](operations.md).
+
+The typed lifecycle is received → queued → validating → landed, with dependency blocking, protected-path approval and exactly one terminal outcome including rejection, supersession or cancellation. A versioned schema and reason codes are implementation requirements; the current string-error JSON above is not that schema. No legacy aliases or migration layer are planned.
 
 [Getting started →](getting-started.md) · [All docs →](README.md)

@@ -6,7 +6,7 @@ Status: proposed, 2026-10-14. Intent, activity and conflict-record interfaces be
 
 Store a bounded structured intent per agent: task identifier, summary, rationale, intended units, relied-on invariants and heartbeat. Lease and intent requests return promptly with holder, intent and expiry instead of waiting for another agent. Leases remain advisory during editing; publication enforces applicable policy. “Never block an agent” means no waiting negotiation protocol, not a guarantee of zero I/O latency.
 
-A read-only activity view reports base, current touched units, intent, leases and heartbeat age, with JSON for external orchestrators. It does not acquire the publication gate. Bound scan cost and identify snapshot age; an activity snapshot is not a publication authorization.
+A read-only activity view reports base, current touched units, intent, leases and heartbeat age, with JSON for external orchestrators. Compute activity from authority drafts and explicit local-clone observations, identifying source and freshness; do not assume access to container filesystems. It does not block landing. Bound scan cost and identify snapshot age; an activity snapshot is not a publication authorization.
 
 Produce a typed conflict record containing the affected unit, each side's agent/base/intent/delta reference, deterministic check results, exactly one resolver and the rule applied. Proposed resolution order favors the valid unit-lease holder over a non-holder, otherwise the later lander. Specify tie-breaking and simultaneous/expired lease cases deterministically before shipping. Resolution ownership never bypasses conflict or validation checks.
 

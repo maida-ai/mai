@@ -15,33 +15,35 @@
   <a href="CONTRIBUTING.md">Contribute</a>
 </p>
 
-`mai` coordinates local coding agents through path leases, separate workspaces and one ordered acceptance history. Its planned direction is shared symbol-level work units, declared intent and resumable context bound to exact code state; those features are not implemented yet. Built in Rust, backed by Git, and open source under [Apache 2.0](LICENSE). No GitHub account or hosted service required.
+mai aims to shorten recovery when agents fail, conflict or lose their environment, while keeping a blocking gate at the shared trunk boundary. The proposed rewrite uses plain Git submissions and an integrated validation queue so agents spend less time on rebases and humans spend less time coordinating parallel changes.
 
-## Two agents. One history.
+**Rewrite design; not implemented.** The code here is the experimental 0.0.1 worktree engine. M0 qualification must pass before replacement product code starts; the commands below describe the proposed interface, not the current binary. Built in Rust, backed by Git, open source under [Apache 2.0](LICENSE), and independent of core Maida.
 
-Run this in a scratch directory:
+## Two agents. One integration queue.
+
+Planned flow after creating Alice's and Bob's clones with `mai workspace`:
 
 ```sh
-mai init demo
-mai workspace demo alice
-mai workspace demo bob
+# In Alice's clone:
+printf 'Hello UI\n' > ui.txt
+git add ui.txt
+git commit -m 'Add UI'
+git push mai HEAD:refs/for/main
 
-echo 'Hello UI' > demo/workspaces/alice/ui.txt
-echo 'Hello API' > demo/workspaces/bob/api.txt
-
-mai submit demo alice -m 'Add UI'    # r1
-mai submit demo bob -m 'Add API'     # r2: both files, no manual rebase
+# In Bob's clone:
+printf 'Hello API\n' > api.txt
+git add api.txt
+git commit -m 'Add API'
+git push mai HEAD:refs/for/main
 ```
 
-Both agents started at `r0`. Both changes land. If they edit overlapping paths, `mai` rejects the submission and preserves the draft.
+Push success will acknowledge durable registration, not landing. Each agent waits for its change's typed outcome with `mai wait <change>` and runs `mai sync` after landing; the engine combines and checks candidates without requiring a pre-submission rebase. A conflict or failed check returns an actionable outcome and a fetchable candidate. Pipeline mode must validate each landed tree exactly as landed; optional batch mode must label its weaker intermediate-revision evidence explicitly.
 
-- **Independent work:** isolated workspaces, without managing Git branches.
-- **Predictable integration:** numbered revisions, explicit conflicts, optional path leases.
-- **Easy automation:** JSON responses and agent attribution on every accepted revision.
+The intended audience is one developer or team running 3–30 agents across harnesses. Humans keep their forge and review process; mai integrates agent changes into an export branch. Recovery times, human interventions, time to land and broken-trunk rate will measure whether this design earns its place. None of those improvements has been measured for the rewrite yet.
 
-## Try it
+## Evaluate the current prototype
 
-You need Rust 1.85+, Git 2.36+, and a C compiler to build. The installed binary needs no Python runtime.
+The existing 0.0.1 engine can still be built with Rust 1.85+, Git 2.36+ and a C compiler:
 
 ```sh
 git clone https://github.com/maida-ai/mai.git
@@ -49,25 +51,19 @@ cd mai
 cargo install --path . --locked --bin mai
 ```
 
-Want a guided demo? Run `bash examples/demo.sh`, or `./examples/demo.ps1` in Windows PowerShell. [Installation details and your first submission →](docs/getting-started.md)
+Use disposable trusted repositories and the [current getting-started guide](docs/getting-started.md). The current binary has no receive queue, daemon, integrated validation, tokens or upstream sync. Its linked worktrees share authority refs; normal local commits are unsafe for its submission protocol. The proposed authority requires Git ≥ 2.40, subject to M0 qualification.
 
 ## Where mai fits
-
-Today, mai provides local path leases, ordered revisions, attribution and recovery receipts. Exact integrated-tree validation is the immediate priority; symbol-aware integration, live intent, context resume and draft DAGs are planned differentiation, not shipped advantages. Final positioning wording remains under maintainer review.
 
 | Tool | Documented capability |
 | --- | --- |
 | [Git worktrees](https://git-scm.com/docs/git-worktree) | Multiple working trees share repository objects and refs. |
-| [Jujutsu](https://docs.jj-vcs.dev/latest/conflicts/) | Records conflicts as first-class state; its [operation log](https://docs.jj-vcs.dev/latest/operation-log/) supports inspecting and undoing repository operations. |
-| [GitButler](https://docs.gitbutler.com/ai-agents/parallel-agents) | Supports parallel agents with multiple branches in a shared workspace, with a documented tradeoff against separate worktrees. |
+| [Jujutsu](https://docs.jj-vcs.dev/latest/conflicts/) | Records conflicts as first-class state; an [operation log](https://docs.jj-vcs.dev/latest/operation-log/) supports inspecting and undoing operations. |
+| [GitButler](https://docs.gitbutler.com/ai-agents/parallel-agents) | Documents parallel-agent workflows using multiple branches in a shared workspace. |
 | [GitHub merge queues](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue) | Run required checks on changes combined with the target branch and earlier queued work. |
 
-These tools already solve useful parts of the workflow. mai's [planned direction](docs/agent-native-capabilities.md) must earn its place through less late-conflict waste and successful recovery, not feature-count or throughput claims.
+mai's proposed focus is a local, harness-neutral validation queue with typed outcomes, dependent changes and recovery. This comparison is not a claim that other tools lack integration or agent support. The final tagline remains a maintainer decision.
 
 ## Keep going
 
-[Connect an agent](examples/agent-prompt.md) · [CLI reference](docs/cli.md) · [Import a Git project](docs/getting-started.md#import-an-existing-project) · [How it works](docs/architecture.md)
-
-**MVP · 0.0.1.** Use disposable, trusted local repositories while evaluating. Workspaces are not sandboxes. Local Git commits, dirty updates, and integrated-tree validation are not supported yet; large bursts can hit contention limits. [Current limits and roadmap →](docs/project.md)
-
-Part of the **maida-ai** family. Useful on its own; GitHub mirroring is optional. [Report an issue](https://github.com/maida-ai/mai/issues) or [help build it](CONTRIBUTING.md).
+[Philosophy](docs/philosophy.md) · [Architecture](docs/architecture.md) · [Roadmap](docs/project.md) · [Agent protocol](docs/agents.md) · [Configuration](docs/configuration.md) · [Operations](docs/operations.md) · [Contribute](CONTRIBUTING.md)

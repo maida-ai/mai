@@ -14,12 +14,14 @@
 
 ## Gates before production writes
 
-Accepted revisions must survive process termination and qualified filesystem failure without lost or duplicated publication. The Rust milestone tests intermediate recovery states but does not certify power-loss or incomplete initialization recovery. Workspace reset and registry reconciliation need operator procedures.
+The existing 0.0.1 engine is experimental and has known worktree/submission limitations. The Git-native rewrite is unimplemented and must first complete [M0 qualification](project.md#m0-qualification). Neither the old test suite nor a passing throwaway spike qualifies production adoption.
 
-Qualify authenticated agents, least-privilege access, secrets handling, and execution isolation before hostile multi-machine use. Current worktrees are not sandboxes; current identities are declarations. Keep GitHub optional and test Git export/restore with all relevant revisions, binary files, modes, renames, and provenance.
+Qualify acknowledged-push object retention, exact pipeline validation, first-parent revision provenance, crash reconciliation and authority/state.db backup restoration. Exercise dependent squash submissions, interrupted sync, protected-path approval and upstream export cycles. Process-kill evidence does not certify power-loss durability. Local clones that borrow objects through alternates require proven retention or dissociation before authority maintenance or removal.
 
-Measure p50/p95/p99 submission latency, accepted revisions per second, workspace/cold-start latency, contention/retry rates, lock hold time, CPU, RSS, and storage growth for representative 3–30-agent workloads; use larger fanout only as additional stress testing. Set workload-specific targets from evidence. Never promote solely because unit tests or a synthetic throughput number pass.
+Keep the forge's main authoritative for human work and export mai's integration line to a separate branch or PR. Upstream syncs must pass the same gate; mai never silently force-pushes or replaces human main. Test confirmed-culprit compensating recovery and freeze fallback before enabling automatic revert. M1b defaults and its ordering relative to external users remain open maintainer decisions.
 
-For adoption of future services, additionally qualify durable draft/request outcomes, source export, reachable-object retention, sparse views, directory authorization through caches/indexes, and attestation/revert behavior if the [possible future services](agent-native-capabilities.md) are implemented; these are not local-adoption prerequisites. A local full-worktree test is not evidence for those capabilities.
+Qualify per-agent tokens and container reachability for the supported trusted-local scope; neither clones, receive hooks nor validator slots are sandboxes. Multi-tenant authorization and hostile remote use are outside the MVP. Agent drafts contain only successfully pushed committed work; no promise covers uncommitted or unpushed changes.
+
+Measure the [recovery and validation metrics](project.md#success-measurements) on representative 3–30-agent repositories against a worktree/PR baseline. Set workload-specific targets from evidence, including human intervention and broken-trunk rate. [Possible futures](project.md#possible-futures) do not create current adoption prerequisites.
 
 Publish the migration/rollback playbook and obtain explicit sign-off from every affected repository owner. External adopters receive the same open interfaces and capabilities as Maida.
