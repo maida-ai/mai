@@ -1,0 +1,10 @@
+[package]
+name = "s4-queue-experiment"
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.85"
+publish = false
+
+[[bin]]
+name = "s4"
+path = "main.rs"
