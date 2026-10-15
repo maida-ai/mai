@@ -40,6 +40,32 @@ const FIXTURES: [Fixture; 3] = [
         poison: "src/index.ts",
     },
 ];
+fn external_root(path: PathBuf, windows: bool) -> Result<PathBuf> {
+    if windows {
+        Ok(PathBuf::from(windows_drive_path(
+            path.to_str().ok_or("Windows fixture root must be UTF-8")?,
+        )?))
+    } else {
+        Ok(path)
+    }
+}
+// Git and native tool launchers need ordinary drive paths, not canonical
+// extended-length Windows paths. Network/device roots are outside this fixture.
+fn windows_drive_path(path: &str) -> Result<String> {
+    let path = path.strip_prefix(r"\\?\").unwrap_or(path);
+    let bytes = path.as_bytes();
+    if bytes.len() < 3
+        || !bytes[0].is_ascii_alphabetic()
+        || bytes[1] != b':'
+        || !matches!(bytes[2], b'\\' | b'/')
+    {
+        return Err(
+            "use an absolute local Windows drive for the fixture; UNC/device roots are unsupported"
+                .into(),
+        );
+    }
+    Ok(path.replace('\\', "/"))
+}
 fn native(name: &str) -> String {
     if cfg!(windows) && matches!(name, "npm" | "yarn") {
         format!("{name}.cmd")
@@ -547,7 +573,7 @@ fn main() -> Result<()> {
         return Err("root already exists".into());
     }
     fs::create_dir_all(&root)?;
-    let root = fs::canonicalize(root)?;
+    let root = external_root(fs::canonicalize(root)?, cfg!(windows))?;
     isolation(&root)?;
     if args.get(1).map(String::as_str) == Some("isolation") {
         return Ok(());
@@ -599,6 +625,42 @@ fn main() -> Result<()> {
 mod tests {
     use super::*;
     #[test]
+    fn windows_local_roots_drop_extended_prefix() {
+        assert_eq!(
+            windows_drive_path(r"\\?\C:\fixtures\space here").unwrap(),
+            "C:/fixtures/space here"
+        );
+        assert_eq!(
+            windows_drive_path(r"D:\fixtures\run").unwrap(),
+            "D:/fixtures/run"
+        );
+        assert_eq!(
+            windows_drive_path("C:/fixtures/run").unwrap(),
+            "C:/fixtures/run"
+        );
+    }
+    #[test]
+    fn windows_unc_and_device_roots_are_rejected() {
+        for path in [
+            r"\\?\UNC\host\share",
+            r"\\host\share",
+            "//host/share",
+            r"\\.\C:\fixtures",
+            "C:relative",
+            "relative",
+        ] {
+            assert!(
+                windows_drive_path(path).is_err(),
+                "accepted unsupported root {path}"
+            );
+        }
+    }
+    #[test]
+    fn unix_roots_preserve_literal_backslashes() {
+        let path = PathBuf::from(r"/tmp/fixture\literal");
+        assert_eq!(external_root(path.clone(), false).unwrap(), path);
+    }
+    #[test]
     fn threshold_is_strict() {
         assert_eq!(overhead(&[100.], &[115.]).unwrap(), 0.15);
         assert!(overhead(&[100.], &[114.]).unwrap() < 0.15);
@@ -626,7 +688,7 @@ mod tests {
     fn command_failures_are_not_passes() {
         let root = PathBuf::from(format!(".throwaway/s3-unit-errors-{}", std::process::id()));
         fs::create_dir_all(&root).unwrap();
-        let root = fs::canonicalize(root).unwrap();
+        let root = external_root(fs::canonicalize(root).unwrap(), cfg!(windows)).unwrap();
         assert!(run(&root, &root.join("spawn.log"), "s3-no-such-executable", &[]).is_err());
         assert!(
             !run(
