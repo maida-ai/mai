@@ -1,0 +1,26 @@
+name: S2 merge experiment
+run-name: S2 evidence (${{ inputs.platform }}) by @${{ github.actor }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: Native runner platform (all starts three jobs)
+        type: choice
+        required: true
+        default: linux
+        options:
+          - linux
+          - macos
+          - windows
+          - all
+
+permissions:
+  contents: read
+
+jobs:
+  s2:
+    uses: ./.github/workflows/evidence-experiment-runner.yml
+    with:
+      experiment: s2
+      platform: ${{ inputs.platform }}
