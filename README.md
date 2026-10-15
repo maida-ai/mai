@@ -62,7 +62,7 @@ Use disposable trusted repositories and the [current getting-started guide](docs
 | [GitButler](https://docs.gitbutler.com/ai-agents/parallel-agents) | Documents parallel-agent workflows using multiple branches in a shared workspace. |
 | [GitHub merge queues](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue) | Run required checks on changes combined with the target branch and earlier queued work. |
 
-mai's proposed focus is a local, harness-neutral validation queue with typed outcomes, dependent changes and recovery. This comparison is not a claim that other tools lack integration or agent support. The final tagline remains a maintainer decision.
+mai's proposed focus is a local, harness-neutral validation queue with typed outcomes, dependent changes, engine-computed change manifests, priority-aware coordination and bounded recovery. M1 starts with file units; M2 adds object precision. Priority never bypasses the trunk gate, and a confirmed post-landing failure gets a bounded fix-forward lane with a validated revert backstop. This comparison is not a claim that other tools lack integration or agent support. The final tagline remains a maintainer decision.
 
 ## Keep going
 

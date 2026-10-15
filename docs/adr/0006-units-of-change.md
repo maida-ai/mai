@@ -4,11 +4,11 @@ Status: proposed, 2026-10-14. Symbol/key-path extraction and structural merging 
 
 ## Proposal
 
-Use the same unit for leasing, conflict detection and merging: a symbol where reliably parseable, a key path for supported structured configuration, otherwise a path. Proposed identifiers include `src/api.rs::Router::add_route` and `Cargo.toml::dependencies.serde`. Extract base and new versions of pushed commits/drafts only for changed files; do not require engine-owned agent worktrees. Unsupported language, generated input, parse failure or ambiguous identity explicitly reports path fallback; never silently narrow a conflict after incomplete parsing.
+Follow [ADR 0004](0004-objects-manifests-and-priority.md): objects are the shared units of leasing, conflict and change. M1 emits explicit file fallback; M2 adds symbols, config keys and module-scope manifests. Class leases cover methods, file leases cover all contained units, module scope is not leasable by default, and renames are delete-plus-add. Proposed identifiers include `src/api.rs::Router::add_route` and `Cargo.toml::dependencies.serde`. Extract base and new versions of pushed commits/drafts only for changed files; do not require engine-owned agent worktrees. Unsupported language, generated input, parse failure or ambiguous identity explicitly reports path fallback; never silently narrow a conflict after incomplete parsing.
 
 Evaluate feature-gated tree-sitter extraction and an existing structural merge driver before designing a merger. Initial languages and configuration formats remain maintainer decisions; this ADR adds no dependencies. Structural merge is opt-in by repository and path pattern. The rewrite proposes textual merging when a gate exists and path rejection otherwise; final defaults await M0 and maintainer confirmation. Git three-way textual merging, deterministic structural merging and model judgments are distinct mechanisms.
 
-A deterministic definition/reference check can flag signature changes interacting with references in other deltas. Its approximation and warn/reject policy must be explicit; syntactic extraction does not establish semantic equivalence. Every configured required check runs against the exact integrated result under [ADR 0004](0004-integrated-candidate-validation.md).
+A deterministic definition/reference check can flag signature changes interacting with references in other deltas. Its approximation and warn/reject policy must be explicit; syntactic extraction does not establish semantic equivalence. Every configured required check runs against the exact integrated result under [ADR 0003](0003-git-native-integration-queue.md).
 
 ## Trust and verification
 

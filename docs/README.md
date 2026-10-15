@@ -13,8 +13,8 @@ The current code is the experimental 0.0.1 worktree engine. The rewrite design i
 - [Philosophy](philosophy.md): fast recovery with a protected trunk boundary.
 - [Architecture](architecture.md): proposed Git receive path, single writer, integrated validation and forge topology.
 - [Project direction](project.md): M0 through M6, qualification, open decisions and metrics.
-- [Configuration](configuration.md): proposed `mai.toml` and engine-local boundaries.
-- [Operations](operations.md): proposed lifecycle, reconciliation, backup and retention.
+- [Configuration](configuration.md): proposed `mai.toml`, bounded recovery, priority settings and engine-local boundaries.
+- [Operations](operations.md): proposed lifecycle, bounded fix-forward, manifest reconciliation, priority operations, backup and retention.
 - [ADRs](adr/): architecture decisions and explicitly superseded worktree-era assumptions.
 - [Contributing](../CONTRIBUTING.md): current checks and rewrite entry conditions.
 - [Branding](branding.md): symbol and visual assets.

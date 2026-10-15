@@ -13,7 +13,7 @@ One refinement keeps this from becoming "move fast and break trunk". In a swarm,
 | Failure | Recovery mechanism | MTTR measured as |
 | --- | --- | --- |
 | Rejected change (conflict, gate, policy) | Typed outcome plus a fetchable candidate ref; the agent regenerates or resolves | Rejection → re-landed |
-| Bad landing that passed the gate | `full` tier finds the culprit by bisection, then a validated automatic revert lands | Detection → trunk green |
+| Bad landing that passed the gate | `full` tier confirms the culprit by bisection; its agent gets a short `sev`-priority fix-forward window; a validated revert follows if recovery misses its bound | Detection → trunk green |
 | Dead agent | Drafts already on the authority; `mai resume` | Death → resumed work landed |
 | Stale work | The engine merges from any base; no agent action unless there is a true conflict | — |
 | Upstream sync conflict | Conflict record with a configured owner; the queue continues on the old upstream base | Upstream advance → synced |
@@ -37,9 +37,13 @@ One refinement keeps this from becoming "move fast and break trunk". In a swarm,
      - Per-change cost is O(changed files).
    - Overlay or lazy materialization stays deferred until S3 shows that workspace creation, not bootstrap or tests, dominates.
 4. **Small changes beat big ones.** One change maps to one `rN` and one validation unit. Continued work chains as dependent changes instead of growing one change.
-5. **Revert is a first-class, cheap operation.** A revert is a compensating change that passes the same gate. History is never rewritten.
+5. **Fix forward by default; revert as the backstop.** The proposed recovery policy gives a normal change `sev` priority and a bounded window. A revert is a compensating change through the same gate when fix-forward fails or misses its window. History is never rewritten. The shipping default and window remain pending maintainer approval and S4.
+6. **The object is the unit.**
+   - Agents lock, conflict on, and are notified about functions, classes and config keys, never lines.
+   - Lines shift with every edit, and files are too coarse for N agents.
+   - Every change carries an engine-computed manifest of affected objects, enabling queries about who touched an object and what else is affected. M1 explicitly reports file-unit fallback; M2 adds parsers.
 
 
-Automatic recovery requires a reproducibly confirmed culprit and a validated compensating change; flaky or uncertain attribution never authorizes an automatic revert. Draft recovery covers commits successfully pushed to retained refs, not unsaved or unpushed edits. Checkout and per-change complexity are hypotheses to measure in S3, not filesystem or build-tool guarantees.
+Automatic recovery requires a reproducibly confirmed culprit; flaky or uncertain attribution never authorizes an automatic revert. A fix passes the normal gate and then full-tier confirmation before trunk is called green. Failure or timeout of confirmation cannot extend the recovery window indefinitely; it invokes the revert backstop. Draft recovery covers commits successfully pushed to retained refs, not unsaved or unpushed edits. Checkout and per-change complexity are hypotheses to measure in S3, not filesystem or build-tool guarantees.
 
 Applying these principles requires the contracts in [ADR 0003](adr/0003-git-native-integration-queue.md): the full-failure default remains open, and uncertain recovery or a failed/conflicting revert requires an owner-visible freeze. Agents can also receive typed policy, lease and invalid-input outcomes. Git-tree integration is checkout-free, while configured regeneration runs in a validator and creates the final tree that must pass the gate.

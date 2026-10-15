@@ -11,8 +11,17 @@ full = "cargo test --workspace --all-features -- --include-ignored"
 timeout = "15m"
 retries = 1
 mode = "pipeline"
-on_full_failure = "revert"
+on_full_failure = "fix-forward"
+fix_window = "15m" # Example only; S4 selects the default
+fix_attempts = 2
 affected = ""
+
+[priority]
+grant = ["sev", "high"]
+max_sev_in_flight = 2
+grant_ttl = "2h"
+lease_grace = "2m"
+aging = "30m"
 
 [validators]
 slots = 2
@@ -57,7 +66,14 @@ export_branch = "mai/trunk"
 | `check.timeout` | Check time limit; runner terminates the process group and caps captured output |
 | `check.retries` | Retry failures on the same candidate; record pass-after-fail as flaky, never land without a pass |
 | `check.mode` | `pipeline` checks each speculative prefix; `batch` checks a combined tip, bisects failure and labels intermediate evidence distinctly |
-| `check.on_full_failure` | `revert`, `freeze` or explicit `continue`; recommended revert requires confirmed nonflaky culprit and a gate-passing compensation |
+| `check.on_full_failure` | `fix-forward`, `revert`, `freeze` or explicit `continue`; recommended bounded fix-forward requires a confirmed nonflaky culprit, normal gate and full confirmation, then a validated revert backstop |
+| `check.fix_window` | Bounded time for an attributed fix to restore trunk; S4 compares 5, 15 and 30 minutes with immediate revert before choosing the default |
+| `check.fix_attempts` | Failed gate-attempt budget before reverting the culprit; the window still bounds recovery |
+| `priority.grant` | Classes requiring audited, expiring grants; `sev` and `high`, while `normal` and `low` are self-assigned |
+| `priority.max_sev_in_flight` | Cap concurrent severe changes to prevent priority inflation |
+| `priority.grant_ttl` | Grant expiry; human versus designated-token grant authority remains open |
+| `priority.lease_grace` | Notice before transfer to a higher-class requester; preserve preempted work and recheck ownership at landing |
+| `priority.aging` | Waiting interval for one-class promotion, capped at `high`; qualify repeated promotion semantics and starvation behavior in S4 |
 | `check.affected` | Optional command receiving changed paths and returning a narrowed gate invocation; exact I/O contract needs implementation specification |
 | `validators.slots` | Bounded concurrent warm validator clones; final default comes from S4 |
 | `validators.bootstrap` | Environment setup for a slot, outside integration/landing |
@@ -84,3 +100,11 @@ The engine reads policy and check configuration from trunk, never from the unapp
 Tokens, socket/pipe location and validator directories belong in `.mai/config.toml`, outside versioned source. Their exact keys, retention durations, draft-staleness threshold, batch size and resource-port allocation remain to be specified; no undocumented defaults are implied by the example.
 
 Slots receive `MAI_SLOT`, `MAI_PORT_BASE` and a private temporary directory. Test suites must allocate ports, databases and temporary resources accordingly. mai does not provide a container or sandbox; bootstrap and checks execute trusted repository commands. Host `file://` identity is declared and best-effort; M1b loopback smart HTTP adds per-agent tokens.
+
+## Recovery and priority policy
+
+These settings are proposed examples, not selected defaults. A confirmed full-tier failure creates an owned conflict record with logs, the culprit manifest and a temporary `sev` grant. A push with `mai.fixes=<change>` enters a bounded fix lane through the normal gate and must be confirmed by a full run within the same recovery deadline; a gate pass alone is not green trunk. Expiry or exhausted failed attempts triggers a validated compensating revert; a conflicting or failing revert freezes and notifies. Failed full confirmation does not mean recovery succeeded and cannot extend the deadline indefinitely. Flaky or uncertain culprit attribution does not authorize an automatic revert.
+
+Priority orders `sev` > `high` > `normal` > `low`; `normal` is the proposed ordinary class. Class precedes arrival order. Only `sev` may cancel lower-class speculative validation for a slot; other classes do not preempt running validation. Dependencies inherit priority, waiting work ages no higher than `high`, and audited grants expire. Inheritance and aging are engine-derived effective-priority exceptions to requested-class grant requirements; their exact scope must be qualified in ADR 0004. Scope priority effects to queue order, lease transfer and conflict-resolver choice; it never approves changes, drops lower-priority work or bypasses checks.
+
+`check.sev_gate` is an unresolved maintainer proposal and is deliberately absent from the example configuration. Until explicitly accepted and specified, severe fixes run the same normal gate. Any approved future alternative must pin its configuration to trunk, record the actual evidence and require full confirmation; do not label narrower evidence as the normal gate.

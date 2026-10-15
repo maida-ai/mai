@@ -12,15 +12,15 @@ Use only disposable trusted repositories. Linked worktrees share authority refs;
 
 ## Rewrite sequence
 
-Design choices are proposed for implementation, M0 mechanisms are spike pending, and six defaults/order choices below remain open. Qualification is not established by a prototype or a report from one platform.
+Design choices are proposed for implementation, M0 mechanisms are spike pending, and eight defaults/order choices below remain open. Qualification is not established by a prototype or a report from one platform.
 
 | Stage | Exit criteria |
 | --- | --- |
-| M0 — Design lock | Accept [ADR 0003](https://github.com/maida-ai/mai/issues/58); complete S1–S7 with go evidence or redesign failed assumptions before any product code |
-| M1 — Agent integration queue, local | Single-writer engine; durable receive registration; typed outcomes; dependent squash landing; pipeline checks, protected paths and approval; merge rules and limits; clones, drafts, sync, bootstrap, leases and metrics; three harness snippets; five agents on a real repository with zero manual integration and zero broken trunk |
-| M1b — Containers and forge | Loopback smart HTTP and per-agent tokens; upstream sync revisions and export branch/PR; full-tier culprit confirmation, validated compensating revert and freeze fallback |
+| M0 — Design lock | Accept [ADR 0003](https://github.com/maida-ai/mai/issues/58); accept [ADR 0004](https://github.com/maida-ai/mai/issues/70) for objects, manifests and priority; complete S1–S7 with go evidence or redesign failed assumptions before any product code |
+| M1 — Agent integration queue, local | Single-writer engine; durable receive registration; typed outcomes; dependent squash landing; pipeline checks, protected paths and approval; merge rules and limits; clones, drafts, sync and bootstrap; [file-unit manifests/indexing](https://github.com/maida-ai/mai/issues/71); [priority grants, inheritance and aging](https://github.com/maida-ai/mai/issues/72), plus [path-lease preemption](https://github.com/maida-ai/mai/issues/73); metrics; three harness snippets; five agents on a real repository with zero manual integration and zero broken trunk |
+| M1b — Containers and forge | Loopback smart HTTP and per-agent tokens; upstream sync revisions and export branch/PR; full-tier culprit confirmation, bounded `sev` fix-forward with full confirmation, validated revert backstop and freeze fallback |
 | Gate — External users | 5–10 users on real repositories; compare worktrees plus PRs with mai on human minutes, time to land and broken trunk |
-| M2 — Symbol-aware integration | Rebase #38–#41 onto pushed commits and candidate trees |
+| M2 — Object-aware integration | Parsers add symbol, config-key and module-scope units; object leases use containment/preemption; manifests gain object precision and [scope-drift outcomes](https://github.com/maida-ai/mai/issues/74) |
 | M3 — Live awareness | #42–#44: intent, draft-derived activity and deterministic conflict ownership |
 | M4 — Resumable, explainable work | #45–#47: opt-in context, recovery from authority drafts and attribution queries |
 | M5 — Cross-agent groups | #49: atomic topic landing across agents; fork/fuse uses native Git and documentation |
@@ -35,7 +35,7 @@ M1b before the users gate is recommended, not settled. Do not begin M2 before th
 | [S1](https://github.com/maida-ai/mai/issues/51) Transport | Host and container receive, options, status, draft policy and fallback on Linux/macOS Git ≥ 2.40; record Windows result |
 | [S2](https://github.com/maida-ai/mai/issues/52) Merge | Differential corpus matching cherry-pick for disjoint/same hunks, rename/edit, delete/edit, modes, binary and file/directory; median below 100 ms on 100k files |
 | [S3](https://github.com/maida-ai/mai/issues/53) Validators | Rust, Python and TypeScript real repositories; two-slot warm-switch overhead below 15% of gate time; documented resource isolation |
-| [S4](https://github.com/maida-ai/mai/issues/54) Queue model | Realistic 30-agent simulation of sequential, pipeline and batch policies; default selection and time-to-land table; pipeline-2 beats sequential at realistic failure rates |
+| [S4](https://github.com/maida-ai/mai/issues/54) Queue model | Realistic 30-agent simulation with priority mix across sequential, pipeline and batch policies; compare 5/15/30-minute fix windows with immediate revert on time-to-green and changes stacked on red; select mode/slots/window; publish time-to-land per class; pipeline-2 beats sequential at realistic failure rates and no class starves |
 | [S5](https://github.com/maida-ai/mai/issues/55) Upstream loop | Three export/squash/sync cycles including concurrent human changes, without spurious conflicts |
 | [S6](https://github.com/maida-ai/mai/issues/56) Lockfiles | Concurrent Cargo, npm and uv dependency additions regenerate and pass the gate |
 | [S7](https://github.com/maida-ai/mai/issues/57) Crash windows | Interrupt registration and every landing step; no lost or duplicate landing; terminal outcomes after restart |
@@ -47,15 +47,17 @@ Throwaway scripts and short results belong under `docs/spikes/` when performed. 
 1. Final tagline; the proposed wording is “The local integration queue for coding agents. Push with Git; mai validates, lands, and keeps every agent in sync.”
 2. Default merge mode with a configured gate; `textual` is recommended. Without a gate, use conservative path rejection.
 3. Default validation mode and slot count; pipeline with two slots is recommended, pending S4.
-4. Default full-tier failure policy; validated `revert` with freeze fallback is recommended.
+4. Default full-tier failure policy; bounded `fix-forward` with a validated revert backstop and freeze only if that revert fails is recommended. S4 determines the window.
 5. Whether M1b precedes the external-users gate; recommended, not an accepted sequencing constraint yet.
 6. Initial merge-rule example ecosystems; Cargo, npm and uv are recommended.
+7. Who can grant `sev` and `high`: humans only, or also a designated orchestrator token; both with audit is recommended, not authorized yet.
+8. Whether to allow an explicitly configured narrower `check.sev_gate` for severe fixes, pinned to trunk and recorded in evidence with mandatory full confirmation. This exception is not accepted: the normal gate remains required.
 
 These decisions do not authorize weakened validation evidence. Batch tips and intermediate revisions must not be reported as equivalent evidence. M4 raw-context access/handoff and concrete retention limits still require a design before implementation; sharing intent does not authorize sharing raw context.
 
 ## Success measurements
 
-Collect from M1 and expose through the proposed `mai status --metrics`; no rewrite measurements exist yet. Record p50/p95 rejection-to-reland, detected-breakage-to-green, and (from M4) agent-death-to-resumed-landing. Track full-tier failures per landed change and revert rate as trunk guardrails. Split time to land into queue wait and validation; include gate duration, slot utilization, discarded speculation, reason-code mix, flaky rate and human interventions. Add late-conflict waste from M3 and resume success from M4. Compare equivalent repository workloads, hardware, suite versions and warm/cold conditions against a worktree/PR baseline.
+Collect from M1 and expose through the proposed `mai status --metrics`; no rewrite measurements exist yet. Record p50/p95 rejection-to-reland, detected-breakage-to-green, and (from M4) agent-death-to-resumed-landing. Track full-tier failures per landed change and revert rate as trunk guardrails. Split time to land into queue wait and validation; include gate duration, slot utilization, discarded speculation, reason-code mix and flaky rate. Report time to land per priority class, human interventions including grants, lease preemptions, aging promotions and fix-forward success within the window versus reverts. Add scope-drift rate from M2, late-conflict waste from M3 and resume success from M4. Compare equivalent repository workloads, hardware, suite versions and warm/cold conditions against a worktree/PR baseline.
 
 ## Possible futures
 
