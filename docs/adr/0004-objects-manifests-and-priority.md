@@ -37,6 +37,10 @@ Priority never skips or weakens the normal gate. check.sev_gate remains an unres
 
 ## Qualification and risks
 
+[S1 (#51)](https://github.com/maida-ai/mai/issues/51) was accepted on 2026-10-15; its [report](../spikes/s1/README.md) and [evidence](../spikes/s1/evidence/README.md) qualify Git transport and typed policy rejection for `mai.fixes`, `mai.priority` and `mai.touches`. The fixture accepts valid low-priority/touch declarations, rejects malformed or oversized options, duplicate options, unauthorized elevation and inactive incident references, and admits a synthetic scoped severe fix for an authenticated identity. Client-declared file identity cannot authorize that elevated request.
+
+This evidence uses synthetic authentication/grants and provisional option grammar and limits, not production policy. Options are collected before policy-limit rejection, so the result does not establish bounded memory use while receiving malicious input. Real grant issuance, expiry/revocation and roles, priority scheduling and starvation, authoritative manifests and precise touch comparison remain separate qualification or implementation work. S1 does not accept this ADR, settle grant roles, make declared touches authoritative or enable a narrower severe gate.
+
 S4 varies priority mix, failures/flakes/conflicts, sequential/pipeline/batch modes and 5/15/30-minute fix windows versus immediate revert. Publish per-class time-to-land, time-to-green and changes stacked on red; choose mode/slots/window only from qualified results. Policy values such as grant TTL, grace, aging and sev cap are proposed configuration values, not measured guarantees.
 
 | Risk | Likelihood | Impact | Mitigation | Spike |
