@@ -1,0 +1,58 @@
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci/typescript-0/repo command=git ["init"]
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: will change to "main" in Git 3.0. To configure the initial branch name
+hint: to use in all of your new repositories, which will suppress this warning,
+hint: call:
+hint:
+hint: 	git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint: 	git branch -m <name>
+hint:
+hint: Disable this message with "git config set advice.defaultBranchName false"
+Initialized empty Git repository in /home/runner/work/mai/mai/.throwaway/s3-ci/typescript-0/repo/.git/
+exit=exit status: 0 elapsed_s=0.005439700
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci/typescript-0/repo command=git ["remote", "add", "origin", "https://github.com/colinhacks/zod.git"]
+exit=exit status: 0 elapsed_s=0.005337057
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci/typescript-0/repo command=git ["fetch", "--depth", "1", "origin", "e30870369d5b8f31ff4d0130d4439fd997deb523"]
+From https://github.com/colinhacks/zod
+ * branch            e30870369d5b8f31ff4d0130d4439fd997deb523 -> FETCH_HEAD
+exit=exit status: 0 elapsed_s=0.228568268
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci/typescript-0/repo command=git ["checkout", "--detach", "FETCH_HEAD"]
+HEAD is now at e308703 v3.24.2
+exit=exit status: 0 elapsed_s=0.020537871
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci/typescript-0/repo command=git ["rev-parse", "HEAD", "HEAD^{tree}"]
+e30870369d5b8f31ff4d0130d4439fd997deb523
+8ff89ed6e4420cb8cfdc4389e33726db0b59b196
+exit=exit status: 0 elapsed_s=0.005360551
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci/typescript-1/repo command=git ["init"]
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: will change to "main" in Git 3.0. To configure the initial branch name
+hint: to use in all of your new repositories, which will suppress this warning,
+hint: call:
+hint:
+hint: 	git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint: 	git branch -m <name>
+hint:
+hint: Disable this message with "git config set advice.defaultBranchName false"
+Initialized empty Git repository in /home/runner/work/mai/mai/.throwaway/s3-ci/typescript-1/repo/.git/
+exit=exit status: 0 elapsed_s=0.005347215
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci/typescript-1/repo command=git ["remote", "add", "origin", "https://github.com/colinhacks/zod.git"]
+exit=exit status: 0 elapsed_s=0.005348447
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci/typescript-1/repo command=git ["fetch", "--depth", "1", "origin", "e30870369d5b8f31ff4d0130d4439fd997deb523"]
+From https://github.com/colinhacks/zod
+ * branch            e30870369d5b8f31ff4d0130d4439fd997deb523 -> FETCH_HEAD
+exit=exit status: 0 elapsed_s=0.233664869
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci/typescript-1/repo command=git ["checkout", "--detach", "FETCH_HEAD"]
+HEAD is now at e308703 v3.24.2
+exit=exit status: 0 elapsed_s=0.020658108
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci/typescript-1/repo command=git ["rev-parse", "HEAD", "HEAD^{tree}"]
+e30870369d5b8f31ff4d0130d4439fd997deb523
+8ff89ed6e4420cb8cfdc4389e33726db0b59b196
+exit=exit status: 0 elapsed_s=0.005324272

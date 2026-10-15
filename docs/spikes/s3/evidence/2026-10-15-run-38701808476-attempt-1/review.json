@@ -1,0 +1,399 @@
+{
+  "source_sha": "aa8d701f51f7f60c8dda730b67ab550b542c46f8",
+  "source_hashes_verified": true,
+  "platforms": {
+    "linux": {
+      "unit_result": "test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s",
+      "ecosystems": {
+        "rust": {
+          "samples": [
+            {
+              "kind": "bootstrap",
+              "sample": "0",
+              "seconds": "0.737578843",
+              "pass": "true"
+            },
+            {
+              "kind": "cold-gate",
+              "sample": "0",
+              "seconds": "19.550606546",
+              "pass": "false"
+            }
+          ]
+        },
+        "python": {
+          "samples": [
+            {
+              "kind": "bootstrap",
+              "sample": "0",
+              "seconds": "0.300626056",
+              "pass": "true"
+            },
+            {
+              "kind": "cold-gate",
+              "sample": "0",
+              "seconds": "1.102672446",
+              "pass": "true"
+            },
+            {
+              "kind": "raw",
+              "sample": "0",
+              "seconds": "1.037885561",
+              "pass": "true"
+            },
+            {
+              "kind": "warm",
+              "sample": "0",
+              "seconds": "1.039100841",
+              "pass": "true"
+            },
+            {
+              "kind": "raw",
+              "sample": "1",
+              "seconds": "1.02243484",
+              "pass": "true"
+            },
+            {
+              "kind": "warm",
+              "sample": "1",
+              "seconds": "1.039035133",
+              "pass": "true"
+            },
+            {
+              "kind": "raw",
+              "sample": "2",
+              "seconds": "1.127628516",
+              "pass": "true"
+            },
+            {
+              "kind": "warm",
+              "sample": "2",
+              "seconds": "1.04096618",
+              "pass": "true"
+            },
+            {
+              "kind": "raw",
+              "sample": "3",
+              "seconds": "1.01687509",
+              "pass": "true"
+            },
+            {
+              "kind": "warm",
+              "sample": "3",
+              "seconds": "1.019613739",
+              "pass": "true"
+            },
+            {
+              "kind": "raw",
+              "sample": "4",
+              "seconds": "1.018792635",
+              "pass": "true"
+            },
+            {
+              "kind": "warm",
+              "sample": "4",
+              "seconds": "1.024616942",
+              "pass": "true"
+            },
+            {
+              "kind": "invalidated-bootstrap",
+              "sample": "0",
+              "seconds": "0.14274858",
+              "pass": "true"
+            }
+          ],
+          "raw_median_s": 1.02243484,
+          "warm_median_s": 1.039035133,
+          "overhead": 0.016236040039480537,
+          "passes": true
+        },
+        "typescript": {
+          "samples": [
+            {
+              "kind": "bootstrap",
+              "sample": "0",
+              "seconds": "34.228561414",
+              "pass": "true"
+            },
+            {
+              "kind": "cold-gate",
+              "sample": "0",
+              "seconds": "10.325781294",
+              "pass": "true"
+            },
+            {
+              "kind": "raw",
+              "sample": "0",
+              "seconds": "5.97857852",
+              "pass": "true"
+            },
+            {
+              "kind": "warm",
+              "sample": "0",
+              "seconds": "10.024430235",
+              "pass": "true"
+            },
+            {
+              "kind": "raw",
+              "sample": "1",
+              "seconds": "5.964090083",
+              "pass": "true"
+            },
+            {
+              "kind": "warm",
+              "sample": "1",
+              "seconds": "9.926288694",
+              "pass": "true"
+            },
+            {
+              "kind": "raw",
+              "sample": "2",
+              "seconds": "6.087460244",
+              "pass": "true"
+            },
+            {
+              "kind": "warm",
+              "sample": "2",
+              "seconds": "9.99420281",
+              "pass": "true"
+            },
+            {
+              "kind": "raw",
+              "sample": "3",
+              "seconds": "6.097573425",
+              "pass": "true"
+            },
+            {
+              "kind": "warm",
+              "sample": "3",
+              "seconds": "9.996275728",
+              "pass": "true"
+            },
+            {
+              "kind": "raw",
+              "sample": "4",
+              "seconds": "6.031892537",
+              "pass": "true"
+            },
+            {
+              "kind": "warm",
+              "sample": "4",
+              "seconds": "10.014973131",
+              "pass": "true"
+            },
+            {
+              "kind": "invalidated-bootstrap",
+              "sample": "0",
+              "seconds": "0.608824225",
+              "pass": "true"
+            }
+          ],
+          "raw_median_s": 6.031892537,
+          "warm_median_s": 9.996275728,
+          "overhead": 0.6572370390689539,
+          "passes": false
+        }
+      },
+      "isolation": "port_collision_detected=true retry_ephemeral_port=true first=127.0.0.1:39523 second=127.0.0.1:33269\nsubprocess_slot_collision_retry=true distinct_ports=true\ncow_available=false safe_copy_isolation=true windows_cow_probe_not_implemented=false\n",
+      "cancellation": "parent_reaped=true descendant_heartbeat_stopped=true\n"
+    },
+    "windows": {
+      "unit_result": "test result: FAILED. 8 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s"
+    },
+    "macos": {
+      "unit_result": "test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s",
+      "ecosystems": {
+        "rust": {
+          "samples": [
+            {
+              "kind": "bootstrap",
+              "sample": "0",
+              "seconds": "0.963112375",
+              "pass": "true"
+            },
+            {
+              "kind": "cold-gate",
+              "sample": "0",
+              "seconds": "10.431785292",
+              "pass": "false"
+            }
+          ]
+        },
+        "python": {
+          "samples": [
+            {
+              "kind": "bootstrap",
+              "sample": "0",
+              "seconds": "0.656185625",
+              "pass": "true"
+            },
+            {
+              "kind": "cold-gate",
+              "sample": "0",
+              "seconds": "0.845190208",
+              "pass": "true"
+            },
+            {
+              "kind": "raw",
+              "sample": "0",
+              "seconds": "0.727745083",
+              "pass": "true"
+            },
+            {
+              "kind": "warm",
+              "sample": "0",
+              "seconds": "0.708214583",
+              "pass": "true"
+            },
+            {
+              "kind": "raw",
+              "sample": "1",
+              "seconds": "0.704431791",
+              "pass": "true"
+            },
+            {
+              "kind": "warm",
+              "sample": "1",
+              "seconds": "0.694417583",
+              "pass": "true"
+            },
+            {
+              "kind": "raw",
+              "sample": "2",
+              "seconds": "0.700886667",
+              "pass": "true"
+            },
+            {
+              "kind": "warm",
+              "sample": "2",
+              "seconds": "0.733335834",
+              "pass": "true"
+            },
+            {
+              "kind": "raw",
+              "sample": "3",
+              "seconds": "0.744270709",
+              "pass": "true"
+            },
+            {
+              "kind": "warm",
+              "sample": "3",
+              "seconds": "0.679028666",
+              "pass": "true"
+            },
+            {
+              "kind": "raw",
+              "sample": "4",
+              "seconds": "0.701054708",
+              "pass": "true"
+            },
+            {
+              "kind": "warm",
+              "sample": "4",
+              "seconds": "0.706549333",
+              "pass": "true"
+            },
+            {
+              "kind": "invalidated-bootstrap",
+              "sample": "0",
+              "seconds": "0.14173425",
+              "pass": "true"
+            }
+          ],
+          "raw_median_s": 0.704431791,
+          "warm_median_s": 0.706549333,
+          "overhead": 0.003006028443142794,
+          "passes": true
+        },
+        "typescript": {
+          "samples": [
+            {
+              "kind": "bootstrap",
+              "sample": "0",
+              "seconds": "27.693882709",
+              "pass": "true"
+            },
+            {
+              "kind": "cold-gate",
+              "sample": "0",
+              "seconds": "5.9352378340000005",
+              "pass": "true"
+            },
+            {
+              "kind": "raw",
+              "sample": "0",
+              "seconds": "3.040369084",
+              "pass": "true"
+            },
+            {
+              "kind": "warm",
+              "sample": "0",
+              "seconds": "4.873397458",
+              "pass": "true"
+            },
+            {
+              "kind": "raw",
+              "sample": "1",
+              "seconds": "3.266463625",
+              "pass": "true"
+            },
+            {
+              "kind": "warm",
+              "sample": "1",
+              "seconds": "4.832648333",
+              "pass": "true"
+            },
+            {
+              "kind": "raw",
+              "sample": "2",
+              "seconds": "3.217071",
+              "pass": "true"
+            },
+            {
+              "kind": "warm",
+              "sample": "2",
+              "seconds": "4.709182334",
+              "pass": "true"
+            },
+            {
+              "kind": "raw",
+              "sample": "3",
+              "seconds": "3.6711801250000002",
+              "pass": "true"
+            },
+            {
+              "kind": "warm",
+              "sample": "3",
+              "seconds": "5.718746208",
+              "pass": "true"
+            },
+            {
+              "kind": "raw",
+              "sample": "4",
+              "seconds": "3.2084671670000002",
+              "pass": "true"
+            },
+            {
+              "kind": "warm",
+              "sample": "4",
+              "seconds": "4.915857583",
+              "pass": "true"
+            },
+            {
+              "kind": "invalidated-bootstrap",
+              "sample": "0",
+              "seconds": "0.379361416",
+              "pass": "true"
+            }
+          ],
+          "raw_median_s": 3.217071,
+          "warm_median_s": 4.873397458,
+          "overhead": 0.5148554253232211,
+          "passes": false
+        }
+      },
+      "isolation": "port_collision_detected=true retry_ephemeral_port=true first=127.0.0.1:49169 second=127.0.0.1:49170\nsubprocess_slot_collision_retry=true distinct_ports=true\ncow_available=true safe_copy_isolation=true windows_cow_probe_not_implemented=false\n",
+      "cancellation": "parent_reaped=true descendant_heartbeat_stopped=true\n"
+    }
+  }
+}

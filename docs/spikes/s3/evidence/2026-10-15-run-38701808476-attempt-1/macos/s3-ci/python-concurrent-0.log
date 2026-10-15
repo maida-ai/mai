@@ -1,0 +1,20 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/.venv/bin/python ["-m", "pytest"]
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-8.1.1, pluggy-1.4.0
+rootdir: /Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo
+configfile: pyproject.toml
+testpaths: tests
+collected 297 items
+
+tests/test_itsdangerous/test_encoding.py ........                        [  2%]
+tests/test_itsdangerous/test_serializer.py ............................. [ 12%]
+............                                                             [ 16%]
+tests/test_itsdangerous/test_signer.py .................                 [ 22%]
+tests/test_itsdangerous/test_timed.py .................................. [ 33%]
+...................................................................      [ 56%]
+tests/test_itsdangerous/test_url_safe.py ............................... [ 66%]
+........................................................................ [ 90%]
+...........................                                              [100%]
+
+============================= 297 passed in 0.48s ==============================
+exit=exit status: 0 elapsed_s=0.728113667

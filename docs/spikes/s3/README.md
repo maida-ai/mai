@@ -1,37 +1,41 @@
-# S3 qualification: warm validators
+# S3 warm-validator qualification
 
-Status: **NO-GO / evidence pending**. The harness is research infrastructure, not a shipped validator implementation. Neither a green harness run nor a merged PR accepts M0. Refs #53.
+**NO-GO for #53.** All three native jobs failed. Python passes the warm-overhead criterion on Linux/macOS, TypeScript fails it on both, Rust fails before warm sampling, and Windows fails a harness unit assertion before ecosystem execution. Failed criteria are retained, not averaged away.
 
-## Fixtures and gates
+## Observed measurements
 
-| Ecosystem | Pinned source commit | Dependency setup | Native gate |
-| --- | --- | --- | --- |
-| Rust: ripgrep 14.1.1 | `4649aa9700619f94cf9c66876e9549d83420e16c` | `cargo fetch --locked` | `cargo test --locked --workspace` |
-| Python: ItsDangerous 2.2.0 | `096c8d42545d3b68ea21a4f890fb2b2d8979c0bd` | uv Python 3.12 venv, pinned upstream `requirements/tests.txt`, flit_core 3.9.0, editable install without build isolation | environment Python `-m pytest` |
-| TypeScript: Zod 3.24.2 | `e30870369d5b8f31ff4d0130d4439fd997deb523` | Yarn 1.22.22 `install --frozen-lockfile --non-interactive --ignore-scripts` | Yarn `test:ts-jest --runInBand` |
+| Platform / ecosystem | Bootstrap s | Cold gate s | Raw median s | Warm median s | Overhead | Result |
+| --- | --- | --- | --- | --- | --- | --- |
+| Linux / Rust | 0.737579 | 19.550607 | unavailable | unavailable | unavailable | Cold gate failed |
+| macOS / Rust | 0.963112 | 10.431785 | unavailable | unavailable | unavailable | Cold gate failed |
+| Linux / Python | 0.300626 | 1.102672 | 1.022435 | 1.039035 | 1.624% | PASS <15% |
+| macOS / Python | 0.656186 | 0.845190 | 0.704432 | 0.706549 | 0.301% | PASS <15% |
+| Linux / TypeScript | 34.228561 | 10.325781 | 6.031893 | 9.996276 | 65.724% | FAIL <15% |
+| macOS / TypeScript | 27.693883 | 5.935238 | 3.217071 | 4.873397 | 51.486% | FAIL <15% |
+| Windows / all | unavailable | unavailable | unavailable | unavailable | unavailable | Harness stopped before scenarios |
 
-Zod lifecycle hooks are disabled during dependency installation to avoid repository Git-hook setup; native package/test resolution still uses upstream lock and scripts. Python patch versions and installed Cargo/Node/uv versions are recorded, so cross-host comparisons must account for these inputs. First Cargo gate compilation is recorded separately from dependency fetching.
+Each available warm/raw result contains five pairs; review recomputed medians and overhead from the raw TSVs. Bootstrap and cold-gate times are separate measurements. Nine harness units passed on Linux/macOS; Windows passed eight and failed `private_slot_paths`, which compares a native path to a slash-delimited literal. Windows has no ecosystem, isolation or cleanup results; missing artifacts are not passes.
 
-## Acceptance mapping
+## Criterion assessment
 
-| Issue criterion | Evidence produced | Qualification limits |
+| #53 criterion | Observed evidence | Assessment |
 | --- | --- | --- |
-| Three real pinned repositories | `*-setup.log`, `tools.log`, wrapper `sources.sha256` | Network or bootstrap failure remains a failure; no synthetic substitute |
-| Fresh bootstrap, raw gate, warm switching | `*-samples.tsv`, five raw/warm pairs, cold gate | Timing requires otherwise idle host; finite samples do not establish broad workload performance |
-| Each warm overhead <15% | `*-result.log`, strict threshold independently for each ecosystem | Failure never relaxed or averaged across ecosystems |
-| Bootstrap invalidation | Input byte comparison, changed manifest, bootstrap rerun | Harmless input edit exercises invalidation; does not qualify every dependency/toolchain invalidator |
-| Two concurrent slots | `*-concurrent-0.log`, `*-concurrent-1.log`, independent directories and environment | Cooperative variables are not security boundaries |
-| Ports and collision resolution | `isolation.log`, real bind collision and ephemeral retry | Dedicated fixture; upstream gates do not themselves open application servers |
-| Cache reuse cannot hide failure | Native gate over deliberately invalid source | Covers one representative source failure per ecosystem |
-| Ignored/untracked residue | Real Git clean and post-clean assertions | Named venv/node_modules retained intentionally; arbitrary cache poisoning not proven absent |
-| Cancellation and process-group cleanup | `cancellation.log`, spawned child plus descendant heartbeat | Unix process groups; Windows taskkill path awaits native execution; escaped/detached descendants not qualified |
-| COW and safe fallback | `isolation.log`, copy mutation independence | Linux/macOS capability probe; Windows COW probe pending, safe copy supported |
-| Platform support | Native conditional process handling and Git Bash wrapper | Only Linux local execution planned here; macOS/Windows qualification pending |
+| Real Rust/Python/TypeScript repos and pinned commands | ripgrep `4649aa9700619f94cf9c66876e9549d83420e16c`, ItsDangerous `096c8d42545d3b68ea21a4f890fb2b2d8979c0bd`, Zod `e30870369d5b8f31ff4d0130d4439fd997deb523`; native Cargo, uv/pytest and Yarn gates recorded | Inputs exercised on Linux/macOS; Windows blocked |
+| Bootstrap, raw/warm/invalidation; <15% separately | TSVs and result logs; Python passes, TypeScript fails, Rust unavailable | FAIL / incomplete |
+| Rust gate validity | `feature::f1414_no_require_git` expected `bar` and `foo`, got only `bar`, on both hosts | Cold gate failure consistent with documented Git-ancestor temp-dir assumption; isolate cause and rerun |
+| Two slots, private state and ports | Python/TypeScript concurrent gates pass on Linux/macOS; real port collision and subprocess retry recorded | Partial; Rust/Windows not qualified |
+| Stale cache and residue | Broken native gates rejected, ignored/untracked residue removed, input change detected and bootstrap rerun for Python/TypeScript | Partial; invalidation is a harmless manifest-byte edit, not dependency-resolution change |
+| Cancellation and COW/copy | Parent reaped and descendant heartbeat stopped on Linux/macOS; safe-copy independence passes; COW unavailable Linux, available macOS | Partial; Windows not reached and its COW probe remains unimplemented |
+| Reproducible scripts/report | Sources verified; setup failures, logs and samples retained | PASS for reporting, not qualification |
 
-Reproduction and artifact boundaries are documented in the [harness README](../../../experiments/s3/README.md). All raw generated evidence remains under the worktree `.throwaway/` until reviewed and deliberately promoted. External GitHub runs are not inferred from local results. Overlay/lazy work remains deferred.
+## Required follow-up
 
-## Evidence collection
+Fix the Windows path assertion without weakening private-slot isolation; correct or isolate the Rust temporary-directory/Git-ancestor interaction while retaining the upstream gate. Investigate TypeScript switching overhead and demonstrate <15% on fresh native runs, or obtain an explicit accepted redesign rather than relaxing the threshold. Obtain complete Rust and Windows measurements and isolation/cleanup evidence, plus a real bootstrap dependency-resolution invalidation case. Record Windows COW availability with safe-copy fallback. Keep overlay/lazy work deferred unless measurements justify it. No production default or M0 acceptance follows from the passing Python subset.
 
-Qualification evidence will be collected from manual CI workflow runs after this PR is merged. This preparation includes no local evidence snapshots or measured-result claims. Review the resulting artifacts separately before accepting the spike; no workflow is dispatched by this change.
+## Reviewed evidence and verification
 
-The ripgrep temporary-directory fixture assumes no Git ancestor; worktree-local temporary directories can violate that assumption. Resolve or explicitly record that limitation before interpreting Rust measurements. Bootstrap invalidation currently detects manifest byte changes rather than a real dependency-resolution change.
+[Run 38701808476, attempt 1](https://github.com/maida-ai/mai/actions/runs/38701808476) executed `aa8d701f51f7f60c8dda730b67ab550b542c46f8` on 2026-10-15. The [snapshot](evidence/2026-10-15-run-38701808476-attempt-1/README.md) retains every collected artifact file with original and retained SHA-256s, job conclusions, source hashes and independently checked summaries. All recorded harness source hashes match the executed revision. See the [go/no-go decision](go-no-go.md) and [reproduction instructions](../../../experiments/s3/README.md).
+
+This evidence-only review checked source identity, artifact completeness, reported outcomes against raw logs and the executed assertions, documentation links and whitespace. No experiment was rerun or workflow dispatched; no product code, thresholds, defaults or ADR status changed.
+
+Baseline product checks passed during review: `cargo fmt --check`, `cargo clippy --all-targets --locked -- -D warnings` and `cargo test --all-targets --locked` (34 tests). Disposable builds stayed under `.throwaway/`. No new local experiment evidence was generated.

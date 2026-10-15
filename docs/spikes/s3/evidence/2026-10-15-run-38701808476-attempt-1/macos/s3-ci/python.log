@@ -1,0 +1,446 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=uv ["venv", "--python", "3.12"]
+Using CPython 3.12.10 interpreter at: /usr/local/bin/python3.12
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+exit=exit status: 0 elapsed_s=0.246265875
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=uv ["pip", "install", "--python", "/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/.venv/bin/python", "-r", "requirements/tests.txt", "flit_core==3.9.0"]
+Resolved 8 packages in 74ms
+Prepared 8 packages in 53ms
+Installed 8 packages in 7ms
+ + flit-core==3.9.0
+ + freezegun==1.4.0
+ + iniconfig==2.0.0
+ + packaging==24.0
+ + pluggy==1.4.0
+ + pytest==8.1.1
+ + python-dateutil==2.9.0.post0
+ + six==1.16.0
+exit=exit status: 0 elapsed_s=0.189026042
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=uv ["pip", "install", "--python", "/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/.venv/bin/python", "--no-build-isolation", "-e", "."]
+Resolved 1 package in 1ms
+   Building itsdangerous @ file:///Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo
+      Built itsdangerous @ file:///Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo
+Prepared 1 package in 170ms
+Installed 1 package in 0.94ms
+ + itsdangerous==2.2.0 (from file:///Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo)
+exit=exit status: 0 elapsed_s=0.220153875
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/.venv/bin/python ["-m", "pytest"]
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-8.1.1, pluggy-1.4.0
+rootdir: /Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo
+configfile: pyproject.toml
+testpaths: tests
+collected 297 items
+
+tests/test_itsdangerous/test_encoding.py ........                        [  2%]
+tests/test_itsdangerous/test_serializer.py ............................. [ 12%]
+............                                                             [ 16%]
+tests/test_itsdangerous/test_signer.py .................                 [ 22%]
+tests/test_itsdangerous/test_timed.py .................................. [ 33%]
+...................................................................      [ 56%]
+tests/test_itsdangerous/test_url_safe.py ............................... [ 66%]
+........................................................................ [ 90%]
+...........................                                              [100%]
+
+============================= 297 passed in 0.53s ==============================
+exit=exit status: 0 elapsed_s=0.845190208
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/.venv/bin/python ["-m", "pytest"]
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-8.1.1, pluggy-1.4.0
+rootdir: /Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo
+configfile: pyproject.toml
+testpaths: tests
+collected 297 items
+
+tests/test_itsdangerous/test_encoding.py ........                        [  2%]
+tests/test_itsdangerous/test_serializer.py ............................. [ 12%]
+............                                                             [ 16%]
+tests/test_itsdangerous/test_signer.py .................                 [ 22%]
+tests/test_itsdangerous/test_timed.py .................................. [ 33%]
+...................................................................      [ 56%]
+tests/test_itsdangerous/test_url_safe.py ............................... [ 66%]
+........................................................................ [ 90%]
+...........................                                              [100%]
+
+============================= 297 passed in 0.46s ==============================
+exit=exit status: 0 elapsed_s=0.727745083
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=git ["reset", "--hard", "HEAD"]
+HEAD is now at 096c8d4 release version 2.2.0
+exit=exit status: 0 elapsed_s=0.018921584
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/.venv/bin/python ["-m", "pytest"]
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-8.1.1, pluggy-1.4.0
+rootdir: /Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo
+configfile: pyproject.toml
+testpaths: tests
+collected 297 items
+
+tests/test_itsdangerous/test_encoding.py ........                        [  2%]
+tests/test_itsdangerous/test_serializer.py ............................. [ 12%]
+............                                                             [ 16%]
+tests/test_itsdangerous/test_signer.py .................                 [ 22%]
+tests/test_itsdangerous/test_timed.py .................................. [ 33%]
+...................................................................      [ 56%]
+tests/test_itsdangerous/test_url_safe.py ............................... [ 66%]
+........................................................................ [ 90%]
+...........................                                              [100%]
+
+============================= 297 passed in 0.43s ==============================
+exit=exit status: 0 elapsed_s=0.688681542
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/.venv/bin/python ["-m", "pytest"]
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-8.1.1, pluggy-1.4.0
+rootdir: /Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo
+configfile: pyproject.toml
+testpaths: tests
+collected 297 items
+
+tests/test_itsdangerous/test_encoding.py ........                        [  2%]
+tests/test_itsdangerous/test_serializer.py ............................. [ 12%]
+............                                                             [ 16%]
+tests/test_itsdangerous/test_signer.py .................                 [ 22%]
+tests/test_itsdangerous/test_timed.py .................................. [ 33%]
+...................................................................      [ 56%]
+tests/test_itsdangerous/test_url_safe.py ............................... [ 66%]
+........................................................................ [ 90%]
+...........................                                              [100%]
+
+============================= 297 passed in 0.44s ==============================
+exit=exit status: 0 elapsed_s=0.704431791
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=git ["reset", "--hard", "HEAD"]
+HEAD is now at 096c8d4 release version 2.2.0
+exit=exit status: 0 elapsed_s=0.028547417
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/.venv/bin/python ["-m", "pytest"]
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-8.1.1, pluggy-1.4.0
+rootdir: /Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo
+configfile: pyproject.toml
+testpaths: tests
+collected 297 items
+
+tests/test_itsdangerous/test_encoding.py ........                        [  2%]
+tests/test_itsdangerous/test_serializer.py ............................. [ 12%]
+............                                                             [ 16%]
+tests/test_itsdangerous/test_signer.py .................                 [ 22%]
+tests/test_itsdangerous/test_timed.py .................................. [ 33%]
+...................................................................      [ 56%]
+tests/test_itsdangerous/test_url_safe.py ............................... [ 66%]
+........................................................................ [ 90%]
+...........................                                              [100%]
+
+============================= 297 passed in 0.43s ==============================
+exit=exit status: 0 elapsed_s=0.665278709
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/.venv/bin/python ["-m", "pytest"]
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-8.1.1, pluggy-1.4.0
+rootdir: /Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo
+configfile: pyproject.toml
+testpaths: tests
+collected 297 items
+
+tests/test_itsdangerous/test_encoding.py ........                        [  2%]
+tests/test_itsdangerous/test_serializer.py ............................. [ 12%]
+............                                                             [ 16%]
+tests/test_itsdangerous/test_signer.py .................                 [ 22%]
+tests/test_itsdangerous/test_timed.py .................................. [ 33%]
+...................................................................      [ 56%]
+tests/test_itsdangerous/test_url_safe.py ............................... [ 66%]
+........................................................................ [ 90%]
+...........................                                              [100%]
+
+============================= 297 passed in 0.46s ==============================
+exit=exit status: 0 elapsed_s=0.700886667
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=git ["reset", "--hard", "HEAD"]
+HEAD is now at 096c8d4 release version 2.2.0
+exit=exit status: 0 elapsed_s=0.011414042
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/.venv/bin/python ["-m", "pytest"]
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-8.1.1, pluggy-1.4.0
+rootdir: /Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo
+configfile: pyproject.toml
+testpaths: tests
+collected 297 items
+
+tests/test_itsdangerous/test_encoding.py ........                        [  2%]
+tests/test_itsdangerous/test_serializer.py ............................. [ 12%]
+............                                                             [ 16%]
+tests/test_itsdangerous/test_signer.py .................                 [ 22%]
+tests/test_itsdangerous/test_timed.py .................................. [ 33%]
+...................................................................      [ 56%]
+tests/test_itsdangerous/test_url_safe.py ............................... [ 66%]
+........................................................................ [ 90%]
+...........................                                              [100%]
+
+============================= 297 passed in 0.46s ==============================
+exit=exit status: 0 elapsed_s=0.721419625
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/.venv/bin/python ["-m", "pytest"]
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-8.1.1, pluggy-1.4.0
+rootdir: /Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo
+configfile: pyproject.toml
+testpaths: tests
+collected 297 items
+
+tests/test_itsdangerous/test_encoding.py ........                        [  2%]
+tests/test_itsdangerous/test_serializer.py ............................. [ 12%]
+............                                                             [ 16%]
+tests/test_itsdangerous/test_signer.py .................                 [ 22%]
+tests/test_itsdangerous/test_timed.py .................................. [ 33%]
+...................................................................      [ 56%]
+tests/test_itsdangerous/test_url_safe.py ............................... [ 66%]
+........................................................................ [ 90%]
+...........................                                              [100%]
+
+============================= 297 passed in 0.48s ==============================
+exit=exit status: 0 elapsed_s=0.744270709
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=git ["reset", "--hard", "HEAD"]
+HEAD is now at 096c8d4 release version 2.2.0
+exit=exit status: 0 elapsed_s=0.010891042
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/.venv/bin/python ["-m", "pytest"]
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-8.1.1, pluggy-1.4.0
+rootdir: /Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo
+configfile: pyproject.toml
+testpaths: tests
+collected 297 items
+
+tests/test_itsdangerous/test_encoding.py ........                        [  2%]
+tests/test_itsdangerous/test_serializer.py ............................. [ 12%]
+............                                                             [ 16%]
+tests/test_itsdangerous/test_signer.py .................                 [ 22%]
+tests/test_itsdangerous/test_timed.py .................................. [ 33%]
+...................................................................      [ 56%]
+tests/test_itsdangerous/test_url_safe.py ............................... [ 66%]
+........................................................................ [ 90%]
+...........................                                              [100%]
+
+============================= 297 passed in 0.44s ==============================
+exit=exit status: 0 elapsed_s=0.667584666
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/.venv/bin/python ["-m", "pytest"]
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-8.1.1, pluggy-1.4.0
+rootdir: /Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo
+configfile: pyproject.toml
+testpaths: tests
+collected 297 items
+
+tests/test_itsdangerous/test_encoding.py ........                        [  2%]
+tests/test_itsdangerous/test_serializer.py ............................. [ 12%]
+............                                                             [ 16%]
+tests/test_itsdangerous/test_signer.py .................                 [ 22%]
+tests/test_itsdangerous/test_timed.py .................................. [ 33%]
+...................................................................      [ 56%]
+tests/test_itsdangerous/test_url_safe.py ............................... [ 66%]
+........................................................................ [ 90%]
+...........................                                              [100%]
+
+============================= 297 passed in 0.45s ==============================
+exit=exit status: 0 elapsed_s=0.701054708
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=git ["reset", "--hard", "HEAD"]
+HEAD is now at 096c8d4 release version 2.2.0
+exit=exit status: 0 elapsed_s=0.011266125
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/.venv/bin/python ["-m", "pytest"]
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-8.1.1, pluggy-1.4.0
+rootdir: /Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo
+configfile: pyproject.toml
+testpaths: tests
+collected 297 items
+
+tests/test_itsdangerous/test_encoding.py ........                        [  2%]
+tests/test_itsdangerous/test_serializer.py ............................. [ 12%]
+............                                                             [ 16%]
+tests/test_itsdangerous/test_signer.py .................                 [ 22%]
+tests/test_itsdangerous/test_timed.py .................................. [ 33%]
+...................................................................      [ 56%]
+tests/test_itsdangerous/test_url_safe.py ............................... [ 66%]
+........................................................................ [ 90%]
+...........................                                              [100%]
+
+============================= 297 passed in 0.44s ==============================
+exit=exit status: 0 elapsed_s=0.694575125
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=git ["reset", "--hard", "HEAD"]
+HEAD is now at 096c8d4 release version 2.2.0
+exit=exit status: 0 elapsed_s=0.030783541
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=uv ["pip", "install", "--python", "/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/.venv/bin/python", "-r", "requirements/tests.txt", "flit_core==3.9.0"]
+Audited 8 packages in 1ms
+exit=exit status: 0 elapsed_s=0.024055041
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=uv ["pip", "install", "--python", "/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/.venv/bin/python", "--no-build-isolation", "-e", "."]
+Resolved 1 package in 1ms
+   Building itsdangerous @ file:///Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo
+      Built itsdangerous @ file:///Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo
+Prepared 1 package in 68ms
+Uninstalled 1 package in 0.55ms
+Installed 1 package in 0.99ms
+ ~ itsdangerous==2.2.0 (from file:///Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo)
+exit=exit status: 0 elapsed_s=0.117185916
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=git ["reset", "--hard", "HEAD"]
+HEAD is now at 096c8d4 release version 2.2.0
+exit=exit status: 0 elapsed_s=0.036204500
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/.venv/bin/python ["-m", "pytest"]
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-8.1.1, pluggy-1.4.0
+rootdir: /Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo
+configfile: pyproject.toml
+testpaths: tests
+collected 0 items / 5 errors
+
+==================================== ERRORS ====================================
+__________ ERROR collecting tests/test_itsdangerous/test_encoding.py ___________
+.venv/lib/python3.12/site-packages/_pytest/python.py:520: in importtestmodule
+    mod = import_path(
+.venv/lib/python3.12/site-packages/_pytest/pathlib.py:584: in import_path
+    importlib.import_module(module_name)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+.venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:178: in exec_module
+    exec(co, module.__dict__)
+tests/test_itsdangerous/test_encoding.py:3: in <module>
+    from itsdangerous.encoding import base64_decode
+E     File "/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/src/itsdangerous/__init__.py", line 1
+E       THIS IS DELIBERATELY INVALID SOURCE !!!
+E            ^^
+E   SyntaxError: invalid syntax
+_________ ERROR collecting tests/test_itsdangerous/test_serializer.py __________
+.venv/lib/python3.12/site-packages/_pytest/python.py:520: in importtestmodule
+    mod = import_path(
+.venv/lib/python3.12/site-packages/_pytest/pathlib.py:584: in import_path
+    importlib.import_module(module_name)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+.venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:178: in exec_module
+    exec(co, module.__dict__)
+tests/test_itsdangerous/test_serializer.py:14: in <module>
+    from itsdangerous.exc import BadPayload
+E     File "/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/src/itsdangerous/__init__.py", line 1
+E       THIS IS DELIBERATELY INVALID SOURCE !!!
+E            ^^
+E   SyntaxError: invalid syntax
+___________ ERROR collecting tests/test_itsdangerous/test_signer.py ____________
+.venv/lib/python3.12/site-packages/_pytest/python.py:520: in importtestmodule
+    mod = import_path(
+.venv/lib/python3.12/site-packages/_pytest/pathlib.py:584: in import_path
+    importlib.import_module(module_name)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+.venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:178: in exec_module
+    exec(co, module.__dict__)
+tests/test_itsdangerous/test_signer.py:6: in <module>
+    from itsdangerous.exc import BadSignature
+E     File "/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/src/itsdangerous/__init__.py", line 1
+E       THIS IS DELIBERATELY INVALID SOURCE !!!
+E            ^^
+E   SyntaxError: invalid syntax
+____________ ERROR collecting tests/test_itsdangerous/test_timed.py ____________
+.venv/lib/python3.12/site-packages/_pytest/python.py:520: in importtestmodule
+    mod = import_path(
+.venv/lib/python3.12/site-packages/_pytest/pathlib.py:584: in import_path
+    importlib.import_module(module_name)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+.venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:178: in exec_module
+    exec(co, module.__dict__)
+tests/test_itsdangerous/test_timed.py:9: in <module>
+    from itsdangerous.exc import BadTimeSignature
+E     File "/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/src/itsdangerous/__init__.py", line 1
+E       THIS IS DELIBERATELY INVALID SOURCE !!!
+E            ^^
+E   SyntaxError: invalid syntax
+__________ ERROR collecting tests/test_itsdangerous/test_url_safe.py ___________
+.venv/lib/python3.12/site-packages/_pytest/python.py:520: in importtestmodule
+    mod = import_path(
+.venv/lib/python3.12/site-packages/_pytest/pathlib.py:584: in import_path
+    importlib.import_module(module_name)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+.venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:178: in exec_module
+    exec(co, module.__dict__)
+tests/test_itsdangerous/test_url_safe.py:5: in <module>
+    from itsdangerous.url_safe import URLSafeSerializer
+E     File "/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo/src/itsdangerous/__init__.py", line 1
+E       THIS IS DELIBERATELY INVALID SOURCE !!!
+E            ^^
+E   SyntaxError: invalid syntax
+=========================== short test summary info ============================
+ERROR tests/test_itsdangerous/test_encoding.py
+ERROR tests/test_itsdangerous/test_serializer.py
+ERROR tests/test_itsdangerous/test_signer.py
+ERROR tests/test_itsdangerous/test_timed.py
+ERROR tests/test_itsdangerous/test_url_safe.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 5 errors during collection !!!!!!!!!!!!!!!!!!!!
+============================== 5 errors in 0.23s ===============================
+exit=exit status: 2 elapsed_s=0.482701625
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=git ["reset", "--hard", "HEAD"]
+HEAD is now at 096c8d4 release version 2.2.0
+exit=exit status: 0 elapsed_s=0.032924833
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-0/repo command=git ["clean", "-fdx", "-e", ".venv", "-e", "node_modules"]
+Removing .pytest_cache/
+Removing s3-ignored-residue
+Removing s3-untracked-residue
+exit=exit status: 0 elapsed_s=0.029866959
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-1/repo command=uv ["venv", "--python", "3.12"]
+Using CPython 3.12.10 interpreter at: /usr/local/bin/python3.12
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+exit=exit status: 0 elapsed_s=0.095435625
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-1/repo command=uv ["pip", "install", "--python", "/Users/runner/work/mai/mai/.throwaway/s3-ci/python-1/repo/.venv/bin/python", "-r", "requirements/tests.txt", "flit_core==3.9.0"]
+Resolved 8 packages in 67ms
+Prepared 8 packages in 58ms
+Installed 8 packages in 5ms
+ + flit-core==3.9.0
+ + freezegun==1.4.0
+ + iniconfig==2.0.0
+ + packaging==24.0
+ + pluggy==1.4.0
+ + pytest==8.1.1
+ + python-dateutil==2.9.0.post0
+ + six==1.16.0
+exit=exit status: 0 elapsed_s=0.179482167
+cwd=/Users/runner/work/mai/mai/.throwaway/s3-ci/python-1/repo command=uv ["pip", "install", "--python", "/Users/runner/work/mai/mai/.throwaway/s3-ci/python-1/repo/.venv/bin/python", "--no-build-isolation", "-e", "."]
+Resolved 1 package in 0.94ms
+   Building itsdangerous @ file:///Users/runner/work/mai/mai/.throwaway/s3-ci/python-1/repo
+      Built itsdangerous @ file:///Users/runner/work/mai/mai/.throwaway/s3-ci/python-1/repo
+Prepared 1 package in 74ms
+Installed 1 package in 1ms
+ + itsdangerous==2.2.0 (from file:///Users/runner/work/mai/mai/.throwaway/s3-ci/python-1/repo)
+exit=exit status: 0 elapsed_s=0.125114750

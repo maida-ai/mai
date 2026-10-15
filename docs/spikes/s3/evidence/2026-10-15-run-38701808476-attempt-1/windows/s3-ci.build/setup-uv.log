@@ -1,0 +1,6 @@
+Collecting uv==0.6.17
+  Downloading uv-0.6.17-py3-none-win_amd64.whl.metadata (11 kB)
+Downloading uv-0.6.17-py3-none-win_amd64.whl (18.0 MB)
+   ---------------------------------------- 18.0/18.0 MB 66.6 MB/s  0:00:00
+Installing collected packages: uv
+Successfully installed uv-0.6.17

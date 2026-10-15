@@ -1,0 +1,13 @@
+
+running 9 tests
+test tests::bootstrap_inputs_are_declared ... ok
+test tests::private_slot_paths ... ok
+test tests::invalid_measurements_rejected ... ok
+test tests::median_resists_outlier ... ok
+test tests::unix_roots_preserve_literal_backslashes ... ok
+test tests::threshold_is_strict ... ok
+test tests::windows_local_roots_drop_extended_prefix ... ok
+test tests::windows_unc_and_device_roots_are_rejected ... ok
+test tests::command_failures_are_not_passes ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
