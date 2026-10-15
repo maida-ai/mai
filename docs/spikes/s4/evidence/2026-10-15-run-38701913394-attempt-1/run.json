@@ -1,0 +1,14 @@
+{
+  "id": 38701913394,
+  "run_attempt": 1,
+  "name": "S4 evidence (all) by @z-a-f",
+  "event": "workflow_dispatch",
+  "head_sha": "38e1f8073b939a28cea2a887307994620549bdc5",
+  "head_branch": "main",
+  "status": "completed",
+  "conclusion": "success",
+  "created_at": "2026-10-15T07:54:21Z",
+  "updated_at": "2026-10-15T07:55:15Z",
+  "html_url": "https://github.com/maida-ai/mai/actions/runs/38701913394",
+  "path": ".github/workflows/experiment-s4.yml"
+}

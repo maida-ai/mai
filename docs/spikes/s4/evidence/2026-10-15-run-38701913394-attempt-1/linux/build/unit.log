@@ -1,0 +1,20 @@
+
+running 16 tests
+test input::tests::import_rejects_cycles_bad_grants_unknown_schema_and_unbounded_input ... ok
+test policy::tests::expired_and_lower_priority_requests_cannot_steal_lease ... ok
+test policy::tests::lease_grace_revocation_expiry_and_landing_recheck ... ok
+test recovery::tests::failed_revert_freezes_and_attempt_budget_is_bounded ... ok
+test recovery::tests::gate_pass_requires_full_confirmation_and_fixed_deadline ... ok
+test recovery::tests::immediate_revert_does_not_attempt_a_fix ... ok
+test recovery::tests::inconclusive_never_compensates_or_grants ... ok
+test tests::batch_failure_splits_and_labels_weaker_evidence ... ok
+test tests::empty_percentiles_are_missing_not_zero ... ok
+test tests::dependency_chain_inherits_then_releases_without_cap_deadlock ... ok
+test tests::flakes_retry_same_candidate_and_failure_invalidates_descendants ... ok
+test tests::grant_expiry_revocation_identity_and_aging_cap ... ok
+test tests::running_inherited_priority_reconciles_severe_cap ... ok
+test tests::severe_preemption_preserves_submission_and_lease_grace ... ok
+test tests::stale_parent_config_tree_and_failed_results_never_pass ... ok
+test tests::seeded_replay_is_identical_and_pipeline_can_help_synthetic_load ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s

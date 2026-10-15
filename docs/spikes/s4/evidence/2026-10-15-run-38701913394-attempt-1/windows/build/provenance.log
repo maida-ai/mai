@@ -1,0 +1,18 @@
+2026-10-15T07:54:57Z
+38e1f8073b939a28cea2a887307994620549bdc5
+git version 2.55.0.windows.5
+rustc 1.99.0 (b940084d7 2026-09-28)
+binary: rustc
+commit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4
+commit-date: 2026-09-28
+host: x86_64-pc-windows-msvc
+release: 1.99.0
+LLVM version: 23.1.1
+MINGW64_NT-10.0-26100 3.6.10-710e5275.x86_64 x86_64
+runner_os=Windows
+runner_arch=X64
+image_os=win25-vs2026
+image_version=20260925.250.1
+run_id=38701913394
+run_attempt=1
+command=.throwaway/s4-ci.build/s4.exe run .throwaway/s4-ci; workload=built-in-grid

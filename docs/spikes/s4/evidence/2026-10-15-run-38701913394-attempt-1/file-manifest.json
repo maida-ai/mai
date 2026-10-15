@@ -1,0 +1,2891 @@
+[
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "build/compile-unit.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/build/compile-unit.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "build/compile.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/build/compile.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "build/format.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/build/format.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "build/provenance.log",
+    "original_bytes": 499,
+    "original_sha256": "aac7d5a76b51f73d19007de2242b6298f75990f86e9a240fddf93fa582ffaa89",
+    "retained_path": "linux/build/provenance.log",
+    "retained_sha256": "aac7d5a76b51f73d19007de2242b6298f75990f86e9a240fddf93fa582ffaa89",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "build/run.log",
+    "original_bytes": 7048,
+    "original_sha256": "a34f93ac13d6cd9b2c8e898be1cb3bbea1d69930c7952146012216a2632b0d70",
+    "retained_path": "linux/build/run.log",
+    "retained_sha256": "a34f93ac13d6cd9b2c8e898be1cb3bbea1d69930c7952146012216a2632b0d70",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "build/sources.sha256",
+    "original_bytes": 919,
+    "original_sha256": "b455824f4d1aa3898f6ff8e70dfe27f5b2f7b713397a81035d46467461449a2a",
+    "retained_path": "linux/build/sources.sha256",
+    "retained_sha256": "b455824f4d1aa3898f6ff8e70dfe27f5b2f7b713397a81035d46467461449a2a",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "build/unit.log",
+    "original_bytes": 1326,
+    "original_sha256": "73c3ad19deb440501e8a3f078f18c1d29ecda1a8934b4f32d08ceb26f4438053",
+    "retained_path": "linux/build/unit.log",
+    "retained_sha256": "0c6028049e0d191acafa62d3acb832550151b6f0be567b5dafd6e5b17eb81c93",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/input.log",
+    "original_bytes": 403,
+    "original_sha256": "4ffd0c52d7f9c6ade1ea69e2f1405199ba39ae93110444166df0bd8f4f310f36",
+    "retained_path": "linux/results/input.log",
+    "retained_sha256": "4ffd0c52d7f9c6ade1ea69e2f1405199ba39ae93110444166df0bd8f4f310f36",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/metrics.log",
+    "original_bytes": 44696,
+    "original_sha256": "56d607d71f52bbc090d8cbb86f8703212360f432d28c7b5966cda5a6a678e60d",
+    "retained_path": "linux/results/metrics.log",
+    "retained_sha256": "56d607d71f52bbc090d8cbb86f8703212360f432d28c7b5966cda5a6a678e60d",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/policy.log",
+    "original_bytes": 204,
+    "original_sha256": "5f4747764f998add8b941a8bb6315eef6ccb7aba443e42af9ab01fea62303191",
+    "retained_path": "linux/results/policy.log",
+    "retained_sha256": "5f4747764f998add8b941a8bb6315eef6ccb7aba443e42af9ab01fea62303191",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/recovery.log",
+    "original_bytes": 262486,
+    "original_sha256": "0ba431c092c6af4f55916260b2662f6bfc5672f78bc80608b1df0b228be54ad2",
+    "retained_path": "linux/results/recovery.log",
+    "retained_sha256": "0ba431c092c6af4f55916260b2662f6bfc5672f78bc80608b1df0b228be54ad2",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s001.log",
+    "original_bytes": 152767,
+    "original_sha256": "8588ff8a00a48759e13e2419e58d228e1b80bc1ee9650021e385475824adae32",
+    "retained_path": "linux/results/s001.log.gz",
+    "retained_sha256": "12949f4393c902a7ae7688802a32fc6edc384ed1a18bf1421ad7ff6f63b2e9ec",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s002.log",
+    "original_bytes": 153677,
+    "original_sha256": "d9f7ed806f78f3b298e1816071fc320af7c8505b6a28a5036cee5226d43182e8",
+    "retained_path": "linux/results/s002.log.gz",
+    "retained_sha256": "9e62822c19729342d0f988ba78ab7164a625de70ee225d3d2fd59277e71a953c",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s003.log",
+    "original_bytes": 142442,
+    "original_sha256": "788999709474348a236bca9bf6283d60683c1e844437c1fac0bc0ced075b3727",
+    "retained_path": "linux/results/s003.log.gz",
+    "retained_sha256": "0abfd6bf99caa3cf014c73ae996a2ee6198a334d02a62d0bcb04ba9e69449bc8",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s004.log",
+    "original_bytes": 83218,
+    "original_sha256": "015009e12b85679d9e0f31edf34ef89c7b5b51de927f1fd60904324e743f5293",
+    "retained_path": "linux/results/s004.log.gz",
+    "retained_sha256": "17b0ab50a74d2775c9ca5ca0981955da6178702f33c129f43af4778fae959a3f",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s005.log",
+    "original_bytes": 151120,
+    "original_sha256": "17c6f25f0affc0d28c9d12e122daef66991b03e53ea9be6becd0698e8a0c4fa4",
+    "retained_path": "linux/results/s005.log.gz",
+    "retained_sha256": "ac8e2b178121fd3e265e40d2bcd9aade3f28b4275ccc3510a53550a09430a498",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s006.log",
+    "original_bytes": 152554,
+    "original_sha256": "a41ca31298e1305390ee0b6af559ae76920545c18541987ec20ce7eb14b2afcb",
+    "retained_path": "linux/results/s006.log.gz",
+    "retained_sha256": "9605e8d9834ed87ba8c310c606bd6b9483c4e8500494ef9559978ac6df68ef0b",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s007.log",
+    "original_bytes": 144264,
+    "original_sha256": "2811fbd2985abe5a33289c5fcedca3c62970412e28b090e290ef40e8fc5d69a9",
+    "retained_path": "linux/results/s007.log.gz",
+    "retained_sha256": "f7be44d305bd688a7c070109e66c027afdabb6701b8006a10dcbf80a24db6e36",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s008.log",
+    "original_bytes": 83113,
+    "original_sha256": "0bbaf96aec4c7c15f62174c821e0996447f3f08ab5f46674c8c090c02cbe8a28",
+    "retained_path": "linux/results/s008.log.gz",
+    "retained_sha256": "802cabefa038be60103182d3449437e7a13bcaf7a1b9079b7335cbfc9364bfc8",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s009.log",
+    "original_bytes": 144393,
+    "original_sha256": "6623d85c01a2ea1bae69812a91db2683a5f71fd8f2333482889ff6f66cf5cd0c",
+    "retained_path": "linux/results/s009.log.gz",
+    "retained_sha256": "79dfb192be2ed38d06acf9f4c0a21bd1b166a8be10384402fb475389cc321c07",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s010.log",
+    "original_bytes": 147969,
+    "original_sha256": "0ef9c4e274b5c474d962c2413b08fa324c83f482c7883811e105b1204f60c701",
+    "retained_path": "linux/results/s010.log.gz",
+    "retained_sha256": "7f86eb02516638c8db1091559f00f67dd24ea01058044676b6d86b3ff988ded1",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s011.log",
+    "original_bytes": 151385,
+    "original_sha256": "9b820904f3a058ff806eb020ea5caacb24862628eec134e20384a16b8aedb52d",
+    "retained_path": "linux/results/s011.log.gz",
+    "retained_sha256": "bdbaa5caffdc107579284189c57c8248cdf0717d0c27cf993dbedb8c10867eb4",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s012.log",
+    "original_bytes": 142874,
+    "original_sha256": "736b2fce59b1a8f6a33a63d5b2a1cf2a170b0c2dba0972a184831bb92ab1ceb4",
+    "retained_path": "linux/results/s012.log.gz",
+    "retained_sha256": "edf087c9c88b4eee861237cffc5a628aba5e7314e0d3de7078358641fe0e0031",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s013.log",
+    "original_bytes": 142631,
+    "original_sha256": "2625252c62f047f4995b93a211756e6e2f7503039298d59c742998cc3811fb38",
+    "retained_path": "linux/results/s013.log.gz",
+    "retained_sha256": "9c3cd787f30632b5cdb005b8e2abe3943ade6b4cf76c13d9a89987adcc19fa5b",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s014.log",
+    "original_bytes": 148217,
+    "original_sha256": "3b2c13e04ef6133d0bca02394a0c6e4f2f3b042eeb67fb510cf88363a5c185c5",
+    "retained_path": "linux/results/s014.log.gz",
+    "retained_sha256": "11fb44301a50f73baff0af2d9ce707c639fb30d7aeb8ab833bf99e9a557f901a",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s015.log",
+    "original_bytes": 153570,
+    "original_sha256": "a4aceaa359f4ec416a5b77f918684867bebce1c6bf548ce081cdbb7a34dec4d7",
+    "retained_path": "linux/results/s015.log.gz",
+    "retained_sha256": "c92fc9b73c5318f838179fdf92c4cfaa9524873dad28d1df4748ed62e065e07f",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s016.log",
+    "original_bytes": 141168,
+    "original_sha256": "9c47bfc72163dd731dcfc410fa063c2732b43b8c6fe6edf1de7326e0df79ccbb",
+    "retained_path": "linux/results/s016.log.gz",
+    "retained_sha256": "586eb5e78bb6613bbb5f3ce6477df5fd01feca1ddd7aeab93f4526f7864c1d5f",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s017.log",
+    "original_bytes": 144339,
+    "original_sha256": "ed932e0ee99e4cc095a38332f507436efecd145f14aae17c358ea5168b1721d8",
+    "retained_path": "linux/results/s017.log.gz",
+    "retained_sha256": "31049001017ddbfd64a3bd337e1daaf2da29865c784190cbd85e92022a5c8d90",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s018.log",
+    "original_bytes": 143299,
+    "original_sha256": "4994c490c441824d8962e47cfa889d82c4930d58127dbc6443778d1ddb088d60",
+    "retained_path": "linux/results/s018.log.gz",
+    "retained_sha256": "1232a53f414239b961439a3be8afb113b4fe76204de360b585fac6211d1ca1be",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s019.log",
+    "original_bytes": 143034,
+    "original_sha256": "985db69adbca2a91a7785dc881bb721e4e90fce3dcc5c22fbc997a3399a3720c",
+    "retained_path": "linux/results/s019.log.gz",
+    "retained_sha256": "5dccc05b8b82b20bb5a5ea96c05c34c9779082d346384173f8f0aff428076c88",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s020.log",
+    "original_bytes": 125759,
+    "original_sha256": "ad20a439d48cb75754a4e9506b15841de8d293fe7e4544822efaa8e77788ddf3",
+    "retained_path": "linux/results/s020.log.gz",
+    "retained_sha256": "9014c724cbdad132b898d7cb398b188793a90bb98bce938beea01f7c60ec4ebb",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s021.log",
+    "original_bytes": 144103,
+    "original_sha256": "f35937e5f2d6e923ea36719a5e0edcbc115d6ec32aff292e95e6462d18cc8fec",
+    "retained_path": "linux/results/s021.log.gz",
+    "retained_sha256": "23ab58fda30f8db4faf94c35d2957b5af986817a23fae1dd870aa7ba7c60e56e",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s022.log",
+    "original_bytes": 144303,
+    "original_sha256": "d7069e9923a92e16a68dcdfb5086695b0a675d89cd36b87f886c677fad1f5e6b",
+    "retained_path": "linux/results/s022.log.gz",
+    "retained_sha256": "4637c940199d53b7f2051f937c842aadab58f6e48b2932b2d3729ed8f77e33ef",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s023.log",
+    "original_bytes": 142798,
+    "original_sha256": "29edd4d340fe05ccd30fda6f16852b8e0b261e5951c5d4f49a56c52d2808210b",
+    "retained_path": "linux/results/s023.log.gz",
+    "retained_sha256": "957ca3281e0082c1b9eaeb50abdfbc18588d8ad042a247e6624f1630d8b7b228",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s024.log",
+    "original_bytes": 126075,
+    "original_sha256": "6ce24355752ea0ecec40e225dd9bd9a8d3496fdce0138cc29f80ca4a266bebba",
+    "retained_path": "linux/results/s024.log.gz",
+    "retained_sha256": "a3ccd885b9d42512a12349ca4f01086e16005fe3ef15767bce33fef4ff558e5e",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s025.log",
+    "original_bytes": 136307,
+    "original_sha256": "48db53780f3590dfdbdf19d7ea2aabfab65a22f047a311d3f5ff5d6eca23e75a",
+    "retained_path": "linux/results/s025.log.gz",
+    "retained_sha256": "3da25ac63564119bb6ee9cf72325072fae3dbbfbf972061dc4c89299b877ab25",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s026.log",
+    "original_bytes": 137707,
+    "original_sha256": "eaa65d023da0371acadc8e510c8d55ab59ec16c70eb8a3ad8d184744c840e197",
+    "retained_path": "linux/results/s026.log.gz",
+    "retained_sha256": "6fd2a6f690b4b4db741f13ba20db8b50c67225fceeb8f1787b6339e80c5a2437",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s027.log",
+    "original_bytes": 138830,
+    "original_sha256": "12b014a619a5bdcd4c740e0d0d52c284a0488b3f9c2fcf9a632b8f9e586b29cf",
+    "retained_path": "linux/results/s027.log.gz",
+    "retained_sha256": "55748e04b23dda08ee05dc082f0c8a8bcdde987396cf9ea9f02d3cbbd39570a1",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s028.log",
+    "original_bytes": 136001,
+    "original_sha256": "e4e17bcdf6709cd8f004bba521fd6b0e00e5ed6bab577a59bb6a69726a1ab99a",
+    "retained_path": "linux/results/s028.log.gz",
+    "retained_sha256": "ef882a5518deaf01468574d6d77a01b03479dbeee79ce822122fff2a03805868",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s029.log",
+    "original_bytes": 136075,
+    "original_sha256": "ec05d47923c576929d3c87115e1268f80ba2524751b1108dfa42c1dc3258b4ae",
+    "retained_path": "linux/results/s029.log.gz",
+    "retained_sha256": "a1706dd1d161d9594156bffd8c4a0b9a90140fb5195ab93bafb71c30d8c92927",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s030.log",
+    "original_bytes": 139768,
+    "original_sha256": "76fa3ea27fa73b6e1db54852cd39eac8e28a9555044902f29e35424bc98b0985",
+    "retained_path": "linux/results/s030.log.gz",
+    "retained_sha256": "c9cd30ff25825b93f6826c251316a5f6e346c8b6021e9116c0f82ae6bce17fdd",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s031.log",
+    "original_bytes": 138590,
+    "original_sha256": "7131ca0b4a1f19da80c549772a6d1c94e6f59b5581314594116e7c80461dd89a",
+    "retained_path": "linux/results/s031.log.gz",
+    "retained_sha256": "c68bdb1b9247103e709277ef955a2dabe2542de8621be8dae95f8dfcf3321dc5",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s032.log",
+    "original_bytes": 135769,
+    "original_sha256": "c422f5fe869695e7519b132bdc5f11988a4f24672e7bb358d34783a3d5e3d3b1",
+    "retained_path": "linux/results/s032.log.gz",
+    "retained_sha256": "ed9685fcf5675f254a62149189f17c62004aeebea7a7506f65539957641bde64",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s033.log",
+    "original_bytes": 143551,
+    "original_sha256": "18d76fd7964dbef71678ab4ebb4b96306e09e52d18238bc73cd06fdd475f8711",
+    "retained_path": "linux/results/s033.log.gz",
+    "retained_sha256": "0e01d7e6dc8da2b39dafedc41303b1831ce868609f64ac6ce09449283c269372",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s034.log",
+    "original_bytes": 143730,
+    "original_sha256": "35177efef21d1fef2b268d1cbb349a8542607106fad85d4ca29e2e462e1099b9",
+    "retained_path": "linux/results/s034.log.gz",
+    "retained_sha256": "9a6efddb7bfbc306ed0d3af38e6b107c8bedc3cf13627be42a0e5588912d4131",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s035.log",
+    "original_bytes": 143551,
+    "original_sha256": "0172c1f4ab0f7a37d1c068f9b44555befb2d796932c8885d6f206dbcec2d6215",
+    "retained_path": "linux/results/s035.log.gz",
+    "retained_sha256": "7186b3e8b2fdba2bc1eb1a3af46421a25d081197f08b032beca49972ea507777",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s036.log",
+    "original_bytes": 137586,
+    "original_sha256": "dfc54cf94af40c35382aa88853bb2c60703d3017fdfd6c81c3bead4371f3afb1",
+    "retained_path": "linux/results/s036.log.gz",
+    "retained_sha256": "fb8d3eaa2d9e5e0e78412b8be9e012c1d67a898ca49121dd1c4fa47fbe3e131d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s037.log",
+    "original_bytes": 143315,
+    "original_sha256": "2b9428adfa60a40f35be02ae86097401c21e0c4fcd090ef0856090532177e11e",
+    "retained_path": "linux/results/s037.log.gz",
+    "retained_sha256": "3fc931c5a41c46385d8d6a2cf8353d010f6f5ba162a615cbcf61f667e01cda95",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s038.log",
+    "original_bytes": 143585,
+    "original_sha256": "aee63bc89653c7feb5c78e629e239ed4778edd3f6877f1868ea90fda8a300d22",
+    "retained_path": "linux/results/s038.log.gz",
+    "retained_sha256": "8a0523375f6354206113790946b7a1d830cef9196a30761c8ff6260f3be041f9",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s039.log",
+    "original_bytes": 143315,
+    "original_sha256": "708b0dfb044ec3b6a47a33e2a485a0c3f6a72c56f0ed4fa3c246501a30781194",
+    "retained_path": "linux/results/s039.log.gz",
+    "retained_sha256": "a7970df07190a37f9c91791034ad4b18c52d2f8bdd5a34d6b7a29b6cc790965c",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s040.log",
+    "original_bytes": 137350,
+    "original_sha256": "5a5a49f1ec11989930f5ca2e9426d3ff57ee44ce57569d451c9f729a1b9c842b",
+    "retained_path": "linux/results/s040.log.gz",
+    "retained_sha256": "b272947a9235ae09b06f4914d7fda164ede3c34d6f8e3b841a93e461e4de58fd",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s041.log",
+    "original_bytes": 135073,
+    "original_sha256": "7bde7df4944cf96bfac4e5887c9f3a24a292e16786978e07c79cc5439cef077a",
+    "retained_path": "linux/results/s041.log.gz",
+    "retained_sha256": "07864a4f8f70786f667e98b8a638aae21330106de6c1c092c49321f246d7243d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s042.log",
+    "original_bytes": 136730,
+    "original_sha256": "3182f7167d407356a2326eb0e6cd62db244a62abb7ec65e84cc034f5aadf67f6",
+    "retained_path": "linux/results/s042.log.gz",
+    "retained_sha256": "934026fe7512e5478a559a13049d33832d968117024b21e164caef6b747ef869",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s043.log",
+    "original_bytes": 136998,
+    "original_sha256": "f0ede951442b10afaad2501872783267f166250b75dc69226974ee0d30e1aa21",
+    "retained_path": "linux/results/s043.log.gz",
+    "retained_sha256": "162c49ea72c07cd07c68e3fe27ab68d77795d2a84b02752bf20933ce262f4f42",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s044.log",
+    "original_bytes": 135253,
+    "original_sha256": "08eeb2583d9047e7262be46f26838bf251f7350d57b7d6ad95bb44d8aa96c802",
+    "retained_path": "linux/results/s044.log.gz",
+    "retained_sha256": "cca2c26840289f730d8a34a4e43d97f3bb1ba7f2c81b8f5b0a9c16b8a81eb63d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s045.log",
+    "original_bytes": 134840,
+    "original_sha256": "cbbae12f5fd7987d9285d0677d8d4166eec12c81f212922dd173da6b91304574",
+    "retained_path": "linux/results/s045.log.gz",
+    "retained_sha256": "661cd32e856e5df16666f99406d8cb51322b741782b0dc53611a2d36f9021585",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s046.log",
+    "original_bytes": 136675,
+    "original_sha256": "4a65ec402ff7865ba6fdee7b6671850a7ad704f0ea7cc244729e7a285bb775c4",
+    "retained_path": "linux/results/s046.log.gz",
+    "retained_sha256": "165105cdc30eb25353e1a3b7eb95f576038484b46cd114fb1feff1a154d3dc8d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s047.log",
+    "original_bytes": 136763,
+    "original_sha256": "a5e7d1c27fdc8cf4c3079cb5ce7b7e45395e29b4bd959db79285ac57f7b8a05e",
+    "retained_path": "linux/results/s047.log.gz",
+    "retained_sha256": "c7876961656ef1f10ff8ff4fc6ad0eb291112bcb37e64a41276bffb8abe1489d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s048.log",
+    "original_bytes": 135020,
+    "original_sha256": "d91d8bc79b8742208bec99919256dcffe97dee05daef8dad0c7ab1714cadad2e",
+    "retained_path": "linux/results/s048.log.gz",
+    "retained_sha256": "5f08b1299cd7b424363212e65c70078fefa532c56cbd9bdd3cacf9cf8c1b6bae",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s049.log",
+    "original_bytes": 154507,
+    "original_sha256": "4cf86e564aa6f971852b95613dbee355a3fc1fcee04dfd6f5765993262edb7c5",
+    "retained_path": "linux/results/s049.log.gz",
+    "retained_sha256": "920b1a321ee9859e48cc980446dcbb7261cd3bf4df5c85170c33086da72bcefa",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s050.log",
+    "original_bytes": 155214,
+    "original_sha256": "99987cffb5d9574d70f243d8aa6c92100b413c7d573b18b9f19eea0d4dd521d8",
+    "retained_path": "linux/results/s050.log.gz",
+    "retained_sha256": "775c04b885e2c42818950ea38cc55ec6b8812f50665426f5bbaeaee7302a3df7",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s051.log",
+    "original_bytes": 145223,
+    "original_sha256": "737266299857fa6de4971d3543113287e3c2630b8697d4309c8e8067996c1c15",
+    "retained_path": "linux/results/s051.log.gz",
+    "retained_sha256": "d8de4ee0577203beaf8ecda4f3bea0368079340965b05372ac9b2f32e2474fc4",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s052.log",
+    "original_bytes": 85355,
+    "original_sha256": "cade9732d2e0d1cfbe7d98962d55ee658009780a4cf621b97f820c4f0cf53aa9",
+    "retained_path": "linux/results/s052.log.gz",
+    "retained_sha256": "78d4041d4f4281e990e706c67cf3a9378c81b9905cc3e48029b761cb48bbe4fe",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s053.log",
+    "original_bytes": 152822,
+    "original_sha256": "6904084497ab34b384d361c7bd04454b76dd9f63eeb8f1f0f95371fb6d471208",
+    "retained_path": "linux/results/s053.log.gz",
+    "retained_sha256": "67de04fea63eed10affd1b96e89a00d67002a737026b2b033dbba97d6b8d8062",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s054.log",
+    "original_bytes": 153786,
+    "original_sha256": "9d9d1cedea0b83ca7a741b2b40f652965e8d2e85079a5822b6c1927e93b5a89f",
+    "retained_path": "linux/results/s054.log.gz",
+    "retained_sha256": "c30dae3df22e24c8554841282fc59a32c6a39cd41769fbae984256c785767301",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s055.log",
+    "original_bytes": 145220,
+    "original_sha256": "8365edb483b4209f1bff2953c2840452571a55f5c480636aee761c1562f20026",
+    "retained_path": "linux/results/s055.log.gz",
+    "retained_sha256": "4e6a238f298194dc8fb727faea7b1880a09c3ae4415686f6df9e340d8151b93e",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s056.log",
+    "original_bytes": 86068,
+    "original_sha256": "ec16096948df4b19cc914b6e4c3c18db589d7194cdad5d14ef22d27c1c208ad2",
+    "retained_path": "linux/results/s056.log.gz",
+    "retained_sha256": "8e659832df20052a2982b93b62322110bb52062a1c8e91d4750bada1a5a5b075",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s057.log",
+    "original_bytes": 149052,
+    "original_sha256": "06115ec86e62826e1526932adc9c520e586d4b9c1418ebf6948e0ed206964797",
+    "retained_path": "linux/results/s057.log.gz",
+    "retained_sha256": "93e068c8df4f8f68e245c403a99cd7b7f5aecc5ef2aef772b7f7888384b976f7",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s058.log",
+    "original_bytes": 152846,
+    "original_sha256": "2bef3c2cc7a0351bc7b0c02fd5e2bc22c1e3ce52b72c5ce8da704316f7bd56cc",
+    "retained_path": "linux/results/s058.log.gz",
+    "retained_sha256": "dd2ac2b55d3abc9c116726bf588b788ab20ed1f33e15a689787d8b45bc85e1f4",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s059.log",
+    "original_bytes": 157241,
+    "original_sha256": "70ba92fdb9ba76995cbfabc245202ebfbc58299c671a291d2bbec608ec76fcbd",
+    "retained_path": "linux/results/s059.log.gz",
+    "retained_sha256": "c791b640faac38430cced662c75a2da77e67420417c5917ed7013667972ba705",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s060.log",
+    "original_bytes": 149267,
+    "original_sha256": "33460bb9d145de4b6c66720515330c7ab59824dc3cdc4713338b8f021c2e82f9",
+    "retained_path": "linux/results/s060.log.gz",
+    "retained_sha256": "a372a56b59ff175a001b1ca94e00907e61e09b4ee60bc65f16e6ff6ad73ab847",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s061.log",
+    "original_bytes": 147286,
+    "original_sha256": "908047976e1b8d7ccd187d37935d1608e3d89c90f5421a418fcff1427e173c5c",
+    "retained_path": "linux/results/s061.log.gz",
+    "retained_sha256": "cd3110f904265d42b21d3ed21bb1a16a551dc277abb71161a1f2a56aecd20729",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s062.log",
+    "original_bytes": 150162,
+    "original_sha256": "14421ffb790c6fd6240ae021c04df6aba9825857ae2be5761f61128da76f6fe4",
+    "retained_path": "linux/results/s062.log.gz",
+    "retained_sha256": "f41dcdf9ef196e3c93a13b52a5a28d85837ce1478b015c55338b7d399687ee03",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s063.log",
+    "original_bytes": 151848,
+    "original_sha256": "be795ee544270fa2a6c301ec90f115416b25829472d48f985fbfa7cd1ccc1e42",
+    "retained_path": "linux/results/s063.log.gz",
+    "retained_sha256": "ae91b3584e86755b97c76007941e3189715241ede9c5fde5ead01ccf6b693752",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s064.log",
+    "original_bytes": 147497,
+    "original_sha256": "c6e67d999d42068308a4b24557574643655fc3cf229199f401f9bdf4fcaedcea",
+    "retained_path": "linux/results/s064.log.gz",
+    "retained_sha256": "8c6581571928a2c6a06bb19814644a97162c0b49edc1ca1c47b855819969809a",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s065.log",
+    "original_bytes": 146047,
+    "original_sha256": "96cac217d472fffe5c8f325f284c6f9773e79bc2e3900f81e3d38fc00df6cfe0",
+    "retained_path": "linux/results/s065.log.gz",
+    "retained_sha256": "5d082500bf47e285a56c6f29ae629eaa61fa3d30e3fbdc0f5ae69c0aaf5d0de6",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s066.log",
+    "original_bytes": 144933,
+    "original_sha256": "70edbf4e0976bf74bf7e8060553f1a4df629be06c34ea6f3d72bdf964a7ddb2e",
+    "retained_path": "linux/results/s066.log.gz",
+    "retained_sha256": "df3caa188eb46577e8e680374023de5eb77c1cbf9b5d9bd52ed817fa7ffb0f73",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s067.log",
+    "original_bytes": 144756,
+    "original_sha256": "d2d2544f62d0a802d9de7774995be41affa5f41783dc6f3e7369826e97d196f5",
+    "retained_path": "linux/results/s067.log.gz",
+    "retained_sha256": "f550635d9dd8bc7565e790fa6ae8bcae79461ec92e5073e5a1a6c6ecc69322d5",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s068.log",
+    "original_bytes": 126252,
+    "original_sha256": "f88e51aed9e06dd25152532ad85cac6f13f391b29e230d9b5cb1c5da0396fbdc",
+    "retained_path": "linux/results/s068.log.gz",
+    "retained_sha256": "a072a3c8f49f48b0de1ec46d59d929305fbefd35a64dad9d79a4a4715d3b3e89",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s069.log",
+    "original_bytes": 145776,
+    "original_sha256": "6e31902ce639dfd12980e38ae30225496ae163c40ad2dd5cd683b3508c3e899b",
+    "retained_path": "linux/results/s069.log.gz",
+    "retained_sha256": "f71c9316bdb113a2247d52c778d0571e8d8ddec626837070359b622dcc554712",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s070.log",
+    "original_bytes": 145473,
+    "original_sha256": "bf4c9b38a16fb64a2f29cc9daa8be7dcb12d782bd21db45f43086bfed78c781f",
+    "retained_path": "linux/results/s070.log.gz",
+    "retained_sha256": "65e147b5e70b673beb53d24e4dfa90f619b7f2b9ebc656990685b3814fac84ac",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s071.log",
+    "original_bytes": 144484,
+    "original_sha256": "df4437c5b5bf266573d93bd342b83e025cccff381b606c25f1da07187f1cdf05",
+    "retained_path": "linux/results/s071.log.gz",
+    "retained_sha256": "4becab832e025b734a6d3221248f1081350237a8f02abff40dcdb8fa94d07eac",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s072.log",
+    "original_bytes": 127050,
+    "original_sha256": "da48e302b9c41e39c1dc086acce98bab1a1bed75b3578cd12778ff5c3484c5ad",
+    "retained_path": "linux/results/s072.log.gz",
+    "retained_sha256": "8a504d11a904ef6f14035583e32f47fb96470e4cfd114c798a975fea826e4ea8",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s073.log",
+    "original_bytes": 144102,
+    "original_sha256": "c766f3947fd8951b17226c1a21ff5a9b4041d6dc59208aab7e1d3772b89d3bb6",
+    "retained_path": "linux/results/s073.log.gz",
+    "retained_sha256": "ed70e2f397aa84b8193f24129e9a540916830009a4b1372deea65c4a60227002",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s074.log",
+    "original_bytes": 140875,
+    "original_sha256": "1853d18782a5b8c4d5142a79119242300d61f38c53e86f960f05488bdda9936f",
+    "retained_path": "linux/results/s074.log.gz",
+    "retained_sha256": "203a8622ed75f622455f2bd659ce4680d266d2af659c18160c70e97a561d4467",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s075.log",
+    "original_bytes": 141798,
+    "original_sha256": "272d8b5d72b7adb99f0edb8179df0ef91657791e4095803f0fef2f78d5dda8b7",
+    "retained_path": "linux/results/s075.log.gz",
+    "retained_sha256": "1fb6c155f4df6346efbf8d67966174a21d698e39a27d670cdcd3fa5fa0710b1b",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s076.log",
+    "original_bytes": 142631,
+    "original_sha256": "b61721f5f01e4573c0b619d605c5999264402529cf0106e6f1992814dc20773a",
+    "retained_path": "linux/results/s076.log.gz",
+    "retained_sha256": "23059f22a5e208dc75bdc103e7e2f8a3f919bfdc8dfa87070c703ef3fce30c02",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s077.log",
+    "original_bytes": 143170,
+    "original_sha256": "0cce5142228d1b2e38fcf31db793ef49f60cce21f513c4bbfedf85db62accbab",
+    "retained_path": "linux/results/s077.log.gz",
+    "retained_sha256": "f8f4c925ff9be9e67d11de2930db46f40233705010d08f78288c728752e8e57d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s078.log",
+    "original_bytes": 143192,
+    "original_sha256": "14b91e20689b2268f70fd373a30ffc2863ad20a64fff26913d8b48986f1b3039",
+    "retained_path": "linux/results/s078.log.gz",
+    "retained_sha256": "bd0ccf79f55d967b2ed3a619ae840b3c1c351b03b1779c536bc1e90b889bd6a1",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s079.log",
+    "original_bytes": 140982,
+    "original_sha256": "6667d66acf7249cedbefae836d955484183888c52697f53ed5d80c32d3830a60",
+    "retained_path": "linux/results/s079.log.gz",
+    "retained_sha256": "818d9af9b910158bced7b9a45b8c36422cdf8d79b135f79b5f7e2d14671f1cfa",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s080.log",
+    "original_bytes": 141699,
+    "original_sha256": "1b05a31d673bdce9fa71ef537575829fb931b90daf0a9ce80d20ed100cc1ac08",
+    "retained_path": "linux/results/s080.log.gz",
+    "retained_sha256": "6dbbf49ab4c807dd4430ea573f087f83ca0d2f73ee723832ff1356fc450f8dc4",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s081.log",
+    "original_bytes": 145273,
+    "original_sha256": "a99bb5ba1f45f18087d7a264659c873efb3da4cdbdbc7adc4f7a4b448c698fb2",
+    "retained_path": "linux/results/s081.log.gz",
+    "retained_sha256": "650d51a2d59f1c01d5cf43cb3c6ae31034102bf97c2bb97a8ed2519a7025e013",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s082.log",
+    "original_bytes": 145273,
+    "original_sha256": "005c6dbee95bdba49005c455e3e1963f43e73d437a9f41d3f682401a1b4bdf7a",
+    "retained_path": "linux/results/s082.log.gz",
+    "retained_sha256": "d1e58ee932a89c757e11c93cca2b6a6df89921e447aba14f525dff4288ed8437",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s083.log",
+    "original_bytes": 145273,
+    "original_sha256": "f2580c5a72022ac99c1c177b33bd94297e31d548a4812435401d1c3a443c0651",
+    "retained_path": "linux/results/s083.log.gz",
+    "retained_sha256": "446cc2b010f9ada91d35837d0f5609b4c088b404a19935fd9b106cff15efab57",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s084.log",
+    "original_bytes": 141796,
+    "original_sha256": "8630260d30ece0950190ba6c44142d71c140cd60e75ce7946f866f55d2064741",
+    "retained_path": "linux/results/s084.log.gz",
+    "retained_sha256": "9335401aeee3804451c0a237b472a52495fe4735eb590fbbaad01356276380e9",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s085.log",
+    "original_bytes": 145001,
+    "original_sha256": "ba3665f938bd0ec7d44b6baecfda4f598929037a53fa7c78f3302a985c1ffd2e",
+    "retained_path": "linux/results/s085.log.gz",
+    "retained_sha256": "c8ab3ed6ac71636b75f8cd9d26e6c98745176083c3f5c133503c01c884b1a53d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s086.log",
+    "original_bytes": 145356,
+    "original_sha256": "6ce01f2ed770ff971461954457bc88dea88b37fca923cf920bfa432c94d750d5",
+    "retained_path": "linux/results/s086.log.gz",
+    "retained_sha256": "7d364cf6963c249cc3b44457adcf531b7a21058b3e83015e2ddfb95a1920ac03",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s087.log",
+    "original_bytes": 145001,
+    "original_sha256": "517fc0615c4d66fc18e28c0d5e02c8e83989e748bd50af3476765cbf96671986",
+    "retained_path": "linux/results/s087.log.gz",
+    "retained_sha256": "a8a8ef31063b54c492ed1dd7490e0c73d8dcea8701a4f9bada1e2d3d384cf2f1",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s088.log",
+    "original_bytes": 141520,
+    "original_sha256": "83799157456648f1a28a3d5fed472c987d897329c782c4462fcdf3f91b35f493",
+    "retained_path": "linux/results/s088.log.gz",
+    "retained_sha256": "807e21ec6dc0ecd562663aa4b3cb1678ae523ee32c8ced615ed4d583c6aa857e",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s089.log",
+    "original_bytes": 139744,
+    "original_sha256": "5731b4428fe96f25f956c973d6c0dff79e14c0505f6306c2f7b96124ee57b92f",
+    "retained_path": "linux/results/s089.log.gz",
+    "retained_sha256": "df4b7e065296e793aefc190f75a002c409e6b67ed745bf1efce975fa59555d15",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s090.log",
+    "original_bytes": 140665,
+    "original_sha256": "b3b0dd9a82e673cb4da3da461f2091cde1202563358083212c8c21f83bccade2",
+    "retained_path": "linux/results/s090.log.gz",
+    "retained_sha256": "514eb9b8f06e44e88f59b6dd34db4033d862d6393c19af5e1af41156bb7d3c2d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s091.log",
+    "original_bytes": 140849,
+    "original_sha256": "ad5380db0eb4bd53dfaa247a6d9e8566cee21124ea23c9c9b5a17a1430ab650f",
+    "retained_path": "linux/results/s091.log.gz",
+    "retained_sha256": "b52649476a31ca90c0dd3b59e909ba40040d2efe7d1481474c50d89e50f73a18",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s092.log",
+    "original_bytes": 139430,
+    "original_sha256": "522bca3b28b5fa82bad8976be6915f8074a5dd15e96cd860a199ab4e80bbc54d",
+    "retained_path": "linux/results/s092.log.gz",
+    "retained_sha256": "42d62c61ed0df1bb975d201b748f63c265391a978075f73869f431ea82879b83",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s093.log",
+    "original_bytes": 139476,
+    "original_sha256": "d3e99aac8ec4848b59b76f4b22c8e683068df303a39331d3bab309cc1f1f7825",
+    "retained_path": "linux/results/s093.log.gz",
+    "retained_sha256": "4d35274214e0ea3237d3527e21ad81a3810d76dc8cf807568399ceced17e99ed",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s094.log",
+    "original_bytes": 140305,
+    "original_sha256": "beccb989bbeb5856557189377bc5a49285d3d9701681d36f68b2d33e4f6eceed",
+    "retained_path": "linux/results/s094.log.gz",
+    "retained_sha256": "8c056335e83ba2a48d2c598c95eeb0f5eb4e87dcde3dc65e11843193e0967a6c",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s095.log",
+    "original_bytes": 140398,
+    "original_sha256": "3e4a3d51948e1e01fd0a851c76bea6f80f848c7777b481697a1cc9d55c103ce7",
+    "retained_path": "linux/results/s095.log.gz",
+    "retained_sha256": "4ffd8b98918dee9156ee6a3eed5fd6816b0222989e18f44bd7ff259ca70037ce",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Linux-X64-38701913394-1",
+    "original_path": "results/s096.log",
+    "original_bytes": 139162,
+    "original_sha256": "09a08437281ce9f96c9fddbc913a4d45d189fe6a77c1e37f9d0132c43811dc89",
+    "retained_path": "linux/results/s096.log.gz",
+    "retained_sha256": "0faa5be9264aee6b9e5505e2b9e0bc00dd67d2b2158a5fb3ef85644e775a32a6",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "build/compile-unit.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/build/compile-unit.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "build/compile.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/build/compile.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "build/format.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/build/format.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "build/provenance.log",
+    "original_bytes": 538,
+    "original_sha256": "a7aa2fcf0ff305fd11466c84302c08959570eee55e8dd9dfa35e8f643841b2a1",
+    "retained_path": "windows/build/provenance.log",
+    "retained_sha256": "a7aa2fcf0ff305fd11466c84302c08959570eee55e8dd9dfa35e8f643841b2a1",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "build/run.log",
+    "original_bytes": 7048,
+    "original_sha256": "a34f93ac13d6cd9b2c8e898be1cb3bbea1d69930c7952146012216a2632b0d70",
+    "retained_path": "windows/build/run.log",
+    "retained_sha256": "a34f93ac13d6cd9b2c8e898be1cb3bbea1d69930c7952146012216a2632b0d70",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "build/sources.sha256",
+    "original_bytes": 919,
+    "original_sha256": "83f1db68042205dbb036e236a541b4f879fcd840667c3f27690cde011a166a58",
+    "retained_path": "windows/build/sources.sha256",
+    "retained_sha256": "83f1db68042205dbb036e236a541b4f879fcd840667c3f27690cde011a166a58",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "build/unit.log",
+    "original_bytes": 1326,
+    "original_sha256": "146acaf69bc613ce887f276a67458cd21f8bb649033ae4c59057749eed79f08f",
+    "retained_path": "windows/build/unit.log",
+    "retained_sha256": "1e50df12943a097b517cc38d3c5988a878e56f66a25d4ccd821e0e995c051781",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/input.log",
+    "original_bytes": 403,
+    "original_sha256": "4ffd0c52d7f9c6ade1ea69e2f1405199ba39ae93110444166df0bd8f4f310f36",
+    "retained_path": "windows/results/input.log",
+    "retained_sha256": "4ffd0c52d7f9c6ade1ea69e2f1405199ba39ae93110444166df0bd8f4f310f36",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/metrics.log",
+    "original_bytes": 44696,
+    "original_sha256": "88609b5792cb0a40f5e7cf105732e9a24211ff97e5633b169ccca5907c08d365",
+    "retained_path": "windows/results/metrics.log",
+    "retained_sha256": "88609b5792cb0a40f5e7cf105732e9a24211ff97e5633b169ccca5907c08d365",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/policy.log",
+    "original_bytes": 204,
+    "original_sha256": "5f4747764f998add8b941a8bb6315eef6ccb7aba443e42af9ab01fea62303191",
+    "retained_path": "windows/results/policy.log",
+    "retained_sha256": "5f4747764f998add8b941a8bb6315eef6ccb7aba443e42af9ab01fea62303191",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/recovery.log",
+    "original_bytes": 262486,
+    "original_sha256": "0ba431c092c6af4f55916260b2662f6bfc5672f78bc80608b1df0b228be54ad2",
+    "retained_path": "windows/results/recovery.log",
+    "retained_sha256": "0ba431c092c6af4f55916260b2662f6bfc5672f78bc80608b1df0b228be54ad2",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s001.log",
+    "original_bytes": 152767,
+    "original_sha256": "8588ff8a00a48759e13e2419e58d228e1b80bc1ee9650021e385475824adae32",
+    "retained_path": "windows/results/s001.log.gz",
+    "retained_sha256": "12949f4393c902a7ae7688802a32fc6edc384ed1a18bf1421ad7ff6f63b2e9ec",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s002.log",
+    "original_bytes": 153677,
+    "original_sha256": "d9f7ed806f78f3b298e1816071fc320af7c8505b6a28a5036cee5226d43182e8",
+    "retained_path": "windows/results/s002.log.gz",
+    "retained_sha256": "9e62822c19729342d0f988ba78ab7164a625de70ee225d3d2fd59277e71a953c",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s003.log",
+    "original_bytes": 142442,
+    "original_sha256": "788999709474348a236bca9bf6283d60683c1e844437c1fac0bc0ced075b3727",
+    "retained_path": "windows/results/s003.log.gz",
+    "retained_sha256": "0abfd6bf99caa3cf014c73ae996a2ee6198a334d02a62d0bcb04ba9e69449bc8",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s004.log",
+    "original_bytes": 83218,
+    "original_sha256": "015009e12b85679d9e0f31edf34ef89c7b5b51de927f1fd60904324e743f5293",
+    "retained_path": "windows/results/s004.log.gz",
+    "retained_sha256": "17b0ab50a74d2775c9ca5ca0981955da6178702f33c129f43af4778fae959a3f",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s005.log",
+    "original_bytes": 151120,
+    "original_sha256": "17c6f25f0affc0d28c9d12e122daef66991b03e53ea9be6becd0698e8a0c4fa4",
+    "retained_path": "windows/results/s005.log.gz",
+    "retained_sha256": "ac8e2b178121fd3e265e40d2bcd9aade3f28b4275ccc3510a53550a09430a498",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s006.log",
+    "original_bytes": 152554,
+    "original_sha256": "a41ca31298e1305390ee0b6af559ae76920545c18541987ec20ce7eb14b2afcb",
+    "retained_path": "windows/results/s006.log.gz",
+    "retained_sha256": "9605e8d9834ed87ba8c310c606bd6b9483c4e8500494ef9559978ac6df68ef0b",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s007.log",
+    "original_bytes": 144264,
+    "original_sha256": "2811fbd2985abe5a33289c5fcedca3c62970412e28b090e290ef40e8fc5d69a9",
+    "retained_path": "windows/results/s007.log.gz",
+    "retained_sha256": "f7be44d305bd688a7c070109e66c027afdabb6701b8006a10dcbf80a24db6e36",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s008.log",
+    "original_bytes": 83113,
+    "original_sha256": "0bbaf96aec4c7c15f62174c821e0996447f3f08ab5f46674c8c090c02cbe8a28",
+    "retained_path": "windows/results/s008.log.gz",
+    "retained_sha256": "802cabefa038be60103182d3449437e7a13bcaf7a1b9079b7335cbfc9364bfc8",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s009.log",
+    "original_bytes": 144393,
+    "original_sha256": "6623d85c01a2ea1bae69812a91db2683a5f71fd8f2333482889ff6f66cf5cd0c",
+    "retained_path": "windows/results/s009.log.gz",
+    "retained_sha256": "79dfb192be2ed38d06acf9f4c0a21bd1b166a8be10384402fb475389cc321c07",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s010.log",
+    "original_bytes": 147969,
+    "original_sha256": "0ef9c4e274b5c474d962c2413b08fa324c83f482c7883811e105b1204f60c701",
+    "retained_path": "windows/results/s010.log.gz",
+    "retained_sha256": "7f86eb02516638c8db1091559f00f67dd24ea01058044676b6d86b3ff988ded1",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s011.log",
+    "original_bytes": 151385,
+    "original_sha256": "9b820904f3a058ff806eb020ea5caacb24862628eec134e20384a16b8aedb52d",
+    "retained_path": "windows/results/s011.log.gz",
+    "retained_sha256": "bdbaa5caffdc107579284189c57c8248cdf0717d0c27cf993dbedb8c10867eb4",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s012.log",
+    "original_bytes": 142874,
+    "original_sha256": "736b2fce59b1a8f6a33a63d5b2a1cf2a170b0c2dba0972a184831bb92ab1ceb4",
+    "retained_path": "windows/results/s012.log.gz",
+    "retained_sha256": "edf087c9c88b4eee861237cffc5a628aba5e7314e0d3de7078358641fe0e0031",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s013.log",
+    "original_bytes": 142631,
+    "original_sha256": "2625252c62f047f4995b93a211756e6e2f7503039298d59c742998cc3811fb38",
+    "retained_path": "windows/results/s013.log.gz",
+    "retained_sha256": "9c3cd787f30632b5cdb005b8e2abe3943ade6b4cf76c13d9a89987adcc19fa5b",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s014.log",
+    "original_bytes": 148217,
+    "original_sha256": "3b2c13e04ef6133d0bca02394a0c6e4f2f3b042eeb67fb510cf88363a5c185c5",
+    "retained_path": "windows/results/s014.log.gz",
+    "retained_sha256": "11fb44301a50f73baff0af2d9ce707c639fb30d7aeb8ab833bf99e9a557f901a",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s015.log",
+    "original_bytes": 153570,
+    "original_sha256": "a4aceaa359f4ec416a5b77f918684867bebce1c6bf548ce081cdbb7a34dec4d7",
+    "retained_path": "windows/results/s015.log.gz",
+    "retained_sha256": "c92fc9b73c5318f838179fdf92c4cfaa9524873dad28d1df4748ed62e065e07f",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s016.log",
+    "original_bytes": 141168,
+    "original_sha256": "9c47bfc72163dd731dcfc410fa063c2732b43b8c6fe6edf1de7326e0df79ccbb",
+    "retained_path": "windows/results/s016.log.gz",
+    "retained_sha256": "586eb5e78bb6613bbb5f3ce6477df5fd01feca1ddd7aeab93f4526f7864c1d5f",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s017.log",
+    "original_bytes": 144339,
+    "original_sha256": "ed932e0ee99e4cc095a38332f507436efecd145f14aae17c358ea5168b1721d8",
+    "retained_path": "windows/results/s017.log.gz",
+    "retained_sha256": "31049001017ddbfd64a3bd337e1daaf2da29865c784190cbd85e92022a5c8d90",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s018.log",
+    "original_bytes": 143299,
+    "original_sha256": "4994c490c441824d8962e47cfa889d82c4930d58127dbc6443778d1ddb088d60",
+    "retained_path": "windows/results/s018.log.gz",
+    "retained_sha256": "1232a53f414239b961439a3be8afb113b4fe76204de360b585fac6211d1ca1be",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s019.log",
+    "original_bytes": 143034,
+    "original_sha256": "985db69adbca2a91a7785dc881bb721e4e90fce3dcc5c22fbc997a3399a3720c",
+    "retained_path": "windows/results/s019.log.gz",
+    "retained_sha256": "5dccc05b8b82b20bb5a5ea96c05c34c9779082d346384173f8f0aff428076c88",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s020.log",
+    "original_bytes": 125759,
+    "original_sha256": "ad20a439d48cb75754a4e9506b15841de8d293fe7e4544822efaa8e77788ddf3",
+    "retained_path": "windows/results/s020.log.gz",
+    "retained_sha256": "9014c724cbdad132b898d7cb398b188793a90bb98bce938beea01f7c60ec4ebb",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s021.log",
+    "original_bytes": 144103,
+    "original_sha256": "f35937e5f2d6e923ea36719a5e0edcbc115d6ec32aff292e95e6462d18cc8fec",
+    "retained_path": "windows/results/s021.log.gz",
+    "retained_sha256": "23ab58fda30f8db4faf94c35d2957b5af986817a23fae1dd870aa7ba7c60e56e",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s022.log",
+    "original_bytes": 144303,
+    "original_sha256": "d7069e9923a92e16a68dcdfb5086695b0a675d89cd36b87f886c677fad1f5e6b",
+    "retained_path": "windows/results/s022.log.gz",
+    "retained_sha256": "4637c940199d53b7f2051f937c842aadab58f6e48b2932b2d3729ed8f77e33ef",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s023.log",
+    "original_bytes": 142798,
+    "original_sha256": "29edd4d340fe05ccd30fda6f16852b8e0b261e5951c5d4f49a56c52d2808210b",
+    "retained_path": "windows/results/s023.log.gz",
+    "retained_sha256": "957ca3281e0082c1b9eaeb50abdfbc18588d8ad042a247e6624f1630d8b7b228",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s024.log",
+    "original_bytes": 126075,
+    "original_sha256": "6ce24355752ea0ecec40e225dd9bd9a8d3496fdce0138cc29f80ca4a266bebba",
+    "retained_path": "windows/results/s024.log.gz",
+    "retained_sha256": "a3ccd885b9d42512a12349ca4f01086e16005fe3ef15767bce33fef4ff558e5e",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s025.log",
+    "original_bytes": 136307,
+    "original_sha256": "48db53780f3590dfdbdf19d7ea2aabfab65a22f047a311d3f5ff5d6eca23e75a",
+    "retained_path": "windows/results/s025.log.gz",
+    "retained_sha256": "3da25ac63564119bb6ee9cf72325072fae3dbbfbf972061dc4c89299b877ab25",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s026.log",
+    "original_bytes": 137707,
+    "original_sha256": "eaa65d023da0371acadc8e510c8d55ab59ec16c70eb8a3ad8d184744c840e197",
+    "retained_path": "windows/results/s026.log.gz",
+    "retained_sha256": "6fd2a6f690b4b4db741f13ba20db8b50c67225fceeb8f1787b6339e80c5a2437",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s027.log",
+    "original_bytes": 138830,
+    "original_sha256": "12b014a619a5bdcd4c740e0d0d52c284a0488b3f9c2fcf9a632b8f9e586b29cf",
+    "retained_path": "windows/results/s027.log.gz",
+    "retained_sha256": "55748e04b23dda08ee05dc082f0c8a8bcdde987396cf9ea9f02d3cbbd39570a1",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s028.log",
+    "original_bytes": 136001,
+    "original_sha256": "e4e17bcdf6709cd8f004bba521fd6b0e00e5ed6bab577a59bb6a69726a1ab99a",
+    "retained_path": "windows/results/s028.log.gz",
+    "retained_sha256": "ef882a5518deaf01468574d6d77a01b03479dbeee79ce822122fff2a03805868",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s029.log",
+    "original_bytes": 136075,
+    "original_sha256": "ec05d47923c576929d3c87115e1268f80ba2524751b1108dfa42c1dc3258b4ae",
+    "retained_path": "windows/results/s029.log.gz",
+    "retained_sha256": "a1706dd1d161d9594156bffd8c4a0b9a90140fb5195ab93bafb71c30d8c92927",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s030.log",
+    "original_bytes": 139768,
+    "original_sha256": "76fa3ea27fa73b6e1db54852cd39eac8e28a9555044902f29e35424bc98b0985",
+    "retained_path": "windows/results/s030.log.gz",
+    "retained_sha256": "c9cd30ff25825b93f6826c251316a5f6e346c8b6021e9116c0f82ae6bce17fdd",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s031.log",
+    "original_bytes": 138590,
+    "original_sha256": "7131ca0b4a1f19da80c549772a6d1c94e6f59b5581314594116e7c80461dd89a",
+    "retained_path": "windows/results/s031.log.gz",
+    "retained_sha256": "c68bdb1b9247103e709277ef955a2dabe2542de8621be8dae95f8dfcf3321dc5",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s032.log",
+    "original_bytes": 135769,
+    "original_sha256": "c422f5fe869695e7519b132bdc5f11988a4f24672e7bb358d34783a3d5e3d3b1",
+    "retained_path": "windows/results/s032.log.gz",
+    "retained_sha256": "ed9685fcf5675f254a62149189f17c62004aeebea7a7506f65539957641bde64",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s033.log",
+    "original_bytes": 143551,
+    "original_sha256": "18d76fd7964dbef71678ab4ebb4b96306e09e52d18238bc73cd06fdd475f8711",
+    "retained_path": "windows/results/s033.log.gz",
+    "retained_sha256": "0e01d7e6dc8da2b39dafedc41303b1831ce868609f64ac6ce09449283c269372",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s034.log",
+    "original_bytes": 143730,
+    "original_sha256": "35177efef21d1fef2b268d1cbb349a8542607106fad85d4ca29e2e462e1099b9",
+    "retained_path": "windows/results/s034.log.gz",
+    "retained_sha256": "9a6efddb7bfbc306ed0d3af38e6b107c8bedc3cf13627be42a0e5588912d4131",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s035.log",
+    "original_bytes": 143551,
+    "original_sha256": "0172c1f4ab0f7a37d1c068f9b44555befb2d796932c8885d6f206dbcec2d6215",
+    "retained_path": "windows/results/s035.log.gz",
+    "retained_sha256": "7186b3e8b2fdba2bc1eb1a3af46421a25d081197f08b032beca49972ea507777",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s036.log",
+    "original_bytes": 137586,
+    "original_sha256": "dfc54cf94af40c35382aa88853bb2c60703d3017fdfd6c81c3bead4371f3afb1",
+    "retained_path": "windows/results/s036.log.gz",
+    "retained_sha256": "fb8d3eaa2d9e5e0e78412b8be9e012c1d67a898ca49121dd1c4fa47fbe3e131d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s037.log",
+    "original_bytes": 143315,
+    "original_sha256": "2b9428adfa60a40f35be02ae86097401c21e0c4fcd090ef0856090532177e11e",
+    "retained_path": "windows/results/s037.log.gz",
+    "retained_sha256": "3fc931c5a41c46385d8d6a2cf8353d010f6f5ba162a615cbcf61f667e01cda95",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s038.log",
+    "original_bytes": 143585,
+    "original_sha256": "aee63bc89653c7feb5c78e629e239ed4778edd3f6877f1868ea90fda8a300d22",
+    "retained_path": "windows/results/s038.log.gz",
+    "retained_sha256": "8a0523375f6354206113790946b7a1d830cef9196a30761c8ff6260f3be041f9",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s039.log",
+    "original_bytes": 143315,
+    "original_sha256": "708b0dfb044ec3b6a47a33e2a485a0c3f6a72c56f0ed4fa3c246501a30781194",
+    "retained_path": "windows/results/s039.log.gz",
+    "retained_sha256": "a7970df07190a37f9c91791034ad4b18c52d2f8bdd5a34d6b7a29b6cc790965c",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s040.log",
+    "original_bytes": 137350,
+    "original_sha256": "5a5a49f1ec11989930f5ca2e9426d3ff57ee44ce57569d451c9f729a1b9c842b",
+    "retained_path": "windows/results/s040.log.gz",
+    "retained_sha256": "b272947a9235ae09b06f4914d7fda164ede3c34d6f8e3b841a93e461e4de58fd",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s041.log",
+    "original_bytes": 135073,
+    "original_sha256": "7bde7df4944cf96bfac4e5887c9f3a24a292e16786978e07c79cc5439cef077a",
+    "retained_path": "windows/results/s041.log.gz",
+    "retained_sha256": "07864a4f8f70786f667e98b8a638aae21330106de6c1c092c49321f246d7243d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s042.log",
+    "original_bytes": 136730,
+    "original_sha256": "3182f7167d407356a2326eb0e6cd62db244a62abb7ec65e84cc034f5aadf67f6",
+    "retained_path": "windows/results/s042.log.gz",
+    "retained_sha256": "934026fe7512e5478a559a13049d33832d968117024b21e164caef6b747ef869",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s043.log",
+    "original_bytes": 136998,
+    "original_sha256": "f0ede951442b10afaad2501872783267f166250b75dc69226974ee0d30e1aa21",
+    "retained_path": "windows/results/s043.log.gz",
+    "retained_sha256": "162c49ea72c07cd07c68e3fe27ab68d77795d2a84b02752bf20933ce262f4f42",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s044.log",
+    "original_bytes": 135253,
+    "original_sha256": "08eeb2583d9047e7262be46f26838bf251f7350d57b7d6ad95bb44d8aa96c802",
+    "retained_path": "windows/results/s044.log.gz",
+    "retained_sha256": "cca2c26840289f730d8a34a4e43d97f3bb1ba7f2c81b8f5b0a9c16b8a81eb63d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s045.log",
+    "original_bytes": 134840,
+    "original_sha256": "cbbae12f5fd7987d9285d0677d8d4166eec12c81f212922dd173da6b91304574",
+    "retained_path": "windows/results/s045.log.gz",
+    "retained_sha256": "661cd32e856e5df16666f99406d8cb51322b741782b0dc53611a2d36f9021585",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s046.log",
+    "original_bytes": 136675,
+    "original_sha256": "4a65ec402ff7865ba6fdee7b6671850a7ad704f0ea7cc244729e7a285bb775c4",
+    "retained_path": "windows/results/s046.log.gz",
+    "retained_sha256": "165105cdc30eb25353e1a3b7eb95f576038484b46cd114fb1feff1a154d3dc8d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s047.log",
+    "original_bytes": 136763,
+    "original_sha256": "a5e7d1c27fdc8cf4c3079cb5ce7b7e45395e29b4bd959db79285ac57f7b8a05e",
+    "retained_path": "windows/results/s047.log.gz",
+    "retained_sha256": "c7876961656ef1f10ff8ff4fc6ad0eb291112bcb37e64a41276bffb8abe1489d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s048.log",
+    "original_bytes": 135020,
+    "original_sha256": "d91d8bc79b8742208bec99919256dcffe97dee05daef8dad0c7ab1714cadad2e",
+    "retained_path": "windows/results/s048.log.gz",
+    "retained_sha256": "5f08b1299cd7b424363212e65c70078fefa532c56cbd9bdd3cacf9cf8c1b6bae",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s049.log",
+    "original_bytes": 154507,
+    "original_sha256": "4cf86e564aa6f971852b95613dbee355a3fc1fcee04dfd6f5765993262edb7c5",
+    "retained_path": "windows/results/s049.log.gz",
+    "retained_sha256": "920b1a321ee9859e48cc980446dcbb7261cd3bf4df5c85170c33086da72bcefa",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s050.log",
+    "original_bytes": 155214,
+    "original_sha256": "99987cffb5d9574d70f243d8aa6c92100b413c7d573b18b9f19eea0d4dd521d8",
+    "retained_path": "windows/results/s050.log.gz",
+    "retained_sha256": "775c04b885e2c42818950ea38cc55ec6b8812f50665426f5bbaeaee7302a3df7",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s051.log",
+    "original_bytes": 145223,
+    "original_sha256": "737266299857fa6de4971d3543113287e3c2630b8697d4309c8e8067996c1c15",
+    "retained_path": "windows/results/s051.log.gz",
+    "retained_sha256": "d8de4ee0577203beaf8ecda4f3bea0368079340965b05372ac9b2f32e2474fc4",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s052.log",
+    "original_bytes": 85355,
+    "original_sha256": "cade9732d2e0d1cfbe7d98962d55ee658009780a4cf621b97f820c4f0cf53aa9",
+    "retained_path": "windows/results/s052.log.gz",
+    "retained_sha256": "78d4041d4f4281e990e706c67cf3a9378c81b9905cc3e48029b761cb48bbe4fe",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s053.log",
+    "original_bytes": 152822,
+    "original_sha256": "6904084497ab34b384d361c7bd04454b76dd9f63eeb8f1f0f95371fb6d471208",
+    "retained_path": "windows/results/s053.log.gz",
+    "retained_sha256": "67de04fea63eed10affd1b96e89a00d67002a737026b2b033dbba97d6b8d8062",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s054.log",
+    "original_bytes": 153786,
+    "original_sha256": "9d9d1cedea0b83ca7a741b2b40f652965e8d2e85079a5822b6c1927e93b5a89f",
+    "retained_path": "windows/results/s054.log.gz",
+    "retained_sha256": "c30dae3df22e24c8554841282fc59a32c6a39cd41769fbae984256c785767301",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s055.log",
+    "original_bytes": 145220,
+    "original_sha256": "8365edb483b4209f1bff2953c2840452571a55f5c480636aee761c1562f20026",
+    "retained_path": "windows/results/s055.log.gz",
+    "retained_sha256": "4e6a238f298194dc8fb727faea7b1880a09c3ae4415686f6df9e340d8151b93e",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s056.log",
+    "original_bytes": 86068,
+    "original_sha256": "ec16096948df4b19cc914b6e4c3c18db589d7194cdad5d14ef22d27c1c208ad2",
+    "retained_path": "windows/results/s056.log.gz",
+    "retained_sha256": "8e659832df20052a2982b93b62322110bb52062a1c8e91d4750bada1a5a5b075",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s057.log",
+    "original_bytes": 149052,
+    "original_sha256": "06115ec86e62826e1526932adc9c520e586d4b9c1418ebf6948e0ed206964797",
+    "retained_path": "windows/results/s057.log.gz",
+    "retained_sha256": "93e068c8df4f8f68e245c403a99cd7b7f5aecc5ef2aef772b7f7888384b976f7",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s058.log",
+    "original_bytes": 152846,
+    "original_sha256": "2bef3c2cc7a0351bc7b0c02fd5e2bc22c1e3ce52b72c5ce8da704316f7bd56cc",
+    "retained_path": "windows/results/s058.log.gz",
+    "retained_sha256": "dd2ac2b55d3abc9c116726bf588b788ab20ed1f33e15a689787d8b45bc85e1f4",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s059.log",
+    "original_bytes": 157241,
+    "original_sha256": "70ba92fdb9ba76995cbfabc245202ebfbc58299c671a291d2bbec608ec76fcbd",
+    "retained_path": "windows/results/s059.log.gz",
+    "retained_sha256": "c791b640faac38430cced662c75a2da77e67420417c5917ed7013667972ba705",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s060.log",
+    "original_bytes": 149267,
+    "original_sha256": "33460bb9d145de4b6c66720515330c7ab59824dc3cdc4713338b8f021c2e82f9",
+    "retained_path": "windows/results/s060.log.gz",
+    "retained_sha256": "a372a56b59ff175a001b1ca94e00907e61e09b4ee60bc65f16e6ff6ad73ab847",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s061.log",
+    "original_bytes": 147286,
+    "original_sha256": "908047976e1b8d7ccd187d37935d1608e3d89c90f5421a418fcff1427e173c5c",
+    "retained_path": "windows/results/s061.log.gz",
+    "retained_sha256": "cd3110f904265d42b21d3ed21bb1a16a551dc277abb71161a1f2a56aecd20729",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s062.log",
+    "original_bytes": 150162,
+    "original_sha256": "14421ffb790c6fd6240ae021c04df6aba9825857ae2be5761f61128da76f6fe4",
+    "retained_path": "windows/results/s062.log.gz",
+    "retained_sha256": "f41dcdf9ef196e3c93a13b52a5a28d85837ce1478b015c55338b7d399687ee03",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s063.log",
+    "original_bytes": 151848,
+    "original_sha256": "be795ee544270fa2a6c301ec90f115416b25829472d48f985fbfa7cd1ccc1e42",
+    "retained_path": "windows/results/s063.log.gz",
+    "retained_sha256": "ae91b3584e86755b97c76007941e3189715241ede9c5fde5ead01ccf6b693752",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s064.log",
+    "original_bytes": 147497,
+    "original_sha256": "c6e67d999d42068308a4b24557574643655fc3cf229199f401f9bdf4fcaedcea",
+    "retained_path": "windows/results/s064.log.gz",
+    "retained_sha256": "8c6581571928a2c6a06bb19814644a97162c0b49edc1ca1c47b855819969809a",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s065.log",
+    "original_bytes": 146047,
+    "original_sha256": "96cac217d472fffe5c8f325f284c6f9773e79bc2e3900f81e3d38fc00df6cfe0",
+    "retained_path": "windows/results/s065.log.gz",
+    "retained_sha256": "5d082500bf47e285a56c6f29ae629eaa61fa3d30e3fbdc0f5ae69c0aaf5d0de6",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s066.log",
+    "original_bytes": 144933,
+    "original_sha256": "70edbf4e0976bf74bf7e8060553f1a4df629be06c34ea6f3d72bdf964a7ddb2e",
+    "retained_path": "windows/results/s066.log.gz",
+    "retained_sha256": "df3caa188eb46577e8e680374023de5eb77c1cbf9b5d9bd52ed817fa7ffb0f73",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s067.log",
+    "original_bytes": 144756,
+    "original_sha256": "d2d2544f62d0a802d9de7774995be41affa5f41783dc6f3e7369826e97d196f5",
+    "retained_path": "windows/results/s067.log.gz",
+    "retained_sha256": "f550635d9dd8bc7565e790fa6ae8bcae79461ec92e5073e5a1a6c6ecc69322d5",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s068.log",
+    "original_bytes": 126252,
+    "original_sha256": "f88e51aed9e06dd25152532ad85cac6f13f391b29e230d9b5cb1c5da0396fbdc",
+    "retained_path": "windows/results/s068.log.gz",
+    "retained_sha256": "a072a3c8f49f48b0de1ec46d59d929305fbefd35a64dad9d79a4a4715d3b3e89",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s069.log",
+    "original_bytes": 145776,
+    "original_sha256": "6e31902ce639dfd12980e38ae30225496ae163c40ad2dd5cd683b3508c3e899b",
+    "retained_path": "windows/results/s069.log.gz",
+    "retained_sha256": "f71c9316bdb113a2247d52c778d0571e8d8ddec626837070359b622dcc554712",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s070.log",
+    "original_bytes": 145473,
+    "original_sha256": "bf4c9b38a16fb64a2f29cc9daa8be7dcb12d782bd21db45f43086bfed78c781f",
+    "retained_path": "windows/results/s070.log.gz",
+    "retained_sha256": "65e147b5e70b673beb53d24e4dfa90f619b7f2b9ebc656990685b3814fac84ac",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s071.log",
+    "original_bytes": 144484,
+    "original_sha256": "df4437c5b5bf266573d93bd342b83e025cccff381b606c25f1da07187f1cdf05",
+    "retained_path": "windows/results/s071.log.gz",
+    "retained_sha256": "4becab832e025b734a6d3221248f1081350237a8f02abff40dcdb8fa94d07eac",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s072.log",
+    "original_bytes": 127050,
+    "original_sha256": "da48e302b9c41e39c1dc086acce98bab1a1bed75b3578cd12778ff5c3484c5ad",
+    "retained_path": "windows/results/s072.log.gz",
+    "retained_sha256": "8a504d11a904ef6f14035583e32f47fb96470e4cfd114c798a975fea826e4ea8",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s073.log",
+    "original_bytes": 144102,
+    "original_sha256": "c766f3947fd8951b17226c1a21ff5a9b4041d6dc59208aab7e1d3772b89d3bb6",
+    "retained_path": "windows/results/s073.log.gz",
+    "retained_sha256": "ed70e2f397aa84b8193f24129e9a540916830009a4b1372deea65c4a60227002",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s074.log",
+    "original_bytes": 140875,
+    "original_sha256": "1853d18782a5b8c4d5142a79119242300d61f38c53e86f960f05488bdda9936f",
+    "retained_path": "windows/results/s074.log.gz",
+    "retained_sha256": "203a8622ed75f622455f2bd659ce4680d266d2af659c18160c70e97a561d4467",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s075.log",
+    "original_bytes": 141798,
+    "original_sha256": "272d8b5d72b7adb99f0edb8179df0ef91657791e4095803f0fef2f78d5dda8b7",
+    "retained_path": "windows/results/s075.log.gz",
+    "retained_sha256": "1fb6c155f4df6346efbf8d67966174a21d698e39a27d670cdcd3fa5fa0710b1b",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s076.log",
+    "original_bytes": 142631,
+    "original_sha256": "b61721f5f01e4573c0b619d605c5999264402529cf0106e6f1992814dc20773a",
+    "retained_path": "windows/results/s076.log.gz",
+    "retained_sha256": "23059f22a5e208dc75bdc103e7e2f8a3f919bfdc8dfa87070c703ef3fce30c02",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s077.log",
+    "original_bytes": 143170,
+    "original_sha256": "0cce5142228d1b2e38fcf31db793ef49f60cce21f513c4bbfedf85db62accbab",
+    "retained_path": "windows/results/s077.log.gz",
+    "retained_sha256": "f8f4c925ff9be9e67d11de2930db46f40233705010d08f78288c728752e8e57d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s078.log",
+    "original_bytes": 143192,
+    "original_sha256": "14b91e20689b2268f70fd373a30ffc2863ad20a64fff26913d8b48986f1b3039",
+    "retained_path": "windows/results/s078.log.gz",
+    "retained_sha256": "bd0ccf79f55d967b2ed3a619ae840b3c1c351b03b1779c536bc1e90b889bd6a1",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s079.log",
+    "original_bytes": 140982,
+    "original_sha256": "6667d66acf7249cedbefae836d955484183888c52697f53ed5d80c32d3830a60",
+    "retained_path": "windows/results/s079.log.gz",
+    "retained_sha256": "818d9af9b910158bced7b9a45b8c36422cdf8d79b135f79b5f7e2d14671f1cfa",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s080.log",
+    "original_bytes": 141699,
+    "original_sha256": "1b05a31d673bdce9fa71ef537575829fb931b90daf0a9ce80d20ed100cc1ac08",
+    "retained_path": "windows/results/s080.log.gz",
+    "retained_sha256": "6dbbf49ab4c807dd4430ea573f087f83ca0d2f73ee723832ff1356fc450f8dc4",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s081.log",
+    "original_bytes": 145273,
+    "original_sha256": "a99bb5ba1f45f18087d7a264659c873efb3da4cdbdbc7adc4f7a4b448c698fb2",
+    "retained_path": "windows/results/s081.log.gz",
+    "retained_sha256": "650d51a2d59f1c01d5cf43cb3c6ae31034102bf97c2bb97a8ed2519a7025e013",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s082.log",
+    "original_bytes": 145273,
+    "original_sha256": "005c6dbee95bdba49005c455e3e1963f43e73d437a9f41d3f682401a1b4bdf7a",
+    "retained_path": "windows/results/s082.log.gz",
+    "retained_sha256": "d1e58ee932a89c757e11c93cca2b6a6df89921e447aba14f525dff4288ed8437",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s083.log",
+    "original_bytes": 145273,
+    "original_sha256": "f2580c5a72022ac99c1c177b33bd94297e31d548a4812435401d1c3a443c0651",
+    "retained_path": "windows/results/s083.log.gz",
+    "retained_sha256": "446cc2b010f9ada91d35837d0f5609b4c088b404a19935fd9b106cff15efab57",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s084.log",
+    "original_bytes": 141796,
+    "original_sha256": "8630260d30ece0950190ba6c44142d71c140cd60e75ce7946f866f55d2064741",
+    "retained_path": "windows/results/s084.log.gz",
+    "retained_sha256": "9335401aeee3804451c0a237b472a52495fe4735eb590fbbaad01356276380e9",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s085.log",
+    "original_bytes": 145001,
+    "original_sha256": "ba3665f938bd0ec7d44b6baecfda4f598929037a53fa7c78f3302a985c1ffd2e",
+    "retained_path": "windows/results/s085.log.gz",
+    "retained_sha256": "c8ab3ed6ac71636b75f8cd9d26e6c98745176083c3f5c133503c01c884b1a53d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s086.log",
+    "original_bytes": 145356,
+    "original_sha256": "6ce01f2ed770ff971461954457bc88dea88b37fca923cf920bfa432c94d750d5",
+    "retained_path": "windows/results/s086.log.gz",
+    "retained_sha256": "7d364cf6963c249cc3b44457adcf531b7a21058b3e83015e2ddfb95a1920ac03",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s087.log",
+    "original_bytes": 145001,
+    "original_sha256": "517fc0615c4d66fc18e28c0d5e02c8e83989e748bd50af3476765cbf96671986",
+    "retained_path": "windows/results/s087.log.gz",
+    "retained_sha256": "a8a8ef31063b54c492ed1dd7490e0c73d8dcea8701a4f9bada1e2d3d384cf2f1",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s088.log",
+    "original_bytes": 141520,
+    "original_sha256": "83799157456648f1a28a3d5fed472c987d897329c782c4462fcdf3f91b35f493",
+    "retained_path": "windows/results/s088.log.gz",
+    "retained_sha256": "807e21ec6dc0ecd562663aa4b3cb1678ae523ee32c8ced615ed4d583c6aa857e",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s089.log",
+    "original_bytes": 139744,
+    "original_sha256": "5731b4428fe96f25f956c973d6c0dff79e14c0505f6306c2f7b96124ee57b92f",
+    "retained_path": "windows/results/s089.log.gz",
+    "retained_sha256": "df4b7e065296e793aefc190f75a002c409e6b67ed745bf1efce975fa59555d15",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s090.log",
+    "original_bytes": 140665,
+    "original_sha256": "b3b0dd9a82e673cb4da3da461f2091cde1202563358083212c8c21f83bccade2",
+    "retained_path": "windows/results/s090.log.gz",
+    "retained_sha256": "514eb9b8f06e44e88f59b6dd34db4033d862d6393c19af5e1af41156bb7d3c2d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s091.log",
+    "original_bytes": 140849,
+    "original_sha256": "ad5380db0eb4bd53dfaa247a6d9e8566cee21124ea23c9c9b5a17a1430ab650f",
+    "retained_path": "windows/results/s091.log.gz",
+    "retained_sha256": "b52649476a31ca90c0dd3b59e909ba40040d2efe7d1481474c50d89e50f73a18",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s092.log",
+    "original_bytes": 139430,
+    "original_sha256": "522bca3b28b5fa82bad8976be6915f8074a5dd15e96cd860a199ab4e80bbc54d",
+    "retained_path": "windows/results/s092.log.gz",
+    "retained_sha256": "42d62c61ed0df1bb975d201b748f63c265391a978075f73869f431ea82879b83",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s093.log",
+    "original_bytes": 139476,
+    "original_sha256": "d3e99aac8ec4848b59b76f4b22c8e683068df303a39331d3bab309cc1f1f7825",
+    "retained_path": "windows/results/s093.log.gz",
+    "retained_sha256": "4d35274214e0ea3237d3527e21ad81a3810d76dc8cf807568399ceced17e99ed",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s094.log",
+    "original_bytes": 140305,
+    "original_sha256": "beccb989bbeb5856557189377bc5a49285d3d9701681d36f68b2d33e4f6eceed",
+    "retained_path": "windows/results/s094.log.gz",
+    "retained_sha256": "8c056335e83ba2a48d2c598c95eeb0f5eb4e87dcde3dc65e11843193e0967a6c",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s095.log",
+    "original_bytes": 140398,
+    "original_sha256": "3e4a3d51948e1e01fd0a851c76bea6f80f848c7777b481697a1cc9d55c103ce7",
+    "retained_path": "windows/results/s095.log.gz",
+    "retained_sha256": "4ffd8b98918dee9156ee6a3eed5fd6816b0222989e18f44bd7ff259ca70037ce",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-Windows-X64-38701913394-1",
+    "original_path": "results/s096.log",
+    "original_bytes": 139162,
+    "original_sha256": "09a08437281ce9f96c9fddbc913a4d45d189fe6a77c1e37f9d0132c43811dc89",
+    "retained_path": "windows/results/s096.log.gz",
+    "retained_sha256": "0faa5be9264aee6b9e5505e2b9e0bc00dd67d2b2158a5fb3ef85644e775a32a6",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "build/compile-unit.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/build/compile-unit.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "build/compile.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/build/compile.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "build/format.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/build/format.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "build/provenance.log",
+    "original_bytes": 486,
+    "original_sha256": "1be2f60a74c28f71d23273af2e5d698877c1d3749eb6b4084a3886e1c6174ee9",
+    "retained_path": "macos/build/provenance.log",
+    "retained_sha256": "1be2f60a74c28f71d23273af2e5d698877c1d3749eb6b4084a3886e1c6174ee9",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "build/run.log",
+    "original_bytes": 7048,
+    "original_sha256": "a34f93ac13d6cd9b2c8e898be1cb3bbea1d69930c7952146012216a2632b0d70",
+    "retained_path": "macos/build/run.log",
+    "retained_sha256": "a34f93ac13d6cd9b2c8e898be1cb3bbea1d69930c7952146012216a2632b0d70",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "build/sources.sha256",
+    "original_bytes": 919,
+    "original_sha256": "b455824f4d1aa3898f6ff8e70dfe27f5b2f7b713397a81035d46467461449a2a",
+    "retained_path": "macos/build/sources.sha256",
+    "retained_sha256": "b455824f4d1aa3898f6ff8e70dfe27f5b2f7b713397a81035d46467461449a2a",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "build/unit.log",
+    "original_bytes": 1326,
+    "original_sha256": "66002885faa723eddb862912790824475fdf6cfbc03091fa9d871cee5148a0bb",
+    "retained_path": "macos/build/unit.log",
+    "retained_sha256": "7abe0d3a5ce36d42a525c3dade073a0f9772ef53e06319ab37144517ff41905d",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/input.log",
+    "original_bytes": 403,
+    "original_sha256": "4ffd0c52d7f9c6ade1ea69e2f1405199ba39ae93110444166df0bd8f4f310f36",
+    "retained_path": "macos/results/input.log",
+    "retained_sha256": "4ffd0c52d7f9c6ade1ea69e2f1405199ba39ae93110444166df0bd8f4f310f36",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/metrics.log",
+    "original_bytes": 44696,
+    "original_sha256": "dac8b3209d6bf61784cc75e980717766240a678a97eb6e0c86de1446437240a2",
+    "retained_path": "macos/results/metrics.log",
+    "retained_sha256": "dac8b3209d6bf61784cc75e980717766240a678a97eb6e0c86de1446437240a2",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/policy.log",
+    "original_bytes": 204,
+    "original_sha256": "5f4747764f998add8b941a8bb6315eef6ccb7aba443e42af9ab01fea62303191",
+    "retained_path": "macos/results/policy.log",
+    "retained_sha256": "5f4747764f998add8b941a8bb6315eef6ccb7aba443e42af9ab01fea62303191",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/recovery.log",
+    "original_bytes": 262486,
+    "original_sha256": "0ba431c092c6af4f55916260b2662f6bfc5672f78bc80608b1df0b228be54ad2",
+    "retained_path": "macos/results/recovery.log",
+    "retained_sha256": "0ba431c092c6af4f55916260b2662f6bfc5672f78bc80608b1df0b228be54ad2",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s001.log",
+    "original_bytes": 152767,
+    "original_sha256": "8588ff8a00a48759e13e2419e58d228e1b80bc1ee9650021e385475824adae32",
+    "retained_path": "macos/results/s001.log.gz",
+    "retained_sha256": "12949f4393c902a7ae7688802a32fc6edc384ed1a18bf1421ad7ff6f63b2e9ec",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s002.log",
+    "original_bytes": 153677,
+    "original_sha256": "d9f7ed806f78f3b298e1816071fc320af7c8505b6a28a5036cee5226d43182e8",
+    "retained_path": "macos/results/s002.log.gz",
+    "retained_sha256": "9e62822c19729342d0f988ba78ab7164a625de70ee225d3d2fd59277e71a953c",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s003.log",
+    "original_bytes": 142442,
+    "original_sha256": "788999709474348a236bca9bf6283d60683c1e844437c1fac0bc0ced075b3727",
+    "retained_path": "macos/results/s003.log.gz",
+    "retained_sha256": "0abfd6bf99caa3cf014c73ae996a2ee6198a334d02a62d0bcb04ba9e69449bc8",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s004.log",
+    "original_bytes": 83218,
+    "original_sha256": "015009e12b85679d9e0f31edf34ef89c7b5b51de927f1fd60904324e743f5293",
+    "retained_path": "macos/results/s004.log.gz",
+    "retained_sha256": "17b0ab50a74d2775c9ca5ca0981955da6178702f33c129f43af4778fae959a3f",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s005.log",
+    "original_bytes": 151120,
+    "original_sha256": "17c6f25f0affc0d28c9d12e122daef66991b03e53ea9be6becd0698e8a0c4fa4",
+    "retained_path": "macos/results/s005.log.gz",
+    "retained_sha256": "ac8e2b178121fd3e265e40d2bcd9aade3f28b4275ccc3510a53550a09430a498",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s006.log",
+    "original_bytes": 152554,
+    "original_sha256": "a41ca31298e1305390ee0b6af559ae76920545c18541987ec20ce7eb14b2afcb",
+    "retained_path": "macos/results/s006.log.gz",
+    "retained_sha256": "9605e8d9834ed87ba8c310c606bd6b9483c4e8500494ef9559978ac6df68ef0b",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s007.log",
+    "original_bytes": 144264,
+    "original_sha256": "2811fbd2985abe5a33289c5fcedca3c62970412e28b090e290ef40e8fc5d69a9",
+    "retained_path": "macos/results/s007.log.gz",
+    "retained_sha256": "f7be44d305bd688a7c070109e66c027afdabb6701b8006a10dcbf80a24db6e36",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s008.log",
+    "original_bytes": 83113,
+    "original_sha256": "0bbaf96aec4c7c15f62174c821e0996447f3f08ab5f46674c8c090c02cbe8a28",
+    "retained_path": "macos/results/s008.log.gz",
+    "retained_sha256": "802cabefa038be60103182d3449437e7a13bcaf7a1b9079b7335cbfc9364bfc8",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s009.log",
+    "original_bytes": 144393,
+    "original_sha256": "6623d85c01a2ea1bae69812a91db2683a5f71fd8f2333482889ff6f66cf5cd0c",
+    "retained_path": "macos/results/s009.log.gz",
+    "retained_sha256": "79dfb192be2ed38d06acf9f4c0a21bd1b166a8be10384402fb475389cc321c07",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s010.log",
+    "original_bytes": 147969,
+    "original_sha256": "0ef9c4e274b5c474d962c2413b08fa324c83f482c7883811e105b1204f60c701",
+    "retained_path": "macos/results/s010.log.gz",
+    "retained_sha256": "7f86eb02516638c8db1091559f00f67dd24ea01058044676b6d86b3ff988ded1",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s011.log",
+    "original_bytes": 151385,
+    "original_sha256": "9b820904f3a058ff806eb020ea5caacb24862628eec134e20384a16b8aedb52d",
+    "retained_path": "macos/results/s011.log.gz",
+    "retained_sha256": "bdbaa5caffdc107579284189c57c8248cdf0717d0c27cf993dbedb8c10867eb4",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s012.log",
+    "original_bytes": 142874,
+    "original_sha256": "736b2fce59b1a8f6a33a63d5b2a1cf2a170b0c2dba0972a184831bb92ab1ceb4",
+    "retained_path": "macos/results/s012.log.gz",
+    "retained_sha256": "edf087c9c88b4eee861237cffc5a628aba5e7314e0d3de7078358641fe0e0031",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s013.log",
+    "original_bytes": 142631,
+    "original_sha256": "2625252c62f047f4995b93a211756e6e2f7503039298d59c742998cc3811fb38",
+    "retained_path": "macos/results/s013.log.gz",
+    "retained_sha256": "9c3cd787f30632b5cdb005b8e2abe3943ade6b4cf76c13d9a89987adcc19fa5b",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s014.log",
+    "original_bytes": 148217,
+    "original_sha256": "3b2c13e04ef6133d0bca02394a0c6e4f2f3b042eeb67fb510cf88363a5c185c5",
+    "retained_path": "macos/results/s014.log.gz",
+    "retained_sha256": "11fb44301a50f73baff0af2d9ce707c639fb30d7aeb8ab833bf99e9a557f901a",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s015.log",
+    "original_bytes": 153570,
+    "original_sha256": "a4aceaa359f4ec416a5b77f918684867bebce1c6bf548ce081cdbb7a34dec4d7",
+    "retained_path": "macos/results/s015.log.gz",
+    "retained_sha256": "c92fc9b73c5318f838179fdf92c4cfaa9524873dad28d1df4748ed62e065e07f",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s016.log",
+    "original_bytes": 141168,
+    "original_sha256": "9c47bfc72163dd731dcfc410fa063c2732b43b8c6fe6edf1de7326e0df79ccbb",
+    "retained_path": "macos/results/s016.log.gz",
+    "retained_sha256": "586eb5e78bb6613bbb5f3ce6477df5fd01feca1ddd7aeab93f4526f7864c1d5f",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s017.log",
+    "original_bytes": 144339,
+    "original_sha256": "ed932e0ee99e4cc095a38332f507436efecd145f14aae17c358ea5168b1721d8",
+    "retained_path": "macos/results/s017.log.gz",
+    "retained_sha256": "31049001017ddbfd64a3bd337e1daaf2da29865c784190cbd85e92022a5c8d90",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s018.log",
+    "original_bytes": 143299,
+    "original_sha256": "4994c490c441824d8962e47cfa889d82c4930d58127dbc6443778d1ddb088d60",
+    "retained_path": "macos/results/s018.log.gz",
+    "retained_sha256": "1232a53f414239b961439a3be8afb113b4fe76204de360b585fac6211d1ca1be",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s019.log",
+    "original_bytes": 143034,
+    "original_sha256": "985db69adbca2a91a7785dc881bb721e4e90fce3dcc5c22fbc997a3399a3720c",
+    "retained_path": "macos/results/s019.log.gz",
+    "retained_sha256": "5dccc05b8b82b20bb5a5ea96c05c34c9779082d346384173f8f0aff428076c88",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s020.log",
+    "original_bytes": 125759,
+    "original_sha256": "ad20a439d48cb75754a4e9506b15841de8d293fe7e4544822efaa8e77788ddf3",
+    "retained_path": "macos/results/s020.log.gz",
+    "retained_sha256": "9014c724cbdad132b898d7cb398b188793a90bb98bce938beea01f7c60ec4ebb",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s021.log",
+    "original_bytes": 144103,
+    "original_sha256": "f35937e5f2d6e923ea36719a5e0edcbc115d6ec32aff292e95e6462d18cc8fec",
+    "retained_path": "macos/results/s021.log.gz",
+    "retained_sha256": "23ab58fda30f8db4faf94c35d2957b5af986817a23fae1dd870aa7ba7c60e56e",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s022.log",
+    "original_bytes": 144303,
+    "original_sha256": "d7069e9923a92e16a68dcdfb5086695b0a675d89cd36b87f886c677fad1f5e6b",
+    "retained_path": "macos/results/s022.log.gz",
+    "retained_sha256": "4637c940199d53b7f2051f937c842aadab58f6e48b2932b2d3729ed8f77e33ef",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s023.log",
+    "original_bytes": 142798,
+    "original_sha256": "29edd4d340fe05ccd30fda6f16852b8e0b261e5951c5d4f49a56c52d2808210b",
+    "retained_path": "macos/results/s023.log.gz",
+    "retained_sha256": "957ca3281e0082c1b9eaeb50abdfbc18588d8ad042a247e6624f1630d8b7b228",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s024.log",
+    "original_bytes": 126075,
+    "original_sha256": "6ce24355752ea0ecec40e225dd9bd9a8d3496fdce0138cc29f80ca4a266bebba",
+    "retained_path": "macos/results/s024.log.gz",
+    "retained_sha256": "a3ccd885b9d42512a12349ca4f01086e16005fe3ef15767bce33fef4ff558e5e",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s025.log",
+    "original_bytes": 136307,
+    "original_sha256": "48db53780f3590dfdbdf19d7ea2aabfab65a22f047a311d3f5ff5d6eca23e75a",
+    "retained_path": "macos/results/s025.log.gz",
+    "retained_sha256": "3da25ac63564119bb6ee9cf72325072fae3dbbfbf972061dc4c89299b877ab25",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s026.log",
+    "original_bytes": 137707,
+    "original_sha256": "eaa65d023da0371acadc8e510c8d55ab59ec16c70eb8a3ad8d184744c840e197",
+    "retained_path": "macos/results/s026.log.gz",
+    "retained_sha256": "6fd2a6f690b4b4db741f13ba20db8b50c67225fceeb8f1787b6339e80c5a2437",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s027.log",
+    "original_bytes": 138830,
+    "original_sha256": "12b014a619a5bdcd4c740e0d0d52c284a0488b3f9c2fcf9a632b8f9e586b29cf",
+    "retained_path": "macos/results/s027.log.gz",
+    "retained_sha256": "55748e04b23dda08ee05dc082f0c8a8bcdde987396cf9ea9f02d3cbbd39570a1",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s028.log",
+    "original_bytes": 136001,
+    "original_sha256": "e4e17bcdf6709cd8f004bba521fd6b0e00e5ed6bab577a59bb6a69726a1ab99a",
+    "retained_path": "macos/results/s028.log.gz",
+    "retained_sha256": "ef882a5518deaf01468574d6d77a01b03479dbeee79ce822122fff2a03805868",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s029.log",
+    "original_bytes": 136075,
+    "original_sha256": "ec05d47923c576929d3c87115e1268f80ba2524751b1108dfa42c1dc3258b4ae",
+    "retained_path": "macos/results/s029.log.gz",
+    "retained_sha256": "a1706dd1d161d9594156bffd8c4a0b9a90140fb5195ab93bafb71c30d8c92927",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s030.log",
+    "original_bytes": 139768,
+    "original_sha256": "76fa3ea27fa73b6e1db54852cd39eac8e28a9555044902f29e35424bc98b0985",
+    "retained_path": "macos/results/s030.log.gz",
+    "retained_sha256": "c9cd30ff25825b93f6826c251316a5f6e346c8b6021e9116c0f82ae6bce17fdd",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s031.log",
+    "original_bytes": 138590,
+    "original_sha256": "7131ca0b4a1f19da80c549772a6d1c94e6f59b5581314594116e7c80461dd89a",
+    "retained_path": "macos/results/s031.log.gz",
+    "retained_sha256": "c68bdb1b9247103e709277ef955a2dabe2542de8621be8dae95f8dfcf3321dc5",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s032.log",
+    "original_bytes": 135769,
+    "original_sha256": "c422f5fe869695e7519b132bdc5f11988a4f24672e7bb358d34783a3d5e3d3b1",
+    "retained_path": "macos/results/s032.log.gz",
+    "retained_sha256": "ed9685fcf5675f254a62149189f17c62004aeebea7a7506f65539957641bde64",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s033.log",
+    "original_bytes": 143551,
+    "original_sha256": "18d76fd7964dbef71678ab4ebb4b96306e09e52d18238bc73cd06fdd475f8711",
+    "retained_path": "macos/results/s033.log.gz",
+    "retained_sha256": "0e01d7e6dc8da2b39dafedc41303b1831ce868609f64ac6ce09449283c269372",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s034.log",
+    "original_bytes": 143730,
+    "original_sha256": "35177efef21d1fef2b268d1cbb349a8542607106fad85d4ca29e2e462e1099b9",
+    "retained_path": "macos/results/s034.log.gz",
+    "retained_sha256": "9a6efddb7bfbc306ed0d3af38e6b107c8bedc3cf13627be42a0e5588912d4131",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s035.log",
+    "original_bytes": 143551,
+    "original_sha256": "0172c1f4ab0f7a37d1c068f9b44555befb2d796932c8885d6f206dbcec2d6215",
+    "retained_path": "macos/results/s035.log.gz",
+    "retained_sha256": "7186b3e8b2fdba2bc1eb1a3af46421a25d081197f08b032beca49972ea507777",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s036.log",
+    "original_bytes": 137586,
+    "original_sha256": "dfc54cf94af40c35382aa88853bb2c60703d3017fdfd6c81c3bead4371f3afb1",
+    "retained_path": "macos/results/s036.log.gz",
+    "retained_sha256": "fb8d3eaa2d9e5e0e78412b8be9e012c1d67a898ca49121dd1c4fa47fbe3e131d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s037.log",
+    "original_bytes": 143315,
+    "original_sha256": "2b9428adfa60a40f35be02ae86097401c21e0c4fcd090ef0856090532177e11e",
+    "retained_path": "macos/results/s037.log.gz",
+    "retained_sha256": "3fc931c5a41c46385d8d6a2cf8353d010f6f5ba162a615cbcf61f667e01cda95",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s038.log",
+    "original_bytes": 143585,
+    "original_sha256": "aee63bc89653c7feb5c78e629e239ed4778edd3f6877f1868ea90fda8a300d22",
+    "retained_path": "macos/results/s038.log.gz",
+    "retained_sha256": "8a0523375f6354206113790946b7a1d830cef9196a30761c8ff6260f3be041f9",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s039.log",
+    "original_bytes": 143315,
+    "original_sha256": "708b0dfb044ec3b6a47a33e2a485a0c3f6a72c56f0ed4fa3c246501a30781194",
+    "retained_path": "macos/results/s039.log.gz",
+    "retained_sha256": "a7970df07190a37f9c91791034ad4b18c52d2f8bdd5a34d6b7a29b6cc790965c",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s040.log",
+    "original_bytes": 137350,
+    "original_sha256": "5a5a49f1ec11989930f5ca2e9426d3ff57ee44ce57569d451c9f729a1b9c842b",
+    "retained_path": "macos/results/s040.log.gz",
+    "retained_sha256": "b272947a9235ae09b06f4914d7fda164ede3c34d6f8e3b841a93e461e4de58fd",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s041.log",
+    "original_bytes": 135073,
+    "original_sha256": "7bde7df4944cf96bfac4e5887c9f3a24a292e16786978e07c79cc5439cef077a",
+    "retained_path": "macos/results/s041.log.gz",
+    "retained_sha256": "07864a4f8f70786f667e98b8a638aae21330106de6c1c092c49321f246d7243d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s042.log",
+    "original_bytes": 136730,
+    "original_sha256": "3182f7167d407356a2326eb0e6cd62db244a62abb7ec65e84cc034f5aadf67f6",
+    "retained_path": "macos/results/s042.log.gz",
+    "retained_sha256": "934026fe7512e5478a559a13049d33832d968117024b21e164caef6b747ef869",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s043.log",
+    "original_bytes": 136998,
+    "original_sha256": "f0ede951442b10afaad2501872783267f166250b75dc69226974ee0d30e1aa21",
+    "retained_path": "macos/results/s043.log.gz",
+    "retained_sha256": "162c49ea72c07cd07c68e3fe27ab68d77795d2a84b02752bf20933ce262f4f42",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s044.log",
+    "original_bytes": 135253,
+    "original_sha256": "08eeb2583d9047e7262be46f26838bf251f7350d57b7d6ad95bb44d8aa96c802",
+    "retained_path": "macos/results/s044.log.gz",
+    "retained_sha256": "cca2c26840289f730d8a34a4e43d97f3bb1ba7f2c81b8f5b0a9c16b8a81eb63d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s045.log",
+    "original_bytes": 134840,
+    "original_sha256": "cbbae12f5fd7987d9285d0677d8d4166eec12c81f212922dd173da6b91304574",
+    "retained_path": "macos/results/s045.log.gz",
+    "retained_sha256": "661cd32e856e5df16666f99406d8cb51322b741782b0dc53611a2d36f9021585",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s046.log",
+    "original_bytes": 136675,
+    "original_sha256": "4a65ec402ff7865ba6fdee7b6671850a7ad704f0ea7cc244729e7a285bb775c4",
+    "retained_path": "macos/results/s046.log.gz",
+    "retained_sha256": "165105cdc30eb25353e1a3b7eb95f576038484b46cd114fb1feff1a154d3dc8d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s047.log",
+    "original_bytes": 136763,
+    "original_sha256": "a5e7d1c27fdc8cf4c3079cb5ce7b7e45395e29b4bd959db79285ac57f7b8a05e",
+    "retained_path": "macos/results/s047.log.gz",
+    "retained_sha256": "c7876961656ef1f10ff8ff4fc6ad0eb291112bcb37e64a41276bffb8abe1489d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s048.log",
+    "original_bytes": 135020,
+    "original_sha256": "d91d8bc79b8742208bec99919256dcffe97dee05daef8dad0c7ab1714cadad2e",
+    "retained_path": "macos/results/s048.log.gz",
+    "retained_sha256": "5f08b1299cd7b424363212e65c70078fefa532c56cbd9bdd3cacf9cf8c1b6bae",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s049.log",
+    "original_bytes": 154507,
+    "original_sha256": "4cf86e564aa6f971852b95613dbee355a3fc1fcee04dfd6f5765993262edb7c5",
+    "retained_path": "macos/results/s049.log.gz",
+    "retained_sha256": "920b1a321ee9859e48cc980446dcbb7261cd3bf4df5c85170c33086da72bcefa",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s050.log",
+    "original_bytes": 155214,
+    "original_sha256": "99987cffb5d9574d70f243d8aa6c92100b413c7d573b18b9f19eea0d4dd521d8",
+    "retained_path": "macos/results/s050.log.gz",
+    "retained_sha256": "775c04b885e2c42818950ea38cc55ec6b8812f50665426f5bbaeaee7302a3df7",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s051.log",
+    "original_bytes": 145223,
+    "original_sha256": "737266299857fa6de4971d3543113287e3c2630b8697d4309c8e8067996c1c15",
+    "retained_path": "macos/results/s051.log.gz",
+    "retained_sha256": "d8de4ee0577203beaf8ecda4f3bea0368079340965b05372ac9b2f32e2474fc4",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s052.log",
+    "original_bytes": 85355,
+    "original_sha256": "cade9732d2e0d1cfbe7d98962d55ee658009780a4cf621b97f820c4f0cf53aa9",
+    "retained_path": "macos/results/s052.log.gz",
+    "retained_sha256": "78d4041d4f4281e990e706c67cf3a9378c81b9905cc3e48029b761cb48bbe4fe",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s053.log",
+    "original_bytes": 152822,
+    "original_sha256": "6904084497ab34b384d361c7bd04454b76dd9f63eeb8f1f0f95371fb6d471208",
+    "retained_path": "macos/results/s053.log.gz",
+    "retained_sha256": "67de04fea63eed10affd1b96e89a00d67002a737026b2b033dbba97d6b8d8062",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s054.log",
+    "original_bytes": 153786,
+    "original_sha256": "9d9d1cedea0b83ca7a741b2b40f652965e8d2e85079a5822b6c1927e93b5a89f",
+    "retained_path": "macos/results/s054.log.gz",
+    "retained_sha256": "c30dae3df22e24c8554841282fc59a32c6a39cd41769fbae984256c785767301",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s055.log",
+    "original_bytes": 145220,
+    "original_sha256": "8365edb483b4209f1bff2953c2840452571a55f5c480636aee761c1562f20026",
+    "retained_path": "macos/results/s055.log.gz",
+    "retained_sha256": "4e6a238f298194dc8fb727faea7b1880a09c3ae4415686f6df9e340d8151b93e",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s056.log",
+    "original_bytes": 86068,
+    "original_sha256": "ec16096948df4b19cc914b6e4c3c18db589d7194cdad5d14ef22d27c1c208ad2",
+    "retained_path": "macos/results/s056.log.gz",
+    "retained_sha256": "8e659832df20052a2982b93b62322110bb52062a1c8e91d4750bada1a5a5b075",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s057.log",
+    "original_bytes": 149052,
+    "original_sha256": "06115ec86e62826e1526932adc9c520e586d4b9c1418ebf6948e0ed206964797",
+    "retained_path": "macos/results/s057.log.gz",
+    "retained_sha256": "93e068c8df4f8f68e245c403a99cd7b7f5aecc5ef2aef772b7f7888384b976f7",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s058.log",
+    "original_bytes": 152846,
+    "original_sha256": "2bef3c2cc7a0351bc7b0c02fd5e2bc22c1e3ce52b72c5ce8da704316f7bd56cc",
+    "retained_path": "macos/results/s058.log.gz",
+    "retained_sha256": "dd2ac2b55d3abc9c116726bf588b788ab20ed1f33e15a689787d8b45bc85e1f4",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s059.log",
+    "original_bytes": 157241,
+    "original_sha256": "70ba92fdb9ba76995cbfabc245202ebfbc58299c671a291d2bbec608ec76fcbd",
+    "retained_path": "macos/results/s059.log.gz",
+    "retained_sha256": "c791b640faac38430cced662c75a2da77e67420417c5917ed7013667972ba705",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s060.log",
+    "original_bytes": 149267,
+    "original_sha256": "33460bb9d145de4b6c66720515330c7ab59824dc3cdc4713338b8f021c2e82f9",
+    "retained_path": "macos/results/s060.log.gz",
+    "retained_sha256": "a372a56b59ff175a001b1ca94e00907e61e09b4ee60bc65f16e6ff6ad73ab847",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s061.log",
+    "original_bytes": 147286,
+    "original_sha256": "908047976e1b8d7ccd187d37935d1608e3d89c90f5421a418fcff1427e173c5c",
+    "retained_path": "macos/results/s061.log.gz",
+    "retained_sha256": "cd3110f904265d42b21d3ed21bb1a16a551dc277abb71161a1f2a56aecd20729",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s062.log",
+    "original_bytes": 150162,
+    "original_sha256": "14421ffb790c6fd6240ae021c04df6aba9825857ae2be5761f61128da76f6fe4",
+    "retained_path": "macos/results/s062.log.gz",
+    "retained_sha256": "f41dcdf9ef196e3c93a13b52a5a28d85837ce1478b015c55338b7d399687ee03",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s063.log",
+    "original_bytes": 151848,
+    "original_sha256": "be795ee544270fa2a6c301ec90f115416b25829472d48f985fbfa7cd1ccc1e42",
+    "retained_path": "macos/results/s063.log.gz",
+    "retained_sha256": "ae91b3584e86755b97c76007941e3189715241ede9c5fde5ead01ccf6b693752",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s064.log",
+    "original_bytes": 147497,
+    "original_sha256": "c6e67d999d42068308a4b24557574643655fc3cf229199f401f9bdf4fcaedcea",
+    "retained_path": "macos/results/s064.log.gz",
+    "retained_sha256": "8c6581571928a2c6a06bb19814644a97162c0b49edc1ca1c47b855819969809a",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s065.log",
+    "original_bytes": 146047,
+    "original_sha256": "96cac217d472fffe5c8f325f284c6f9773e79bc2e3900f81e3d38fc00df6cfe0",
+    "retained_path": "macos/results/s065.log.gz",
+    "retained_sha256": "5d082500bf47e285a56c6f29ae629eaa61fa3d30e3fbdc0f5ae69c0aaf5d0de6",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s066.log",
+    "original_bytes": 144933,
+    "original_sha256": "70edbf4e0976bf74bf7e8060553f1a4df629be06c34ea6f3d72bdf964a7ddb2e",
+    "retained_path": "macos/results/s066.log.gz",
+    "retained_sha256": "df3caa188eb46577e8e680374023de5eb77c1cbf9b5d9bd52ed817fa7ffb0f73",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s067.log",
+    "original_bytes": 144756,
+    "original_sha256": "d2d2544f62d0a802d9de7774995be41affa5f41783dc6f3e7369826e97d196f5",
+    "retained_path": "macos/results/s067.log.gz",
+    "retained_sha256": "f550635d9dd8bc7565e790fa6ae8bcae79461ec92e5073e5a1a6c6ecc69322d5",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s068.log",
+    "original_bytes": 126252,
+    "original_sha256": "f88e51aed9e06dd25152532ad85cac6f13f391b29e230d9b5cb1c5da0396fbdc",
+    "retained_path": "macos/results/s068.log.gz",
+    "retained_sha256": "a072a3c8f49f48b0de1ec46d59d929305fbefd35a64dad9d79a4a4715d3b3e89",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s069.log",
+    "original_bytes": 145776,
+    "original_sha256": "6e31902ce639dfd12980e38ae30225496ae163c40ad2dd5cd683b3508c3e899b",
+    "retained_path": "macos/results/s069.log.gz",
+    "retained_sha256": "f71c9316bdb113a2247d52c778d0571e8d8ddec626837070359b622dcc554712",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s070.log",
+    "original_bytes": 145473,
+    "original_sha256": "bf4c9b38a16fb64a2f29cc9daa8be7dcb12d782bd21db45f43086bfed78c781f",
+    "retained_path": "macos/results/s070.log.gz",
+    "retained_sha256": "65e147b5e70b673beb53d24e4dfa90f619b7f2b9ebc656990685b3814fac84ac",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s071.log",
+    "original_bytes": 144484,
+    "original_sha256": "df4437c5b5bf266573d93bd342b83e025cccff381b606c25f1da07187f1cdf05",
+    "retained_path": "macos/results/s071.log.gz",
+    "retained_sha256": "4becab832e025b734a6d3221248f1081350237a8f02abff40dcdb8fa94d07eac",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s072.log",
+    "original_bytes": 127050,
+    "original_sha256": "da48e302b9c41e39c1dc086acce98bab1a1bed75b3578cd12778ff5c3484c5ad",
+    "retained_path": "macos/results/s072.log.gz",
+    "retained_sha256": "8a504d11a904ef6f14035583e32f47fb96470e4cfd114c798a975fea826e4ea8",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s073.log",
+    "original_bytes": 144102,
+    "original_sha256": "c766f3947fd8951b17226c1a21ff5a9b4041d6dc59208aab7e1d3772b89d3bb6",
+    "retained_path": "macos/results/s073.log.gz",
+    "retained_sha256": "ed70e2f397aa84b8193f24129e9a540916830009a4b1372deea65c4a60227002",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s074.log",
+    "original_bytes": 140875,
+    "original_sha256": "1853d18782a5b8c4d5142a79119242300d61f38c53e86f960f05488bdda9936f",
+    "retained_path": "macos/results/s074.log.gz",
+    "retained_sha256": "203a8622ed75f622455f2bd659ce4680d266d2af659c18160c70e97a561d4467",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s075.log",
+    "original_bytes": 141798,
+    "original_sha256": "272d8b5d72b7adb99f0edb8179df0ef91657791e4095803f0fef2f78d5dda8b7",
+    "retained_path": "macos/results/s075.log.gz",
+    "retained_sha256": "1fb6c155f4df6346efbf8d67966174a21d698e39a27d670cdcd3fa5fa0710b1b",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s076.log",
+    "original_bytes": 142631,
+    "original_sha256": "b61721f5f01e4573c0b619d605c5999264402529cf0106e6f1992814dc20773a",
+    "retained_path": "macos/results/s076.log.gz",
+    "retained_sha256": "23059f22a5e208dc75bdc103e7e2f8a3f919bfdc8dfa87070c703ef3fce30c02",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s077.log",
+    "original_bytes": 143170,
+    "original_sha256": "0cce5142228d1b2e38fcf31db793ef49f60cce21f513c4bbfedf85db62accbab",
+    "retained_path": "macos/results/s077.log.gz",
+    "retained_sha256": "f8f4c925ff9be9e67d11de2930db46f40233705010d08f78288c728752e8e57d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s078.log",
+    "original_bytes": 143192,
+    "original_sha256": "14b91e20689b2268f70fd373a30ffc2863ad20a64fff26913d8b48986f1b3039",
+    "retained_path": "macos/results/s078.log.gz",
+    "retained_sha256": "bd0ccf79f55d967b2ed3a619ae840b3c1c351b03b1779c536bc1e90b889bd6a1",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s079.log",
+    "original_bytes": 140982,
+    "original_sha256": "6667d66acf7249cedbefae836d955484183888c52697f53ed5d80c32d3830a60",
+    "retained_path": "macos/results/s079.log.gz",
+    "retained_sha256": "818d9af9b910158bced7b9a45b8c36422cdf8d79b135f79b5f7e2d14671f1cfa",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s080.log",
+    "original_bytes": 141699,
+    "original_sha256": "1b05a31d673bdce9fa71ef537575829fb931b90daf0a9ce80d20ed100cc1ac08",
+    "retained_path": "macos/results/s080.log.gz",
+    "retained_sha256": "6dbbf49ab4c807dd4430ea573f087f83ca0d2f73ee723832ff1356fc450f8dc4",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s081.log",
+    "original_bytes": 145273,
+    "original_sha256": "a99bb5ba1f45f18087d7a264659c873efb3da4cdbdbc7adc4f7a4b448c698fb2",
+    "retained_path": "macos/results/s081.log.gz",
+    "retained_sha256": "650d51a2d59f1c01d5cf43cb3c6ae31034102bf97c2bb97a8ed2519a7025e013",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s082.log",
+    "original_bytes": 145273,
+    "original_sha256": "005c6dbee95bdba49005c455e3e1963f43e73d437a9f41d3f682401a1b4bdf7a",
+    "retained_path": "macos/results/s082.log.gz",
+    "retained_sha256": "d1e58ee932a89c757e11c93cca2b6a6df89921e447aba14f525dff4288ed8437",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s083.log",
+    "original_bytes": 145273,
+    "original_sha256": "f2580c5a72022ac99c1c177b33bd94297e31d548a4812435401d1c3a443c0651",
+    "retained_path": "macos/results/s083.log.gz",
+    "retained_sha256": "446cc2b010f9ada91d35837d0f5609b4c088b404a19935fd9b106cff15efab57",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s084.log",
+    "original_bytes": 141796,
+    "original_sha256": "8630260d30ece0950190ba6c44142d71c140cd60e75ce7946f866f55d2064741",
+    "retained_path": "macos/results/s084.log.gz",
+    "retained_sha256": "9335401aeee3804451c0a237b472a52495fe4735eb590fbbaad01356276380e9",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s085.log",
+    "original_bytes": 145001,
+    "original_sha256": "ba3665f938bd0ec7d44b6baecfda4f598929037a53fa7c78f3302a985c1ffd2e",
+    "retained_path": "macos/results/s085.log.gz",
+    "retained_sha256": "c8ab3ed6ac71636b75f8cd9d26e6c98745176083c3f5c133503c01c884b1a53d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s086.log",
+    "original_bytes": 145356,
+    "original_sha256": "6ce01f2ed770ff971461954457bc88dea88b37fca923cf920bfa432c94d750d5",
+    "retained_path": "macos/results/s086.log.gz",
+    "retained_sha256": "7d364cf6963c249cc3b44457adcf531b7a21058b3e83015e2ddfb95a1920ac03",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s087.log",
+    "original_bytes": 145001,
+    "original_sha256": "517fc0615c4d66fc18e28c0d5e02c8e83989e748bd50af3476765cbf96671986",
+    "retained_path": "macos/results/s087.log.gz",
+    "retained_sha256": "a8a8ef31063b54c492ed1dd7490e0c73d8dcea8701a4f9bada1e2d3d384cf2f1",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s088.log",
+    "original_bytes": 141520,
+    "original_sha256": "83799157456648f1a28a3d5fed472c987d897329c782c4462fcdf3f91b35f493",
+    "retained_path": "macos/results/s088.log.gz",
+    "retained_sha256": "807e21ec6dc0ecd562663aa4b3cb1678ae523ee32c8ced615ed4d583c6aa857e",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s089.log",
+    "original_bytes": 139744,
+    "original_sha256": "5731b4428fe96f25f956c973d6c0dff79e14c0505f6306c2f7b96124ee57b92f",
+    "retained_path": "macos/results/s089.log.gz",
+    "retained_sha256": "df4b7e065296e793aefc190f75a002c409e6b67ed745bf1efce975fa59555d15",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s090.log",
+    "original_bytes": 140665,
+    "original_sha256": "b3b0dd9a82e673cb4da3da461f2091cde1202563358083212c8c21f83bccade2",
+    "retained_path": "macos/results/s090.log.gz",
+    "retained_sha256": "514eb9b8f06e44e88f59b6dd34db4033d862d6393c19af5e1af41156bb7d3c2d",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s091.log",
+    "original_bytes": 140849,
+    "original_sha256": "ad5380db0eb4bd53dfaa247a6d9e8566cee21124ea23c9c9b5a17a1430ab650f",
+    "retained_path": "macos/results/s091.log.gz",
+    "retained_sha256": "b52649476a31ca90c0dd3b59e909ba40040d2efe7d1481474c50d89e50f73a18",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s092.log",
+    "original_bytes": 139430,
+    "original_sha256": "522bca3b28b5fa82bad8976be6915f8074a5dd15e96cd860a199ab4e80bbc54d",
+    "retained_path": "macos/results/s092.log.gz",
+    "retained_sha256": "42d62c61ed0df1bb975d201b748f63c265391a978075f73869f431ea82879b83",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s093.log",
+    "original_bytes": 139476,
+    "original_sha256": "d3e99aac8ec4848b59b76f4b22c8e683068df303a39331d3bab309cc1f1f7825",
+    "retained_path": "macos/results/s093.log.gz",
+    "retained_sha256": "4d35274214e0ea3237d3527e21ad81a3810d76dc8cf807568399ceced17e99ed",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s094.log",
+    "original_bytes": 140305,
+    "original_sha256": "beccb989bbeb5856557189377bc5a49285d3d9701681d36f68b2d33e4f6eceed",
+    "retained_path": "macos/results/s094.log.gz",
+    "retained_sha256": "8c056335e83ba2a48d2c598c95eeb0f5eb4e87dcde3dc65e11843193e0967a6c",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s095.log",
+    "original_bytes": 140398,
+    "original_sha256": "3e4a3d51948e1e01fd0a851c76bea6f80f848c7777b481697a1cc9d55c103ce7",
+    "retained_path": "macos/results/s095.log.gz",
+    "retained_sha256": "4ffd8b98918dee9156ee6a3eed5fd6816b0222989e18f44bd7ff259ca70037ce",
+    "transformation": "gzip; original bytes retained"
+  },
+  {
+    "artifact": "s4-macOS-ARM64-38701913394-1",
+    "original_path": "results/s096.log",
+    "original_bytes": 139162,
+    "original_sha256": "09a08437281ce9f96c9fddbc913a4d45d189fe6a77c1e37f9d0132c43811dc89",
+    "retained_path": "macos/results/s096.log.gz",
+    "retained_sha256": "0faa5be9264aee6b9e5505e2b9e0bc00dd67d2b2158a5fb3ef85644e775a32a6",
+    "transformation": "gzip; original bytes retained"
+  }
+]
