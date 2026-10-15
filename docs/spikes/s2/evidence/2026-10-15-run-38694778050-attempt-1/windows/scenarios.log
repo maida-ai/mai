@@ -1,0 +1,1755 @@
+git ["init", "--bare"] input_bytes=0
+exit=0
+Initialized empty Git repository in D:/a/mai/mai/.throwaway/s2-ci/authority.git/
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: will change to "main" in Git 3.0. To configure the initial branch name
+hint: to use in all of your new repositories, which will suppress this warning,
+hint: call:
+hint:
+hint: 	git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint: 	git branch -m <name>
+hint:
+hint: Disable this message with "git config set advice.defaultBranchName false"
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+a96308625fa285a3e608a8810814923cf70d9dc6
+
+git ["commit-tree", "a96308625fa285a3e608a8810814923cf70d9dc6"] input_bytes=10
+exit=0
+7f37ba2ebc2ebc66271850f2b400ec651a50d5ff
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+2fa87fc1f10c56d50c59414f2c996c571cc1838d
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+17cacd9439bfee743d9390fed477ece5050f7e40
+
+git ["commit-tree", "17cacd9439bfee743d9390fed477ece5050f7e40", "-p", "7f37ba2ebc2ebc66271850f2b400ec651a50d5ff"] input_bytes=10
+exit=0
+f4f869c54b3863a745faff8a92536a889577f7b5
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+f99518343d775854caadcf98549611b69494fcec
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+52b6d6df1534ea82c5becadec5d2762a036a072a
+
+git ["commit-tree", "52b6d6df1534ea82c5becadec5d2762a036a072a", "-p", "7f37ba2ebc2ebc66271850f2b400ec651a50d5ff"] input_bytes=10
+exit=0
+135878d0ca96a15383ef7207f1fe88839c45e1a5
+
+git ["merge-tree", "--write-tree", "--merge-base=7f37ba2ebc2ebc66271850f2b400ec651a50d5ff", "f4f869c54b3863a745faff8a92536a889577f7b5", "135878d0ca96a15383ef7207f1fe88839c45e1a5"] input_bytes=0
+exit=0
+a09736b4ac73c7b8010a472ac728b4d2635884d7
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+074ece8b1a6ea1cc0b104476904d098781ff28b5
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+a09736b4ac73c7b8010a472ac728b4d2635884d7
+
+git ["clone", "--no-checkout", "D:/a/mai/mai/.throwaway/s2-ci/authority.git", "D:/a/mai/mai/.throwaway/s2-ci/oracle-3"] input_bytes=0
+exit=0
+Cloning into 'D:/a/mai/mai/.throwaway/s2-ci/oracle-3'...
+warning: You appear to have cloned an empty repository.
+done.
+
+git ["checkout", "--detach", "f4f869c54b3863a745faff8a92536a889577f7b5"] input_bytes=0
+exit=0
+HEAD is now at f4f869c fixture 2
+
+git ["cherry-pick", "135878d0ca96a15383ef7207f1fe88839c45e1a5"] input_bytes=0
+exit=0
+Auto-merging text
+[detached HEAD 0ed7e5a] fixture 3
+ Date: Mon Jan 1 00:00:00 2001 +0000
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+git ["rev-parse", "HEAD^{tree}"] input_bytes=0
+exit=0
+a09736b4ac73c7b8010a472ac728b4d2635884d7
+
+PASS case=disjoint clean=true base=7f37ba2ebc2ebc66271850f2b400ec651a50d5ff left=f4f869c54b3863a745faff8a92536a889577f7b5 right=135878d0ca96a15383ef7207f1fe88839c45e1a5
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+a96308625fa285a3e608a8810814923cf70d9dc6
+
+git ["commit-tree", "a96308625fa285a3e608a8810814923cf70d9dc6"] input_bytes=10
+exit=0
+3a09d6301e3758f14bd72ce5bb4024ed0dd4fd5d
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+45cf141ba67d59203f02a54f03162f3fcef57830
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+d7ccb2e720cf2712b5149919b245f6b1eca11a7f
+
+git ["commit-tree", "d7ccb2e720cf2712b5149919b245f6b1eca11a7f", "-p", "3a09d6301e3758f14bd72ce5bb4024ed0dd4fd5d"] input_bytes=10
+exit=0
+dcff7dbb51aadbd01451f3372ed07f770ab58f4d
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=6
+exit=0
+c376d892e8b105bd712d06ec5162b5f31ce949c3
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+b686634ba69bfbf78b8678efa4f3d45a3473b231
+
+git ["commit-tree", "b686634ba69bfbf78b8678efa4f3d45a3473b231", "-p", "3a09d6301e3758f14bd72ce5bb4024ed0dd4fd5d"] input_bytes=10
+exit=0
+2a7910223db23fa312cbadcdee6cb7e7e594df34
+
+git ["merge-tree", "--write-tree", "--merge-base=3a09d6301e3758f14bd72ce5bb4024ed0dd4fd5d", "dcff7dbb51aadbd01451f3372ed07f770ab58f4d", "2a7910223db23fa312cbadcdee6cb7e7e594df34"] input_bytes=0
+exit=1
+13dd5aea97d24c277fdf119427936dc33029c5a2
+100644 30a44a5c7d67af4b16e5c48431816ac24d54741e 1	text
+100644 45cf141ba67d59203f02a54f03162f3fcef57830 2	text
+100644 c376d892e8b105bd712d06ec5162b5f31ce949c3 3	text
+
+Auto-merging text
+CONFLICT (content): Merge conflict in text
+
+git ["clone", "--no-checkout", "D:/a/mai/mai/.throwaway/s2-ci/authority.git", "D:/a/mai/mai/.throwaway/s2-ci/oracle-6"] input_bytes=0
+exit=0
+Cloning into 'D:/a/mai/mai/.throwaway/s2-ci/oracle-6'...
+warning: You appear to have cloned an empty repository.
+done.
+
+git ["checkout", "--detach", "dcff7dbb51aadbd01451f3372ed07f770ab58f4d"] input_bytes=0
+exit=0
+HEAD is now at dcff7db fixture 5
+
+git ["cherry-pick", "2a7910223db23fa312cbadcdee6cb7e7e594df34"] input_bytes=0
+exit=1
+Auto-merging text
+CONFLICT (content): Merge conflict in text
+error: could not apply 2a79102... fixture 6
+hint: After resolving the conflicts, mark them with
+hint: "git add/rm <pathspec>", then run
+hint: "git cherry-pick --continue".
+hint: You can instead skip this commit with "git cherry-pick --skip".
+hint: To abort and get back to the state before "git cherry-pick",
+hint: run "git cherry-pick --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+
+git ["ls-files", "--unmerged"] input_bytes=0
+exit=0
+100644 30a44a5c7d67af4b16e5c48431816ac24d54741e 1	text
+100644 45cf141ba67d59203f02a54f03162f3fcef57830 2	text
+100644 c376d892e8b105bd712d06ec5162b5f31ce949c3 3	text
+
+PASS case=same-hunk clean=false base=3a09d6301e3758f14bd72ce5bb4024ed0dd4fd5d left=dcff7dbb51aadbd01451f3372ed07f770ab58f4d right=2a7910223db23fa312cbadcdee6cb7e7e594df34
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+a96308625fa285a3e608a8810814923cf70d9dc6
+
+git ["commit-tree", "a96308625fa285a3e608a8810814923cf70d9dc6"] input_bytes=10
+exit=0
+eb90675131dd38ca7c126708a1b8ba1d1e58b6cd
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=111
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+773c6ae8c266b4fb3c5a9892a460b9d3e61edbc8
+
+git ["commit-tree", "773c6ae8c266b4fb3c5a9892a460b9d3e61edbc8", "-p", "eb90675131dd38ca7c126708a1b8ba1d1e58b6cd"] input_bytes=10
+exit=0
+044b5a9f018577d5cdae48932723061e2d28f031
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+2fa87fc1f10c56d50c59414f2c996c571cc1838d
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+17cacd9439bfee743d9390fed477ece5050f7e40
+
+git ["commit-tree", "17cacd9439bfee743d9390fed477ece5050f7e40", "-p", "eb90675131dd38ca7c126708a1b8ba1d1e58b6cd"] input_bytes=10
+exit=0
+1f33d189535eb0cefab8f6110ca25eee2a928671
+
+git ["merge-tree", "--write-tree", "--merge-base=eb90675131dd38ca7c126708a1b8ba1d1e58b6cd", "044b5a9f018577d5cdae48932723061e2d28f031", "1f33d189535eb0cefab8f6110ca25eee2a928671"] input_bytes=0
+exit=0
+81761caee2aca3a60e29882ec98cb69cb266f155
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+2fa87fc1f10c56d50c59414f2c996c571cc1838d
+
+git ["update-index", "--index-info"] input_bytes=111
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+81761caee2aca3a60e29882ec98cb69cb266f155
+
+git ["clone", "--no-checkout", "D:/a/mai/mai/.throwaway/s2-ci/authority.git", "D:/a/mai/mai/.throwaway/s2-ci/oracle-9"] input_bytes=0
+exit=0
+Cloning into 'D:/a/mai/mai/.throwaway/s2-ci/oracle-9'...
+warning: You appear to have cloned an empty repository.
+done.
+
+git ["checkout", "--detach", "044b5a9f018577d5cdae48932723061e2d28f031"] input_bytes=0
+exit=0
+HEAD is now at 044b5a9 fixture 8
+
+git ["cherry-pick", "1f33d189535eb0cefab8f6110ca25eee2a928671"] input_bytes=0
+exit=0
+[detached HEAD 093ceae] fixture 9
+ Date: Mon Jan 1 00:00:00 2001 +0000
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+git ["rev-parse", "HEAD^{tree}"] input_bytes=0
+exit=0
+81761caee2aca3a60e29882ec98cb69cb266f155
+
+PASS case=rename-edit clean=true base=eb90675131dd38ca7c126708a1b8ba1d1e58b6cd left=044b5a9f018577d5cdae48932723061e2d28f031 right=1f33d189535eb0cefab8f6110ca25eee2a928671
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+a96308625fa285a3e608a8810814923cf70d9dc6
+
+git ["commit-tree", "a96308625fa285a3e608a8810814923cf70d9dc6"] input_bytes=11
+exit=0
+e7a3be30121b5e9cddf61ea592b0372c2ae1ab75
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["update-index", "--index-info"] input_bytes=55
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+5102292aee73f21e64af64b2b52f72d3b61c2292
+
+git ["commit-tree", "5102292aee73f21e64af64b2b52f72d3b61c2292", "-p", "e7a3be30121b5e9cddf61ea592b0372c2ae1ab75"] input_bytes=11
+exit=0
+de623119f4fb6a0f335bdc99aeb4cff38c0a0b34
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=7
+exit=0
+7663aa741bec2b1328630882586fb7a2cbc8a255
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+f7bd60ec981a954c8a20f0af375c9ec6ff48ebe3
+
+git ["commit-tree", "f7bd60ec981a954c8a20f0af375c9ec6ff48ebe3", "-p", "e7a3be30121b5e9cddf61ea592b0372c2ae1ab75"] input_bytes=11
+exit=0
+ac57a94e748378374bd2363fedd747515b7db5c0
+
+git ["merge-tree", "--write-tree", "--merge-base=e7a3be30121b5e9cddf61ea592b0372c2ae1ab75", "de623119f4fb6a0f335bdc99aeb4cff38c0a0b34", "ac57a94e748378374bd2363fedd747515b7db5c0"] input_bytes=0
+exit=1
+f7bd60ec981a954c8a20f0af375c9ec6ff48ebe3
+100644 30a44a5c7d67af4b16e5c48431816ac24d54741e 1	text
+100644 7663aa741bec2b1328630882586fb7a2cbc8a255 3	text
+
+CONFLICT (modify/delete): text deleted in de623119f4fb6a0f335bdc99aeb4cff38c0a0b34 and modified in ac57a94e748378374bd2363fedd747515b7db5c0.  Version ac57a94e748378374bd2363fedd747515b7db5c0 of text left in tree.
+
+git ["clone", "--no-checkout", "D:/a/mai/mai/.throwaway/s2-ci/authority.git", "D:/a/mai/mai/.throwaway/s2-ci/oracle-12"] input_bytes=0
+exit=0
+Cloning into 'D:/a/mai/mai/.throwaway/s2-ci/oracle-12'...
+warning: You appear to have cloned an empty repository.
+done.
+
+git ["checkout", "--detach", "de623119f4fb6a0f335bdc99aeb4cff38c0a0b34"] input_bytes=0
+exit=0
+HEAD is now at de62311 fixture 11
+
+git ["cherry-pick", "ac57a94e748378374bd2363fedd747515b7db5c0"] input_bytes=0
+exit=1
+CONFLICT (modify/delete): text deleted in HEAD and modified in ac57a94 (fixture 12).  Version ac57a94 (fixture 12) of text left in tree.
+error: could not apply ac57a94... fixture 12
+hint: After resolving the conflicts, mark them with
+hint: "git add/rm <pathspec>", then run
+hint: "git cherry-pick --continue".
+hint: You can instead skip this commit with "git cherry-pick --skip".
+hint: To abort and get back to the state before "git cherry-pick",
+hint: run "git cherry-pick --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+
+git ["ls-files", "--unmerged"] input_bytes=0
+exit=0
+100644 30a44a5c7d67af4b16e5c48431816ac24d54741e 1	text
+100644 7663aa741bec2b1328630882586fb7a2cbc8a255 3	text
+
+PASS case=delete-edit clean=false base=e7a3be30121b5e9cddf61ea592b0372c2ae1ab75 left=de623119f4fb6a0f335bdc99aeb4cff38c0a0b34 right=ac57a94e748378374bd2363fedd747515b7db5c0
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+a96308625fa285a3e608a8810814923cf70d9dc6
+
+git ["commit-tree", "a96308625fa285a3e608a8810814923cf70d9dc6"] input_bytes=11
+exit=0
+d2ad8d8e4fddbfd8dece1c19238e8cdbc4052a7b
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+181fe325007198f393dc648b4978654356e6beda
+
+git ["commit-tree", "181fe325007198f393dc648b4978654356e6beda", "-p", "d2ad8d8e4fddbfd8dece1c19238e8cdbc4052a7b"] input_bytes=11
+exit=0
+e9508140ac36dd3a722deb715959084aa9e1771f
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=7
+exit=0
+7663aa741bec2b1328630882586fb7a2cbc8a255
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+f7bd60ec981a954c8a20f0af375c9ec6ff48ebe3
+
+git ["commit-tree", "f7bd60ec981a954c8a20f0af375c9ec6ff48ebe3", "-p", "d2ad8d8e4fddbfd8dece1c19238e8cdbc4052a7b"] input_bytes=11
+exit=0
+882ad61c9732518807e9d7f643bd32b3725bf352
+
+git ["merge-tree", "--write-tree", "--merge-base=d2ad8d8e4fddbfd8dece1c19238e8cdbc4052a7b", "e9508140ac36dd3a722deb715959084aa9e1771f", "882ad61c9732518807e9d7f643bd32b3725bf352"] input_bytes=0
+exit=0
+3824f17917880d0b58fe4baa9b8cd180c575c00a
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=7
+exit=0
+7663aa741bec2b1328630882586fb7a2cbc8a255
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+3824f17917880d0b58fe4baa9b8cd180c575c00a
+
+git ["clone", "--no-checkout", "D:/a/mai/mai/.throwaway/s2-ci/authority.git", "D:/a/mai/mai/.throwaway/s2-ci/oracle-15"] input_bytes=0
+exit=0
+Cloning into 'D:/a/mai/mai/.throwaway/s2-ci/oracle-15'...
+warning: You appear to have cloned an empty repository.
+done.
+
+git ["checkout", "--detach", "e9508140ac36dd3a722deb715959084aa9e1771f"] input_bytes=0
+exit=0
+HEAD is now at e950814 fixture 14
+
+git ["cherry-pick", "882ad61c9732518807e9d7f643bd32b3725bf352"] input_bytes=0
+exit=0
+[detached HEAD 7673c8c] fixture 15
+ Date: Mon Jan 1 00:00:00 2001 +0000
+ 1 file changed, 1 insertion(+), 9 deletions(-)
+
+git ["rev-parse", "HEAD^{tree}"] input_bytes=0
+exit=0
+3824f17917880d0b58fe4baa9b8cd180c575c00a
+
+PASS case=mode clean=true base=d2ad8d8e4fddbfd8dece1c19238e8cdbc4052a7b left=e9508140ac36dd3a722deb715959084aa9e1771f right=882ad61c9732518807e9d7f643bd32b3725bf352
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+a96308625fa285a3e608a8810814923cf70d9dc6
+
+git ["commit-tree", "a96308625fa285a3e608a8810814923cf70d9dc6"] input_bytes=11
+exit=0
+86772db9f2e17d9e83ab520b78af86a19e00e5a9
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+85fb55570728dea97c77f3c755bc1c69c273055d
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+b59d601cc895c78b54766a14ac387079fc479d7f
+
+git ["commit-tree", "b59d601cc895c78b54766a14ac387079fc479d7f", "-p", "86772db9f2e17d9e83ab520b78af86a19e00e5a9"] input_bytes=11
+exit=0
+592fcb168a6e7dd9a86745c4c72ce0b2e9026e34
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=6
+exit=0
+f3836a0012facb4f79bd7564a77c65353af23da3
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+4541a3b5b0e9e9fad77a560cc18d9a7ef006c8be
+
+git ["commit-tree", "4541a3b5b0e9e9fad77a560cc18d9a7ef006c8be", "-p", "86772db9f2e17d9e83ab520b78af86a19e00e5a9"] input_bytes=11
+exit=0
+aa18ef7622ab1981ccb5c0a8603ede84329f4e1b
+
+git ["merge-tree", "--write-tree", "--merge-base=86772db9f2e17d9e83ab520b78af86a19e00e5a9", "592fcb168a6e7dd9a86745c4c72ce0b2e9026e34", "aa18ef7622ab1981ccb5c0a8603ede84329f4e1b"] input_bytes=0
+exit=1
+b59d601cc895c78b54766a14ac387079fc479d7f
+100644 e3e039a60623a2ab736dff5dfde1f57b8ae45028 1	binary
+100644 85fb55570728dea97c77f3c755bc1c69c273055d 2	binary
+100644 f3836a0012facb4f79bd7564a77c65353af23da3 3	binary
+
+warning: Cannot merge binary files: binary (592fcb168a6e7dd9a86745c4c72ce0b2e9026e34 vs. aa18ef7622ab1981ccb5c0a8603ede84329f4e1b)
+Auto-merging binary
+CONFLICT (content): Merge conflict in binary
+
+git ["clone", "--no-checkout", "D:/a/mai/mai/.throwaway/s2-ci/authority.git", "D:/a/mai/mai/.throwaway/s2-ci/oracle-18"] input_bytes=0
+exit=0
+Cloning into 'D:/a/mai/mai/.throwaway/s2-ci/oracle-18'...
+warning: You appear to have cloned an empty repository.
+done.
+
+git ["checkout", "--detach", "592fcb168a6e7dd9a86745c4c72ce0b2e9026e34"] input_bytes=0
+exit=0
+HEAD is now at 592fcb1 fixture 17
+
+git ["cherry-pick", "aa18ef7622ab1981ccb5c0a8603ede84329f4e1b"] input_bytes=0
+exit=1
+warning: Cannot merge binary files: binary (HEAD vs. aa18ef7 (fixture 18))
+Auto-merging binary
+CONFLICT (content): Merge conflict in binary
+error: could not apply aa18ef7... fixture 18
+hint: After resolving the conflicts, mark them with
+hint: "git add/rm <pathspec>", then run
+hint: "git cherry-pick --continue".
+hint: You can instead skip this commit with "git cherry-pick --skip".
+hint: To abort and get back to the state before "git cherry-pick",
+hint: run "git cherry-pick --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+
+git ["ls-files", "--unmerged"] input_bytes=0
+exit=0
+100644 e3e039a60623a2ab736dff5dfde1f57b8ae45028 1	binary
+100644 85fb55570728dea97c77f3c755bc1c69c273055d 2	binary
+100644 f3836a0012facb4f79bd7564a77c65353af23da3 3	binary
+
+PASS case=binary clean=false base=86772db9f2e17d9e83ab520b78af86a19e00e5a9 left=592fcb168a6e7dd9a86745c4c72ce0b2e9026e34 right=aa18ef7622ab1981ccb5c0a8603ede84329f4e1b
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+a96308625fa285a3e608a8810814923cf70d9dc6
+
+git ["commit-tree", "a96308625fa285a3e608a8810814923cf70d9dc6"] input_bytes=11
+exit=0
+f43ef4f32abd44ab12565c94ed6a1bf8acd485f2
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=4
+exit=0
+1a010b1c0f081b2e8901d55307a15c29ff30af0e
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=161
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+5e8a1336dd719916261be64cc51df183781b30ea
+
+git ["commit-tree", "5e8a1336dd719916261be64cc51df183781b30ea", "-p", "f43ef4f32abd44ab12565c94ed6a1bf8acd485f2"] input_bytes=11
+exit=0
+fa87ac991dd1dd6c341d5f974d3892bc9bbd2cd8
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+b0c6ee1e00f4ab52bd72a934d047a6380e877421
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=167
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+cccbb010a775d8981fe5347124f00606024053d6
+
+git ["commit-tree", "cccbb010a775d8981fe5347124f00606024053d6", "-p", "f43ef4f32abd44ab12565c94ed6a1bf8acd485f2"] input_bytes=11
+exit=0
+af5ae2347adfe1e5293f7279708f568ca8ccc3f1
+
+git ["merge-tree", "--write-tree", "--merge-base=f43ef4f32abd44ab12565c94ed6a1bf8acd485f2", "fa87ac991dd1dd6c341d5f974d3892bc9bbd2cd8", "af5ae2347adfe1e5293f7279708f568ca8ccc3f1"] input_bytes=0
+exit=1
+6466c664127f7862570f6a7f6cbf757080469c07
+100644 1a010b1c0f081b2e8901d55307a15c29ff30af0e 2	path~fa87ac991dd1dd6c341d5f974d3892bc9bbd2cd8
+
+CONFLICT (file/directory): directory in the way of path from fa87ac991dd1dd6c341d5f974d3892bc9bbd2cd8; moving it to path~fa87ac991dd1dd6c341d5f974d3892bc9bbd2cd8 instead.
+
+git ["clone", "--no-checkout", "D:/a/mai/mai/.throwaway/s2-ci/authority.git", "D:/a/mai/mai/.throwaway/s2-ci/oracle-21"] input_bytes=0
+exit=0
+Cloning into 'D:/a/mai/mai/.throwaway/s2-ci/oracle-21'...
+warning: You appear to have cloned an empty repository.
+done.
+
+git ["checkout", "--detach", "fa87ac991dd1dd6c341d5f974d3892bc9bbd2cd8"] input_bytes=0
+exit=0
+HEAD is now at fa87ac9 fixture 20
+
+git ["cherry-pick", "af5ae2347adfe1e5293f7279708f568ca8ccc3f1"] input_bytes=0
+exit=1
+CONFLICT (file/directory): directory in the way of path from HEAD; moving it to path~HEAD instead.
+error: could not apply af5ae23... fixture 21
+hint: After resolving the conflicts, mark them with
+hint: "git add/rm <pathspec>", then run
+hint: "git cherry-pick --continue".
+hint: You can instead skip this commit with "git cherry-pick --skip".
+hint: To abort and get back to the state before "git cherry-pick",
+hint: run "git cherry-pick --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+
+git ["ls-files", "--unmerged"] input_bytes=0
+exit=0
+100644 1a010b1c0f081b2e8901d55307a15c29ff30af0e 2	path~HEAD
+
+PASS case=file-directory clean=false base=f43ef4f32abd44ab12565c94ed6a1bf8acd485f2 left=fa87ac991dd1dd6c341d5f974d3892bc9bbd2cd8 right=af5ae2347adfe1e5293f7279708f568ca8ccc3f1
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+a96308625fa285a3e608a8810814923cf70d9dc6
+
+git ["commit-tree", "a96308625fa285a3e608a8810814923cf70d9dc6"] input_bytes=11
+exit=0
+a877c779632df478f9fe095ccedb68eec07f35f2
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+2fa87fc1f10c56d50c59414f2c996c571cc1838d
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+17cacd9439bfee743d9390fed477ece5050f7e40
+
+git ["commit-tree", "17cacd9439bfee743d9390fed477ece5050f7e40", "-p", "a877c779632df478f9fe095ccedb68eec07f35f2"] input_bytes=11
+exit=0
+4c59b03e98dbe1c82f3b1b1543c168bd1c546579
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+2fa87fc1f10c56d50c59414f2c996c571cc1838d
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+17cacd9439bfee743d9390fed477ece5050f7e40
+
+git ["commit-tree", "17cacd9439bfee743d9390fed477ece5050f7e40", "-p", "4c59b03e98dbe1c82f3b1b1543c168bd1c546579"] input_bytes=11
+exit=0
+d617b66e9c59709e7db1686c4e6688b6c93eed49
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+f99518343d775854caadcf98549611b69494fcec
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+52b6d6df1534ea82c5becadec5d2762a036a072a
+
+git ["commit-tree", "52b6d6df1534ea82c5becadec5d2762a036a072a", "-p", "a877c779632df478f9fe095ccedb68eec07f35f2"] input_bytes=11
+exit=0
+85e72352cd6e2450e50a5e21362fb1c24947d463
+
+git ["merge-tree", "--write-tree", "--merge-base=a877c779632df478f9fe095ccedb68eec07f35f2", "d617b66e9c59709e7db1686c4e6688b6c93eed49", "85e72352cd6e2450e50a5e21362fb1c24947d463"] input_bytes=0
+exit=0
+a09736b4ac73c7b8010a472ac728b4d2635884d7
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+074ece8b1a6ea1cc0b104476904d098781ff28b5
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+a09736b4ac73c7b8010a472ac728b4d2635884d7
+
+git ["clone", "--no-checkout", "D:/a/mai/mai/.throwaway/s2-ci/authority.git", "D:/a/mai/mai/.throwaway/s2-ci/oracle-25"] input_bytes=0
+exit=0
+Cloning into 'D:/a/mai/mai/.throwaway/s2-ci/oracle-25'...
+warning: You appear to have cloned an empty repository.
+done.
+
+git ["checkout", "--detach", "d617b66e9c59709e7db1686c4e6688b6c93eed49"] input_bytes=0
+exit=0
+HEAD is now at d617b66 fixture 24
+
+git ["cherry-pick", "85e72352cd6e2450e50a5e21362fb1c24947d463"] input_bytes=0
+exit=0
+Auto-merging text
+[detached HEAD 109b90b] fixture 25
+ Date: Mon Jan 1 00:00:00 2001 +0000
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+git ["rev-parse", "HEAD^{tree}"] input_bytes=0
+exit=0
+a09736b4ac73c7b8010a472ac728b4d2635884d7
+
+PASS case=stale clean=true base=a877c779632df478f9fe095ccedb68eec07f35f2 left=d617b66e9c59709e7db1686c4e6688b6c93eed49 right=85e72352cd6e2450e50a5e21362fb1c24947d463
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+a96308625fa285a3e608a8810814923cf70d9dc6
+
+git ["commit-tree", "a96308625fa285a3e608a8810814923cf70d9dc6"] input_bytes=11
+exit=0
+dabe0c578441ec19e0821941845661bf1935605e
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=12
+exit=0
+58515d4069da94770ab66006bd61d8a1cd87e101
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+45cf141ba67d59203f02a54f03162f3fcef57830
+
+git ["update-index", "--index-info"] input_bytes=171
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+efe1edd974c5bc259d2eb8b10563762689375fed
+
+git ["commit-tree", "efe1edd974c5bc259d2eb8b10563762689375fed", "-p", "dabe0c578441ec19e0821941845661bf1935605e"] input_bytes=11
+exit=0
+661eb97fee075bbe578077506f23bc1aed57ede0
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=6
+exit=0
+c376d892e8b105bd712d06ec5162b5f31ce949c3
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+b686634ba69bfbf78b8678efa4f3d45a3473b231
+
+git ["commit-tree", "b686634ba69bfbf78b8678efa4f3d45a3473b231", "-p", "dabe0c578441ec19e0821941845661bf1935605e"] input_bytes=11
+exit=0
+b39306d302fe26ad470027ee3a6983d507796cb1
+
+git ["merge-tree", "--write-tree", "--merge-base=dabe0c578441ec19e0821941845661bf1935605e", "661eb97fee075bbe578077506f23bc1aed57ede0", "b39306d302fe26ad470027ee3a6983d507796cb1"] input_bytes=0
+exit=1
+2eca23e8622c6de090c9e710c243ac3539d77b75
+100644 30a44a5c7d67af4b16e5c48431816ac24d54741e 1	text
+100644 45cf141ba67d59203f02a54f03162f3fcef57830 2	text
+100644 c376d892e8b105bd712d06ec5162b5f31ce949c3 3	text
+
+Auto-merging text
+CONFLICT (content): Merge conflict in text
+
+git ["clone", "--no-checkout", "D:/a/mai/mai/.throwaway/s2-ci/authority.git", "D:/a/mai/mai/.throwaway/s2-ci/oracle-28"] input_bytes=0
+exit=0
+Cloning into 'D:/a/mai/mai/.throwaway/s2-ci/oracle-28'...
+warning: You appear to have cloned an empty repository.
+done.
+
+git ["checkout", "--detach", "661eb97fee075bbe578077506f23bc1aed57ede0"] input_bytes=0
+exit=0
+HEAD is now at 661eb97 fixture 27
+
+git ["cherry-pick", "b39306d302fe26ad470027ee3a6983d507796cb1"] input_bytes=0
+exit=1
+warning: Cannot merge binary files: text (HEAD vs. b39306d (fixture 28))
+Auto-merging text
+CONFLICT (content): Merge conflict in text
+error: could not apply b39306d... fixture 28
+hint: After resolving the conflicts, mark them with
+hint: "git add/rm <pathspec>", then run
+hint: "git cherry-pick --continue".
+hint: You can instead skip this commit with "git cherry-pick --skip".
+hint: To abort and get back to the state before "git cherry-pick",
+hint: run "git cherry-pick --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+
+git ["ls-files", "--unmerged"] input_bytes=0
+exit=0
+100644 30a44a5c7d67af4b16e5c48431816ac24d54741e 1	text
+100644 45cf141ba67d59203f02a54f03162f3fcef57830 2	text
+100644 c376d892e8b105bd712d06ec5162b5f31ce949c3 3	text
+
+PASS case=attributes clean=false base=dabe0c578441ec19e0821941845661bf1935605e left=661eb97fee075bbe578077506f23bc1aed57ede0 right=b39306d302fe26ad470027ee3a6983d507796cb1
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+a96308625fa285a3e608a8810814923cf70d9dc6
+
+git ["commit-tree", "a96308625fa285a3e608a8810814923cf70d9dc6"] input_bytes=11
+exit=0
+e7297d246e1c71d6d49602c48c1d7f86dd7b6b67
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=8
+exit=0
+94f3610c08588440112ed977376f26a8fba169b0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=163
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+65d1b88d26da7980261b80b8a13ac8f6dd8ab324
+
+git ["commit-tree", "65d1b88d26da7980261b80b8a13ac8f6dd8ab324", "-p", "e7297d246e1c71d6d49602c48c1d7f86dd7b6b67"] input_bytes=11
+exit=0
+29ad447c11ef3bf945dcda50bfcf4aa9a7771499
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=8
+exit=0
+94f3610c08588440112ed977376f26a8fba169b0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=163
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+65d1b88d26da7980261b80b8a13ac8f6dd8ab324
+
+git ["commit-tree", "65d1b88d26da7980261b80b8a13ac8f6dd8ab324", "-p", "e7297d246e1c71d6d49602c48c1d7f86dd7b6b67"] input_bytes=11
+exit=0
+a83da388ed52ed78b0412c62a64e1cc06b6613e9
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=15
+exit=0
+dbebf3d22f28cd65f9055b5f2fc915258620cb83
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=163
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+122991b75341604272c20ffce4ac6cec6d686763
+
+git ["commit-tree", "122991b75341604272c20ffce4ac6cec6d686763", "-p", "a83da388ed52ed78b0412c62a64e1cc06b6613e9"] input_bytes=11
+exit=0
+b4bcd5784d21e7556589c62cdae00a71526f41c9
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+3d2667b303a123fb2d3d9b261e02bdbaaeced1a0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=8
+exit=0
+94f3610c08588440112ed977376f26a8fba169b0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=217
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+8d05a463b71366dd7e3fec0d447cba0e28bd270f
+
+git ["commit-tree", "8d05a463b71366dd7e3fec0d447cba0e28bd270f", "-p", "29ad447c11ef3bf945dcda50bfcf4aa9a7771499"] input_bytes=11
+exit=0
+22f7c2581ffffe2b8af5d2cc38fcb4c33385fdf3
+
+git ["merge-tree", "--write-tree", "--merge-base=29ad447c11ef3bf945dcda50bfcf4aa9a7771499", "b4bcd5784d21e7556589c62cdae00a71526f41c9", "22f7c2581ffffe2b8af5d2cc38fcb4c33385fdf3"] input_bytes=0
+exit=0
+10ba3765df31b929dc9d1fd878b369bd11640104
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+3d2667b303a123fb2d3d9b261e02bdbaaeced1a0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=15
+exit=0
+dbebf3d22f28cd65f9055b5f2fc915258620cb83
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=217
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+10ba3765df31b929dc9d1fd878b369bd11640104
+
+git ["clone", "--no-checkout", "D:/a/mai/mai/.throwaway/s2-ci/authority.git", "D:/a/mai/mai/.throwaway/s2-ci/oracle-33"] input_bytes=0
+exit=0
+Cloning into 'D:/a/mai/mai/.throwaway/s2-ci/oracle-33'...
+warning: You appear to have cloned an empty repository.
+done.
+
+git ["checkout", "--detach", "b4bcd5784d21e7556589c62cdae00a71526f41c9"] input_bytes=0
+exit=0
+HEAD is now at b4bcd57 fixture 32
+
+git ["cherry-pick", "22f7c2581ffffe2b8af5d2cc38fcb4c33385fdf3"] input_bytes=0
+exit=0
+[detached HEAD c40e75f] fixture 33
+ Date: Mon Jan 1 00:00:00 2001 +0000
+ 1 file changed, 1 insertion(+)
+ create mode 100644 child
+
+git ["rev-parse", "HEAD^{tree}"] input_bytes=0
+exit=0
+10ba3765df31b929dc9d1fd878b369bd11640104
+
+PASS case=dependent-squash clean=true base=29ad447c11ef3bf945dcda50bfcf4aa9a7771499 left=b4bcd5784d21e7556589c62cdae00a71526f41c9 right=22f7c2581ffffe2b8af5d2cc38fcb4c33385fdf3
+git ["merge-tree", "--write-tree", "--merge-base=e7297d246e1c71d6d49602c48c1d7f86dd7b6b67", "b4bcd5784d21e7556589c62cdae00a71526f41c9", "22f7c2581ffffe2b8af5d2cc38fcb4c33385fdf3"] input_bytes=0
+exit=1
+7a97eead127afff26a2f2e88568e2747a4ceae74
+100644 dbebf3d22f28cd65f9055b5f2fc915258620cb83 2	parent
+100644 94f3610c08588440112ed977376f26a8fba169b0 3	parent
+
+Auto-merging parent
+CONFLICT (add/add): Merge conflict in parent
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+a96308625fa285a3e608a8810814923cf70d9dc6
+
+git ["commit-tree", "a96308625fa285a3e608a8810814923cf70d9dc6"] input_bytes=11
+exit=0
+cbb35455a2d9fc1d75a3578db0cd05a271b1bd8b
+
+git ["merge-base", "--all", "e7297d246e1c71d6d49602c48c1d7f86dd7b6b67", "cbb35455a2d9fc1d75a3578db0cd05a271b1bd8b"] input_bytes=0
+exit=1
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+a96308625fa285a3e608a8810814923cf70d9dc6
+
+git ["commit-tree", "a96308625fa285a3e608a8810814923cf70d9dc6", "-p", "e7297d246e1c71d6d49602c48c1d7f86dd7b6b67"] input_bytes=11
+exit=0
+6a15d14fd2cfb905b9560666a9073f7886c71ed3
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+a96308625fa285a3e608a8810814923cf70d9dc6
+
+git ["commit-tree", "a96308625fa285a3e608a8810814923cf70d9dc6", "-p", "e7297d246e1c71d6d49602c48c1d7f86dd7b6b67"] input_bytes=11
+exit=0
+d0f1963dc74d1d02a6886c18d922c4f146df9148
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+a96308625fa285a3e608a8810814923cf70d9dc6
+
+git ["commit-tree", "a96308625fa285a3e608a8810814923cf70d9dc6", "-p", "6a15d14fd2cfb905b9560666a9073f7886c71ed3", "-p", "d0f1963dc74d1d02a6886c18d922c4f146df9148"] input_bytes=11
+exit=0
+96d0048512b6673d29d46d39f0fb4de97f59b593
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=108
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+a96308625fa285a3e608a8810814923cf70d9dc6
+
+git ["commit-tree", "a96308625fa285a3e608a8810814923cf70d9dc6", "-p", "d0f1963dc74d1d02a6886c18d922c4f146df9148", "-p", "6a15d14fd2cfb905b9560666a9073f7886c71ed3"] input_bytes=11
+exit=0
+702db410f0bdcfee99f4275d41de81fc5e004f2b
+
+git ["merge-base", "--all", "96d0048512b6673d29d46d39f0fb4de97f59b593", "702db410f0bdcfee99f4275d41de81fc5e004f2b"] input_bytes=0
+exit=0
+6a15d14fd2cfb905b9560666a9073f7886c71ed3
+d0f1963dc74d1d02a6886c18d922c4f146df9148
+
+PASS missing/multiple bases rejected; explicit mapped dependent base required
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=19
+exit=0
+4fa88c2ff2cd8b7efd9edbf4acd1cebb40c870a6
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=45
+exit=0
+30a44a5c7d67af4b16e5c48431816ac24d54741e
+
+git ["update-index", "--index-info"] input_bytes=171
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+168b40cf8f2b8ac5de641e7c3c503af66a7af12f
+
+git ["commit-tree", "168b40cf8f2b8ac5de641e7c3c503af66a7af12f"] input_bytes=11
+exit=0
+dd6d9a4fb106fbf7a5524c16fe27de57d1086c4e
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=19
+exit=0
+4fa88c2ff2cd8b7efd9edbf4acd1cebb40c870a6
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+45cf141ba67d59203f02a54f03162f3fcef57830
+
+git ["update-index", "--index-info"] input_bytes=171
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+c977ceb9f840eb2d900a48710639287d3fccc96c
+
+git ["commit-tree", "c977ceb9f840eb2d900a48710639287d3fccc96c", "-p", "dd6d9a4fb106fbf7a5524c16fe27de57d1086c4e"] input_bytes=11
+exit=0
+820293536b09840e9adc0b2b25354b4f35eb75bc
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=19
+exit=0
+4fa88c2ff2cd8b7efd9edbf4acd1cebb40c870a6
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+e3e039a60623a2ab736dff5dfde1f57b8ae45028
+
+git ["hash-object", "-w", "--stdin"] input_bytes=24
+exit=0
+05d84ff600bfb75163b6ac5f823401d845e1ff06
+
+git ["hash-object", "-w", "--stdin"] input_bytes=6
+exit=0
+c376d892e8b105bd712d06ec5162b5f31ce949c3
+
+git ["update-index", "--index-info"] input_bytes=250
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+7373786b637a5a176f4837abec944abcae41a416
+
+git ["commit-tree", "7373786b637a5a176f4837abec944abcae41a416", "-p", "dd6d9a4fb106fbf7a5524c16fe27de57d1086c4e"] input_bytes=11
+exit=0
+cc35c4ef09f7c757efac5e1bf36d2bf3c8777f1c
+
+git ["config", "merge.fixture.driver", "printf trusted > %A"] input_bytes=0
+exit=0
+
+git ["merge-tree", "--write-tree", "--merge-base=dd6d9a4fb106fbf7a5524c16fe27de57d1086c4e", "820293536b09840e9adc0b2b25354b4f35eb75bc", "cc35c4ef09f7c757efac5e1bf36d2bf3c8777f1c"] input_bytes=0
+exit=0
+97e972b61821e2d5902138c0751d74bfcce5c9a1
+
+git ["show", "97e972b61821e2d5902138c0751d74bfcce5c9a1:text"] input_bytes=0
+exit=0
+trusted
+git ["config", "merge.fixture.driver", "sh candidate-controlled-driver.sh %A"] input_bytes=0
+exit=0
+
+git ["merge-tree", "--write-tree", "--merge-base=dd6d9a4fb106fbf7a5524c16fe27de57d1086c4e", "820293536b09840e9adc0b2b25354b4f35eb75bc", "cc35c4ef09f7c757efac5e1bf36d2bf3c8777f1c"] input_bytes=0
+exit=1
+dbfbc9ab5f0dc3859bacf98b39d42ea9b5f20bdf
+100644 30a44a5c7d67af4b16e5c48431816ac24d54741e 1	text
+100644 45cf141ba67d59203f02a54f03162f3fcef57830 2	text
+100644 c376d892e8b105bd712d06ec5162b5f31ce949c3 3	text
+
+Auto-merging text
+CONFLICT (content): Merge conflict in text
+sh: candidate-controlled-driver.sh: No such file or directory
+
+git ["config", "--unset", "merge.fixture.driver"] input_bytes=0
+exit=0
+
+git ["merge-tree", "--write-tree", "--merge-base=dd6d9a4fb106fbf7a5524c16fe27de57d1086c4e", "820293536b09840e9adc0b2b25354b4f35eb75bc", "cc35c4ef09f7c757efac5e1bf36d2bf3c8777f1c"] input_bytes=0
+exit=1
+dbfbc9ab5f0dc3859bacf98b39d42ea9b5f20bdf
+100644 30a44a5c7d67af4b16e5c48431816ac24d54741e 1	text
+100644 45cf141ba67d59203f02a54f03162f3fcef57830 2	text
+100644 c376d892e8b105bd712d06ec5162b5f31ce949c3 3	text
+
+warning: Cannot merge binary files: text (820293536b09840e9adc0b2b25354b4f35eb75bc vs. cc35c4ef09f7c757efac5e1bf36d2bf3c8777f1c)
+Auto-merging text
+CONFLICT (content): Merge conflict in text
+
+PASS bare merge executes trusted configured driver; candidate-tracked script is not checked out and fails; approved info/attributes binary policy conflicts. This is not an arbitrary-driver sandbox.
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=65
+exit=0
+678653112340b5afa6cf992692979ade506c1da5
+
+git ["update-index", "--index-info"] input_bytes=61
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+b5970ce80c68ad304fe67c9a32d95c51f8d50911
+
+git ["commit-tree", "b5970ce80c68ad304fe67c9a32d95c51f8d50911"] input_bytes=11
+exit=0
+3455dff62301e1d87b41ce7ef5bc4a9f878e207c
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=65
+exit=0
+76f4bca3949d7fa86cd51556e2fe582831759586
+
+git ["update-index", "--index-info"] input_bytes=61
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+7727b0d1f77b31000e2a4e77a534c6602286c4e9
+
+git ["commit-tree", "7727b0d1f77b31000e2a4e77a534c6602286c4e9", "-p", "3455dff62301e1d87b41ce7ef5bc4a9f878e207c"] input_bytes=11
+exit=0
+24678146bbdee82e44effbb3bc8dd2a667a558f8
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=16
+exit=0
+5ac3debfe6eb099d598be857764d28865db67f30
+
+git ["hash-object", "-w", "--stdin"] input_bytes=65
+exit=0
+76f4bca3949d7fa86cd51556e2fe582831759586
+
+git ["update-index", "--index-info"] input_bytes=125
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+e6e2e58554a84cefebf4b399704b7a3931468d67
+
+git ["commit-tree", "e6e2e58554a84cefebf4b399704b7a3931468d67", "-p", "3455dff62301e1d87b41ce7ef5bc4a9f878e207c"] input_bytes=11
+exit=0
+f43a10463a2277b4267deb0f15f638dab82c0bf4
+
+git ["diff-tree", "--no-commit-id", "--no-renames", "-r", "--name-status", "3455dff62301e1d87b41ce7ef5bc4a9f878e207c", "24678146bbdee82e44effbb3bc8dd2a667a558f8"] input_bytes=0
+exit=0
+M	source.units
+
+git ["diff-tree", "--no-commit-id", "--no-renames", "-r", "--name-status", "3455dff62301e1d87b41ce7ef5bc4a9f878e207c", "f43a10463a2277b4267deb0f15f638dab82c0bf4"] input_bytes=0
+exit=0
+A	cache.generated
+M	source.units
+
+MANIFEST view=receive base=3455dff62301e1d87b41ce7ef5bc4a9f878e207c commit=24678146bbdee82e44effbb3bc8dd2a667a558f8 kind=M path=source.units extractor=synthetic-grammar-v1 units=[Unit { id: "module:source.units:pkg", fallback: None }, Unit { id: "symbol:source.units:Class", fallback: None }, Unit { id: "symbol:source.units:Class.method", fallback: None }, Unit { id: "config:source.units:database.port", fallback: None }]
+MANIFEST view=final-post-regeneration base=3455dff62301e1d87b41ce7ef5bc4a9f878e207c commit=f43a10463a2277b4267deb0f15f638dab82c0bf4 kind=A path=cache.generated extractor=synthetic-grammar-v1 units=[Unit { id: "file:cache.generated", fallback: Some("generated") }]
+MANIFEST view=final-post-regeneration base=3455dff62301e1d87b41ce7ef5bc4a9f878e207c commit=f43a10463a2277b4267deb0f15f638dab82c0bf4 kind=M path=source.units extractor=synthetic-grammar-v1 units=[Unit { id: "module:source.units:pkg", fallback: None }, Unit { id: "symbol:source.units:Class", fallback: None }, Unit { id: "symbol:source.units:Class.method", fallback: None }, Unit { id: "config:source.units:database.port", fallback: None }]
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=65
+exit=0
+678653112340b5afa6cf992692979ade506c1da5
+
+git ["update-index", "--index-info"] input_bytes=62
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+c4299312079d45ec77503b6a01374834b43db04b
+
+git ["commit-tree", "c4299312079d45ec77503b6a01374834b43db04b", "-p", "3455dff62301e1d87b41ce7ef5bc4a9f878e207c"] input_bytes=11
+exit=0
+c0c8f81efe709ddd79c3e9b759fccd6e9214b0e8
+
+git ["diff-tree", "--no-commit-id", "--no-renames", "-r", "--name-status", "3455dff62301e1d87b41ce7ef5bc4a9f878e207c", "c0c8f81efe709ddd79c3e9b759fccd6e9214b0e8"] input_bytes=0
+exit=0
+A	renamed.units
+D	source.units
+
+PASS restricted units, containment, fallback, rename delete-plus-add, receive/final diff recomputation. Approximation never authorizes semantic independence; real parser qualification PENDING.
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+df967b96a579e45a18b8251732d16804b2e56a55
+
+git ["update-index", "--index-info"] input_bytes=6900000
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+5b3ce638e7dee3b46cc9f3d9afe9844f51cc53ec
+
+git ["commit-tree", "5b3ce638e7dee3b46cc9f3d9afe9844f51cc53ec"] input_bytes=11
+exit=0
+fdb63a5482625d36c4434c21c1c653257b90ea57
+
+git ["ls-tree", "-r", "--name-only", "fdb63a5482625d36c4434c21c1c653257b90ea57"] input_bytes=0
+exit=0
+[Review normalization: omitted exactly 100000 unique generated file-listing rows; see review.json and original-artifact-files.sha256.]
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+45cf141ba67d59203f02a54f03162f3fcef57830
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+df967b96a579e45a18b8251732d16804b2e56a55
+
+git ["update-index", "--index-info"] input_bytes=6900000
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+457064fbef945163a7fb29843e29b285b735c2fa
+
+git ["commit-tree", "457064fbef945163a7fb29843e29b285b735c2fa", "-p", "fdb63a5482625d36c4434c21c1c653257b90ea57"] input_bytes=11
+exit=0
+6d91a69f07766c160209e71d493cc2f19a5e97e4
+
+git ["read-tree", "--empty"] input_bytes=0
+exit=0
+
+git ["hash-object", "-w", "--stdin"] input_bytes=5
+exit=0
+df967b96a579e45a18b8251732d16804b2e56a55
+
+git ["hash-object", "-w", "--stdin"] input_bytes=6
+exit=0
+c376d892e8b105bd712d06ec5162b5f31ce949c3
+
+git ["update-index", "--index-info"] input_bytes=6900000
+exit=0
+
+git ["write-tree"] input_bytes=0
+exit=0
+b5851baff95b98ea387378bc5f8fb95801a8e3fb
+
+git ["commit-tree", "b5851baff95b98ea387378bc5f8fb95801a8e3fb", "-p", "fdb63a5482625d36c4434c21c1c653257b90ea57"] input_bytes=11
+exit=0
+8df56c81cd5a4710ac1ef33456c6dfe8c990f40f
+
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=0 milliseconds=17.968200 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=1 milliseconds=15.955800 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=2 milliseconds=15.302000 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=3 milliseconds=15.217600 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=4 milliseconds=15.608400 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=5 milliseconds=15.554000 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=6 milliseconds=15.594600 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=7 milliseconds=15.277300 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=8 milliseconds=15.050100 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=9 milliseconds=14.907500 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=10 milliseconds=14.742800 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=11 milliseconds=14.544200 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=12 milliseconds=15.156800 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=13 milliseconds=15.243500 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=14 milliseconds=15.687900 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=15 milliseconds=15.492700 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=16 milliseconds=15.312300 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=17 milliseconds=15.134100 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=18 milliseconds=15.263200 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=19 milliseconds=15.174200 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=20 milliseconds=15.221300 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=21 milliseconds=15.530700 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=22 milliseconds=16.175000 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=23 milliseconds=15.277500 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=24 milliseconds=16.006500 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=25 milliseconds=15.982600 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=26 milliseconds=16.665200 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=27 milliseconds=16.001500 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=28 milliseconds=15.692500 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=29 milliseconds=15.241800 tracked_files=100000
+git ["merge-tree", "--write-tree", "--merge-base=fdb63a5482625d36c4434c21c1c653257b90ea57", "6d91a69f07766c160209e71d493cc2f19a5e97e4", "8df56c81cd5a4710ac1ef33456c6dfe8c990f40f"] input_bytes=0
+exit=0
+96857618705c798d7868287506f7c9b7b2e45ee8
+
+TIMING sample=30 milliseconds=14.707100 tracked_files=100000
+CRITERION median_ms=15.302000 threshold_ms=100 strict_less=true pass=true

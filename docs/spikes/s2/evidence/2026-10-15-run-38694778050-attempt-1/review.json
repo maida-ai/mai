@@ -1,0 +1,53 @@
+{
+  "linux": {
+    "artifact": "s2-Linux-X64-38694778050-1",
+    "source_hashes_match_run_commit": true,
+    "unique_tracked_files": 100000,
+    "samples": 31,
+    "median_ms": 1.415511,
+    "min_ms": 1.378897,
+    "max_ms": 1.838509,
+    "differential_cases": 10,
+    "unit_tests_passed": 9,
+    "omitted_generated_listing_rows": 100000,
+    "manifest_rows": [
+      "MANIFEST view=receive base=3455dff62301e1d87b41ce7ef5bc4a9f878e207c commit=24678146bbdee82e44effbb3bc8dd2a667a558f8 kind=M path=source.units extractor=synthetic-grammar-v1 units=[Unit { id: \"module:source.units:pkg\", fallback: None }, Unit { id: \"symbol:source.units:Class\", fallback: None }, Unit { id: \"symbol:source.units:Class.method\", fallback: None }, Unit { id: \"config:source.units:database.port\", fallback: None }]",
+      "MANIFEST view=final-post-regeneration base=3455dff62301e1d87b41ce7ef5bc4a9f878e207c commit=f43a10463a2277b4267deb0f15f638dab82c0bf4 kind=A path=cache.generated extractor=synthetic-grammar-v1 units=[Unit { id: \"file:cache.generated\", fallback: Some(\"generated\") }]",
+      "MANIFEST view=final-post-regeneration base=3455dff62301e1d87b41ce7ef5bc4a9f878e207c commit=f43a10463a2277b4267deb0f15f638dab82c0bf4 kind=M path=source.units extractor=synthetic-grammar-v1 units=[Unit { id: \"module:source.units:pkg\", fallback: None }, Unit { id: \"symbol:source.units:Class\", fallback: None }, Unit { id: \"symbol:source.units:Class.method\", fallback: None }, Unit { id: \"config:source.units:database.port\", fallback: None }]"
+    ]
+  },
+  "windows": {
+    "artifact": "s2-Windows-X64-38694778050-1",
+    "source_hashes_match_run_commit": true,
+    "unique_tracked_files": 100000,
+    "samples": 31,
+    "median_ms": 15.302,
+    "min_ms": 14.5442,
+    "max_ms": 17.9682,
+    "differential_cases": 10,
+    "unit_tests_passed": 9,
+    "omitted_generated_listing_rows": 100000,
+    "manifest_rows": [
+      "MANIFEST view=receive base=3455dff62301e1d87b41ce7ef5bc4a9f878e207c commit=24678146bbdee82e44effbb3bc8dd2a667a558f8 kind=M path=source.units extractor=synthetic-grammar-v1 units=[Unit { id: \"module:source.units:pkg\", fallback: None }, Unit { id: \"symbol:source.units:Class\", fallback: None }, Unit { id: \"symbol:source.units:Class.method\", fallback: None }, Unit { id: \"config:source.units:database.port\", fallback: None }]",
+      "MANIFEST view=final-post-regeneration base=3455dff62301e1d87b41ce7ef5bc4a9f878e207c commit=f43a10463a2277b4267deb0f15f638dab82c0bf4 kind=A path=cache.generated extractor=synthetic-grammar-v1 units=[Unit { id: \"file:cache.generated\", fallback: Some(\"generated\") }]",
+      "MANIFEST view=final-post-regeneration base=3455dff62301e1d87b41ce7ef5bc4a9f878e207c commit=f43a10463a2277b4267deb0f15f638dab82c0bf4 kind=M path=source.units extractor=synthetic-grammar-v1 units=[Unit { id: \"module:source.units:pkg\", fallback: None }, Unit { id: \"symbol:source.units:Class\", fallback: None }, Unit { id: \"symbol:source.units:Class.method\", fallback: None }, Unit { id: \"config:source.units:database.port\", fallback: None }]"
+    ]
+  },
+  "macos": {
+    "artifact": "s2-macOS-ARM64-38694778050-1",
+    "source_hashes_match_run_commit": true,
+    "unique_tracked_files": 100000,
+    "samples": 31,
+    "median_ms": 6.393542,
+    "min_ms": 4.648625,
+    "max_ms": 11.472542,
+    "differential_cases": 10,
+    "unit_tests_passed": 9,
+    "omitted_generated_listing_rows": 100000,
+    "manifest_rows": [
+      "MANIFEST view=receive base=3455dff62301e1d87b41ce7ef5bc4a9f878e207c commit=24678146bbdee82e44effbb3bc8dd2a667a558f8 kind=M path=source.units extractor=synthetic-grammar-v1 units=[Unit { id: \"module:source.units:pkg\", fallback: None }, Unit { id: \"symbol:source.units:Class\", fallback: None }, Unit { id: \"symbol:source.units:Class.method\", fallback: None }, Unit { id: \"config:source.units:database.port\", fallback: None }]",
+      "MANIFEST view=final-post-regeneration base=3455dff62301e1d87b41ce7ef5bc4a9f878e207c commit=f43a10463a2277b4267deb0f15f638dab82c0bf4 kind=A path=cache.generated extractor=synthetic-grammar-v1 units=[Unit { id: \"file:cache.generated\", fallback: Some(\"generated\") }]",
+      "MANIFEST view=final-post-regeneration base=3455dff62301e1d87b41ce7ef5bc4a9f878e207c commit=f43a10463a2277b4267deb0f15f638dab82c0bf4 kind=M path=source.units extractor=synthetic-grammar-v1 units=[Unit { id: \"module:source.units:pkg\", fallback: None }, Unit { id: \"symbol:source.units:Class\", fallback: None }, Unit { id: \"symbol:source.units:Class.method\", fallback: None }, Unit { id: \"config:source.units:database.port\", fallback: None }]"
+    ]
+  }
+}

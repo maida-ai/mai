@@ -1,0 +1,13 @@
+
+running 9 tests
+test manifest::tests::conservative_errors ... ok
+test manifest::tests::units ... ok
+test manifest::tests::containment_boundaries ... ok
+test tests::empty_samples_fail - should panic ... ok
+test tests::timing_threshold ... ok
+test tests::extended_unc_rejected - should panic ... ok
+test tests::unc_rejected - should panic ... ok
+test tests::unique_base ... ok
+test tests::windows_drive_paths ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
