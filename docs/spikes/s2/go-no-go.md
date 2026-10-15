@@ -14,11 +14,15 @@ This is observable in all three platform logs under `MANIFEST view=receive` and 
 
 This finding is about the restricted fixture's evidence, not a shipped product defect: the rewrite is not implemented. The plan intentionally permits synthetic grammar and conservative fallback. The blocker can be addressed within that grammar; introducing production parsers or choosing M2 defaults is unnecessary.
 
+## Harness correction and remaining evidence
+
+The follow-up harness now compares both snapshots, asserts complete receive/final manifests and deletion/rename unit changes, and preserves conservative file fallback for uncertainty on either side, mode changes and content outside the identity-only grammar. Regression checks cover removed-unit retention, unchanged-unit exclusion, generated addition/deletion and required fallback. Local non-timed Linux verification passes; no local evidence snapshot is committed. These changes address the implementation gap described above in the previously executed source, but do not retroactively change its artifacts or qualify the new source on macOS/Windows.
+
 ## Conditions to change the overall decision to go
 
-1. Derive synthetic unit changes from both before and after snapshots. Assert the removed `database.host` unit and added `database.port` unit, with explicit change kinds; preserve conservative fallback where identity is uncertain.
-2. Independently assert the complete receive and final post-regeneration manifests, including generated-file widening, instead of asserting only path counts and printing the units. Include a negative regression that fails if a removed unit or required fallback is dropped.
-3. Cover object deletion and rename delete-plus-add through those manifest assertions, while keeping containment and module/fallback limitations explicit. Manifest precision must never authorize semantic independence or bypass the gate.
+1. Implemented in the follow-up harness; native CI verification pending: derive synthetic unit changes from both before and after snapshots. Assert the removed `database.host` unit and added `database.port` unit, with explicit change kinds; preserve conservative fallback where identity is uncertain.
+2. Implemented in the follow-up harness; native CI verification pending: independently assert the complete receive and final post-regeneration manifests, including generated-file widening, instead of asserting only path counts and printing the units. Include a negative regression that fails if a removed unit or required fallback is dropped.
+3. Implemented in the follow-up harness; native CI verification pending: cover object deletion and rename delete-plus-add through those manifest assertions, while keeping containment and module/fallback limitations explicit. Manifest precision must never authorize semantic independence or bypass the gate.
 4. Rerun the updated S2 workflow on the native platforms and review the new source hashes and artifacts. Preserve this passing merge/timing evidence and its documented gap unchanged.
 
 No threshold change or ADR redesign is warranted by this run. If follow-up evidence exposes a failed merge assumption or performance criterion, record that failure and resolve it or obtain an accepted redesign before M1. Exact Git 2.40, cold-cache/large-content performance, arbitrary custom drivers and real-language parsers remain unqualified beyond this spike's tested scope; they are not additional invented gates for the narrow manifest follow-up.

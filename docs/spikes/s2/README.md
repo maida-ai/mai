@@ -1,6 +1,6 @@
 # S2 Git merge qualification
 
-**Decision: GO for the tested checkout-free Git merge approach; NO-GO for full S2/#52 acceptance until object-manifest assertions are completed.** All three native CI jobs passed, including the unchanged median <100 ms criterion. The green run does not establish the missing manifest semantics. See the completed [go/no-go assessment](go-no-go.md) for the blocking finding and acceptance conditions. No issue closure, ADR acceptance or M0/product implementation is implied.
+**Decision: GO for the tested checkout-free Git merge approach; NO-GO for full S2/#52 acceptance until the corrected object-manifest checks pass fresh native CI.** All three native CI jobs passed, including the unchanged median <100 ms criterion. The green run does not establish the missing manifest semantics. See the completed [go/no-go assessment](go-no-go.md) for the blocking finding and acceptance conditions. No issue closure, ADR acceptance or M0/product implementation is implied.
 
 ## Reviewed CI evidence
 
@@ -31,7 +31,7 @@ Each platform passed nine unit checks and ten differential cases. Review indepen
 
 The merge and timing results support retaining Git CLI explicit-base, checkout-free integration for the tested scope. Attributes and configured drivers are trusted executable policy, not a sandbox. Approved policy must remain outside candidate control; these fixtures do not qualify arbitrary hooks/drivers or the full production policy closure. The cherry-pick oracle deliberately uses its own checkout, while integration does not.
 
-Complete the narrow manifest follow-up described in [go-no-go.md](go-no-go.md), then collect fresh CI evidence for the changed harness. Real parser qualification belongs to later object work; it is not necessary to replace the restricted grammar merely to assert correct synthetic object deltas. Real Cargo/npm/uv regeneration remains S6 coverage. Keep #52 and M0 open pending the missing assertions and maintainer review. No ADR redesign is indicated by the passing merge/timing criteria; the current blocker is a qualification gap, not evidence that the Git approach fails.
+The narrow manifest correction described in [go-no-go.md](go-no-go.md) is now implemented and passes local non-timed checks. Collect fresh native CI evidence for the changed harness; the table above assesses only the original recorded run. Real parser qualification belongs to later object work; it is not necessary to replace the restricted grammar merely to assert correct synthetic object deltas. Real Cargo/npm/uv regeneration remains S6 coverage. Keep #52 and M0 open pending the missing assertions and maintainer review. No ADR redesign is indicated by the passing merge/timing criteria; the current blocker is a qualification gap, not evidence that the Git approach fails.
 
 ## Review verification
 

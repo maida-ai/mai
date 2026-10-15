@@ -70,6 +70,69 @@ fn diff(l: &mut Lab, from: &str, to: &str) -> Vec<(String, String)> {
         })
         .collect()
 }
+#[derive(Debug, PartialEq, Eq)]
+struct Change {
+    kind: String,
+    unit: Unit,
+}
+fn change(kind: &str, id: &str, fallback: Option<&'static str>) -> Change {
+    Change {
+        kind: kind.into(),
+        unit: Unit {
+            id: id.into(),
+            fallback,
+        },
+    }
+}
+// File deltas come from Git, while units are compared on both sides. The grammar
+// models identities only, not bodies; uncertain content/mode changes stay files.
+fn manifest(before: &Snapshot, after: &Snapshot, paths: &[(String, String)]) -> Vec<Change> {
+    let mut out = Vec::new();
+    for (kind, path) in paths {
+        let old = before.get(path);
+        let new = after.get(path);
+        let left = old.map(|v| extract(path, &v.1)).unwrap_or_default();
+        let right = new.map(|v| extract(path, &v.1)).unwrap_or_default();
+        let reason = left
+            .iter()
+            .chain(&right)
+            .find_map(|u| u.fallback)
+            .or_else(|| match (old, new) {
+                (Some(a), Some(b)) if a.0 != b.0 => Some("mode change"),
+                (Some(a), Some(b)) if a != b && left == right => Some("identity-only grammar"),
+                _ => None,
+            });
+        if let Some(reason) = reason {
+            out.push(change(kind, &format!("file:{path}"), Some(reason)));
+            continue;
+        }
+        for unit in &left {
+            if !right.contains(unit) {
+                out.push(change("D", &unit.id, None));
+            }
+        }
+        for unit in &right {
+            if !left.contains(unit) {
+                out.push(change("A", &unit.id, None));
+            }
+        }
+    }
+    out
+}
+fn assert_manifest(
+    l: &mut Lab,
+    view: &str,
+    base: &str,
+    id: &str,
+    before: &Snapshot,
+    after: &Snapshot,
+    expected: Vec<Change>,
+) {
+    let paths = diff(l, base, id);
+    let actual = manifest(before, after, &paths);
+    writeln!(l.log, "MANIFEST view={view} base={base} commit={id} extractor=synthetic-grammar-v1 changes={actual:?}").unwrap();
+    assert_eq!(actual, expected, "complete {view} manifest");
+}
 pub(super) fn manifests(l: &mut Lab) {
     let mut b = Snapshot::new();
     put(
@@ -88,31 +151,65 @@ pub(super) fn manifests(l: &mut Lab) {
     let mut final_state = submitted.clone();
     put(&mut final_state, "cache.generated", b"generated output");
     let final_id = l.commit(&final_state, &[&base]);
-    let receive_diff = diff(l, &base, &receive);
-    let final_diff = diff(l, &base, &final_id);
-    assert_eq!(receive_diff.len(), 1);
-    assert_eq!(final_diff.len(), 2);
-    for (view, id, deltas, snapshot) in [
-        ("receive", receive, receive_diff, &submitted),
-        (
-            "final-post-regeneration",
-            final_id,
-            final_diff,
-            &final_state,
-        ),
-    ] {
-        for (kind, path) in deltas {
-            let units = extract(&path, &snapshot[&path].1);
-            writeln!(l.log,"MANIFEST view={view} base={base} commit={id} kind={kind} path={path} extractor=synthetic-grammar-v1 units={units:?}").unwrap();
-        }
-    }
+    let expected_receive = || {
+        vec![
+            change("D", "config:source.units:database.host", None),
+            change("A", "config:source.units:database.port", None),
+        ]
+    };
+    assert_manifest(
+        l,
+        "receive",
+        &base,
+        &receive,
+        &b,
+        &submitted,
+        expected_receive(),
+    );
+    let mut expected_final = vec![change("A", "file:cache.generated", Some("generated"))];
+    expected_final.extend(expected_receive());
+    assert_manifest(
+        l,
+        "final-post-regeneration",
+        &base,
+        &final_id,
+        &b,
+        &final_state,
+        expected_final,
+    );
     let mut renamed = b.clone();
     let value = renamed.remove("source.units").unwrap();
     renamed.insert("renamed.units".into(), value);
     let renamed_id = l.commit(&renamed, &[&base]);
-    let d = diff(l, &base, &renamed_id);
-    assert!(d.contains(&("D".into(), "source.units".into())));
-    assert!(d.contains(&("A".into(), "renamed.units".into())));
+    let deleted = vec![
+        change("D", "module:source.units:pkg", None),
+        change("D", "symbol:source.units:Class", None),
+        change("D", "symbol:source.units:Class.method", None),
+        change("D", "config:source.units:database.host", None),
+    ];
+    let mut expected_rename = vec![
+        change("A", "module:renamed.units:pkg", None),
+        change("A", "symbol:renamed.units:Class", None),
+        change("A", "symbol:renamed.units:Class.method", None),
+        change("A", "config:renamed.units:database.host", None),
+    ];
+    expected_rename.extend(
+        deleted
+            .iter()
+            .map(|c| change(&c.kind, &c.unit.id, c.unit.fallback)),
+    );
+    assert_manifest(
+        l,
+        "rename",
+        &base,
+        &renamed_id,
+        &b,
+        &renamed,
+        expected_rename,
+    );
+    let empty = Snapshot::new();
+    let deleted_id = l.commit(&empty, &[&base]);
+    assert_manifest(l, "deletion", &base, &deleted_id, &b, &empty, deleted);
     assert!(contains(
         "file:source.units",
         "symbol:source.units:Class.method"
@@ -138,6 +235,65 @@ pub(super) fn manifests(l: &mut Lab) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    fn changes(before: &[u8], after: &[u8]) -> Vec<Change> {
+        let mut b = Snapshot::new();
+        let mut a = Snapshot::new();
+        put(&mut b, "x.units", before);
+        put(&mut a, "x.units", after);
+        manifest(&b, &a, &[("M".into(), "x.units".into())])
+    }
+    #[test]
+    fn replacement_preserves_removed_unit_and_excludes_unchanged() {
+        assert_eq!(
+            changes(b"symbol same\nconfig host", b"symbol same\nconfig port"),
+            vec![
+                change("D", "config:x.units:host", None),
+                change("A", "config:x.units:port", None),
+            ]
+        );
+    }
+    #[test]
+    fn uncertain_before_or_after_requires_file_fallback() {
+        for (before, after) in [
+            (b"bad".as_slice(), b"symbol good".as_slice()),
+            (b"symbol good".as_slice(), b"bad".as_slice()),
+        ] {
+            assert_eq!(
+                changes(before, after),
+                vec![change("M", "file:x.units", Some("parse failure"))]
+            );
+        }
+    }
+    #[test]
+    fn mode_only_change_is_not_an_empty_manifest() {
+        let mut b = Snapshot::new();
+        put(&mut b, "x.units", b"symbol same");
+        let mut a = b.clone();
+        a.get_mut("x.units").unwrap().0 = "100755".into();
+        assert_eq!(
+            manifest(&b, &a, &[("M".into(), "x.units".into())]),
+            vec![change("M", "file:x.units", Some("mode change"))]
+        );
+    }
+    #[test]
+    fn generated_widening_and_deletion_keep_fallback() {
+        let empty = Snapshot::new();
+        let mut generated = Snapshot::new();
+        put(&mut generated, "cache.generated", b"output");
+        for (before, after, kind) in [(&empty, &generated, "A"), (&generated, &empty, "D")] {
+            assert_eq!(
+                manifest(before, after, &[(kind.into(), "cache.generated".into())]),
+                vec![change(kind, "file:cache.generated", Some("generated"))]
+            );
+        }
+    }
+    #[test]
+    fn unmodeled_content_change_keeps_file_fallback() {
+        assert_eq!(
+            changes(b"symbol same", b"symbol same\n"),
+            vec![change("M", "file:x.units", Some("identity-only grammar"))]
+        );
+    }
     #[test]
     fn containment_boundaries() {
         assert!(contains("symbol:x:C", "symbol:x:C.f"));
