@@ -1,0 +1,3357 @@
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash args=["init", "--bare", "--initial-branch=main", "forge.git"]
+exit=Some(0) elapsed_us=7693
+stdout=Initialized empty Git repository in /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge.git/
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash args=["clone", "--no-local", "/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge.git", "human"]
+exit=Some(0) elapsed_us=16236
+stdout=
+stderr=Cloning into 'human'...
+warning: You appear to have cloned an empty repository.
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["add", "--", "shared.txt"]
+exit=Some(0) elapsed_us=5262
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["commit", "-m", "Human baseline"]
+exit=Some(0) elapsed_us=11669
+stdout=[main (root-commit) e37c65c] Human baseline
+ 1 file changed, 1 insertion(+)
+ create mode 100644 shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=4034
+stdout=e37c65c279c703d4c31cc4d77ef4941725448bc6
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["push", "origin", "HEAD:refs/heads/main"]
+exit=Some(0) elapsed_us=39323
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge.git
+ * [new branch]      HEAD -> main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash args=["clone", "--no-local", "/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge.git", "authority"]
+exit=Some(0) elapsed_us=29815
+stdout=
+stderr=Cloning into 'authority'...
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["rev-parse", "HEAD^{tree}"]
+exit=Some(0) elapsed_us=4495
+stdout=1af1c37d5c866f2e0c9b07d52a1951a92d045d14
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["commit-tree", "1af1c37d5c866f2e0c9b07d52a1951a92d045d14", "-p", "e37c65c279c703d4c31cc4d77ef4941725448bc6"]
+exit=Some(0) elapsed_us=5004
+stdout=743ec6e40cc0df4343109b138b1495f909b2e26d
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["update-ref", "refs/heads/main", "743ec6e40cc0df4343109b138b1495f909b2e26d", "e37c65c279c703d4c31cc4d77ef4941725448bc6"]
+exit=Some(0) elapsed_us=5314
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["update-ref", "refs/mai/upstream", "e37c65c279c703d4c31cc4d77ef4941725448bc6"]
+exit=Some(0) elapsed_us=4634
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash args=["clone", "--no-local", "/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority", "agent"]
+exit=Some(0) elapsed_us=29946
+stdout=
+stderr=Cloning into 'agent'...
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash args=["clone", "--no-local", "/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge.git", "forge-merger"]
+exit=Some(0) elapsed_us=28785
+stdout=
+stderr=Cloning into 'forge-merger'...
+
+CYCLE mode=squash cycle=1 trunk=743ec6e40cc0df4343109b138b1495f909b2e26d upstream=e37c65c279c703d4c31cc4d77ef4941725448bc6
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["fetch", "origin"]
+exit=Some(0) elapsed_us=22611
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["checkout", "-B", "work", "origin/main"]
+exit=Some(0) elapsed_us=7045
+stdout=branch 'work' set up to track 'origin/main'.
+
+stderr=Switched to a new branch 'work'
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["add", "--", "agent-1.txt"]
+exit=Some(0) elapsed_us=5124
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["commit", "-m", "Agent change"]
+exit=Some(0) elapsed_us=11518
+stdout=[work 0b69001] Agent change
+ 1 file changed, 1 insertion(+)
+ create mode 100644 agent-1.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=4100
+stdout=0b69001270e14217ef8f30e852c6648a04d96463
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["push", "origin", "HEAD:refs/mai/submitted/1"]
+exit=Some(0) elapsed_us=38410
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority
+ * [new reference]   HEAD -> refs/mai/submitted/1
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["merge-tree", "--write-tree", "743ec6e40cc0df4343109b138b1495f909b2e26d", "0b69001270e14217ef8f30e852c6648a04d96463"]
+exit=Some(0) elapsed_us=5335
+stdout=93bc2458b92efc9456bf7e2108e43ceb9fd1bc67
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["ls-tree", "-r", "--name-only", "93bc2458b92efc9456bf7e2108e43ceb9fd1bc67"]
+exit=Some(0) elapsed_us=4819
+stdout=agent-1.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "93bc2458b92efc9456bf7e2108e43ceb9fd1bc67:agent-1.txt"]
+exit=Some(0) elapsed_us=4514
+stdout=squash agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "93bc2458b92efc9456bf7e2108e43ceb9fd1bc67:shared.txt"]
+exit=Some(0) elapsed_us=4659
+stdout=baseline
+
+stderr=
+GATE pass tree=93bc2458b92efc9456bf7e2108e43ceb9fd1bc67 parents=["743ec6e40cc0df4343109b138b1495f909b2e26d"] revision=r1 kind=Agent landing policy=compiled-exact-fixture-v1
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["commit-tree", "93bc2458b92efc9456bf7e2108e43ceb9fd1bc67", "-p", "743ec6e40cc0df4343109b138b1495f909b2e26d"]
+exit=Some(0) elapsed_us=4969
+stdout=333d3104abebb8ab639d540c551e0ad5f1db0929
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["update-ref", "refs/heads/main", "333d3104abebb8ab639d540c551e0ad5f1db0929", "743ec6e40cc0df4343109b138b1495f909b2e26d"]
+exit=Some(0) elapsed_us=5045
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["rev-parse", "333d3104abebb8ab639d540c551e0ad5f1db0929^{tree}"]
+exit=Some(0) elapsed_us=4436
+stdout=93bc2458b92efc9456bf7e2108e43ceb9fd1bc67
+
+stderr=
+PASS landed tree equals checked tree
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%P", "333d3104abebb8ab639d540c551e0ad5f1db0929"]
+exit=Some(0) elapsed_us=4706
+stdout=743ec6e40cc0df4343109b138b1495f909b2e26d
+
+stderr=
+PASS exact first/second parent provenance
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%B", "333d3104abebb8ab639d540c551e0ad5f1db0929"]
+exit=Some(0) elapsed_us=4638
+stdout=Agent landing
+
+Mai-Revision: r1
+
+
+stderr=
+PASS revision trailer matches assigned rN
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["commit-tree", "93bc2458b92efc9456bf7e2108e43ceb9fd1bc67", "-p", "e37c65c279c703d4c31cc4d77ef4941725448bc6"]
+exit=Some(0) elapsed_us=5027
+stdout=79ea8d9a28317c72ceca72b2a2ee38ce9585f45e
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["diff", "--name-only", "e37c65c279c703d4c31cc4d77ef4941725448bc6", "79ea8d9a28317c72ceca72b2a2ee38ce9585f45e"]
+exit=Some(0) elapsed_us=4844
+stdout=agent-1.txt
+
+stderr=
+PASS export contains only new agent delta
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["push", "origin", "79ea8d9a28317c72ceca72b2a2ee38ce9585f45e:refs/heads/export-squash-1"]
+exit=Some(0) elapsed_us=39071
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge.git
+ * [new branch]      79ea8d9a28317c72ceca72b2a2ee38ce9585f45e -> export-squash-1
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["pull", "--ff-only", "origin", "main"]
+exit=Some(0) elapsed_us=31085
+stdout=Already up to date.
+
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge
+ * branch            main       -> FETCH_HEAD
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["add", "--", "human-1.txt"]
+exit=Some(0) elapsed_us=4869
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["commit", "-m", "Concurrent human edit"]
+exit=Some(0) elapsed_us=11315
+stdout=[main 8c6830e] Concurrent human edit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 human-1.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3920
+stdout=8c6830e57b03fd28f15b894c964fa90191c92592
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["push", "origin", "HEAD:refs/heads/main"]
+exit=Some(0) elapsed_us=39108
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge.git
+   e37c65c..8c6830e  HEAD -> main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["fetch", "origin"]
+exit=Some(0) elapsed_us=35400
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge
+   e37c65c..8c6830e  main            -> origin/main
+ * [new branch]      export-squash-1 -> origin/export-squash-1
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["checkout", "-B", "merge", "origin/main"]
+exit=Some(0) elapsed_us=7381
+stdout=branch 'merge' set up to track 'origin/main'.
+
+stderr=Switched to a new branch 'merge'
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["merge", "--squash", "origin/export-squash-1"]
+exit=Some(0) elapsed_us=11433
+stdout=Squash commit -- not updating HEAD
+
+stderr=Automatic merge went well; stopped before committing as requested
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["commit", "-m", "Forge squash merge"]
+exit=Some(0) elapsed_us=11341
+stdout=[merge 6101842] Forge squash merge
+ 1 file changed, 1 insertion(+)
+ create mode 100644 agent-1.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["push", "origin", "HEAD:refs/heads/main"]
+exit=Some(0) elapsed_us=40686
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge.git
+   8c6830e..6101842  HEAD -> main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=4159
+stdout=610184269295374c1dd82c4ec3012fa750c2ea82
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["show", "-s", "--format=%P", "HEAD"]
+exit=Some(0) elapsed_us=4655
+stdout=8c6830e57b03fd28f15b894c964fa90191c92592
+
+stderr=
+PASS forge merge is single-parent after concurrent human commit
+PASS forge rewrote exported commit identity
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["ls-tree", "-r", "--name-only", "HEAD"]
+exit=Some(0) elapsed_us=4597
+stdout=agent-1.txt
+human-1.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["show", "HEAD:agent-1.txt"]
+exit=Some(0) elapsed_us=4414
+stdout=squash agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["show", "HEAD:human-1.txt"]
+exit=Some(0) elapsed_us=4431
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["show", "HEAD:shared.txt"]
+exit=Some(0) elapsed_us=4426
+stdout=baseline
+
+stderr=
+PASS forge tree contains exact agent and concurrent human contents
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["fetch", "origin"]
+exit=Some(0) elapsed_us=34622
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge
+   e37c65c..6101842  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["merge-tree", "--write-tree", "333d3104abebb8ab639d540c551e0ad5f1db0929", "610184269295374c1dd82c4ec3012fa750c2ea82"]
+exit=Some(0) elapsed_us=4890
+stdout=bff1f98f90a8fab8bf8c0fdcdc56a196f0da1adf
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["ls-tree", "-r", "--name-only", "bff1f98f90a8fab8bf8c0fdcdc56a196f0da1adf"]
+exit=Some(0) elapsed_us=4413
+stdout=agent-1.txt
+human-1.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "bff1f98f90a8fab8bf8c0fdcdc56a196f0da1adf:agent-1.txt"]
+exit=Some(0) elapsed_us=4582
+stdout=squash agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "bff1f98f90a8fab8bf8c0fdcdc56a196f0da1adf:human-1.txt"]
+exit=Some(0) elapsed_us=4457
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "bff1f98f90a8fab8bf8c0fdcdc56a196f0da1adf:shared.txt"]
+exit=Some(0) elapsed_us=4394
+stdout=baseline
+
+stderr=
+GATE pass tree=bff1f98f90a8fab8bf8c0fdcdc56a196f0da1adf parents=["333d3104abebb8ab639d540c551e0ad5f1db0929", "610184269295374c1dd82c4ec3012fa750c2ea82"] revision=r2 kind=Upstream sync policy=compiled-exact-fixture-v1
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["commit-tree", "bff1f98f90a8fab8bf8c0fdcdc56a196f0da1adf", "-p", "333d3104abebb8ab639d540c551e0ad5f1db0929", "-p", "610184269295374c1dd82c4ec3012fa750c2ea82"]
+exit=Some(0) elapsed_us=5210
+stdout=9ecaf0034aa13718fa89304a3454b043ed7d0672
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["update-ref", "refs/heads/main", "9ecaf0034aa13718fa89304a3454b043ed7d0672", "333d3104abebb8ab639d540c551e0ad5f1db0929"]
+exit=Some(0) elapsed_us=5183
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["rev-parse", "9ecaf0034aa13718fa89304a3454b043ed7d0672^{tree}"]
+exit=Some(0) elapsed_us=4340
+stdout=bff1f98f90a8fab8bf8c0fdcdc56a196f0da1adf
+
+stderr=
+PASS landed tree equals checked tree
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%P", "9ecaf0034aa13718fa89304a3454b043ed7d0672"]
+exit=Some(0) elapsed_us=4659
+stdout=333d3104abebb8ab639d540c551e0ad5f1db0929 610184269295374c1dd82c4ec3012fa750c2ea82
+
+stderr=
+PASS exact first/second parent provenance
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%B", "9ecaf0034aa13718fa89304a3454b043ed7d0672"]
+exit=Some(0) elapsed_us=4564
+stdout=Upstream sync
+
+Mai-Revision: r2
+
+
+stderr=
+PASS revision trailer matches assigned rN
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["diff", "--name-only", "333d3104abebb8ab639d540c551e0ad5f1db0929", "9ecaf0034aa13718fa89304a3454b043ed7d0672"]
+exit=Some(0) elapsed_us=4458
+stdout=human-1.txt
+
+stderr=
+PASS sync adds only concurrent human delta without replay
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["update-ref", "refs/mai/upstream", "610184269295374c1dd82c4ec3012fa750c2ea82", "e37c65c279c703d4c31cc4d77ef4941725448bc6"]
+exit=Some(0) elapsed_us=4464
+stdout=
+stderr=
+PASS cycle completed with zero spurious conflicts
+CYCLE mode=squash cycle=2 trunk=9ecaf0034aa13718fa89304a3454b043ed7d0672 upstream=610184269295374c1dd82c4ec3012fa750c2ea82
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["fetch", "origin"]
+exit=Some(0) elapsed_us=34838
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority
+   743ec6e..9ecaf00  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["checkout", "-B", "work", "origin/main"]
+exit=Some(0) elapsed_us=6815
+stdout=branch 'work' set up to track 'origin/main'.
+Your branch is up to date with 'origin/main'.
+
+stderr=Reset branch 'work'
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["add", "--", "agent-2.txt"]
+exit=Some(0) elapsed_us=5069
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["commit", "-m", "Agent change"]
+exit=Some(0) elapsed_us=11378
+stdout=[work f6599b5] Agent change
+ 1 file changed, 1 insertion(+)
+ create mode 100644 agent-2.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3865
+stdout=f6599b5fd19569ba4e966a62cc3dce294736b7f3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["push", "origin", "HEAD:refs/mai/submitted/2"]
+exit=Some(0) elapsed_us=37992
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority
+ * [new reference]   HEAD -> refs/mai/submitted/2
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["merge-tree", "--write-tree", "9ecaf0034aa13718fa89304a3454b043ed7d0672", "f6599b5fd19569ba4e966a62cc3dce294736b7f3"]
+exit=Some(0) elapsed_us=4632
+stdout=eabd1d952f74ae73d4210c7120e8126a9b9ca8e4
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["ls-tree", "-r", "--name-only", "eabd1d952f74ae73d4210c7120e8126a9b9ca8e4"]
+exit=Some(0) elapsed_us=4459
+stdout=agent-1.txt
+agent-2.txt
+human-1.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "eabd1d952f74ae73d4210c7120e8126a9b9ca8e4:agent-1.txt"]
+exit=Some(0) elapsed_us=4429
+stdout=squash agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "eabd1d952f74ae73d4210c7120e8126a9b9ca8e4:agent-2.txt"]
+exit=Some(0) elapsed_us=4536
+stdout=squash agent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "eabd1d952f74ae73d4210c7120e8126a9b9ca8e4:human-1.txt"]
+exit=Some(0) elapsed_us=4395
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "eabd1d952f74ae73d4210c7120e8126a9b9ca8e4:shared.txt"]
+exit=Some(0) elapsed_us=4309
+stdout=baseline
+
+stderr=
+GATE pass tree=eabd1d952f74ae73d4210c7120e8126a9b9ca8e4 parents=["9ecaf0034aa13718fa89304a3454b043ed7d0672"] revision=r3 kind=Agent landing policy=compiled-exact-fixture-v1
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["commit-tree", "eabd1d952f74ae73d4210c7120e8126a9b9ca8e4", "-p", "9ecaf0034aa13718fa89304a3454b043ed7d0672"]
+exit=Some(0) elapsed_us=4856
+stdout=af4873f14de823b7d6da91814eeef52bec3fe26c
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["update-ref", "refs/heads/main", "af4873f14de823b7d6da91814eeef52bec3fe26c", "9ecaf0034aa13718fa89304a3454b043ed7d0672"]
+exit=Some(0) elapsed_us=4853
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["rev-parse", "af4873f14de823b7d6da91814eeef52bec3fe26c^{tree}"]
+exit=Some(0) elapsed_us=4419
+stdout=eabd1d952f74ae73d4210c7120e8126a9b9ca8e4
+
+stderr=
+PASS landed tree equals checked tree
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%P", "af4873f14de823b7d6da91814eeef52bec3fe26c"]
+exit=Some(0) elapsed_us=4703
+stdout=9ecaf0034aa13718fa89304a3454b043ed7d0672
+
+stderr=
+PASS exact first/second parent provenance
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%B", "af4873f14de823b7d6da91814eeef52bec3fe26c"]
+exit=Some(0) elapsed_us=4418
+stdout=Agent landing
+
+Mai-Revision: r3
+
+
+stderr=
+PASS revision trailer matches assigned rN
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["commit-tree", "eabd1d952f74ae73d4210c7120e8126a9b9ca8e4", "-p", "610184269295374c1dd82c4ec3012fa750c2ea82"]
+exit=Some(0) elapsed_us=4885
+stdout=e0bdba91bd05921326d3228345148e749ba98bdd
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["diff", "--name-only", "610184269295374c1dd82c4ec3012fa750c2ea82", "e0bdba91bd05921326d3228345148e749ba98bdd"]
+exit=Some(0) elapsed_us=4513
+stdout=agent-2.txt
+
+stderr=
+PASS export contains only new agent delta
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["push", "origin", "e0bdba91bd05921326d3228345148e749ba98bdd:refs/heads/export-squash-2"]
+exit=Some(0) elapsed_us=38576
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge.git
+ * [new branch]      e0bdba91bd05921326d3228345148e749ba98bdd -> export-squash-2
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["pull", "--ff-only", "origin", "main"]
+exit=Some(0) elapsed_us=48463
+stdout=Updating 8c6830e..6101842
+Fast-forward
+ agent-1.txt | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 agent-1.txt
+
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge
+ * branch            main       -> FETCH_HEAD
+   8c6830e..6101842  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["add", "--", "human-2.txt"]
+exit=Some(0) elapsed_us=4873
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["commit", "-m", "Concurrent human edit"]
+exit=Some(0) elapsed_us=11170
+stdout=[main 6707202] Concurrent human edit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 human-2.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3760
+stdout=6707202dd5500ec3804af4abb4d1807ce25c10c7
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["push", "origin", "HEAD:refs/heads/main"]
+exit=Some(0) elapsed_us=39386
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge.git
+   6101842..6707202  HEAD -> main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["fetch", "origin"]
+exit=Some(0) elapsed_us=34928
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge
+   6101842..6707202  main            -> origin/main
+ * [new branch]      export-squash-2 -> origin/export-squash-2
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["checkout", "-B", "merge", "origin/main"]
+exit=Some(0) elapsed_us=6954
+stdout=branch 'merge' set up to track 'origin/main'.
+Your branch is up to date with 'origin/main'.
+
+stderr=Reset branch 'merge'
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["merge", "--squash", "origin/export-squash-2"]
+exit=Some(0) elapsed_us=11060
+stdout=Squash commit -- not updating HEAD
+
+stderr=Automatic merge went well; stopped before committing as requested
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["commit", "-m", "Forge squash merge"]
+exit=Some(0) elapsed_us=11154
+stdout=[merge 304af2f] Forge squash merge
+ 1 file changed, 1 insertion(+)
+ create mode 100644 agent-2.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["push", "origin", "HEAD:refs/heads/main"]
+exit=Some(0) elapsed_us=38358
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge.git
+   6707202..304af2f  HEAD -> main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3869
+stdout=304af2fe2b434eddeb7b7132684e40e923bf05e1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["show", "-s", "--format=%P", "HEAD"]
+exit=Some(0) elapsed_us=4664
+stdout=6707202dd5500ec3804af4abb4d1807ce25c10c7
+
+stderr=
+PASS forge merge is single-parent after concurrent human commit
+PASS forge rewrote exported commit identity
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["ls-tree", "-r", "--name-only", "HEAD"]
+exit=Some(0) elapsed_us=4361
+stdout=agent-1.txt
+agent-2.txt
+human-1.txt
+human-2.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["show", "HEAD:agent-1.txt"]
+exit=Some(0) elapsed_us=4389
+stdout=squash agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["show", "HEAD:agent-2.txt"]
+exit=Some(0) elapsed_us=4350
+stdout=squash agent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["show", "HEAD:human-1.txt"]
+exit=Some(0) elapsed_us=4352
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["show", "HEAD:human-2.txt"]
+exit=Some(0) elapsed_us=4360
+stdout=human concurrent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["show", "HEAD:shared.txt"]
+exit=Some(0) elapsed_us=4362
+stdout=baseline
+
+stderr=
+PASS forge tree contains exact agent and concurrent human contents
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["fetch", "origin"]
+exit=Some(0) elapsed_us=35094
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge
+   6101842..304af2f  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["merge-tree", "--write-tree", "af4873f14de823b7d6da91814eeef52bec3fe26c", "304af2fe2b434eddeb7b7132684e40e923bf05e1"]
+exit=Some(0) elapsed_us=5368
+stdout=43c35d8d2a83b9a05875cdb65397ed84e2d4f95b
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["ls-tree", "-r", "--name-only", "43c35d8d2a83b9a05875cdb65397ed84e2d4f95b"]
+exit=Some(0) elapsed_us=4739
+stdout=agent-1.txt
+agent-2.txt
+human-1.txt
+human-2.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "43c35d8d2a83b9a05875cdb65397ed84e2d4f95b:agent-1.txt"]
+exit=Some(0) elapsed_us=4415
+stdout=squash agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "43c35d8d2a83b9a05875cdb65397ed84e2d4f95b:agent-2.txt"]
+exit=Some(0) elapsed_us=4408
+stdout=squash agent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "43c35d8d2a83b9a05875cdb65397ed84e2d4f95b:human-1.txt"]
+exit=Some(0) elapsed_us=4437
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "43c35d8d2a83b9a05875cdb65397ed84e2d4f95b:human-2.txt"]
+exit=Some(0) elapsed_us=4469
+stdout=human concurrent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "43c35d8d2a83b9a05875cdb65397ed84e2d4f95b:shared.txt"]
+exit=Some(0) elapsed_us=4364
+stdout=baseline
+
+stderr=
+GATE pass tree=43c35d8d2a83b9a05875cdb65397ed84e2d4f95b parents=["af4873f14de823b7d6da91814eeef52bec3fe26c", "304af2fe2b434eddeb7b7132684e40e923bf05e1"] revision=r4 kind=Upstream sync policy=compiled-exact-fixture-v1
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["commit-tree", "43c35d8d2a83b9a05875cdb65397ed84e2d4f95b", "-p", "af4873f14de823b7d6da91814eeef52bec3fe26c", "-p", "304af2fe2b434eddeb7b7132684e40e923bf05e1"]
+exit=Some(0) elapsed_us=5125
+stdout=bf71a6056bed9da04e65fbb209f3fb5a3593e75d
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["update-ref", "refs/heads/main", "bf71a6056bed9da04e65fbb209f3fb5a3593e75d", "af4873f14de823b7d6da91814eeef52bec3fe26c"]
+exit=Some(0) elapsed_us=5055
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["rev-parse", "bf71a6056bed9da04e65fbb209f3fb5a3593e75d^{tree}"]
+exit=Some(0) elapsed_us=4373
+stdout=43c35d8d2a83b9a05875cdb65397ed84e2d4f95b
+
+stderr=
+PASS landed tree equals checked tree
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%P", "bf71a6056bed9da04e65fbb209f3fb5a3593e75d"]
+exit=Some(0) elapsed_us=5316
+stdout=af4873f14de823b7d6da91814eeef52bec3fe26c 304af2fe2b434eddeb7b7132684e40e923bf05e1
+
+stderr=
+PASS exact first/second parent provenance
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%B", "bf71a6056bed9da04e65fbb209f3fb5a3593e75d"]
+exit=Some(0) elapsed_us=4967
+stdout=Upstream sync
+
+Mai-Revision: r4
+
+
+stderr=
+PASS revision trailer matches assigned rN
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["diff", "--name-only", "af4873f14de823b7d6da91814eeef52bec3fe26c", "bf71a6056bed9da04e65fbb209f3fb5a3593e75d"]
+exit=Some(0) elapsed_us=4634
+stdout=human-2.txt
+
+stderr=
+PASS sync adds only concurrent human delta without replay
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["update-ref", "refs/mai/upstream", "304af2fe2b434eddeb7b7132684e40e923bf05e1", "610184269295374c1dd82c4ec3012fa750c2ea82"]
+exit=Some(0) elapsed_us=4562
+stdout=
+stderr=
+PASS cycle completed with zero spurious conflicts
+CYCLE mode=squash cycle=3 trunk=bf71a6056bed9da04e65fbb209f3fb5a3593e75d upstream=304af2fe2b434eddeb7b7132684e40e923bf05e1
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["fetch", "origin"]
+exit=Some(0) elapsed_us=35799
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority
+   9ecaf00..bf71a60  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["checkout", "-B", "work", "origin/main"]
+exit=Some(0) elapsed_us=6985
+stdout=branch 'work' set up to track 'origin/main'.
+Your branch is up to date with 'origin/main'.
+
+stderr=Reset branch 'work'
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["add", "--", "agent-3.txt"]
+exit=Some(0) elapsed_us=4989
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["commit", "-m", "Agent change"]
+exit=Some(0) elapsed_us=11815
+stdout=[work 0b899d6] Agent change
+ 1 file changed, 1 insertion(+)
+ create mode 100644 agent-3.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3851
+stdout=0b899d6060502dc96c7aba93d4b4b2ff47bdd668
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["push", "origin", "HEAD:refs/mai/submitted/3"]
+exit=Some(0) elapsed_us=38933
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority
+ * [new reference]   HEAD -> refs/mai/submitted/3
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["merge-tree", "--write-tree", "bf71a6056bed9da04e65fbb209f3fb5a3593e75d", "0b899d6060502dc96c7aba93d4b4b2ff47bdd668"]
+exit=Some(0) elapsed_us=4870
+stdout=b94b078d257c96e170843166ddeeb9e15be9613a
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["ls-tree", "-r", "--name-only", "b94b078d257c96e170843166ddeeb9e15be9613a"]
+exit=Some(0) elapsed_us=4359
+stdout=agent-1.txt
+agent-2.txt
+agent-3.txt
+human-1.txt
+human-2.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "b94b078d257c96e170843166ddeeb9e15be9613a:agent-1.txt"]
+exit=Some(0) elapsed_us=4373
+stdout=squash agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "b94b078d257c96e170843166ddeeb9e15be9613a:agent-2.txt"]
+exit=Some(0) elapsed_us=4270
+stdout=squash agent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "b94b078d257c96e170843166ddeeb9e15be9613a:agent-3.txt"]
+exit=Some(0) elapsed_us=4381
+stdout=squash agent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "b94b078d257c96e170843166ddeeb9e15be9613a:human-1.txt"]
+exit=Some(0) elapsed_us=4391
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "b94b078d257c96e170843166ddeeb9e15be9613a:human-2.txt"]
+exit=Some(0) elapsed_us=4422
+stdout=human concurrent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "b94b078d257c96e170843166ddeeb9e15be9613a:shared.txt"]
+exit=Some(0) elapsed_us=4302
+stdout=baseline
+
+stderr=
+GATE pass tree=b94b078d257c96e170843166ddeeb9e15be9613a parents=["bf71a6056bed9da04e65fbb209f3fb5a3593e75d"] revision=r5 kind=Agent landing policy=compiled-exact-fixture-v1
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["commit-tree", "b94b078d257c96e170843166ddeeb9e15be9613a", "-p", "bf71a6056bed9da04e65fbb209f3fb5a3593e75d"]
+exit=Some(0) elapsed_us=4927
+stdout=d4ae62bc9ccbc7732005453b6ee5bc87310de1a2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["update-ref", "refs/heads/main", "d4ae62bc9ccbc7732005453b6ee5bc87310de1a2", "bf71a6056bed9da04e65fbb209f3fb5a3593e75d"]
+exit=Some(0) elapsed_us=4996
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["rev-parse", "d4ae62bc9ccbc7732005453b6ee5bc87310de1a2^{tree}"]
+exit=Some(0) elapsed_us=4321
+stdout=b94b078d257c96e170843166ddeeb9e15be9613a
+
+stderr=
+PASS landed tree equals checked tree
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%P", "d4ae62bc9ccbc7732005453b6ee5bc87310de1a2"]
+exit=Some(0) elapsed_us=4750
+stdout=bf71a6056bed9da04e65fbb209f3fb5a3593e75d
+
+stderr=
+PASS exact first/second parent provenance
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%B", "d4ae62bc9ccbc7732005453b6ee5bc87310de1a2"]
+exit=Some(0) elapsed_us=4506
+stdout=Agent landing
+
+Mai-Revision: r5
+
+
+stderr=
+PASS revision trailer matches assigned rN
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["commit-tree", "b94b078d257c96e170843166ddeeb9e15be9613a", "-p", "304af2fe2b434eddeb7b7132684e40e923bf05e1"]
+exit=Some(0) elapsed_us=4839
+stdout=82d8558a83fb60acfc616d62d7ed88665160db5e
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["diff", "--name-only", "304af2fe2b434eddeb7b7132684e40e923bf05e1", "82d8558a83fb60acfc616d62d7ed88665160db5e"]
+exit=Some(0) elapsed_us=4497
+stdout=agent-3.txt
+
+stderr=
+PASS export contains only new agent delta
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["push", "origin", "82d8558a83fb60acfc616d62d7ed88665160db5e:refs/heads/export-squash-3"]
+exit=Some(0) elapsed_us=38568
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge.git
+ * [new branch]      82d8558a83fb60acfc616d62d7ed88665160db5e -> export-squash-3
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["pull", "--ff-only", "origin", "main"]
+exit=Some(0) elapsed_us=50078
+stdout=Updating 6707202..304af2f
+Fast-forward
+ agent-2.txt | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 agent-2.txt
+
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge
+ * branch            main       -> FETCH_HEAD
+   6707202..304af2f  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["add", "--", "human-3.txt"]
+exit=Some(0) elapsed_us=4925
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["commit", "-m", "Concurrent human edit"]
+exit=Some(0) elapsed_us=11470
+stdout=[main 49faa0c] Concurrent human edit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 human-3.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3902
+stdout=49faa0cf200682dd38adbb5625cbd7be21f14c6b
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["push", "origin", "HEAD:refs/heads/main"]
+exit=Some(0) elapsed_us=38811
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge.git
+   304af2f..49faa0c  HEAD -> main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["fetch", "origin"]
+exit=Some(0) elapsed_us=36151
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge
+   304af2f..49faa0c  main            -> origin/main
+ * [new branch]      export-squash-3 -> origin/export-squash-3
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["checkout", "-B", "merge", "origin/main"]
+exit=Some(0) elapsed_us=7026
+stdout=branch 'merge' set up to track 'origin/main'.
+Your branch is up to date with 'origin/main'.
+
+stderr=Reset branch 'merge'
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["merge", "--squash", "origin/export-squash-3"]
+exit=Some(0) elapsed_us=11209
+stdout=Squash commit -- not updating HEAD
+
+stderr=Automatic merge went well; stopped before committing as requested
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["commit", "-m", "Forge squash merge"]
+exit=Some(0) elapsed_us=11027
+stdout=[merge 96851b0] Forge squash merge
+ 1 file changed, 1 insertion(+)
+ create mode 100644 agent-3.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["push", "origin", "HEAD:refs/heads/main"]
+exit=Some(0) elapsed_us=38469
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge.git
+   49faa0c..96851b0  HEAD -> main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=4073
+stdout=96851b04e4b6920b3e71350f6e7d8d3fe4bdaa58
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["show", "-s", "--format=%P", "HEAD"]
+exit=Some(0) elapsed_us=4633
+stdout=49faa0cf200682dd38adbb5625cbd7be21f14c6b
+
+stderr=
+PASS forge merge is single-parent after concurrent human commit
+PASS forge rewrote exported commit identity
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["ls-tree", "-r", "--name-only", "HEAD"]
+exit=Some(0) elapsed_us=4266
+stdout=agent-1.txt
+agent-2.txt
+agent-3.txt
+human-1.txt
+human-2.txt
+human-3.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["show", "HEAD:agent-1.txt"]
+exit=Some(0) elapsed_us=4528
+stdout=squash agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["show", "HEAD:agent-2.txt"]
+exit=Some(0) elapsed_us=4549
+stdout=squash agent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["show", "HEAD:agent-3.txt"]
+exit=Some(0) elapsed_us=4530
+stdout=squash agent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["show", "HEAD:human-1.txt"]
+exit=Some(0) elapsed_us=4359
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["show", "HEAD:human-2.txt"]
+exit=Some(0) elapsed_us=4427
+stdout=human concurrent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["show", "HEAD:human-3.txt"]
+exit=Some(0) elapsed_us=4507
+stdout=human concurrent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge-merger args=["show", "HEAD:shared.txt"]
+exit=Some(0) elapsed_us=4508
+stdout=baseline
+
+stderr=
+PASS forge tree contains exact agent and concurrent human contents
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["fetch", "origin"]
+exit=Some(0) elapsed_us=36361
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge
+   304af2f..96851b0  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["merge-tree", "--write-tree", "d4ae62bc9ccbc7732005453b6ee5bc87310de1a2", "96851b04e4b6920b3e71350f6e7d8d3fe4bdaa58"]
+exit=Some(0) elapsed_us=4862
+stdout=a5e86f47060bac11b1606e1b2316e18d57d889ef
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["ls-tree", "-r", "--name-only", "a5e86f47060bac11b1606e1b2316e18d57d889ef"]
+exit=Some(0) elapsed_us=4403
+stdout=agent-1.txt
+agent-2.txt
+agent-3.txt
+human-1.txt
+human-2.txt
+human-3.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "a5e86f47060bac11b1606e1b2316e18d57d889ef:agent-1.txt"]
+exit=Some(0) elapsed_us=4547
+stdout=squash agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "a5e86f47060bac11b1606e1b2316e18d57d889ef:agent-2.txt"]
+exit=Some(0) elapsed_us=4375
+stdout=squash agent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "a5e86f47060bac11b1606e1b2316e18d57d889ef:agent-3.txt"]
+exit=Some(0) elapsed_us=4445
+stdout=squash agent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "a5e86f47060bac11b1606e1b2316e18d57d889ef:human-1.txt"]
+exit=Some(0) elapsed_us=4375
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "a5e86f47060bac11b1606e1b2316e18d57d889ef:human-2.txt"]
+exit=Some(0) elapsed_us=4386
+stdout=human concurrent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "a5e86f47060bac11b1606e1b2316e18d57d889ef:human-3.txt"]
+exit=Some(0) elapsed_us=4417
+stdout=human concurrent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "a5e86f47060bac11b1606e1b2316e18d57d889ef:shared.txt"]
+exit=Some(0) elapsed_us=4321
+stdout=baseline
+
+stderr=
+GATE pass tree=a5e86f47060bac11b1606e1b2316e18d57d889ef parents=["d4ae62bc9ccbc7732005453b6ee5bc87310de1a2", "96851b04e4b6920b3e71350f6e7d8d3fe4bdaa58"] revision=r6 kind=Upstream sync policy=compiled-exact-fixture-v1
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["commit-tree", "a5e86f47060bac11b1606e1b2316e18d57d889ef", "-p", "d4ae62bc9ccbc7732005453b6ee5bc87310de1a2", "-p", "96851b04e4b6920b3e71350f6e7d8d3fe4bdaa58"]
+exit=Some(0) elapsed_us=4987
+stdout=8221c1e29c58240fbb26d8a02ce983d805b718a1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["update-ref", "refs/heads/main", "8221c1e29c58240fbb26d8a02ce983d805b718a1", "d4ae62bc9ccbc7732005453b6ee5bc87310de1a2"]
+exit=Some(0) elapsed_us=5113
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["rev-parse", "8221c1e29c58240fbb26d8a02ce983d805b718a1^{tree}"]
+exit=Some(0) elapsed_us=4407
+stdout=a5e86f47060bac11b1606e1b2316e18d57d889ef
+
+stderr=
+PASS landed tree equals checked tree
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%P", "8221c1e29c58240fbb26d8a02ce983d805b718a1"]
+exit=Some(0) elapsed_us=4744
+stdout=d4ae62bc9ccbc7732005453b6ee5bc87310de1a2 96851b04e4b6920b3e71350f6e7d8d3fe4bdaa58
+
+stderr=
+PASS exact first/second parent provenance
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%B", "8221c1e29c58240fbb26d8a02ce983d805b718a1"]
+exit=Some(0) elapsed_us=4612
+stdout=Upstream sync
+
+Mai-Revision: r6
+
+
+stderr=
+PASS revision trailer matches assigned rN
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["diff", "--name-only", "d4ae62bc9ccbc7732005453b6ee5bc87310de1a2", "8221c1e29c58240fbb26d8a02ce983d805b718a1"]
+exit=Some(0) elapsed_us=4470
+stdout=human-3.txt
+
+stderr=
+PASS sync adds only concurrent human delta without replay
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["update-ref", "refs/mai/upstream", "96851b04e4b6920b3e71350f6e7d8d3fe4bdaa58", "304af2fe2b434eddeb7b7132684e40e923bf05e1"]
+exit=Some(0) elapsed_us=4477
+stdout=
+stderr=
+PASS cycle completed with zero spurious conflicts
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["pull", "--ff-only", "origin", "main"]
+exit=Some(0) elapsed_us=49997
+stdout=Updating 49faa0c..96851b0
+Fast-forward
+ agent-3.txt | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 agent-3.txt
+
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge
+ * branch            main       -> FETCH_HEAD
+   49faa0c..96851b0  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["add", "--", "invalid.txt"]
+exit=Some(0) elapsed_us=4964
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["commit", "-m", "Deliberately invalid upstream"]
+exit=Some(0) elapsed_us=11444
+stdout=[main 4334bac] Deliberately invalid upstream
+ 1 file changed, 1 insertion(+)
+ create mode 100644 invalid.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3877
+stdout=4334bace1af2a9490959ce02624b4b54e6aa9655
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["push", "origin", "HEAD:refs/heads/main"]
+exit=Some(0) elapsed_us=38682
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge.git
+   96851b0..4334bac  HEAD -> main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["fetch", "origin"]
+exit=Some(0) elapsed_us=35341
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge
+   96851b0..4334bac  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["rev-parse", "origin/main"]
+exit=Some(0) elapsed_us=4070
+stdout=4334bace1af2a9490959ce02624b4b54e6aa9655
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["merge-tree", "--write-tree", "8221c1e29c58240fbb26d8a02ce983d805b718a1", "4334bace1af2a9490959ce02624b4b54e6aa9655"]
+exit=Some(0) elapsed_us=4838
+stdout=77cf7a1b245f662e97eb23c0c090e8506e3078e8
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["ls-tree", "-r", "--name-only", "77cf7a1b245f662e97eb23c0c090e8506e3078e8"]
+exit=Some(0) elapsed_us=4378
+stdout=agent-1.txt
+agent-2.txt
+agent-3.txt
+human-1.txt
+human-2.txt
+human-3.txt
+invalid.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "77cf7a1b245f662e97eb23c0c090e8506e3078e8:agent-1.txt"]
+exit=Some(0) elapsed_us=4340
+stdout=squash agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "77cf7a1b245f662e97eb23c0c090e8506e3078e8:agent-2.txt"]
+exit=Some(0) elapsed_us=4599
+stdout=squash agent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "77cf7a1b245f662e97eb23c0c090e8506e3078e8:agent-3.txt"]
+exit=Some(0) elapsed_us=4445
+stdout=squash agent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "77cf7a1b245f662e97eb23c0c090e8506e3078e8:human-1.txt"]
+exit=Some(0) elapsed_us=4340
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "77cf7a1b245f662e97eb23c0c090e8506e3078e8:human-2.txt"]
+exit=Some(0) elapsed_us=4532
+stdout=human concurrent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "77cf7a1b245f662e97eb23c0c090e8506e3078e8:human-3.txt"]
+exit=Some(0) elapsed_us=4458
+stdout=human concurrent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "77cf7a1b245f662e97eb23c0c090e8506e3078e8:invalid.txt"]
+exit=Some(0) elapsed_us=4322
+stdout=INVALID upstream fixture
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "77cf7a1b245f662e97eb23c0c090e8506e3078e8:shared.txt"]
+exit=Some(0) elapsed_us=4444
+stdout=baseline
+
+stderr=
+GATE reject tree=77cf7a1b245f662e97eb23c0c090e8506e3078e8 parents=[8221c1e29c58240fbb26d8a02ce983d805b718a1,4334bace1af2a9490959ce02624b4b54e6aa9655] reason=fixture gate rejected INVALID content
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["rev-parse", "main"]
+exit=Some(0) elapsed_us=3616
+stdout=8221c1e29c58240fbb26d8a02ce983d805b718a1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["rev-parse", "refs/mai/upstream"]
+exit=Some(0) elapsed_us=3613
+stdout=96851b04e4b6920b3e71350f6e7d8d3fe4bdaa58
+
+stderr=
+PASS failed validation preserves trunk and last synced upstream
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["fetch", "origin"]
+exit=Some(0) elapsed_us=35728
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority
+   bf71a60..8221c1e  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["checkout", "-B", "work", "origin/main"]
+exit=Some(0) elapsed_us=6933
+stdout=branch 'work' set up to track 'origin/main'.
+Your branch is up to date with 'origin/main'.
+
+stderr=Reset branch 'work'
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["add", "--", "during-failed-gate.txt"]
+exit=Some(0) elapsed_us=4955
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["commit", "-m", "Work during rejected sync"]
+exit=Some(0) elapsed_us=11762
+stdout=[work c372919] Work during rejected sync
+ 1 file changed, 1 insertion(+)
+ create mode 100644 during-failed-gate.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3969
+stdout=c37291973ff7a6b172c4daf64cea7621787e130e
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["push", "origin", "HEAD:refs/mai/submitted/during-failed-gate"]
+exit=Some(0) elapsed_us=39256
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority
+ * [new reference]   HEAD -> refs/mai/submitted/during-failed-gate
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["merge-tree", "--write-tree", "8221c1e29c58240fbb26d8a02ce983d805b718a1", "c37291973ff7a6b172c4daf64cea7621787e130e"]
+exit=Some(0) elapsed_us=5384
+stdout=18d44bf3589a8aa548995b692b2c5f88f30fe15d
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["ls-tree", "-r", "--name-only", "18d44bf3589a8aa548995b692b2c5f88f30fe15d"]
+exit=Some(0) elapsed_us=4699
+stdout=agent-1.txt
+agent-2.txt
+agent-3.txt
+during-failed-gate.txt
+human-1.txt
+human-2.txt
+human-3.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "18d44bf3589a8aa548995b692b2c5f88f30fe15d:agent-1.txt"]
+exit=Some(0) elapsed_us=4421
+stdout=squash agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "18d44bf3589a8aa548995b692b2c5f88f30fe15d:agent-2.txt"]
+exit=Some(0) elapsed_us=4485
+stdout=squash agent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "18d44bf3589a8aa548995b692b2c5f88f30fe15d:agent-3.txt"]
+exit=Some(0) elapsed_us=4326
+stdout=squash agent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "18d44bf3589a8aa548995b692b2c5f88f30fe15d:during-failed-gate.txt"]
+exit=Some(0) elapsed_us=4452
+stdout=independent of invalid upstream
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "18d44bf3589a8aa548995b692b2c5f88f30fe15d:human-1.txt"]
+exit=Some(0) elapsed_us=4362
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "18d44bf3589a8aa548995b692b2c5f88f30fe15d:human-2.txt"]
+exit=Some(0) elapsed_us=4381
+stdout=human concurrent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "18d44bf3589a8aa548995b692b2c5f88f30fe15d:human-3.txt"]
+exit=Some(0) elapsed_us=4357
+stdout=human concurrent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "18d44bf3589a8aa548995b692b2c5f88f30fe15d:shared.txt"]
+exit=Some(0) elapsed_us=4441
+stdout=baseline
+
+stderr=
+GATE pass tree=18d44bf3589a8aa548995b692b2c5f88f30fe15d parents=["8221c1e29c58240fbb26d8a02ce983d805b718a1"] revision=r7 kind=Work during rejected sync policy=compiled-exact-fixture-v1
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["commit-tree", "18d44bf3589a8aa548995b692b2c5f88f30fe15d", "-p", "8221c1e29c58240fbb26d8a02ce983d805b718a1"]
+exit=Some(0) elapsed_us=4971
+stdout=e423bc278a35fd6a56cfb50392196c5f625bce8d
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["update-ref", "refs/heads/main", "e423bc278a35fd6a56cfb50392196c5f625bce8d", "8221c1e29c58240fbb26d8a02ce983d805b718a1"]
+exit=Some(0) elapsed_us=5044
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["rev-parse", "e423bc278a35fd6a56cfb50392196c5f625bce8d^{tree}"]
+exit=Some(0) elapsed_us=4437
+stdout=18d44bf3589a8aa548995b692b2c5f88f30fe15d
+
+stderr=
+PASS landed tree equals checked tree
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%P", "e423bc278a35fd6a56cfb50392196c5f625bce8d"]
+exit=Some(0) elapsed_us=4622
+stdout=8221c1e29c58240fbb26d8a02ce983d805b718a1
+
+stderr=
+PASS exact first/second parent provenance
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%B", "e423bc278a35fd6a56cfb50392196c5f625bce8d"]
+exit=Some(0) elapsed_us=4496
+stdout=Work during rejected sync
+
+Mai-Revision: r7
+
+
+stderr=
+PASS revision trailer matches assigned rN
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge.git args=["rev-parse", "main"]
+exit=Some(0) elapsed_us=3648
+stdout=4334bace1af2a9490959ce02624b4b54e6aa9655
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["rev-parse", "refs/mai/upstream"]
+exit=Some(0) elapsed_us=3691
+stdout=96851b04e4b6920b3e71350f6e7d8d3fe4bdaa58
+
+stderr=
+PASS continued work during rejected sync preserves forge main and old sync base
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["rm", "invalid.txt"]
+exit=Some(0) elapsed_us=4645
+stdout=rm 'invalid.txt'
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["commit", "-m", "Human correction"]
+exit=Some(0) elapsed_us=11131
+stdout=[main 5c2c8f7] Human correction
+ 1 file changed, 1 deletion(-)
+ delete mode 100644 invalid.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["push", "origin", "HEAD:refs/heads/main"]
+exit=Some(0) elapsed_us=38788
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge.git
+   4334bac..5c2c8f7  HEAD -> main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["fetch", "origin"]
+exit=Some(0) elapsed_us=34968
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority
+   8221c1e..e423bc2  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["checkout", "-B", "work", "origin/main"]
+exit=Some(0) elapsed_us=6976
+stdout=branch 'work' set up to track 'origin/main'.
+Your branch is up to date with 'origin/main'.
+
+stderr=Reset branch 'work'
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["add", "--", "shared.txt"]
+exit=Some(0) elapsed_us=5393
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["commit", "-m", "Agent conflicting edit"]
+exit=Some(0) elapsed_us=11709
+stdout=[work 66a5946] Agent conflicting edit
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3864
+stdout=66a594638343de7999e45b222e1882caaf0559d5
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["push", "origin", "HEAD:refs/mai/submitted/conflict"]
+exit=Some(0) elapsed_us=39769
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority
+ * [new reference]   HEAD -> refs/mai/submitted/conflict
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["merge-tree", "--write-tree", "e423bc278a35fd6a56cfb50392196c5f625bce8d", "66a594638343de7999e45b222e1882caaf0559d5"]
+exit=Some(0) elapsed_us=4987
+stdout=5b194adcc23ad6fa2304340568f5246c2030b2f2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["ls-tree", "-r", "--name-only", "5b194adcc23ad6fa2304340568f5246c2030b2f2"]
+exit=Some(0) elapsed_us=4335
+stdout=agent-1.txt
+agent-2.txt
+agent-3.txt
+during-failed-gate.txt
+human-1.txt
+human-2.txt
+human-3.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "5b194adcc23ad6fa2304340568f5246c2030b2f2:agent-1.txt"]
+exit=Some(0) elapsed_us=4513
+stdout=squash agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "5b194adcc23ad6fa2304340568f5246c2030b2f2:agent-2.txt"]
+exit=Some(0) elapsed_us=4425
+stdout=squash agent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "5b194adcc23ad6fa2304340568f5246c2030b2f2:agent-3.txt"]
+exit=Some(0) elapsed_us=4355
+stdout=squash agent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "5b194adcc23ad6fa2304340568f5246c2030b2f2:during-failed-gate.txt"]
+exit=Some(0) elapsed_us=4320
+stdout=independent of invalid upstream
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "5b194adcc23ad6fa2304340568f5246c2030b2f2:human-1.txt"]
+exit=Some(0) elapsed_us=4354
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "5b194adcc23ad6fa2304340568f5246c2030b2f2:human-2.txt"]
+exit=Some(0) elapsed_us=4356
+stdout=human concurrent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "5b194adcc23ad6fa2304340568f5246c2030b2f2:human-3.txt"]
+exit=Some(0) elapsed_us=4538
+stdout=human concurrent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "5b194adcc23ad6fa2304340568f5246c2030b2f2:shared.txt"]
+exit=Some(0) elapsed_us=4448
+stdout=agent owns this line
+
+stderr=
+GATE pass tree=5b194adcc23ad6fa2304340568f5246c2030b2f2 parents=["e423bc278a35fd6a56cfb50392196c5f625bce8d"] revision=r8 kind=Agent conflicting landing policy=compiled-exact-fixture-v1
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["commit-tree", "5b194adcc23ad6fa2304340568f5246c2030b2f2", "-p", "e423bc278a35fd6a56cfb50392196c5f625bce8d"]
+exit=Some(0) elapsed_us=5007
+stdout=f6033c8f4517feb204b3c3853eae58522856bfdd
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["update-ref", "refs/heads/main", "f6033c8f4517feb204b3c3853eae58522856bfdd", "e423bc278a35fd6a56cfb50392196c5f625bce8d"]
+exit=Some(0) elapsed_us=5077
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["rev-parse", "f6033c8f4517feb204b3c3853eae58522856bfdd^{tree}"]
+exit=Some(0) elapsed_us=4505
+stdout=5b194adcc23ad6fa2304340568f5246c2030b2f2
+
+stderr=
+PASS landed tree equals checked tree
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%P", "f6033c8f4517feb204b3c3853eae58522856bfdd"]
+exit=Some(0) elapsed_us=4702
+stdout=e423bc278a35fd6a56cfb50392196c5f625bce8d
+
+stderr=
+PASS exact first/second parent provenance
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%B", "f6033c8f4517feb204b3c3853eae58522856bfdd"]
+exit=Some(0) elapsed_us=4488
+stdout=Agent conflicting landing
+
+Mai-Revision: r8
+
+
+stderr=
+PASS revision trailer matches assigned rN
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["add", "--", "shared.txt"]
+exit=Some(0) elapsed_us=5028
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["commit", "-m", "Human conflicting edit"]
+exit=Some(0) elapsed_us=11465
+stdout=[main ad81689] Human conflicting edit
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3859
+stdout=ad81689012fc7126dcc1c4d64295b4b66521f06a
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/human args=["push", "origin", "HEAD:refs/heads/main"]
+exit=Some(0) elapsed_us=39835
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge.git
+   5c2c8f7..ad81689  HEAD -> main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["fetch", "origin"]
+exit=Some(0) elapsed_us=36429
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge
+   4334bac..ad81689  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["merge-tree", "--write-tree", "f6033c8f4517feb204b3c3853eae58522856bfdd", "ad81689012fc7126dcc1c4d64295b4b66521f06a"]
+exit=Some(1) elapsed_us=5968
+stdout=cd02888b6a040524e3e7fad4616d2521c6a35912
+100644 180b47c18ba7e484fc0d7350bc6cad8ec3423ea0 1	shared.txt
+100644 6855641e1840b0220d182abc90f1d0c24906943f 2	shared.txt
+100644 fbee5fc13ab017f38922cca91718658816b5c0df 3	shared.txt
+
+Auto-merging shared.txt
+CONFLICT (content): Merge conflict in shared.txt
+
+stderr=
+PASS genuine conflict returns Git conflict exit 1
+PASS genuine conflict identifies shared.txt
+CONFLICT owner=fixture-upstream-owner path=shared.txt trunk=f6033c8f4517feb204b3c3853eae58522856bfdd upstream=ad81689012fc7126dcc1c4d64295b4b66521f06a last_synced=96851b04e4b6920b3e71350f6e7d8d3fe4bdaa58
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["rev-parse", "main"]
+exit=Some(0) elapsed_us=3995
+stdout=f6033c8f4517feb204b3c3853eae58522856bfdd
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["rev-parse", "refs/mai/upstream"]
+exit=Some(0) elapsed_us=3688
+stdout=96851b04e4b6920b3e71350f6e7d8d3fe4bdaa58
+
+stderr=
+PASS conflict preserves trunk and last synced upstream
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["fetch", "origin"]
+exit=Some(0) elapsed_us=33764
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority
+   e423bc2..f6033c8  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["checkout", "-B", "work", "origin/main"]
+exit=Some(0) elapsed_us=6998
+stdout=branch 'work' set up to track 'origin/main'.
+Your branch is up to date with 'origin/main'.
+
+stderr=Reset branch 'work'
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["add", "--", "independent.txt"]
+exit=Some(0) elapsed_us=5045
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["commit", "-m", "Independent work during conflict"]
+exit=Some(0) elapsed_us=11403
+stdout=[work f480c84] Independent work during conflict
+ 1 file changed, 1 insertion(+)
+ create mode 100644 independent.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3949
+stdout=f480c8421d221428e81e504a8b2f602e2f6eee62
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/agent args=["push", "origin", "HEAD:refs/mai/submitted/independent"]
+exit=Some(0) elapsed_us=39818
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority
+ * [new reference]   HEAD -> refs/mai/submitted/independent
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["merge-tree", "--write-tree", "f6033c8f4517feb204b3c3853eae58522856bfdd", "f480c8421d221428e81e504a8b2f602e2f6eee62"]
+exit=Some(0) elapsed_us=5072
+stdout=e502f439f37b3a46e9a6011cb029db99e021afa8
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["ls-tree", "-r", "--name-only", "e502f439f37b3a46e9a6011cb029db99e021afa8"]
+exit=Some(0) elapsed_us=4496
+stdout=agent-1.txt
+agent-2.txt
+agent-3.txt
+during-failed-gate.txt
+human-1.txt
+human-2.txt
+human-3.txt
+independent.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "e502f439f37b3a46e9a6011cb029db99e021afa8:agent-1.txt"]
+exit=Some(0) elapsed_us=4564
+stdout=squash agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "e502f439f37b3a46e9a6011cb029db99e021afa8:agent-2.txt"]
+exit=Some(0) elapsed_us=4380
+stdout=squash agent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "e502f439f37b3a46e9a6011cb029db99e021afa8:agent-3.txt"]
+exit=Some(0) elapsed_us=4362
+stdout=squash agent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "e502f439f37b3a46e9a6011cb029db99e021afa8:during-failed-gate.txt"]
+exit=Some(0) elapsed_us=4324
+stdout=independent of invalid upstream
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "e502f439f37b3a46e9a6011cb029db99e021afa8:human-1.txt"]
+exit=Some(0) elapsed_us=4518
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "e502f439f37b3a46e9a6011cb029db99e021afa8:human-2.txt"]
+exit=Some(0) elapsed_us=4477
+stdout=human concurrent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "e502f439f37b3a46e9a6011cb029db99e021afa8:human-3.txt"]
+exit=Some(0) elapsed_us=4402
+stdout=human concurrent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "e502f439f37b3a46e9a6011cb029db99e021afa8:independent.txt"]
+exit=Some(0) elapsed_us=4371
+stdout=safe local work
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "e502f439f37b3a46e9a6011cb029db99e021afa8:shared.txt"]
+exit=Some(0) elapsed_us=4397
+stdout=agent owns this line
+
+stderr=
+GATE pass tree=e502f439f37b3a46e9a6011cb029db99e021afa8 parents=["f6033c8f4517feb204b3c3853eae58522856bfdd"] revision=r9 kind=Independent landing policy=compiled-exact-fixture-v1
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["commit-tree", "e502f439f37b3a46e9a6011cb029db99e021afa8", "-p", "f6033c8f4517feb204b3c3853eae58522856bfdd"]
+exit=Some(0) elapsed_us=4888
+stdout=ea822f31904a1c6d54b8885ecb2b284161949a1b
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["update-ref", "refs/heads/main", "ea822f31904a1c6d54b8885ecb2b284161949a1b", "f6033c8f4517feb204b3c3853eae58522856bfdd"]
+exit=Some(0) elapsed_us=4910
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["rev-parse", "ea822f31904a1c6d54b8885ecb2b284161949a1b^{tree}"]
+exit=Some(0) elapsed_us=4390
+stdout=e502f439f37b3a46e9a6011cb029db99e021afa8
+
+stderr=
+PASS landed tree equals checked tree
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%P", "ea822f31904a1c6d54b8885ecb2b284161949a1b"]
+exit=Some(0) elapsed_us=5051
+stdout=f6033c8f4517feb204b3c3853eae58522856bfdd
+
+stderr=
+PASS exact first/second parent provenance
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%B", "ea822f31904a1c6d54b8885ecb2b284161949a1b"]
+exit=Some(0) elapsed_us=4792
+stdout=Independent landing
+
+Mai-Revision: r9
+
+
+stderr=
+PASS revision trailer matches assigned rN
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/forge.git args=["rev-parse", "main"]
+exit=Some(0) elapsed_us=3635
+stdout=ad81689012fc7126dcc1c4d64295b4b66521f06a
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["rev-parse", "refs/mai/upstream"]
+exit=Some(0) elapsed_us=3645
+stdout=96851b04e4b6920b3e71350f6e7d8d3fe4bdaa58
+
+stderr=
+PASS independent landing does not mutate human main or advance sync base
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["rev-list", "--first-parent", "743ec6e40cc0df4343109b138b1495f909b2e26d..ea822f31904a1c6d54b8885ecb2b284161949a1b"]
+exit=Some(0) elapsed_us=4549
+stdout=ea822f31904a1c6d54b8885ecb2b284161949a1b
+f6033c8f4517feb204b3c3853eae58522856bfdd
+e423bc278a35fd6a56cfb50392196c5f625bce8d
+8221c1e29c58240fbb26d8a02ce983d805b718a1
+d4ae62bc9ccbc7732005453b6ee5bc87310de1a2
+bf71a6056bed9da04e65fbb209f3fb5a3593e75d
+af4873f14de823b7d6da91814eeef52bec3fe26c
+9ecaf0034aa13718fa89304a3454b043ed7d0672
+333d3104abebb8ab639d540c551e0ad5f1db0929
+
+stderr=
+PASS acceptance ledger contains exactly nine post-import revisions
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%B", "ea822f31904a1c6d54b8885ecb2b284161949a1b"]
+exit=Some(0) elapsed_us=4480
+stdout=Independent landing
+
+Mai-Revision: r9
+
+
+stderr=
+PASS first-parent trailers are contiguous without recounting for assignment
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%B", "f6033c8f4517feb204b3c3853eae58522856bfdd"]
+exit=Some(0) elapsed_us=4583
+stdout=Agent conflicting landing
+
+Mai-Revision: r8
+
+
+stderr=
+PASS first-parent trailers are contiguous without recounting for assignment
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%B", "e423bc278a35fd6a56cfb50392196c5f625bce8d"]
+exit=Some(0) elapsed_us=4503
+stdout=Work during rejected sync
+
+Mai-Revision: r7
+
+
+stderr=
+PASS first-parent trailers are contiguous without recounting for assignment
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%B", "8221c1e29c58240fbb26d8a02ce983d805b718a1"]
+exit=Some(0) elapsed_us=4543
+stdout=Upstream sync
+
+Mai-Revision: r6
+
+
+stderr=
+PASS first-parent trailers are contiguous without recounting for assignment
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%B", "d4ae62bc9ccbc7732005453b6ee5bc87310de1a2"]
+exit=Some(0) elapsed_us=4410
+stdout=Agent landing
+
+Mai-Revision: r5
+
+
+stderr=
+PASS first-parent trailers are contiguous without recounting for assignment
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%B", "bf71a6056bed9da04e65fbb209f3fb5a3593e75d"]
+exit=Some(0) elapsed_us=4521
+stdout=Upstream sync
+
+Mai-Revision: r4
+
+
+stderr=
+PASS first-parent trailers are contiguous without recounting for assignment
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%B", "af4873f14de823b7d6da91814eeef52bec3fe26c"]
+exit=Some(0) elapsed_us=4495
+stdout=Agent landing
+
+Mai-Revision: r3
+
+
+stderr=
+PASS first-parent trailers are contiguous without recounting for assignment
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%B", "9ecaf0034aa13718fa89304a3454b043ed7d0672"]
+exit=Some(0) elapsed_us=4686
+stdout=Upstream sync
+
+Mai-Revision: r2
+
+
+stderr=
+PASS first-parent trailers are contiguous without recounting for assignment
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/squash/authority args=["show", "-s", "--format=%B", "333d3104abebb8ab639d540c551e0ad5f1db0929"]
+exit=Some(0) elapsed_us=4435
+stdout=Agent landing
+
+Mai-Revision: r1
+
+
+stderr=
+PASS first-parent trailers are contiguous without recounting for assignment
+MODE PASS squash cycles=3 revisions=9 owner=fixture-upstream-owner real_forge_api=pending
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase args=["init", "--bare", "--initial-branch=main", "forge.git"]
+exit=Some(0) elapsed_us=6658
+stdout=Initialized empty Git repository in /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge.git/
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase args=["clone", "--no-local", "/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge.git", "human"]
+exit=Some(0) elapsed_us=16581
+stdout=
+stderr=Cloning into 'human'...
+warning: You appear to have cloned an empty repository.
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["add", "--", "shared.txt"]
+exit=Some(0) elapsed_us=4855
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["commit", "-m", "Human baseline"]
+exit=Some(0) elapsed_us=11338
+stdout=[main (root-commit) e37c65c] Human baseline
+ 1 file changed, 1 insertion(+)
+ create mode 100644 shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3965
+stdout=e37c65c279c703d4c31cc4d77ef4941725448bc6
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["push", "origin", "HEAD:refs/heads/main"]
+exit=Some(0) elapsed_us=37222
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge.git
+ * [new branch]      HEAD -> main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase args=["clone", "--no-local", "/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge.git", "authority"]
+exit=Some(0) elapsed_us=29928
+stdout=
+stderr=Cloning into 'authority'...
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["rev-parse", "HEAD^{tree}"]
+exit=Some(0) elapsed_us=4621
+stdout=1af1c37d5c866f2e0c9b07d52a1951a92d045d14
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["commit-tree", "1af1c37d5c866f2e0c9b07d52a1951a92d045d14", "-p", "e37c65c279c703d4c31cc4d77ef4941725448bc6"]
+exit=Some(0) elapsed_us=5222
+stdout=743ec6e40cc0df4343109b138b1495f909b2e26d
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["update-ref", "refs/heads/main", "743ec6e40cc0df4343109b138b1495f909b2e26d", "e37c65c279c703d4c31cc4d77ef4941725448bc6"]
+exit=Some(0) elapsed_us=5093
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["update-ref", "refs/mai/upstream", "e37c65c279c703d4c31cc4d77ef4941725448bc6"]
+exit=Some(0) elapsed_us=4697
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase args=["clone", "--no-local", "/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority", "agent"]
+exit=Some(0) elapsed_us=31677
+stdout=
+stderr=Cloning into 'agent'...
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase args=["clone", "--no-local", "/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge.git", "forge-merger"]
+exit=Some(0) elapsed_us=28730
+stdout=
+stderr=Cloning into 'forge-merger'...
+
+CYCLE mode=rebase cycle=1 trunk=743ec6e40cc0df4343109b138b1495f909b2e26d upstream=e37c65c279c703d4c31cc4d77ef4941725448bc6
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["fetch", "origin"]
+exit=Some(0) elapsed_us=21412
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["checkout", "-B", "work", "origin/main"]
+exit=Some(0) elapsed_us=6546
+stdout=branch 'work' set up to track 'origin/main'.
+
+stderr=Switched to a new branch 'work'
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["add", "--", "agent-1.txt"]
+exit=Some(0) elapsed_us=5002
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["commit", "-m", "Agent change"]
+exit=Some(0) elapsed_us=12311
+stdout=[work 0e217c7] Agent change
+ 1 file changed, 1 insertion(+)
+ create mode 100644 agent-1.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=4279
+stdout=0e217c7b475704c22f1b9de5671ab37f43b19cce
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["push", "origin", "HEAD:refs/mai/submitted/1"]
+exit=Some(0) elapsed_us=40426
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority
+ * [new reference]   HEAD -> refs/mai/submitted/1
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["merge-tree", "--write-tree", "743ec6e40cc0df4343109b138b1495f909b2e26d", "0e217c7b475704c22f1b9de5671ab37f43b19cce"]
+exit=Some(0) elapsed_us=4892
+stdout=6e15f29995192c99aee75ba8d7cba0097b223462
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["ls-tree", "-r", "--name-only", "6e15f29995192c99aee75ba8d7cba0097b223462"]
+exit=Some(0) elapsed_us=4547
+stdout=agent-1.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "6e15f29995192c99aee75ba8d7cba0097b223462:agent-1.txt"]
+exit=Some(0) elapsed_us=4849
+stdout=rebase agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "6e15f29995192c99aee75ba8d7cba0097b223462:shared.txt"]
+exit=Some(0) elapsed_us=5183
+stdout=baseline
+
+stderr=
+GATE pass tree=6e15f29995192c99aee75ba8d7cba0097b223462 parents=["743ec6e40cc0df4343109b138b1495f909b2e26d"] revision=r1 kind=Agent landing policy=compiled-exact-fixture-v1
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["commit-tree", "6e15f29995192c99aee75ba8d7cba0097b223462", "-p", "743ec6e40cc0df4343109b138b1495f909b2e26d"]
+exit=Some(0) elapsed_us=5518
+stdout=14fb8d3e1db9e1c8bcea883665935db69427e7e1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["update-ref", "refs/heads/main", "14fb8d3e1db9e1c8bcea883665935db69427e7e1", "743ec6e40cc0df4343109b138b1495f909b2e26d"]
+exit=Some(0) elapsed_us=5660
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["rev-parse", "14fb8d3e1db9e1c8bcea883665935db69427e7e1^{tree}"]
+exit=Some(0) elapsed_us=4688
+stdout=6e15f29995192c99aee75ba8d7cba0097b223462
+
+stderr=
+PASS landed tree equals checked tree
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%P", "14fb8d3e1db9e1c8bcea883665935db69427e7e1"]
+exit=Some(0) elapsed_us=5029
+stdout=743ec6e40cc0df4343109b138b1495f909b2e26d
+
+stderr=
+PASS exact first/second parent provenance
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%B", "14fb8d3e1db9e1c8bcea883665935db69427e7e1"]
+exit=Some(0) elapsed_us=5041
+stdout=Agent landing
+
+Mai-Revision: r1
+
+
+stderr=
+PASS revision trailer matches assigned rN
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["commit-tree", "6e15f29995192c99aee75ba8d7cba0097b223462", "-p", "e37c65c279c703d4c31cc4d77ef4941725448bc6"]
+exit=Some(0) elapsed_us=5540
+stdout=345a49e2e93cd99f943ce00385a2b8efe1ef5929
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["diff", "--name-only", "e37c65c279c703d4c31cc4d77ef4941725448bc6", "345a49e2e93cd99f943ce00385a2b8efe1ef5929"]
+exit=Some(0) elapsed_us=5102
+stdout=agent-1.txt
+
+stderr=
+PASS export contains only new agent delta
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["push", "origin", "345a49e2e93cd99f943ce00385a2b8efe1ef5929:refs/heads/export-rebase-1"]
+exit=Some(0) elapsed_us=38986
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge.git
+ * [new branch]      345a49e2e93cd99f943ce00385a2b8efe1ef5929 -> export-rebase-1
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["pull", "--ff-only", "origin", "main"]
+exit=Some(0) elapsed_us=33329
+stdout=Already up to date.
+
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge
+ * branch            main       -> FETCH_HEAD
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["add", "--", "human-1.txt"]
+exit=Some(0) elapsed_us=5147
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["commit", "-m", "Concurrent human edit"]
+exit=Some(0) elapsed_us=11857
+stdout=[main 8c6830e] Concurrent human edit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 human-1.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3723
+stdout=8c6830e57b03fd28f15b894c964fa90191c92592
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["push", "origin", "HEAD:refs/heads/main"]
+exit=Some(0) elapsed_us=38134
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge.git
+   e37c65c..8c6830e  HEAD -> main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["fetch", "origin"]
+exit=Some(0) elapsed_us=34575
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge
+   e37c65c..8c6830e  main            -> origin/main
+ * [new branch]      export-rebase-1 -> origin/export-rebase-1
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["checkout", "-B", "merge", "origin/export-rebase-1"]
+exit=Some(0) elapsed_us=6715
+stdout=branch 'merge' set up to track 'origin/export-rebase-1'.
+
+stderr=Switched to a new branch 'merge'
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["rebase", "origin/main"]
+exit=Some(0) elapsed_us=15659
+stdout=
+stderr=Rebasing (1/1)
+Successfully rebased and updated refs/heads/merge.
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["push", "origin", "HEAD:refs/heads/main"]
+exit=Some(0) elapsed_us=37756
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge.git
+   8c6830e..14a49b6  HEAD -> main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3712
+stdout=14a49b63ee7d64a8d6acf5ba772591faf8d4a6d1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["show", "-s", "--format=%P", "HEAD"]
+exit=Some(0) elapsed_us=4565
+stdout=8c6830e57b03fd28f15b894c964fa90191c92592
+
+stderr=
+PASS forge merge is single-parent after concurrent human commit
+PASS forge rewrote exported commit identity
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["ls-tree", "-r", "--name-only", "HEAD"]
+exit=Some(0) elapsed_us=4273
+stdout=agent-1.txt
+human-1.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["show", "HEAD:agent-1.txt"]
+exit=Some(0) elapsed_us=4584
+stdout=rebase agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["show", "HEAD:human-1.txt"]
+exit=Some(0) elapsed_us=4420
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["show", "HEAD:shared.txt"]
+exit=Some(0) elapsed_us=4541
+stdout=baseline
+
+stderr=
+PASS forge tree contains exact agent and concurrent human contents
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["fetch", "origin"]
+exit=Some(0) elapsed_us=34229
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge
+   e37c65c..14a49b6  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["merge-tree", "--write-tree", "14fb8d3e1db9e1c8bcea883665935db69427e7e1", "14a49b63ee7d64a8d6acf5ba772591faf8d4a6d1"]
+exit=Some(0) elapsed_us=4682
+stdout=6d480d9c8700c34ebe2f829d2f4d485c0c9a390d
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["ls-tree", "-r", "--name-only", "6d480d9c8700c34ebe2f829d2f4d485c0c9a390d"]
+exit=Some(0) elapsed_us=4275
+stdout=agent-1.txt
+human-1.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "6d480d9c8700c34ebe2f829d2f4d485c0c9a390d:agent-1.txt"]
+exit=Some(0) elapsed_us=4441
+stdout=rebase agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "6d480d9c8700c34ebe2f829d2f4d485c0c9a390d:human-1.txt"]
+exit=Some(0) elapsed_us=4417
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "6d480d9c8700c34ebe2f829d2f4d485c0c9a390d:shared.txt"]
+exit=Some(0) elapsed_us=4323
+stdout=baseline
+
+stderr=
+GATE pass tree=6d480d9c8700c34ebe2f829d2f4d485c0c9a390d parents=["14fb8d3e1db9e1c8bcea883665935db69427e7e1", "14a49b63ee7d64a8d6acf5ba772591faf8d4a6d1"] revision=r2 kind=Upstream sync policy=compiled-exact-fixture-v1
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["commit-tree", "6d480d9c8700c34ebe2f829d2f4d485c0c9a390d", "-p", "14fb8d3e1db9e1c8bcea883665935db69427e7e1", "-p", "14a49b63ee7d64a8d6acf5ba772591faf8d4a6d1"]
+exit=Some(0) elapsed_us=4876
+stdout=516e086eea74dec4a4e3444704cc621dcf881477
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["update-ref", "refs/heads/main", "516e086eea74dec4a4e3444704cc621dcf881477", "14fb8d3e1db9e1c8bcea883665935db69427e7e1"]
+exit=Some(0) elapsed_us=4937
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["rev-parse", "516e086eea74dec4a4e3444704cc621dcf881477^{tree}"]
+exit=Some(0) elapsed_us=4438
+stdout=6d480d9c8700c34ebe2f829d2f4d485c0c9a390d
+
+stderr=
+PASS landed tree equals checked tree
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%P", "516e086eea74dec4a4e3444704cc621dcf881477"]
+exit=Some(0) elapsed_us=4648
+stdout=14fb8d3e1db9e1c8bcea883665935db69427e7e1 14a49b63ee7d64a8d6acf5ba772591faf8d4a6d1
+
+stderr=
+PASS exact first/second parent provenance
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%B", "516e086eea74dec4a4e3444704cc621dcf881477"]
+exit=Some(0) elapsed_us=4452
+stdout=Upstream sync
+
+Mai-Revision: r2
+
+
+stderr=
+PASS revision trailer matches assigned rN
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["diff", "--name-only", "14fb8d3e1db9e1c8bcea883665935db69427e7e1", "516e086eea74dec4a4e3444704cc621dcf881477"]
+exit=Some(0) elapsed_us=4494
+stdout=human-1.txt
+
+stderr=
+PASS sync adds only concurrent human delta without replay
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["update-ref", "refs/mai/upstream", "14a49b63ee7d64a8d6acf5ba772591faf8d4a6d1", "e37c65c279c703d4c31cc4d77ef4941725448bc6"]
+exit=Some(0) elapsed_us=4461
+stdout=
+stderr=
+PASS cycle completed with zero spurious conflicts
+CYCLE mode=rebase cycle=2 trunk=516e086eea74dec4a4e3444704cc621dcf881477 upstream=14a49b63ee7d64a8d6acf5ba772591faf8d4a6d1
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["fetch", "origin"]
+exit=Some(0) elapsed_us=35706
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority
+   743ec6e..516e086  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["checkout", "-B", "work", "origin/main"]
+exit=Some(0) elapsed_us=7011
+stdout=branch 'work' set up to track 'origin/main'.
+Your branch is up to date with 'origin/main'.
+
+stderr=Reset branch 'work'
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["add", "--", "agent-2.txt"]
+exit=Some(0) elapsed_us=5032
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["commit", "-m", "Agent change"]
+exit=Some(0) elapsed_us=11958
+stdout=[work 01b3d75] Agent change
+ 1 file changed, 1 insertion(+)
+ create mode 100644 agent-2.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3763
+stdout=01b3d75f9c2216a6093bdc60602b8d302c44e4e6
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["push", "origin", "HEAD:refs/mai/submitted/2"]
+exit=Some(0) elapsed_us=38851
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority
+ * [new reference]   HEAD -> refs/mai/submitted/2
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["merge-tree", "--write-tree", "516e086eea74dec4a4e3444704cc621dcf881477", "01b3d75f9c2216a6093bdc60602b8d302c44e4e6"]
+exit=Some(0) elapsed_us=4758
+stdout=53c7f7de888f9fc88a1b20cefb07018cb4cc53ea
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["ls-tree", "-r", "--name-only", "53c7f7de888f9fc88a1b20cefb07018cb4cc53ea"]
+exit=Some(0) elapsed_us=4369
+stdout=agent-1.txt
+agent-2.txt
+human-1.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "53c7f7de888f9fc88a1b20cefb07018cb4cc53ea:agent-1.txt"]
+exit=Some(0) elapsed_us=4450
+stdout=rebase agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "53c7f7de888f9fc88a1b20cefb07018cb4cc53ea:agent-2.txt"]
+exit=Some(0) elapsed_us=4399
+stdout=rebase agent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "53c7f7de888f9fc88a1b20cefb07018cb4cc53ea:human-1.txt"]
+exit=Some(0) elapsed_us=4327
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "53c7f7de888f9fc88a1b20cefb07018cb4cc53ea:shared.txt"]
+exit=Some(0) elapsed_us=4412
+stdout=baseline
+
+stderr=
+GATE pass tree=53c7f7de888f9fc88a1b20cefb07018cb4cc53ea parents=["516e086eea74dec4a4e3444704cc621dcf881477"] revision=r3 kind=Agent landing policy=compiled-exact-fixture-v1
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["commit-tree", "53c7f7de888f9fc88a1b20cefb07018cb4cc53ea", "-p", "516e086eea74dec4a4e3444704cc621dcf881477"]
+exit=Some(0) elapsed_us=4898
+stdout=94ae69134669961b45085ca5e7b11e5f02390fef
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["update-ref", "refs/heads/main", "94ae69134669961b45085ca5e7b11e5f02390fef", "516e086eea74dec4a4e3444704cc621dcf881477"]
+exit=Some(0) elapsed_us=5091
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["rev-parse", "94ae69134669961b45085ca5e7b11e5f02390fef^{tree}"]
+exit=Some(0) elapsed_us=4226
+stdout=53c7f7de888f9fc88a1b20cefb07018cb4cc53ea
+
+stderr=
+PASS landed tree equals checked tree
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%P", "94ae69134669961b45085ca5e7b11e5f02390fef"]
+exit=Some(0) elapsed_us=4526
+stdout=516e086eea74dec4a4e3444704cc621dcf881477
+
+stderr=
+PASS exact first/second parent provenance
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%B", "94ae69134669961b45085ca5e7b11e5f02390fef"]
+exit=Some(0) elapsed_us=4414
+stdout=Agent landing
+
+Mai-Revision: r3
+
+
+stderr=
+PASS revision trailer matches assigned rN
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["commit-tree", "53c7f7de888f9fc88a1b20cefb07018cb4cc53ea", "-p", "14a49b63ee7d64a8d6acf5ba772591faf8d4a6d1"]
+exit=Some(0) elapsed_us=4851
+stdout=f1beaa1024dc3d6a6140a8621d0367e96d764668
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["diff", "--name-only", "14a49b63ee7d64a8d6acf5ba772591faf8d4a6d1", "f1beaa1024dc3d6a6140a8621d0367e96d764668"]
+exit=Some(0) elapsed_us=4552
+stdout=agent-2.txt
+
+stderr=
+PASS export contains only new agent delta
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["push", "origin", "f1beaa1024dc3d6a6140a8621d0367e96d764668:refs/heads/export-rebase-2"]
+exit=Some(0) elapsed_us=37897
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge.git
+ * [new branch]      f1beaa1024dc3d6a6140a8621d0367e96d764668 -> export-rebase-2
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["pull", "--ff-only", "origin", "main"]
+exit=Some(0) elapsed_us=50743
+stdout=Updating 8c6830e..14a49b6
+Fast-forward
+ agent-1.txt | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 agent-1.txt
+
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge
+ * branch            main       -> FETCH_HEAD
+   8c6830e..14a49b6  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["add", "--", "human-2.txt"]
+exit=Some(0) elapsed_us=4957
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["commit", "-m", "Concurrent human edit"]
+exit=Some(0) elapsed_us=12238
+stdout=[main 7c87050] Concurrent human edit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 human-2.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=6635
+stdout=7c87050564da91d9bae2069653b5cdd8251648d4
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["push", "origin", "HEAD:refs/heads/main"]
+exit=Some(0) elapsed_us=43979
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge.git
+   14a49b6..7c87050  HEAD -> main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["fetch", "origin"]
+exit=Some(0) elapsed_us=38498
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge
+ * [new branch]      export-rebase-2 -> origin/export-rebase-2
+   14a49b6..7c87050  main            -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["checkout", "-B", "merge", "origin/export-rebase-2"]
+exit=Some(0) elapsed_us=7244
+stdout=branch 'merge' set up to track 'origin/export-rebase-2'.
+Your branch and 'origin/export-rebase-1' have diverged,
+and have 3 and 1 different commits each, respectively.
+  (use "git pull" if you want to integrate the remote branch with yours)
+
+stderr=Reset branch 'merge'
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["rebase", "origin/main"]
+exit=Some(0) elapsed_us=15032
+stdout=
+stderr=Rebasing (1/1)
+Successfully rebased and updated refs/heads/merge.
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["push", "origin", "HEAD:refs/heads/main"]
+exit=Some(0) elapsed_us=38331
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge.git
+   7c87050..4b3b9b1  HEAD -> main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3845
+stdout=4b3b9b10ac22cf18ae69f6f9b6dd871a28b6dc08
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["show", "-s", "--format=%P", "HEAD"]
+exit=Some(0) elapsed_us=4870
+stdout=7c87050564da91d9bae2069653b5cdd8251648d4
+
+stderr=
+PASS forge merge is single-parent after concurrent human commit
+PASS forge rewrote exported commit identity
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["ls-tree", "-r", "--name-only", "HEAD"]
+exit=Some(0) elapsed_us=4385
+stdout=agent-1.txt
+agent-2.txt
+human-1.txt
+human-2.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["show", "HEAD:agent-1.txt"]
+exit=Some(0) elapsed_us=4515
+stdout=rebase agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["show", "HEAD:agent-2.txt"]
+exit=Some(0) elapsed_us=4456
+stdout=rebase agent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["show", "HEAD:human-1.txt"]
+exit=Some(0) elapsed_us=4432
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["show", "HEAD:human-2.txt"]
+exit=Some(0) elapsed_us=4343
+stdout=human concurrent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["show", "HEAD:shared.txt"]
+exit=Some(0) elapsed_us=4495
+stdout=baseline
+
+stderr=
+PASS forge tree contains exact agent and concurrent human contents
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["fetch", "origin"]
+exit=Some(0) elapsed_us=35318
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge
+   14a49b6..4b3b9b1  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["merge-tree", "--write-tree", "94ae69134669961b45085ca5e7b11e5f02390fef", "4b3b9b10ac22cf18ae69f6f9b6dd871a28b6dc08"]
+exit=Some(0) elapsed_us=4858
+stdout=e8c489f0b6969a3da781b7c1c1759f378f60aaaf
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["ls-tree", "-r", "--name-only", "e8c489f0b6969a3da781b7c1c1759f378f60aaaf"]
+exit=Some(0) elapsed_us=4321
+stdout=agent-1.txt
+agent-2.txt
+human-1.txt
+human-2.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "e8c489f0b6969a3da781b7c1c1759f378f60aaaf:agent-1.txt"]
+exit=Some(0) elapsed_us=4453
+stdout=rebase agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "e8c489f0b6969a3da781b7c1c1759f378f60aaaf:agent-2.txt"]
+exit=Some(0) elapsed_us=4494
+stdout=rebase agent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "e8c489f0b6969a3da781b7c1c1759f378f60aaaf:human-1.txt"]
+exit=Some(0) elapsed_us=4432
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "e8c489f0b6969a3da781b7c1c1759f378f60aaaf:human-2.txt"]
+exit=Some(0) elapsed_us=4324
+stdout=human concurrent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "e8c489f0b6969a3da781b7c1c1759f378f60aaaf:shared.txt"]
+exit=Some(0) elapsed_us=4310
+stdout=baseline
+
+stderr=
+GATE pass tree=e8c489f0b6969a3da781b7c1c1759f378f60aaaf parents=["94ae69134669961b45085ca5e7b11e5f02390fef", "4b3b9b10ac22cf18ae69f6f9b6dd871a28b6dc08"] revision=r4 kind=Upstream sync policy=compiled-exact-fixture-v1
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["commit-tree", "e8c489f0b6969a3da781b7c1c1759f378f60aaaf", "-p", "94ae69134669961b45085ca5e7b11e5f02390fef", "-p", "4b3b9b10ac22cf18ae69f6f9b6dd871a28b6dc08"]
+exit=Some(0) elapsed_us=4955
+stdout=4c980c04082e2b986b5af53214af96d275a8953e
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["update-ref", "refs/heads/main", "4c980c04082e2b986b5af53214af96d275a8953e", "94ae69134669961b45085ca5e7b11e5f02390fef"]
+exit=Some(0) elapsed_us=4943
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["rev-parse", "4c980c04082e2b986b5af53214af96d275a8953e^{tree}"]
+exit=Some(0) elapsed_us=4429
+stdout=e8c489f0b6969a3da781b7c1c1759f378f60aaaf
+
+stderr=
+PASS landed tree equals checked tree
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%P", "4c980c04082e2b986b5af53214af96d275a8953e"]
+exit=Some(0) elapsed_us=4718
+stdout=94ae69134669961b45085ca5e7b11e5f02390fef 4b3b9b10ac22cf18ae69f6f9b6dd871a28b6dc08
+
+stderr=
+PASS exact first/second parent provenance
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%B", "4c980c04082e2b986b5af53214af96d275a8953e"]
+exit=Some(0) elapsed_us=4457
+stdout=Upstream sync
+
+Mai-Revision: r4
+
+
+stderr=
+PASS revision trailer matches assigned rN
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["diff", "--name-only", "94ae69134669961b45085ca5e7b11e5f02390fef", "4c980c04082e2b986b5af53214af96d275a8953e"]
+exit=Some(0) elapsed_us=4496
+stdout=human-2.txt
+
+stderr=
+PASS sync adds only concurrent human delta without replay
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["update-ref", "refs/mai/upstream", "4b3b9b10ac22cf18ae69f6f9b6dd871a28b6dc08", "14a49b63ee7d64a8d6acf5ba772591faf8d4a6d1"]
+exit=Some(0) elapsed_us=4525
+stdout=
+stderr=
+PASS cycle completed with zero spurious conflicts
+CYCLE mode=rebase cycle=3 trunk=4c980c04082e2b986b5af53214af96d275a8953e upstream=4b3b9b10ac22cf18ae69f6f9b6dd871a28b6dc08
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["fetch", "origin"]
+exit=Some(0) elapsed_us=35143
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority
+   516e086..4c980c0  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["checkout", "-B", "work", "origin/main"]
+exit=Some(0) elapsed_us=6780
+stdout=branch 'work' set up to track 'origin/main'.
+Your branch is up to date with 'origin/main'.
+
+stderr=Reset branch 'work'
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["add", "--", "agent-3.txt"]
+exit=Some(0) elapsed_us=4928
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["commit", "-m", "Agent change"]
+exit=Some(0) elapsed_us=11337
+stdout=[work a63b705] Agent change
+ 1 file changed, 1 insertion(+)
+ create mode 100644 agent-3.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3825
+stdout=a63b70554bc456f2988d0e67c845d743aa5b22c1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["push", "origin", "HEAD:refs/mai/submitted/3"]
+exit=Some(0) elapsed_us=38315
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority
+ * [new reference]   HEAD -> refs/mai/submitted/3
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["merge-tree", "--write-tree", "4c980c04082e2b986b5af53214af96d275a8953e", "a63b70554bc456f2988d0e67c845d743aa5b22c1"]
+exit=Some(0) elapsed_us=4728
+stdout=d903e99622b4e379c0920cb89db15c656b3c4776
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["ls-tree", "-r", "--name-only", "d903e99622b4e379c0920cb89db15c656b3c4776"]
+exit=Some(0) elapsed_us=4307
+stdout=agent-1.txt
+agent-2.txt
+agent-3.txt
+human-1.txt
+human-2.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "d903e99622b4e379c0920cb89db15c656b3c4776:agent-1.txt"]
+exit=Some(0) elapsed_us=4380
+stdout=rebase agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "d903e99622b4e379c0920cb89db15c656b3c4776:agent-2.txt"]
+exit=Some(0) elapsed_us=4290
+stdout=rebase agent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "d903e99622b4e379c0920cb89db15c656b3c4776:agent-3.txt"]
+exit=Some(0) elapsed_us=4309
+stdout=rebase agent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "d903e99622b4e379c0920cb89db15c656b3c4776:human-1.txt"]
+exit=Some(0) elapsed_us=4271
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "d903e99622b4e379c0920cb89db15c656b3c4776:human-2.txt"]
+exit=Some(0) elapsed_us=4257
+stdout=human concurrent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "d903e99622b4e379c0920cb89db15c656b3c4776:shared.txt"]
+exit=Some(0) elapsed_us=4368
+stdout=baseline
+
+stderr=
+GATE pass tree=d903e99622b4e379c0920cb89db15c656b3c4776 parents=["4c980c04082e2b986b5af53214af96d275a8953e"] revision=r5 kind=Agent landing policy=compiled-exact-fixture-v1
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["commit-tree", "d903e99622b4e379c0920cb89db15c656b3c4776", "-p", "4c980c04082e2b986b5af53214af96d275a8953e"]
+exit=Some(0) elapsed_us=4885
+stdout=bafbbcfe7dc25b2042079168125116077c950f60
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["update-ref", "refs/heads/main", "bafbbcfe7dc25b2042079168125116077c950f60", "4c980c04082e2b986b5af53214af96d275a8953e"]
+exit=Some(0) elapsed_us=5101
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["rev-parse", "bafbbcfe7dc25b2042079168125116077c950f60^{tree}"]
+exit=Some(0) elapsed_us=4295
+stdout=d903e99622b4e379c0920cb89db15c656b3c4776
+
+stderr=
+PASS landed tree equals checked tree
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%P", "bafbbcfe7dc25b2042079168125116077c950f60"]
+exit=Some(0) elapsed_us=4475
+stdout=4c980c04082e2b986b5af53214af96d275a8953e
+
+stderr=
+PASS exact first/second parent provenance
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%B", "bafbbcfe7dc25b2042079168125116077c950f60"]
+exit=Some(0) elapsed_us=4377
+stdout=Agent landing
+
+Mai-Revision: r5
+
+
+stderr=
+PASS revision trailer matches assigned rN
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["commit-tree", "d903e99622b4e379c0920cb89db15c656b3c4776", "-p", "4b3b9b10ac22cf18ae69f6f9b6dd871a28b6dc08"]
+exit=Some(0) elapsed_us=4945
+stdout=ab77203bc7a36f0f8f27ed7df717088fd7f64192
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["diff", "--name-only", "4b3b9b10ac22cf18ae69f6f9b6dd871a28b6dc08", "ab77203bc7a36f0f8f27ed7df717088fd7f64192"]
+exit=Some(0) elapsed_us=4437
+stdout=agent-3.txt
+
+stderr=
+PASS export contains only new agent delta
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["push", "origin", "ab77203bc7a36f0f8f27ed7df717088fd7f64192:refs/heads/export-rebase-3"]
+exit=Some(0) elapsed_us=37727
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge.git
+ * [new branch]      ab77203bc7a36f0f8f27ed7df717088fd7f64192 -> export-rebase-3
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["pull", "--ff-only", "origin", "main"]
+exit=Some(0) elapsed_us=48431
+stdout=Updating 7c87050..4b3b9b1
+Fast-forward
+ agent-2.txt | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 agent-2.txt
+
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge
+ * branch            main       -> FETCH_HEAD
+   7c87050..4b3b9b1  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["add", "--", "human-3.txt"]
+exit=Some(0) elapsed_us=4812
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["commit", "-m", "Concurrent human edit"]
+exit=Some(0) elapsed_us=11199
+stdout=[main d8c6930] Concurrent human edit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 human-3.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3909
+stdout=d8c69302b249d4f994a748185aab6001cfac3d4c
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["push", "origin", "HEAD:refs/heads/main"]
+exit=Some(0) elapsed_us=38379
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge.git
+   4b3b9b1..d8c6930  HEAD -> main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["fetch", "origin"]
+exit=Some(0) elapsed_us=35022
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge
+ * [new branch]      export-rebase-3 -> origin/export-rebase-3
+   4b3b9b1..d8c6930  main            -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["checkout", "-B", "merge", "origin/export-rebase-3"]
+exit=Some(0) elapsed_us=7444
+stdout=branch 'merge' set up to track 'origin/export-rebase-3'.
+Your branch and 'origin/export-rebase-2' have diverged,
+and have 3 and 1 different commits each, respectively.
+  (use "git pull" if you want to integrate the remote branch with yours)
+
+stderr=Reset branch 'merge'
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["rebase", "origin/main"]
+exit=Some(0) elapsed_us=15332
+stdout=
+stderr=Rebasing (1/1)
+Successfully rebased and updated refs/heads/merge.
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["push", "origin", "HEAD:refs/heads/main"]
+exit=Some(0) elapsed_us=38443
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge.git
+   d8c6930..683241b  HEAD -> main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3676
+stdout=683241bb306487fa57b84bd3f36f0cb747c46266
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["show", "-s", "--format=%P", "HEAD"]
+exit=Some(0) elapsed_us=4682
+stdout=d8c69302b249d4f994a748185aab6001cfac3d4c
+
+stderr=
+PASS forge merge is single-parent after concurrent human commit
+PASS forge rewrote exported commit identity
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["ls-tree", "-r", "--name-only", "HEAD"]
+exit=Some(0) elapsed_us=4351
+stdout=agent-1.txt
+agent-2.txt
+agent-3.txt
+human-1.txt
+human-2.txt
+human-3.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["show", "HEAD:agent-1.txt"]
+exit=Some(0) elapsed_us=4385
+stdout=rebase agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["show", "HEAD:agent-2.txt"]
+exit=Some(0) elapsed_us=4315
+stdout=rebase agent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["show", "HEAD:agent-3.txt"]
+exit=Some(0) elapsed_us=4484
+stdout=rebase agent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["show", "HEAD:human-1.txt"]
+exit=Some(0) elapsed_us=4406
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["show", "HEAD:human-2.txt"]
+exit=Some(0) elapsed_us=4447
+stdout=human concurrent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["show", "HEAD:human-3.txt"]
+exit=Some(0) elapsed_us=4375
+stdout=human concurrent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge-merger args=["show", "HEAD:shared.txt"]
+exit=Some(0) elapsed_us=4397
+stdout=baseline
+
+stderr=
+PASS forge tree contains exact agent and concurrent human contents
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["fetch", "origin"]
+exit=Some(0) elapsed_us=35479
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge
+   4b3b9b1..683241b  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["merge-tree", "--write-tree", "bafbbcfe7dc25b2042079168125116077c950f60", "683241bb306487fa57b84bd3f36f0cb747c46266"]
+exit=Some(0) elapsed_us=4948
+stdout=38f603c8b89070330d5609e0eca569445df81048
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["ls-tree", "-r", "--name-only", "38f603c8b89070330d5609e0eca569445df81048"]
+exit=Some(0) elapsed_us=4230
+stdout=agent-1.txt
+agent-2.txt
+agent-3.txt
+human-1.txt
+human-2.txt
+human-3.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "38f603c8b89070330d5609e0eca569445df81048:agent-1.txt"]
+exit=Some(0) elapsed_us=4467
+stdout=rebase agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "38f603c8b89070330d5609e0eca569445df81048:agent-2.txt"]
+exit=Some(0) elapsed_us=4348
+stdout=rebase agent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "38f603c8b89070330d5609e0eca569445df81048:agent-3.txt"]
+exit=Some(0) elapsed_us=4321
+stdout=rebase agent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "38f603c8b89070330d5609e0eca569445df81048:human-1.txt"]
+exit=Some(0) elapsed_us=4432
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "38f603c8b89070330d5609e0eca569445df81048:human-2.txt"]
+exit=Some(0) elapsed_us=4418
+stdout=human concurrent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "38f603c8b89070330d5609e0eca569445df81048:human-3.txt"]
+exit=Some(0) elapsed_us=4313
+stdout=human concurrent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "38f603c8b89070330d5609e0eca569445df81048:shared.txt"]
+exit=Some(0) elapsed_us=4298
+stdout=baseline
+
+stderr=
+GATE pass tree=38f603c8b89070330d5609e0eca569445df81048 parents=["bafbbcfe7dc25b2042079168125116077c950f60", "683241bb306487fa57b84bd3f36f0cb747c46266"] revision=r6 kind=Upstream sync policy=compiled-exact-fixture-v1
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["commit-tree", "38f603c8b89070330d5609e0eca569445df81048", "-p", "bafbbcfe7dc25b2042079168125116077c950f60", "-p", "683241bb306487fa57b84bd3f36f0cb747c46266"]
+exit=Some(0) elapsed_us=4939
+stdout=b8018509e330fcdefa8932c674d93080f88e59ef
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["update-ref", "refs/heads/main", "b8018509e330fcdefa8932c674d93080f88e59ef", "bafbbcfe7dc25b2042079168125116077c950f60"]
+exit=Some(0) elapsed_us=4942
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["rev-parse", "b8018509e330fcdefa8932c674d93080f88e59ef^{tree}"]
+exit=Some(0) elapsed_us=4303
+stdout=38f603c8b89070330d5609e0eca569445df81048
+
+stderr=
+PASS landed tree equals checked tree
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%P", "b8018509e330fcdefa8932c674d93080f88e59ef"]
+exit=Some(0) elapsed_us=4556
+stdout=bafbbcfe7dc25b2042079168125116077c950f60 683241bb306487fa57b84bd3f36f0cb747c46266
+
+stderr=
+PASS exact first/second parent provenance
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%B", "b8018509e330fcdefa8932c674d93080f88e59ef"]
+exit=Some(0) elapsed_us=4438
+stdout=Upstream sync
+
+Mai-Revision: r6
+
+
+stderr=
+PASS revision trailer matches assigned rN
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["diff", "--name-only", "bafbbcfe7dc25b2042079168125116077c950f60", "b8018509e330fcdefa8932c674d93080f88e59ef"]
+exit=Some(0) elapsed_us=4459
+stdout=human-3.txt
+
+stderr=
+PASS sync adds only concurrent human delta without replay
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["update-ref", "refs/mai/upstream", "683241bb306487fa57b84bd3f36f0cb747c46266", "4b3b9b10ac22cf18ae69f6f9b6dd871a28b6dc08"]
+exit=Some(0) elapsed_us=4516
+stdout=
+stderr=
+PASS cycle completed with zero spurious conflicts
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["pull", "--ff-only", "origin", "main"]
+exit=Some(0) elapsed_us=48258
+stdout=Updating d8c6930..683241b
+Fast-forward
+ agent-3.txt | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 agent-3.txt
+
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge
+ * branch            main       -> FETCH_HEAD
+   d8c6930..683241b  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["add", "--", "invalid.txt"]
+exit=Some(0) elapsed_us=4861
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["commit", "-m", "Deliberately invalid upstream"]
+exit=Some(0) elapsed_us=11331
+stdout=[main 4cf925f] Deliberately invalid upstream
+ 1 file changed, 1 insertion(+)
+ create mode 100644 invalid.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3685
+stdout=4cf925fd08d2031675e07ec2030b4f345297493c
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["push", "origin", "HEAD:refs/heads/main"]
+exit=Some(0) elapsed_us=38110
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge.git
+   683241b..4cf925f  HEAD -> main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["fetch", "origin"]
+exit=Some(0) elapsed_us=34753
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge
+   683241b..4cf925f  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["rev-parse", "origin/main"]
+exit=Some(0) elapsed_us=3801
+stdout=4cf925fd08d2031675e07ec2030b4f345297493c
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["merge-tree", "--write-tree", "b8018509e330fcdefa8932c674d93080f88e59ef", "4cf925fd08d2031675e07ec2030b4f345297493c"]
+exit=Some(0) elapsed_us=4707
+stdout=d6759c901b5ece1e7ef3ba1b28e93a2c9a2b6be5
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["ls-tree", "-r", "--name-only", "d6759c901b5ece1e7ef3ba1b28e93a2c9a2b6be5"]
+exit=Some(0) elapsed_us=4218
+stdout=agent-1.txt
+agent-2.txt
+agent-3.txt
+human-1.txt
+human-2.txt
+human-3.txt
+invalid.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "d6759c901b5ece1e7ef3ba1b28e93a2c9a2b6be5:agent-1.txt"]
+exit=Some(0) elapsed_us=4388
+stdout=rebase agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "d6759c901b5ece1e7ef3ba1b28e93a2c9a2b6be5:agent-2.txt"]
+exit=Some(0) elapsed_us=4416
+stdout=rebase agent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "d6759c901b5ece1e7ef3ba1b28e93a2c9a2b6be5:agent-3.txt"]
+exit=Some(0) elapsed_us=4332
+stdout=rebase agent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "d6759c901b5ece1e7ef3ba1b28e93a2c9a2b6be5:human-1.txt"]
+exit=Some(0) elapsed_us=4284
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "d6759c901b5ece1e7ef3ba1b28e93a2c9a2b6be5:human-2.txt"]
+exit=Some(0) elapsed_us=4241
+stdout=human concurrent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "d6759c901b5ece1e7ef3ba1b28e93a2c9a2b6be5:human-3.txt"]
+exit=Some(0) elapsed_us=4291
+stdout=human concurrent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "d6759c901b5ece1e7ef3ba1b28e93a2c9a2b6be5:invalid.txt"]
+exit=Some(0) elapsed_us=4293
+stdout=INVALID upstream fixture
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "d6759c901b5ece1e7ef3ba1b28e93a2c9a2b6be5:shared.txt"]
+exit=Some(0) elapsed_us=4264
+stdout=baseline
+
+stderr=
+GATE reject tree=d6759c901b5ece1e7ef3ba1b28e93a2c9a2b6be5 parents=[b8018509e330fcdefa8932c674d93080f88e59ef,4cf925fd08d2031675e07ec2030b4f345297493c] reason=fixture gate rejected INVALID content
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["rev-parse", "main"]
+exit=Some(0) elapsed_us=3679
+stdout=b8018509e330fcdefa8932c674d93080f88e59ef
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["rev-parse", "refs/mai/upstream"]
+exit=Some(0) elapsed_us=3507
+stdout=683241bb306487fa57b84bd3f36f0cb747c46266
+
+stderr=
+PASS failed validation preserves trunk and last synced upstream
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["fetch", "origin"]
+exit=Some(0) elapsed_us=35224
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority
+   4c980c0..b801850  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["checkout", "-B", "work", "origin/main"]
+exit=Some(0) elapsed_us=7012
+stdout=branch 'work' set up to track 'origin/main'.
+Your branch is up to date with 'origin/main'.
+
+stderr=Reset branch 'work'
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["add", "--", "during-failed-gate.txt"]
+exit=Some(0) elapsed_us=4958
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["commit", "-m", "Work during rejected sync"]
+exit=Some(0) elapsed_us=11404
+stdout=[work 0095e60] Work during rejected sync
+ 1 file changed, 1 insertion(+)
+ create mode 100644 during-failed-gate.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=4314
+stdout=0095e60c4fe73eb3790f95351e08b827a4ce98b5
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["push", "origin", "HEAD:refs/mai/submitted/during-failed-gate"]
+exit=Some(0) elapsed_us=39791
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority
+ * [new reference]   HEAD -> refs/mai/submitted/during-failed-gate
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["merge-tree", "--write-tree", "b8018509e330fcdefa8932c674d93080f88e59ef", "0095e60c4fe73eb3790f95351e08b827a4ce98b5"]
+exit=Some(0) elapsed_us=4913
+stdout=aef326fa07ad9d926137dfbbfcb4d4ef0e30c342
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["ls-tree", "-r", "--name-only", "aef326fa07ad9d926137dfbbfcb4d4ef0e30c342"]
+exit=Some(0) elapsed_us=4421
+stdout=agent-1.txt
+agent-2.txt
+agent-3.txt
+during-failed-gate.txt
+human-1.txt
+human-2.txt
+human-3.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "aef326fa07ad9d926137dfbbfcb4d4ef0e30c342:agent-1.txt"]
+exit=Some(0) elapsed_us=4573
+stdout=rebase agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "aef326fa07ad9d926137dfbbfcb4d4ef0e30c342:agent-2.txt"]
+exit=Some(0) elapsed_us=4329
+stdout=rebase agent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "aef326fa07ad9d926137dfbbfcb4d4ef0e30c342:agent-3.txt"]
+exit=Some(0) elapsed_us=4629
+stdout=rebase agent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "aef326fa07ad9d926137dfbbfcb4d4ef0e30c342:during-failed-gate.txt"]
+exit=Some(0) elapsed_us=4390
+stdout=independent of invalid upstream
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "aef326fa07ad9d926137dfbbfcb4d4ef0e30c342:human-1.txt"]
+exit=Some(0) elapsed_us=4335
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "aef326fa07ad9d926137dfbbfcb4d4ef0e30c342:human-2.txt"]
+exit=Some(0) elapsed_us=4379
+stdout=human concurrent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "aef326fa07ad9d926137dfbbfcb4d4ef0e30c342:human-3.txt"]
+exit=Some(0) elapsed_us=4349
+stdout=human concurrent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "aef326fa07ad9d926137dfbbfcb4d4ef0e30c342:shared.txt"]
+exit=Some(0) elapsed_us=4476
+stdout=baseline
+
+stderr=
+GATE pass tree=aef326fa07ad9d926137dfbbfcb4d4ef0e30c342 parents=["b8018509e330fcdefa8932c674d93080f88e59ef"] revision=r7 kind=Work during rejected sync policy=compiled-exact-fixture-v1
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["commit-tree", "aef326fa07ad9d926137dfbbfcb4d4ef0e30c342", "-p", "b8018509e330fcdefa8932c674d93080f88e59ef"]
+exit=Some(0) elapsed_us=4974
+stdout=0cf51d60af607c6fad49831c5429da8b2b17487d
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["update-ref", "refs/heads/main", "0cf51d60af607c6fad49831c5429da8b2b17487d", "b8018509e330fcdefa8932c674d93080f88e59ef"]
+exit=Some(0) elapsed_us=4982
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["rev-parse", "0cf51d60af607c6fad49831c5429da8b2b17487d^{tree}"]
+exit=Some(0) elapsed_us=4459
+stdout=aef326fa07ad9d926137dfbbfcb4d4ef0e30c342
+
+stderr=
+PASS landed tree equals checked tree
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%P", "0cf51d60af607c6fad49831c5429da8b2b17487d"]
+exit=Some(0) elapsed_us=4516
+stdout=b8018509e330fcdefa8932c674d93080f88e59ef
+
+stderr=
+PASS exact first/second parent provenance
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%B", "0cf51d60af607c6fad49831c5429da8b2b17487d"]
+exit=Some(0) elapsed_us=4476
+stdout=Work during rejected sync
+
+Mai-Revision: r7
+
+
+stderr=
+PASS revision trailer matches assigned rN
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge.git args=["rev-parse", "main"]
+exit=Some(0) elapsed_us=3719
+stdout=4cf925fd08d2031675e07ec2030b4f345297493c
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["rev-parse", "refs/mai/upstream"]
+exit=Some(0) elapsed_us=3600
+stdout=683241bb306487fa57b84bd3f36f0cb747c46266
+
+stderr=
+PASS continued work during rejected sync preserves forge main and old sync base
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["rm", "invalid.txt"]
+exit=Some(0) elapsed_us=4663
+stdout=rm 'invalid.txt'
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["commit", "-m", "Human correction"]
+exit=Some(0) elapsed_us=10914
+stdout=[main d96f031] Human correction
+ 1 file changed, 1 deletion(-)
+ delete mode 100644 invalid.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["push", "origin", "HEAD:refs/heads/main"]
+exit=Some(0) elapsed_us=37591
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge.git
+   4cf925f..d96f031  HEAD -> main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["fetch", "origin"]
+exit=Some(0) elapsed_us=33706
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority
+   b801850..0cf51d6  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["checkout", "-B", "work", "origin/main"]
+exit=Some(0) elapsed_us=6784
+stdout=branch 'work' set up to track 'origin/main'.
+Your branch is up to date with 'origin/main'.
+
+stderr=Reset branch 'work'
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["add", "--", "shared.txt"]
+exit=Some(0) elapsed_us=4903
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["commit", "-m", "Agent conflicting edit"]
+exit=Some(0) elapsed_us=11382
+stdout=[work f34a06c] Agent conflicting edit
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3839
+stdout=f34a06c58169779cf9e1f441358dd46fbbb3cfd0
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["push", "origin", "HEAD:refs/mai/submitted/conflict"]
+exit=Some(0) elapsed_us=40471
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority
+ * [new reference]   HEAD -> refs/mai/submitted/conflict
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["merge-tree", "--write-tree", "0cf51d60af607c6fad49831c5429da8b2b17487d", "f34a06c58169779cf9e1f441358dd46fbbb3cfd0"]
+exit=Some(0) elapsed_us=4972
+stdout=ac2fef2fade6ae86da4a0ae8700212a6e969222c
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["ls-tree", "-r", "--name-only", "ac2fef2fade6ae86da4a0ae8700212a6e969222c"]
+exit=Some(0) elapsed_us=4335
+stdout=agent-1.txt
+agent-2.txt
+agent-3.txt
+during-failed-gate.txt
+human-1.txt
+human-2.txt
+human-3.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "ac2fef2fade6ae86da4a0ae8700212a6e969222c:agent-1.txt"]
+exit=Some(0) elapsed_us=4412
+stdout=rebase agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "ac2fef2fade6ae86da4a0ae8700212a6e969222c:agent-2.txt"]
+exit=Some(0) elapsed_us=4325
+stdout=rebase agent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "ac2fef2fade6ae86da4a0ae8700212a6e969222c:agent-3.txt"]
+exit=Some(0) elapsed_us=4432
+stdout=rebase agent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "ac2fef2fade6ae86da4a0ae8700212a6e969222c:during-failed-gate.txt"]
+exit=Some(0) elapsed_us=4433
+stdout=independent of invalid upstream
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "ac2fef2fade6ae86da4a0ae8700212a6e969222c:human-1.txt"]
+exit=Some(0) elapsed_us=4362
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "ac2fef2fade6ae86da4a0ae8700212a6e969222c:human-2.txt"]
+exit=Some(0) elapsed_us=4388
+stdout=human concurrent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "ac2fef2fade6ae86da4a0ae8700212a6e969222c:human-3.txt"]
+exit=Some(0) elapsed_us=4328
+stdout=human concurrent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "ac2fef2fade6ae86da4a0ae8700212a6e969222c:shared.txt"]
+exit=Some(0) elapsed_us=4352
+stdout=agent owns this line
+
+stderr=
+GATE pass tree=ac2fef2fade6ae86da4a0ae8700212a6e969222c parents=["0cf51d60af607c6fad49831c5429da8b2b17487d"] revision=r8 kind=Agent conflicting landing policy=compiled-exact-fixture-v1
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["commit-tree", "ac2fef2fade6ae86da4a0ae8700212a6e969222c", "-p", "0cf51d60af607c6fad49831c5429da8b2b17487d"]
+exit=Some(0) elapsed_us=5835
+stdout=96bbd2e883889ad0f1ce596165578a59f874bd38
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["update-ref", "refs/heads/main", "96bbd2e883889ad0f1ce596165578a59f874bd38", "0cf51d60af607c6fad49831c5429da8b2b17487d"]
+exit=Some(0) elapsed_us=5116
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["rev-parse", "96bbd2e883889ad0f1ce596165578a59f874bd38^{tree}"]
+exit=Some(0) elapsed_us=4537
+stdout=ac2fef2fade6ae86da4a0ae8700212a6e969222c
+
+stderr=
+PASS landed tree equals checked tree
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%P", "96bbd2e883889ad0f1ce596165578a59f874bd38"]
+exit=Some(0) elapsed_us=4780
+stdout=0cf51d60af607c6fad49831c5429da8b2b17487d
+
+stderr=
+PASS exact first/second parent provenance
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%B", "96bbd2e883889ad0f1ce596165578a59f874bd38"]
+exit=Some(0) elapsed_us=4520
+stdout=Agent conflicting landing
+
+Mai-Revision: r8
+
+
+stderr=
+PASS revision trailer matches assigned rN
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["add", "--", "shared.txt"]
+exit=Some(0) elapsed_us=4864
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["commit", "-m", "Human conflicting edit"]
+exit=Some(0) elapsed_us=11292
+stdout=[main 75f2db7] Human conflicting edit
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3706
+stdout=75f2db7e5f253e8d567ce2f24a53c22dda74af82
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/human args=["push", "origin", "HEAD:refs/heads/main"]
+exit=Some(0) elapsed_us=38554
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge.git
+   d96f031..75f2db7  HEAD -> main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["fetch", "origin"]
+exit=Some(0) elapsed_us=36483
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge
+   4cf925f..75f2db7  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["merge-tree", "--write-tree", "96bbd2e883889ad0f1ce596165578a59f874bd38", "75f2db7e5f253e8d567ce2f24a53c22dda74af82"]
+exit=Some(1) elapsed_us=5754
+stdout=bb068dce61f98dd4335f041d7f79e029b8ae670d
+100644 180b47c18ba7e484fc0d7350bc6cad8ec3423ea0 1	shared.txt
+100644 6855641e1840b0220d182abc90f1d0c24906943f 2	shared.txt
+100644 fbee5fc13ab017f38922cca91718658816b5c0df 3	shared.txt
+
+Auto-merging shared.txt
+CONFLICT (content): Merge conflict in shared.txt
+
+stderr=
+PASS genuine conflict returns Git conflict exit 1
+PASS genuine conflict identifies shared.txt
+CONFLICT owner=fixture-upstream-owner path=shared.txt trunk=96bbd2e883889ad0f1ce596165578a59f874bd38 upstream=75f2db7e5f253e8d567ce2f24a53c22dda74af82 last_synced=683241bb306487fa57b84bd3f36f0cb747c46266
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["rev-parse", "main"]
+exit=Some(0) elapsed_us=3651
+stdout=96bbd2e883889ad0f1ce596165578a59f874bd38
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["rev-parse", "refs/mai/upstream"]
+exit=Some(0) elapsed_us=3728
+stdout=683241bb306487fa57b84bd3f36f0cb747c46266
+
+stderr=
+PASS conflict preserves trunk and last synced upstream
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["fetch", "origin"]
+exit=Some(0) elapsed_us=33786
+stdout=
+stderr=From /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority
+   0cf51d6..96bbd2e  main       -> origin/main
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["checkout", "-B", "work", "origin/main"]
+exit=Some(0) elapsed_us=6640
+stdout=branch 'work' set up to track 'origin/main'.
+Your branch is up to date with 'origin/main'.
+
+stderr=Reset branch 'work'
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["add", "--", "independent.txt"]
+exit=Some(0) elapsed_us=4993
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["commit", "-m", "Independent work during conflict"]
+exit=Some(0) elapsed_us=11384
+stdout=[work afe8784] Independent work during conflict
+ 1 file changed, 1 insertion(+)
+ create mode 100644 independent.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["rev-parse", "HEAD"]
+exit=Some(0) elapsed_us=3811
+stdout=afe8784594a54860bd49f8987e9aaa8aef760636
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/agent args=["push", "origin", "HEAD:refs/mai/submitted/independent"]
+exit=Some(0) elapsed_us=39273
+stdout=
+stderr=To /Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority
+ * [new reference]   HEAD -> refs/mai/submitted/independent
+
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["merge-tree", "--write-tree", "96bbd2e883889ad0f1ce596165578a59f874bd38", "afe8784594a54860bd49f8987e9aaa8aef760636"]
+exit=Some(0) elapsed_us=5013
+stdout=28db0438d37ea14240148f975d8669f15ef41a5f
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["ls-tree", "-r", "--name-only", "28db0438d37ea14240148f975d8669f15ef41a5f"]
+exit=Some(0) elapsed_us=4285
+stdout=agent-1.txt
+agent-2.txt
+agent-3.txt
+during-failed-gate.txt
+human-1.txt
+human-2.txt
+human-3.txt
+independent.txt
+shared.txt
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "28db0438d37ea14240148f975d8669f15ef41a5f:agent-1.txt"]
+exit=Some(0) elapsed_us=4469
+stdout=rebase agent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "28db0438d37ea14240148f975d8669f15ef41a5f:agent-2.txt"]
+exit=Some(0) elapsed_us=4374
+stdout=rebase agent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "28db0438d37ea14240148f975d8669f15ef41a5f:agent-3.txt"]
+exit=Some(0) elapsed_us=4323
+stdout=rebase agent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "28db0438d37ea14240148f975d8669f15ef41a5f:during-failed-gate.txt"]
+exit=Some(0) elapsed_us=4324
+stdout=independent of invalid upstream
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "28db0438d37ea14240148f975d8669f15ef41a5f:human-1.txt"]
+exit=Some(0) elapsed_us=4347
+stdout=human concurrent cycle 1
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "28db0438d37ea14240148f975d8669f15ef41a5f:human-2.txt"]
+exit=Some(0) elapsed_us=4599
+stdout=human concurrent cycle 2
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "28db0438d37ea14240148f975d8669f15ef41a5f:human-3.txt"]
+exit=Some(0) elapsed_us=4362
+stdout=human concurrent cycle 3
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "28db0438d37ea14240148f975d8669f15ef41a5f:independent.txt"]
+exit=Some(0) elapsed_us=4402
+stdout=safe local work
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "28db0438d37ea14240148f975d8669f15ef41a5f:shared.txt"]
+exit=Some(0) elapsed_us=4286
+stdout=agent owns this line
+
+stderr=
+GATE pass tree=28db0438d37ea14240148f975d8669f15ef41a5f parents=["96bbd2e883889ad0f1ce596165578a59f874bd38"] revision=r9 kind=Independent landing policy=compiled-exact-fixture-v1
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["commit-tree", "28db0438d37ea14240148f975d8669f15ef41a5f", "-p", "96bbd2e883889ad0f1ce596165578a59f874bd38"]
+exit=Some(0) elapsed_us=4895
+stdout=a8011600a1bc5a471dae72b637e596ca32401fdd
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["update-ref", "refs/heads/main", "a8011600a1bc5a471dae72b637e596ca32401fdd", "96bbd2e883889ad0f1ce596165578a59f874bd38"]
+exit=Some(0) elapsed_us=4973
+stdout=
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["rev-parse", "a8011600a1bc5a471dae72b637e596ca32401fdd^{tree}"]
+exit=Some(0) elapsed_us=4334
+stdout=28db0438d37ea14240148f975d8669f15ef41a5f
+
+stderr=
+PASS landed tree equals checked tree
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%P", "a8011600a1bc5a471dae72b637e596ca32401fdd"]
+exit=Some(0) elapsed_us=4478
+stdout=96bbd2e883889ad0f1ce596165578a59f874bd38
+
+stderr=
+PASS exact first/second parent provenance
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%B", "a8011600a1bc5a471dae72b637e596ca32401fdd"]
+exit=Some(0) elapsed_us=4393
+stdout=Independent landing
+
+Mai-Revision: r9
+
+
+stderr=
+PASS revision trailer matches assigned rN
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/forge.git args=["rev-parse", "main"]
+exit=Some(0) elapsed_us=3593
+stdout=75f2db7e5f253e8d567ce2f24a53c22dda74af82
+
+stderr=
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["rev-parse", "refs/mai/upstream"]
+exit=Some(0) elapsed_us=3605
+stdout=683241bb306487fa57b84bd3f36f0cb747c46266
+
+stderr=
+PASS independent landing does not mutate human main or advance sync base
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["rev-list", "--first-parent", "743ec6e40cc0df4343109b138b1495f909b2e26d..a8011600a1bc5a471dae72b637e596ca32401fdd"]
+exit=Some(0) elapsed_us=4557
+stdout=a8011600a1bc5a471dae72b637e596ca32401fdd
+96bbd2e883889ad0f1ce596165578a59f874bd38
+0cf51d60af607c6fad49831c5429da8b2b17487d
+b8018509e330fcdefa8932c674d93080f88e59ef
+bafbbcfe7dc25b2042079168125116077c950f60
+4c980c04082e2b986b5af53214af96d275a8953e
+94ae69134669961b45085ca5e7b11e5f02390fef
+516e086eea74dec4a4e3444704cc621dcf881477
+14fb8d3e1db9e1c8bcea883665935db69427e7e1
+
+stderr=
+PASS acceptance ledger contains exactly nine post-import revisions
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%B", "a8011600a1bc5a471dae72b637e596ca32401fdd"]
+exit=Some(0) elapsed_us=4395
+stdout=Independent landing
+
+Mai-Revision: r9
+
+
+stderr=
+PASS first-parent trailers are contiguous without recounting for assignment
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%B", "96bbd2e883889ad0f1ce596165578a59f874bd38"]
+exit=Some(0) elapsed_us=4430
+stdout=Agent conflicting landing
+
+Mai-Revision: r8
+
+
+stderr=
+PASS first-parent trailers are contiguous without recounting for assignment
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%B", "0cf51d60af607c6fad49831c5429da8b2b17487d"]
+exit=Some(0) elapsed_us=4639
+stdout=Work during rejected sync
+
+Mai-Revision: r7
+
+
+stderr=
+PASS first-parent trailers are contiguous without recounting for assignment
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%B", "b8018509e330fcdefa8932c674d93080f88e59ef"]
+exit=Some(0) elapsed_us=4609
+stdout=Upstream sync
+
+Mai-Revision: r6
+
+
+stderr=
+PASS first-parent trailers are contiguous without recounting for assignment
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%B", "bafbbcfe7dc25b2042079168125116077c950f60"]
+exit=Some(0) elapsed_us=4423
+stdout=Agent landing
+
+Mai-Revision: r5
+
+
+stderr=
+PASS first-parent trailers are contiguous without recounting for assignment
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%B", "4c980c04082e2b986b5af53214af96d275a8953e"]
+exit=Some(0) elapsed_us=4604
+stdout=Upstream sync
+
+Mai-Revision: r4
+
+
+stderr=
+PASS first-parent trailers are contiguous without recounting for assignment
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%B", "94ae69134669961b45085ca5e7b11e5f02390fef"]
+exit=Some(0) elapsed_us=4418
+stdout=Agent landing
+
+Mai-Revision: r3
+
+
+stderr=
+PASS first-parent trailers are contiguous without recounting for assignment
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%B", "516e086eea74dec4a4e3444704cc621dcf881477"]
+exit=Some(0) elapsed_us=4515
+stdout=Upstream sync
+
+Mai-Revision: r2
+
+
+stderr=
+PASS first-parent trailers are contiguous without recounting for assignment
+git cwd=/Users/runner/work/mai/mai/.throwaway/s5-ci/rebase/authority args=["show", "-s", "--format=%B", "14fb8d3e1db9e1c8bcea883665935db69427e7e1"]
+exit=Some(0) elapsed_us=4394
+stdout=Agent landing
+
+Mai-Revision: r1
+
+
+stderr=
+PASS first-parent trailers are contiguous without recounting for assignment
+MODE PASS rebase cycles=3 revisions=9 owner=fixture-upstream-owner real_forge_api=pending

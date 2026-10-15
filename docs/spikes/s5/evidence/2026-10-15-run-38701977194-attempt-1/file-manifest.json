@@ -1,0 +1,245 @@
+[
+  {
+    "artifact": "s5-Linux-X64-38701977194-1",
+    "original_path": "build/check.log",
+    "original_bytes": 88,
+    "original_sha256": "c7220bf5d9738a92417db56b95a9e9456eb2945eea64d1c9c72544bceb76c250",
+    "retained_path": "linux/build/check.log",
+    "retained_sha256": "c7220bf5d9738a92417db56b95a9e9456eb2945eea64d1c9c72544bceb76c250",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-Linux-X64-38701977194-1",
+    "original_path": "build/compile-unit.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/build/compile-unit.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-Linux-X64-38701977194-1",
+    "original_path": "build/compile.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/build/compile.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-Linux-X64-38701977194-1",
+    "original_path": "build/format.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/build/format.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-Linux-X64-38701977194-1",
+    "original_path": "build/provenance.log",
+    "original_bytes": 458,
+    "original_sha256": "d8c1d8c5c2afa6bd8a8c9347f95e7c133c3fb720b1a894a12c3d3c3a1a8caea5",
+    "retained_path": "linux/build/provenance.log",
+    "retained_sha256": "d8c1d8c5c2afa6bd8a8c9347f95e7c133c3fb720b1a894a12c3d3c3a1a8caea5",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-Linux-X64-38701977194-1",
+    "original_path": "build/run.log",
+    "original_bytes": 106,
+    "original_sha256": "d61f1ce6c450cf062d1dabfde875e04cb631aad5e19cda1aa787a5d5c9baa9e5",
+    "retained_path": "linux/build/run.log",
+    "retained_sha256": "d61f1ce6c450cf062d1dabfde875e04cb631aad5e19cda1aa787a5d5c9baa9e5",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-Linux-X64-38701977194-1",
+    "original_path": "build/sources.sha256",
+    "original_bytes": 576,
+    "original_sha256": "051f9e6fdf40ca45a8440e6b892992469960e7d20841ae22bac4cee3f3372d48",
+    "retained_path": "linux/build/sources.sha256",
+    "retained_sha256": "051f9e6fdf40ca45a8440e6b892992469960e7d20841ae22bac4cee3f3372d48",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-Linux-X64-38701977194-1",
+    "original_path": "build/unit.log",
+    "original_bytes": 423,
+    "original_sha256": "eb65680dfc89121aef6cceb2f90c8776792cfdf5548a29f361dc23687a1e34cd",
+    "retained_path": "linux/build/unit.log",
+    "retained_sha256": "1ce70665dedbbb10e5d8950f1ccc712dd78798eca4d5a9795a4acb3906451c61",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-Linux-X64-38701977194-1",
+    "original_path": "commands.log",
+    "original_bytes": 140742,
+    "original_sha256": "3f05b76c07b4c9acb9d922a43500e31e6a7a24017ecff1707b4f9231394c2545",
+    "retained_path": "linux/commands.log",
+    "retained_sha256": "dc4440af01ca4a26cad20e475e59c7b1401415f42379ab0b448ff5efc3363efb",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-Windows-X64-38701977194-1",
+    "original_path": "build/check.log",
+    "original_bytes": 88,
+    "original_sha256": "c7220bf5d9738a92417db56b95a9e9456eb2945eea64d1c9c72544bceb76c250",
+    "retained_path": "windows/build/check.log",
+    "retained_sha256": "c7220bf5d9738a92417db56b95a9e9456eb2945eea64d1c9c72544bceb76c250",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-Windows-X64-38701977194-1",
+    "original_path": "build/compile-unit.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/build/compile-unit.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-Windows-X64-38701977194-1",
+    "original_path": "build/compile.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/build/compile.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-Windows-X64-38701977194-1",
+    "original_path": "build/format.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/build/format.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-Windows-X64-38701977194-1",
+    "original_path": "build/provenance.log",
+    "original_bytes": 493,
+    "original_sha256": "634e40d7c2fb16e6a0e9800835459ac48fd8dab1ee0615c903a1412cda6587a6",
+    "retained_path": "windows/build/provenance.log",
+    "retained_sha256": "634e40d7c2fb16e6a0e9800835459ac48fd8dab1ee0615c903a1412cda6587a6",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-Windows-X64-38701977194-1",
+    "original_path": "build/run.log",
+    "original_bytes": 109,
+    "original_sha256": "bc55d58f29eeed72d585bc0baa17cd5a53c3ba9c0001a0c6bb4d441cc472a793",
+    "retained_path": "windows/build/run.log",
+    "retained_sha256": "bc55d58f29eeed72d585bc0baa17cd5a53c3ba9c0001a0c6bb4d441cc472a793",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-Windows-X64-38701977194-1",
+    "original_path": "build/sources.sha256",
+    "original_bytes": 576,
+    "original_sha256": "918ebca0517dc2e45ac4276bc35b3df099212668781ab65426534b8f574a4210",
+    "retained_path": "windows/build/sources.sha256",
+    "retained_sha256": "918ebca0517dc2e45ac4276bc35b3df099212668781ab65426534b8f574a4210",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-Windows-X64-38701977194-1",
+    "original_path": "build/unit.log",
+    "original_bytes": 423,
+    "original_sha256": "eb65680dfc89121aef6cceb2f90c8776792cfdf5548a29f361dc23687a1e34cd",
+    "retained_path": "windows/build/unit.log",
+    "retained_sha256": "1ce70665dedbbb10e5d8950f1ccc712dd78798eca4d5a9795a4acb3906451c61",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-Windows-X64-38701977194-1",
+    "original_path": "commands.log",
+    "original_bytes": 135224,
+    "original_sha256": "9624f349e2aa56c28f36720a7e7ef504e2d19936d20b0c991e0c3bfc4e884844",
+    "retained_path": "windows/commands.log",
+    "retained_sha256": "4b5bba8499689958a3ab3c5237c9c794b468f87bd34704c729c70d81905442e3",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-macOS-ARM64-38701977194-1",
+    "original_path": "build/check.log",
+    "original_bytes": 88,
+    "original_sha256": "c7220bf5d9738a92417db56b95a9e9456eb2945eea64d1c9c72544bceb76c250",
+    "retained_path": "macos/build/check.log",
+    "retained_sha256": "c7220bf5d9738a92417db56b95a9e9456eb2945eea64d1c9c72544bceb76c250",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-macOS-ARM64-38701977194-1",
+    "original_path": "build/compile-unit.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/build/compile-unit.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-macOS-ARM64-38701977194-1",
+    "original_path": "build/compile.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/build/compile.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-macOS-ARM64-38701977194-1",
+    "original_path": "build/format.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/build/format.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-macOS-ARM64-38701977194-1",
+    "original_path": "build/provenance.log",
+    "original_bytes": 445,
+    "original_sha256": "eb2a09a2ff002d9e2e7f66c2f231b3a4a24d8a26e1a2a320f0b1ba9c3ac50445",
+    "retained_path": "macos/build/provenance.log",
+    "retained_sha256": "eb2a09a2ff002d9e2e7f66c2f231b3a4a24d8a26e1a2a320f0b1ba9c3ac50445",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-macOS-ARM64-38701977194-1",
+    "original_path": "build/run.log",
+    "original_bytes": 107,
+    "original_sha256": "c67183773b62bc1fa647503d8341f6b7c5267b016a1b0b35f5183b496f1fa58a",
+    "retained_path": "macos/build/run.log",
+    "retained_sha256": "c67183773b62bc1fa647503d8341f6b7c5267b016a1b0b35f5183b496f1fa58a",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-macOS-ARM64-38701977194-1",
+    "original_path": "build/sources.sha256",
+    "original_bytes": 576,
+    "original_sha256": "051f9e6fdf40ca45a8440e6b892992469960e7d20841ae22bac4cee3f3372d48",
+    "retained_path": "macos/build/sources.sha256",
+    "retained_sha256": "051f9e6fdf40ca45a8440e6b892992469960e7d20841ae22bac4cee3f3372d48",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-macOS-ARM64-38701977194-1",
+    "original_path": "build/unit.log",
+    "original_bytes": 423,
+    "original_sha256": "330429f3df4937a34f384fc3a9e5fa250b2217d4a9c2ac437e5571bbdeaa673b",
+    "retained_path": "macos/build/unit.log",
+    "retained_sha256": "d33cdade1724a05ca5f5a5ac9ff1baed87238a23126c2ed402d81876f373912f",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s5-macOS-ARM64-38701977194-1",
+    "original_path": "commands.log",
+    "original_bytes": 141424,
+    "original_sha256": "670ec9de89472a67b26415c57d4148f67346e5045dcdabe4304466e4b787342c",
+    "retained_path": "macos/commands.log",
+    "retained_sha256": "94d709d82ab8d4d25402e266fa877ed7a4ee5f6b7a612ab3d8aa3ac5c8009119",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  }
+]
