@@ -1,0 +1,26 @@
+name: S5 forge cycles experiment
+run-name: S5 evidence (${{ inputs.platform }}) by @${{ github.actor }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: Native runner platform (all starts three jobs)
+        type: choice
+        required: true
+        default: linux
+        options:
+          - linux
+          - macos
+          - windows
+          - all
+
+permissions:
+  contents: read
+
+jobs:
+  s5:
+    uses: ./.github/workflows/evidence-experiment-runner.yml
+    with:
+      experiment: s5
+      platform: ${{ inputs.platform }}
