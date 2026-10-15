@@ -1,0 +1,10 @@
+refs=["HEAD:refs/for/main"] options=[] exit=exit status: 0 elapsed_ms=24
+To file:///home/runner/work/mai/mai/.throwaway/s1-ci/sync/authority.git
+*	HEAD:refs/mai/changes/9f694c7b166d3926f2903d92b419f6d848710158	[new reference]
+Done
+
+refs=["HEAD:refs/for/main"] options=[] exit=exit status: 0 elapsed_ms=23
+To file:///home/runner/work/mai/mai/.throwaway/s1-ci/sync/authority.git
+*	HEAD:refs/mai/changes/f2062c1312b07e696e7a6413d02ead4851e1e280	[new reference]
+Done
+

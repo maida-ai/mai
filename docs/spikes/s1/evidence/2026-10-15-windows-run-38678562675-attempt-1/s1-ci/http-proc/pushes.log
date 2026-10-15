@@ -1,0 +1,27 @@
+refs=["HEAD:refs/for/main"] options=["mai.wait=true", "mai.priority=low", "mai.touches=first"] exit=exit code: 0 elapsed_ms=817
+To http://127.0.0.1:58023/http-proc/authority.git
+*	HEAD:refs/mai/changes/488a2ced1c8dd65572daec0bb9ae4ca2193e1b10	[new reference]
+Done
+
+refs=["HEAD:refs/for/main"] options=[] exit=exit code: 0 elapsed_ms=345
+To http://127.0.0.1:58023/http-proc/authority.git
+*	HEAD:refs/mai/changes/488a2ced1c8dd65572daec0bb9ae4ca2193e1b10	[new reference]
+Done
+
+refs=["HEAD:refs/drafts/alice"] options=[] exit=exit code: 0 elapsed_ms=330
+To http://127.0.0.1:58023/http-proc/authority.git
+*	HEAD:refs/drafts/alice	[new reference]
+Done
+
+refs=[":refs/drafts/alice"] options=[] exit=exit code: 1 elapsed_ms=236
+To http://127.0.0.1:58023/http-proc/authority.git
+!	:refs/drafts/alice	[remote rejected] (DELETE_FORBIDDEN)
+Done
+error: failed to push some refs to 'http://127.0.0.1:58023/http-proc/authority.git'
+
+refs=["HEAD:refs/heads/main"] options=[] exit=exit code: 1 elapsed_ms=136
+Done
+error: RPC failed; curl 56 Recv failure: Connection was aborted
+send-pack: unexpected disconnect while reading sideband packet
+fatal: the remote end hung up unexpectedly
+

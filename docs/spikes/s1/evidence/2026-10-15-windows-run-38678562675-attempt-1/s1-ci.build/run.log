@@ -1,0 +1,184 @@
+S1 fixture run: \\?\D:\a\mai\mai\.throwaway\s1-ci
+Native platform: windows/x86_64
+git version 2.55.0.windows.5
+rustc 1.99.0 (b940084d7 2026-09-28)
+PASS file-proc: registered without validator/wait process
+PASS file-proc: reference and queued receipt exist at successful push return
+PASS file-proc: separate engine visibility, retention and queue precede hook ok
+PASS file-proc: fresh pre-receive quarantine is not visible to separate engine
+PASS file-proc: submission ref is virtual and trunk has not moved
+PASS file-proc: identical retry
+PASS file-proc: retry creates one queue entry
+PASS file-proc: owned draft
+PASS file-proc: DELETE_FORBIDDEN
+PASS file-proc: REF_FORBIDDEN
+PASS file-proc: REF_FORBIDDEN
+PASS file-proc: REF_FORBIDDEN
+PASS file-proc: REF_FORBIDDEN
+PASS file-proc: REF_FORBIDDEN
+PASS file-proc: GRANT_REQUIRED
+PASS file-proc: GRANT_REQUIRED
+PASS file-proc: INVALID_PRIORITY
+PASS file-proc: INACTIVE_INCIDENT
+PASS file-proc: UNKNOWN_OPTION
+PASS file-proc: INVALID_TOUCHES
+PASS file-proc: DUPLICATE_OPTION
+PASS file-proc: OPTION_LIMIT
+PASS file-proc: OPTION_LIMIT
+PASS file-proc: declared file identity can be spoofed (not authentication)
+PASS file-proc: GRANT_REQUIRED
+PASS file-proc: REF_FORBIDDEN
+PASS file-proc: mixed push retains admitted ref while rejecting trunk
+PASS file-proc: ENGINE_UNAVAILABLE
+PASS file-proc: engine down yields no admission
+PASS file-proc: retry after engine recovery
+PASS file-proc: INTERRUPTED_AFTER_REF
+PASS file-proc: interrupted registration retains object without queue claim
+PASS file-proc: retry reconciles retained object
+PASS file-proc: hook exits after registration before reply
+PASS file-proc: retry after lost reply
+PASS file-proc: lost reply retry does not duplicate registration
+PASS file-proc: killed client leaves acknowledged-side registration recoverable
+PASS file-proc: retry after client disconnect
+PASS file-proc: disconnect retry is idempotent
+PASS file-proc: no validation or landing fabricated
+PASS file-fallback: fallback transport success is not queued admission
+PASS file-fallback: incoming ref retains unregistered commit
+PASS file-fallback: identical fallback retry is up-to-date
+PASS file-fallback: up-to-date retry does not rerun post-receive
+PASS file-fallback: reconciliation registers retained incoming exactly once
+PASS file-fallback: repeated reconciliation idempotent
+PASS file-fallback: REF_FORBIDDEN
+PASS file-fallback: REF_FORBIDDEN
+PASS file-fallback: REF_FORBIDDEN
+PASS file-fallback: GRANT_REQUIRED
+PASS file-fallback: fallback healthy post-receive admission
+PASS file-fallback: fallback healthy commit is retained and queued
+PASS sync: parent submitted
+PASS sync: dependent child submitted before parent lands
+PASS sync: pending parent blocks sync without changing local tip
+PASS sync: rejected parent preserves descendant work
+PASS sync: dirty sync refuses without losing work
+PASS sync: untracked sync refuses without losing work
+PASS sync: ignored local files also block sync without data loss
+PASS sync: squash sync replays subsequent work
+PASS sync: exactly child and later commit replayed
+PASS sync: sync preserves final tree and does not replay accepted parent
+PASS sync: original submitted dependency remains retained
+PASS sync: original submitted child is no longer a valid local replay boundary
+PASS sync: mapped rewritten child permits second squash sync
+PASS http-proc: registered without validator/wait process
+PASS http-proc: reference and queued receipt exist at successful push return
+PASS http-proc: separate engine visibility, retention and queue precede hook ok
+PASS http-proc: fresh pre-receive quarantine is not visible to separate engine
+PASS http-proc: submission ref is virtual and trunk has not moved
+PASS http-proc: identical retry
+PASS http-proc: retry creates one queue entry
+PASS http-proc: owned draft
+PASS http-proc: DELETE_FORBIDDEN
+
+thread '<unnamed>' (8828) panicked at experiments/s1\transport.rs:58:33:
+called `Result::unwrap()` on an `Err` value: Os { code: 10035, kind: WouldBlock, message: "A non-blocking socket operation could not be completed immediately." }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'main' (9308) panicked at experiments/s1\scenarios.rs:133:9:
+FAIL REF_FORBIDDEN in \\?\D:\a\mai\mai\.throwaway\s1-ci\http-proc
+
+thread 'main' (9308) panicked at experiments/s1\transport.rs:46:44:
+called `Result::unwrap()` on an `Err` value: Any { .. }
+stack backtrace:
+   0:     0x7ff6ce0320c9 - std::backtrace_rs::backtrace::win64::trace
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\..\..\backtrace\src\backtrace\win64.rs:85
+   1:     0x7ff6ce0320c9 - std::backtrace_rs::backtrace::trace_unsynchronized
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\..\..\backtrace\src\backtrace\mod.rs:66
+   2:     0x7ff6ce0320c9 - std::sys::backtrace::_print_fmt
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\sys\backtrace.rs:74
+   3:     0x7ff6ce0320c9 - std::sys::backtrace::impl$0::print::impl$0::fmt
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\sys\backtrace.rs:44
+   4:     0x7ff6ce04199e - core::fmt::write
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\fmt\mod.rs:0
+   5:     0x7ff6ce037954 - core::io::write::default_write_fmt
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\io\write.rs:402
+   6:     0x7ff6ce037954 - core::io::write::Write::write_fmt<std::sys::stdio::windows::Stderr>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\io\write.rs:335
+   7:     0x7ff6ce016b75 - std::sys::backtrace::BacktraceLock::print
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\sys\backtrace.rs:47
+   8:     0x7ff6ce016b75 - std::panicking::default_hook::closure$0
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:292
+   9:     0x7ff6ce02a058 - std::panicking::default_hook
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:319
+  10:     0x7ff6ce02a263 - std::panicking::panic_with_hook
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:815
+  11:     0x7ff6ce016c4e - std::panicking::panic_handler::closure$0
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:688
+  12:     0x7ff6ce0146ef - std::sys::backtrace::__rust_end_short_backtrace<std::panicking::panic_handler::closure_env$0,never$>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\sys\backtrace.rs:182
+  13:     0x7ff6ce01744e - std::panicking::panic_handler
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:679
+  14:     0x7ff6ce048a0d - core::panicking::panic_fmt
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\panicking.rs:80
+  15:     0x7ff6ce048767 - core::result::unwrap_failed
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\result.rs:1871
+  16:     0x7ff6cdffb9bd - <main[d3d4cac1fdcf9ca]::transport::Server as core[6dff922281fde550]::ops::drop::Drop>::drop
+  17:     0x7ff6ce00d20b - core[6dff922281fde550]::ptr::drop_glue::<main[d3d4cac1fdcf9ca]::transport::Server>
+  18:     0x7ff6cdff051e - main[d3d4cac1fdcf9ca]::scenarios::run
+  19:     0x7ff9ca0abb00 - _CxxFrameHandler3
+  20:     0x7ff9ca093a9d - is_exception_typeof
+  21:     0x7ff9ca0aae8d - _C_specific_handler
+  22:     0x7ff9ca092ce2 - is_exception_typeof
+  23:     0x7ff9ca0ab8f8 - _CxxFrameHandler3
+  24:     0x7ff9d8be6faf - _chkstk
+  25:     0x7ff9d8a8e593 - RtlUnwindEx
+  26:     0x7ff9ca0ab3d6 - _C_specific_handler
+  27:     0x7ff9ca091c20 - is_exception_typeof
+  28:     0x7ff9ca092dd8 - is_exception_typeof
+  29:     0x7ff9ca0ab8f8 - _CxxFrameHandler3
+  30:     0x7ff9d8be6f2f - _chkstk
+  31:     0x7ff9d8a92327 - RtlLocateExtendedFeature
+  32:     0x7ff9d8a8a961 - RtlRaiseException
+  33:     0x7ff9d5de75fa - RaiseException
+  34:     0x7ff9ca0955a9 - CxxThrowException
+  35:     0x7ff6ce037d6d - panic_unwind::imp::throw_exception
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\panic_unwind\src\seh.rs:368
+  36:     0x7ff6ce037c45 - panic_unwind::imp::panic
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\panic_unwind\src\seh.rs:302
+  37:     0x7ff6ce037c45 - panic_unwind::__rust_start_panic
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\panic_unwind\src\lib.rs:95
+  38:     0x7ff6ce0171ff - std::panicking::rust_panic
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:887
+  39:     0x7ff6ce02a2de - std::panicking::panic_with_hook
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:840
+  40:     0x7ff6ce016c4e - std::panicking::panic_handler::closure$0
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:688
+  41:     0x7ff6ce0146ef - std::sys::backtrace::__rust_end_short_backtrace<std::panicking::panic_handler::closure_env$0,never$>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\sys\backtrace.rs:182
+  42:     0x7ff6ce01744e - std::panicking::panic_handler
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:679
+  43:     0x7ff6ce048a0d - core::panicking::panic_fmt
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\panicking.rs:80
+  44:     0x7ff6cdfe64a0 - main[d3d4cac1fdcf9ca]::scenarios::proc_suite::{closure#1}
+  45:     0x7ff6cdfe6225 - main[d3d4cac1fdcf9ca]::scenarios::proc_suite::{closure#1}
+  46:     0x7ff6cdfe9ae2 - main[d3d4cac1fdcf9ca]::scenarios::proc_suite::{closure#1}
+  47:     0x7ff6cdfef944 - main[d3d4cac1fdcf9ca]::scenarios::run
+  48:     0x7ff6cdfdfb70 - main[d3d4cac1fdcf9ca]::main
+  49:     0x7ff6ce0109f6 - <fn() as core[6dff922281fde550]::ops::function::FnOnce<()>>::call_once
+  50:     0x7ff6ce007779 - std[f8439e2c5135d149]::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  51:     0x7ff6cdff26dc - std[f8439e2c5135d149]::rt::lang_start::<()>::{closure#0}
+  52:     0x7ff6ce028d20 - std::rt::lang_start_internal::closure$0
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\rt.rs:175
+  53:     0x7ff6ce028d20 - std::panicking::catch_unwind::do_call
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:576
+  54:     0x7ff6ce028d20 - std::panicking::catch_unwind
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:544
+  55:     0x7ff6ce028d20 - std::panic::catch_unwind
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panic.rs:359
+  56:     0x7ff6ce028d20 - std::rt::lang_start_internal
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\rt.rs:171
+  57:     0x7ff6cdff1707 - std[f8439e2c5135d149]::rt::lang_start::<()>
+  58:     0x7ff6cdfe2d59 - main
+  59:     0x7ff6ce0466bf - invoke_main
+                               at D:\a\_work\1\s\src\vctools\crt\vcstartup\src\startup\exe_common.inl:78
+  60:     0x7ff6ce0466bf - __scrt_common_main_seh
+                               at D:\a\_work\1\s\src\vctools\crt\vcstartup\src\startup\exe_common.inl:288
+  61:     0x7ff9d7e2e987 - BaseThreadInitThunk
+  62:     0x7ff9d8b0c53c - RtlUserThreadStart

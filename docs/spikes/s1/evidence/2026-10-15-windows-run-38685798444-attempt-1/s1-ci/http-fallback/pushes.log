@@ -1,0 +1,45 @@
+fallback engine down exit=exit code: 0
+To http://127.0.0.1:58515/http-fallback/authority.git
+*	HEAD:refs/incoming/alice/f4c42011c20b4a93e03fc8338b161075c6b5d642	[new reference]
+Done
+remote: RETAINED_PENDING_REGISTRATION f4c42011c20b4a93e03fc8338b161075c6b5d642 ENGINE_UNAVAILABLE        
+
+refs=["HEAD:refs/incoming/alice/f4c42011c20b4a93e03fc8338b161075c6b5d642"] options=[] exit=exit code: 0 elapsed_ms=100
+To http://127.0.0.1:58515/http-fallback/authority.git
+=	HEAD:refs/incoming/alice/f4c42011c20b4a93e03fc8338b161075c6b5d642	[up to date]
+Done
+
+refs=["HEAD:refs/heads/main"] options=[] exit=exit code: 1 elapsed_ms=445
+To http://127.0.0.1:58515/http-fallback/authority.git
+!	HEAD:refs/heads/main	[remote rejected] (pre-receive hook declined)
+Done
+remote: REF_FORBIDDEN        
+error: failed to push some refs to 'http://127.0.0.1:58515/http-fallback/authority.git'
+
+refs=["HEAD:refs/for/main"] options=[] exit=exit code: 1 elapsed_ms=475
+To http://127.0.0.1:58515/http-fallback/authority.git
+!	HEAD:refs/for/main	[remote rejected] (pre-receive hook declined)
+Done
+remote: REF_FORBIDDEN        
+error: failed to push some refs to 'http://127.0.0.1:58515/http-fallback/authority.git'
+
+refs=["HEAD:refs/incoming/bob/f4c42011c20b4a93e03fc8338b161075c6b5d642"] options=[] exit=exit code: 1 elapsed_ms=685
+To http://127.0.0.1:58515/http-fallback/authority.git
+!	HEAD:refs/incoming/bob/f4c42011c20b4a93e03fc8338b161075c6b5d642	[remote rejected] (pre-receive hook declined)
+Done
+remote: REF_FORBIDDEN        
+error: failed to push some refs to 'http://127.0.0.1:58515/http-fallback/authority.git'
+
+refs=["HEAD:refs/incoming/alice/3ebfd812d7db54c34804ab221cd2024a06010439"] options=["mai.priority=sev"] exit=exit code: 1 elapsed_ms=560
+To http://127.0.0.1:58515/http-fallback/authority.git
+!	HEAD:refs/incoming/alice/3ebfd812d7db54c34804ab221cd2024a06010439	[remote rejected] (pre-receive hook declined)
+Done
+remote: GRANT_REQUIRED        
+error: failed to push some refs to 'http://127.0.0.1:58515/http-fallback/authority.git'
+
+refs=["HEAD:refs/incoming/alice/3ebfd812d7db54c34804ab221cd2024a06010439"] options=[] exit=exit code: 0 elapsed_ms=489
+To http://127.0.0.1:58515/http-fallback/authority.git
+*	HEAD:refs/incoming/alice/3ebfd812d7db54c34804ab221cd2024a06010439	[new reference]
+Done
+remote: QUEUED 3ebfd812d7db54c34804ab221cd2024a06010439        
+

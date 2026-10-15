@@ -1,0 +1,9 @@
+
+running 4 tests
+test tests::refs_are_allowlisted ... ok
+test tests::native_windows_paths_and_file_urls ... ok
+test tests::options_are_bounded_and_typed ... ok
+test transport::tests::nonblocking_connection_waits_for_request_and_denies_missing_credentials ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+

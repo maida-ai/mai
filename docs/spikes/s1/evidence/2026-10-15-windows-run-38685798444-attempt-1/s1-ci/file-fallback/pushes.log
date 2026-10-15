@@ -1,0 +1,45 @@
+fallback engine down exit=exit code: 0
+To file:///D:/a/mai/mai/.throwaway/s1-ci/file-fallback/authority.git
+*	HEAD:refs/incoming/alice/103bfddc43b4796b3fc6d213fb3b28b53d891984	[new reference]
+Done
+remote: RETAINED_PENDING_REGISTRATION 103bfddc43b4796b3fc6d213fb3b28b53d891984 ENGINE_UNAVAILABLE        
+
+refs=["HEAD:refs/incoming/alice/103bfddc43b4796b3fc6d213fb3b28b53d891984"] options=[] exit=exit code: 0 elapsed_ms=56
+To file:///D:/a/mai/mai/.throwaway/s1-ci/file-fallback/authority.git
+=	HEAD:refs/incoming/alice/103bfddc43b4796b3fc6d213fb3b28b53d891984	[up to date]
+Done
+
+refs=["HEAD:refs/heads/main"] options=[] exit=exit code: 1 elapsed_ms=203
+To file:///D:/a/mai/mai/.throwaway/s1-ci/file-fallback/authority.git
+!	HEAD:refs/heads/main	[remote rejected] (pre-receive hook declined)
+Done
+remote: REF_FORBIDDEN        
+error: failed to push some refs to 'file:///D:/a/mai/mai/.throwaway/s1-ci/file-fallback/authority.git'
+
+refs=["HEAD:refs/for/main"] options=[] exit=exit code: 1 elapsed_ms=221
+To file:///D:/a/mai/mai/.throwaway/s1-ci/file-fallback/authority.git
+!	HEAD:refs/for/main	[remote rejected] (pre-receive hook declined)
+Done
+remote: REF_FORBIDDEN        
+error: failed to push some refs to 'file:///D:/a/mai/mai/.throwaway/s1-ci/file-fallback/authority.git'
+
+refs=["HEAD:refs/incoming/bob/103bfddc43b4796b3fc6d213fb3b28b53d891984"] options=[] exit=exit code: 1 elapsed_ms=206
+To file:///D:/a/mai/mai/.throwaway/s1-ci/file-fallback/authority.git
+!	HEAD:refs/incoming/bob/103bfddc43b4796b3fc6d213fb3b28b53d891984	[remote rejected] (pre-receive hook declined)
+Done
+remote: REF_FORBIDDEN        
+error: failed to push some refs to 'file:///D:/a/mai/mai/.throwaway/s1-ci/file-fallback/authority.git'
+
+refs=["HEAD:refs/incoming/alice/0eb1b3a18f2fa7d74380083c2e50cb9de4459710"] options=["mai.priority=sev"] exit=exit code: 1 elapsed_ms=220
+To file:///D:/a/mai/mai/.throwaway/s1-ci/file-fallback/authority.git
+!	HEAD:refs/incoming/alice/0eb1b3a18f2fa7d74380083c2e50cb9de4459710	[remote rejected] (pre-receive hook declined)
+Done
+remote: GRANT_REQUIRED        
+error: failed to push some refs to 'file:///D:/a/mai/mai/.throwaway/s1-ci/file-fallback/authority.git'
+
+refs=["HEAD:refs/incoming/alice/0eb1b3a18f2fa7d74380083c2e50cb9de4459710"] options=[] exit=exit code: 0 elapsed_ms=315
+To file:///D:/a/mai/mai/.throwaway/s1-ci/file-fallback/authority.git
+*	HEAD:refs/incoming/alice/0eb1b3a18f2fa7d74380083c2e50cb9de4459710	[new reference]
+Done
+remote: QUEUED 0eb1b3a18f2fa7d74380083c2e50cb9de4459710        
+
