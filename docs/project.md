@@ -42,7 +42,7 @@ Architecture decisions and their rationale live in versioned ADRs. Discussions c
 | [S6](https://github.com/maida-ai/mai/issues/56) Lockfiles | Concurrent Cargo, npm and uv dependency additions regenerate and pass the gate |
 | [S7](https://github.com/maida-ai/mai/issues/57) Crash windows | Interrupt registration and every landing step; no lost or duplicate landing; terminal outcomes after restart |
 
-Throwaway scripts and short results belong under `docs/spikes/` when performed. No results are asserted here. Failed go criteria require an ADR design correction before M1.
+Experiment harnesses belong under `experiments/`; short results and selected evidence belong under `docs/spikes/` when performed. Experiment CI runs only on manual dispatch. No results are asserted here. Failed go criteria require an ADR design correction before M1.
 
 ## Open maintainer decisions
 

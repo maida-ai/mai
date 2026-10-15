@@ -97,7 +97,7 @@ fn serve(mut stream: TcpStream, root: &Path) {
     assert!(!path.contains("..") && !path.contains('%'));
     let mut child = command("git")
         .arg("http-backend")
-        .env("GIT_PROJECT_ROOT", root)
+        .env("GIT_PROJECT_ROOT", git_path(root))
         .env("GIT_HTTP_EXPORT_ALL", "1")
         .env("PATH_INFO", path)
         .env("QUERY_STRING", query)

@@ -1,0 +1,68 @@
+name: Evidence experiment runner
+
+on:
+  workflow_call:
+    inputs:
+      experiment:
+        description: Experiment directory name under experiments/
+        required: true
+        type: string
+      platform:
+        description: linux, macos, windows, or all
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  experiment:
+    name: ${{ inputs.experiment }} (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ fromJSON(inputs.platform == 'all' && '["ubuntu-latest","macos-latest","windows-latest"]' || inputs.platform == 'macos' && '["macos-latest"]' || inputs.platform == 'windows' && '["windows-latest"]' || '["ubuntu-latest"]') }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      EXPERIMENT: ${{ inputs.experiment }}
+      # Keep Bash scripts and synthetic fixture bytes LF on native Windows too.
+      GIT_CONFIG_COUNT: "1"
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: "false"
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Validate experiment inputs
+        run: |
+          if [[ ! "$EXPERIMENT" =~ ^[a-z][a-z0-9-]*$ ]]; then
+            echo 'Experiment must be a lowercase directory name.' >&2
+            exit 1
+          fi
+          case "$PLATFORM" in
+            linux|macos|windows|all) ;;
+            *) echo 'Unknown experiment platform.' >&2; exit 1 ;;
+          esac
+        env:
+          PLATFORM: ${{ inputs.platform }}
+      - uses: actions/checkout@v4
+        id: checkout
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+      - name: Run experiment
+        run: bash "experiments/$EXPERIMENT/run.sh" ".throwaway/$EXPERIMENT-ci"
+      - name: Collect available evidence, including failures
+        if: always() && steps.checkout.outcome == 'success'
+        run: bash "experiments/$EXPERIMENT/collect.sh" ".throwaway/$EXPERIMENT-ci" evidence-output
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.experiment }}-${{ runner.os }}-${{ runner.arch }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: evidence-output/
+          retention-days: 30
+          if-no-files-found: warn

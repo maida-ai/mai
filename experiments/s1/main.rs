@@ -16,7 +16,13 @@ fn command(program: &str) -> Command {
         }
     }
     c.env("GIT_CONFIG_NOSYSTEM", "1")
-        .env("GIT_CONFIG_GLOBAL", "/dev/null")
+        .env(
+            "GIT_CONFIG_GLOBAL",
+            if cfg!(windows) { "NUL" } else { "/dev/null" },
+        )
+        .env("GIT_CONFIG_COUNT", "1")
+        .env("GIT_CONFIG_KEY_0", "core.autocrlf")
+        .env("GIT_CONFIG_VALUE_0", "false")
         .env("GIT_TERMINAL_PROMPT", "0")
         .env("GIT_AUTHOR_NAME", "S1 Fixture")
         .env("GIT_AUTHOR_EMAIL", "s1@example.invalid")
@@ -28,10 +34,44 @@ fn command(program: &str) -> Command {
 fn git(repo: &Path, args: &[&str]) -> Output {
     command("git")
         .arg("-C")
-        .arg(repo)
+        .arg(git_path(repo))
         .args(args)
         .output()
         .unwrap()
+}
+// Git for Windows and its hook shell accept drive paths with forward slashes,
+// not Rust's canonical extended-length prefix. Unix filenames stay untouched.
+fn windows_git_path(path: &str) -> String {
+    let path = path.strip_prefix(r"\\?\").unwrap_or(path);
+    assert!(
+        !path.starts_with("UNC\\"),
+        "use a local drive for the fixture"
+    );
+    path.replace('\\', "/")
+}
+fn git_path(path: &Path) -> String {
+    let path = path.to_str().expect("UTF-8 fixture path");
+    if cfg!(windows) {
+        windows_git_path(path)
+    } else {
+        path.into()
+    }
+}
+fn file_url(path: &str) -> String {
+    let encoded: String = path
+        .bytes()
+        .map(|b| {
+            if b.is_ascii_alphanumeric() || b"/:-._~".contains(&b) {
+                (b as char).to_string()
+            } else {
+                format!("%{b:02X}")
+            }
+        })
+        .collect();
+    format!(
+        "file://{}{encoded}",
+        if path.starts_with('/') { "" } else { "/" }
+    )
 }
 fn text(out: Output) -> String {
     assert!(
@@ -354,6 +394,21 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn native_windows_paths_and_file_urls() {
+        assert_eq!(
+            windows_git_path(r"\\?\C:\fixture dir\s1.exe"),
+            "C:/fixture dir/s1.exe"
+        );
+        assert_eq!(
+            file_url("C:/fixture dir/a#b"),
+            "file:///C:/fixture%20dir/a%23b"
+        );
+        assert_eq!(
+            file_url("/tmp/fixture dir/a%20b"),
+            "file:///tmp/fixture%20dir/a%2520b"
+        );
+    }
     fn opts(s: &[&str], auth: Option<&str>) -> Result<String, &'static str> {
         options(&s.iter().map(|s| s.to_string()).collect::<Vec<_>>(), auth)
     }
