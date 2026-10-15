@@ -1,0 +1,7 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/uv
+command=/Users/runner/work/mai/mai/.throwaway/s6-ci.build/s6 ["sleep"]
+timeout_ms=100
+
+status=signal: 9 (SIGKILL)
+timeout=true
+elapsed_ms=132

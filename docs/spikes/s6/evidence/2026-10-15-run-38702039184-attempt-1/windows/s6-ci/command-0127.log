@@ -1,0 +1,8 @@
+cwd=D:/a/mai/mai/.throwaway/s6-ci\npm
+command=git ["write-tree"]
+timeout_ms=120000
+95e44763f781e1ecfbc26c3e47a037bf5c5a7431
+
+status=exit code: 0
+timeout=false
+elapsed_ms=22

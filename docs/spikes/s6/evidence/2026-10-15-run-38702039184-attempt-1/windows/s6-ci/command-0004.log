@@ -1,0 +1,8 @@
+cwd=D:/a/mai/mai/.throwaway/s6-ci
+command=node ["--version"]
+timeout_ms=120000
+v22.23.3
+
+status=exit code: 0
+timeout=false
+elapsed_ms=23

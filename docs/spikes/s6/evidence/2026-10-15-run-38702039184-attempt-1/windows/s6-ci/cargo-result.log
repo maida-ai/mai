@@ -1,0 +1,12 @@
+PASS ecosystem=cargo
+base=5208233cc46f9e6a0e74b2584d39891ebe9c9d37
+alpha_manifest=f5b1fca0d219acfcb065d75ac771747e366a7393
+pre_regeneration_tree=e3bbddac1caa9663c3945d37804e4fbdd3d5d218
+final_tree=d58f2043b1da5fffb8b7d7f7c32ebf68d10b45be
+checked_tree=d58f2043b1da5fffb8b7d7f7c32ebf68d10b45be
+parent=969f4550c928bf4f403accd4e7514b3aab071770
+policy_blob=088115eac4c7a6b4bb3d3832081074a221961179
+attempt=1
+landed=1c2636246ee732fa95bdaff8b189d8a6ec58bc10
+checks=independent-manifest-merge,trunk-lock-reset,offline-regeneration,byte-reproducibility,gate-tree-unchanged,both-imports,stale-tree-parent-attempt-rejection,policy-replacement,script-replacement,gate-failure,dependency-failure-offline,timeout,exact-landed-tree
+limitations=local-source-version-pinned-fixtures;no-registry-or-production-qualification;timeout-probe-not-real-resolver-hang

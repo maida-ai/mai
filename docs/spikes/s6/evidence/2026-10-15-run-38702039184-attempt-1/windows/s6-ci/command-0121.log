@@ -1,0 +1,28 @@
+cwd=D:/a/mai/mai/.throwaway/s6-ci\npm
+command=npm ["install", "--package-lock-only", "--offline", "--ignore-scripts", "--no-audit", "--no-fund", "--strict-peer-deps", "--install-links"]
+timeout_ms=120000
+npm error code ERESOLVE
+npm error ERESOLVE unable to resolve dependency tree
+npm error
+npm error While resolving: s6-fixture@0.0.1
+npm error Found: alpha@undefined
+npm error node_modules/alpha
+npm error   alpha@"file:vendor/alpha" from the root project
+npm error
+npm error Could not resolve dependency:
+npm error peer alpha@"2.0.0" from beta@1.0.0
+npm error node_modules/beta
+npm error   optional beta@"file:vendor/beta" from the root project
+npm error
+npm error Fix the upstream dependency conflict, or retry
+npm error this command with --no-strict-peer-deps, --force, or --legacy-peer-deps
+npm error to accept an incorrect (and potentially broken) dependency resolution.
+npm error
+npm error
+npm error For a full report see:
+npm error D:\a\mai\mai\.throwaway\s6-ci\npm-cache\_logs\2026-10-15T07_56_32_024Z-eresolve-report.txt
+npm error A complete log of this run can be found in: D:\a\mai\mai\.throwaway\s6-ci\npm-cache\_logs\2026-10-15T07_56_32_024Z-debug-0.log
+
+status=exit code: 1
+timeout=false
+elapsed_ms=673

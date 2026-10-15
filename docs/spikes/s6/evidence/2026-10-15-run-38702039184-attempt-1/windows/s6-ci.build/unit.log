@@ -1,0 +1,10 @@
+
+running 6 tests
+test tests::exact_success ... ok
+test tests::failed_gate_never_passes ... ok
+test tests::independent_manifest_inputs ... ok
+test tests::reject_executable_and_config_changes ... ok
+test tests::reject_stale_dimensions ... ok
+test tests::native_windows_paths ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s

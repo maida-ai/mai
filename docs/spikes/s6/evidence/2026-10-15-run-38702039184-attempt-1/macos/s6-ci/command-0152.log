@@ -1,0 +1,8 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/uv
+command=git ["rev-parse", "HEAD"]
+timeout_ms=120000
+c7bf5ca5186d5b5e2f20190b28f0b1472aacf518
+
+status=exit status: 0
+timeout=false
+elapsed_ms=17

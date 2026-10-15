@@ -1,0 +1,9 @@
+cwd=D:/a/mai/mai/.throwaway/s6-ci\cargo
+command=git ["commit", "-m", "alpha addition and generated lock"]
+timeout_ms=120000
+[agent-alpha 4bf8b72] alpha addition and generated lock
+ 2 files changed, 8 insertions(+), 1 deletion(-)
+
+status=exit code: 0
+timeout=false
+elapsed_ms=42

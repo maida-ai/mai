@@ -1,0 +1,12 @@
+PASS ecosystem=npm
+base=21b5c2a70aff944f76cbc6779b89f037f7f619e3
+alpha_manifest=b382030f48a4d8deb9f29720b06a84a92951c733
+pre_regeneration_tree=df6869b33d865ac38966b85dd4a8665a54bda18a
+final_tree=95e44763f781e1ecfbc26c3e47a037bf5c5a7431
+checked_tree=95e44763f781e1ecfbc26c3e47a037bf5c5a7431
+parent=e1a166335782b0148f0f3811301f5282ebee0a7d
+policy_blob=088115eac4c7a6b4bb3d3832081074a221961179
+attempt=1
+landed=f3d0bfd590302b343ff36f6bcadac1105bb15603
+checks=independent-manifest-merge,trunk-lock-reset,offline-regeneration,byte-reproducibility,gate-tree-unchanged,both-imports,stale-tree-parent-attempt-rejection,policy-replacement,script-replacement,gate-failure,dependency-failure-offline,timeout,exact-landed-tree
+limitations=local-source-version-pinned-fixtures;no-registry-or-production-qualification;timeout-probe-not-real-resolver-hang

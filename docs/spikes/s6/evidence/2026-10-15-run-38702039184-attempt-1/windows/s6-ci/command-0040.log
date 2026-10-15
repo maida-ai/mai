@@ -1,0 +1,8 @@
+cwd=D:/a/mai/mai/.throwaway/s6-ci\cargo
+command=cargo ["generate-lockfile", "--offline"]
+timeout_ms=120000
+[1m[92m     Locking[0m 2 packages to highest compatible versions
+
+status=exit code: 0
+timeout=false
+elapsed_ms=64

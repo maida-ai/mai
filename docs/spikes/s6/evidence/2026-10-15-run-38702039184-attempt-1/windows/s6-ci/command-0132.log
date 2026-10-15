@@ -1,0 +1,8 @@
+cwd=D:/a/mai/mai/.throwaway/s6-ci\uv
+command=git ["init", "-b", "main"]
+timeout_ms=120000
+Initialized empty Git repository in D:/a/mai/mai/.throwaway/s6-ci/uv/.git/
+
+status=exit code: 0
+timeout=false
+elapsed_ms=32

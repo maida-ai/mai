@@ -1,0 +1,11 @@
+cwd=D:/a/mai/mai/.throwaway/s6-ci\uv
+command=uv ["lock", "--offline"]
+timeout_ms=120000
+Using CPython 3.12.10 interpreter at: C:\hostedtoolcache\windows\Python\3.12.10\x64\python3.exe
+Resolved 3 packages in 3ms
+Added alpha v1.0.0
+Added beta v1.0.0
+
+status=exit code: 0
+timeout=false
+elapsed_ms=42

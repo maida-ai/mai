@@ -1,0 +1,11 @@
+cwd=/home/runner/work/mai/mai/.throwaway/s6-ci/npm
+command=git ["merge", "--no-edit", "beta-manifest"]
+timeout_ms=120000
+Auto-merging package.json
+Merge made by the 'ort' strategy.
+ package.json | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+status=exit status: 0
+timeout=false
+elapsed_ms=221

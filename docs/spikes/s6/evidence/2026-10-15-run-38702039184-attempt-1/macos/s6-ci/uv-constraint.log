@@ -1,0 +1,12 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/uv
+command=uv ["lock", "--offline"]
+timeout_ms=120000
+error: No solution found when resolving dependencies
+  cause: Because the requested Python version (>=3.10) does not satisfy Python>=4 and beta==1.0.0 depends on Python>=4, we can conclude that beta==1.0.0 cannot be used.
+         And because only beta==1.0.0 is available and your project depends on beta, we can conclude that your project's requirements are unsatisfiable.
+
+hint: The `requires-python` value (>=3.10) includes Python versions that are not supported by your dependencies (e.g., beta==1.0.0 only supports >=4). Consider using a more restrictive `requires-python` value (like >=4).
+
+status=exit status: 1
+timeout=false
+elapsed_ms=246

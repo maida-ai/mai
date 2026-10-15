@@ -1,0 +1,8 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/uv
+command=git ["checkout", "-b", "beta-manifest", "957a82b35ba0639d59a07356f1df2a7146b37c4a"]
+timeout_ms=120000
+Switched to a new branch 'beta-manifest'
+
+status=exit status: 0
+timeout=false
+elapsed_ms=105
