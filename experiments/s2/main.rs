@@ -7,6 +7,25 @@ use std::{
     process::{Command, Stdio},
     time::Instant,
 };
+// Git for Windows cannot consume Rust canonical extended-length paths.
+// Keep Unix filenames unchanged and reject network fixtures explicitly.
+fn windows_git_path(path: &str) -> String {
+    let path = path.strip_prefix(r"\\?\").unwrap_or(path);
+    assert!(
+        !path.starts_with("UNC\\") && !path.starts_with(r"\\") && !path.starts_with("//"),
+        "use a local drive for the fixture"
+    );
+    path.replace('\\', "/")
+}
+fn git_path(path: &Path) -> String {
+    let text = path.to_str().expect("UTF-8 fixture path");
+    if cfg!(windows) {
+        windows_git_path(text)
+    } else {
+        text.into()
+    }
+}
+
 type Snapshot = BTreeMap<String, (String, Vec<u8>)>;
 struct Lab {
     repo: PathBuf,
@@ -18,7 +37,7 @@ impl Lab {
         writeln!(self.log, "git {:?} input_bytes={}", args, input.len()).unwrap();
         let mut c = Command::new("git");
         c.arg("-C")
-            .arg(&self.repo)
+            .arg(git_path(&self.repo))
             .args([
                 "-c",
                 "user.name=S2 fixture",
@@ -127,8 +146,8 @@ impl Lab {
             &[
                 "clone",
                 "--no-checkout",
-                bare.to_str().unwrap(),
-                oracle.to_str().unwrap(),
+                &git_path(&bare),
+                &git_path(&oracle),
             ],
             b"",
         );
@@ -455,6 +474,27 @@ fn trust(l: &mut Lab) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn windows_drive_paths() {
+        assert_eq!(
+            windows_git_path(r"\\?\C:\fixture dir\authority.git"),
+            "C:/fixture dir/authority.git"
+        );
+        assert_eq!(
+            windows_git_path(r"C:\fixture dir\oracle"),
+            "C:/fixture dir/oracle"
+        );
+    }
+    #[test]
+    #[should_panic(expected = "use a local drive")]
+    fn extended_unc_rejected() {
+        windows_git_path(r"\\?\UNC\server\share");
+    }
+    #[test]
+    #[should_panic(expected = "use a local drive")]
+    fn unc_rejected() {
+        windows_git_path(r"\\server\share");
+    }
     #[test]
     fn unique_base() {
         assert_eq!(select_base("abc"), Ok("abc"));

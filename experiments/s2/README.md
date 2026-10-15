@@ -9,7 +9,7 @@ bash experiments/s2/run.sh .throwaway/s2-new
 bash experiments/s2/collect.sh .throwaway/s2-new .throwaway/s2-evidence
 ```
 
-Both output paths and the adjacent `.build` directory must be new. Everything disposable stays under `.throwaway/`. The runner compiles six fast unit checks and executes the corpus before benchmarking. Failures stop the run and retain command output and fixture repositories. Collection copies only explicitly named harness logs and source hashes, never recursively traversing fixtures. No dependencies or network downloads are needed.
+Both output paths and the adjacent `.build` directory must be new. Windows fixtures must use a local drive; UNC paths are rejected. Everything disposable stays under `.throwaway/`. The runner compiles nine fast unit checks and executes the corpus before benchmarking. Failures stop the run and retain command output and fixture repositories. Collection copies only explicitly named harness logs and source hashes, never recursively traversing fixtures. No dependencies or network downloads are needed.
 
 Integration uses a bare repository, `commit-tree`, index plumbing and `merge-tree --write-tree --merge-base=<base>`; it never checks out candidate files. A separate disposable clone supplies the equivalent-base cherry-pick oracle. Successful cases compare both independent expected snapshots and exact oracle tree IDs. Conflicts compare exit classifications and exact unmerged index paths, modes, stages and blob IDs, and retain Git's full conflict diagnostics. The dependent case compares a child's submitted-parent delta against an already squash-integrated and subsequently edited trunk; a deliberately wrong old base must conflict.
 
