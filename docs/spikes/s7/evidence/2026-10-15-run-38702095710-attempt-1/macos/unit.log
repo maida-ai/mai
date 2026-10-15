@@ -1,0 +1,46 @@
+[1m[92m    Updating[0m crates.io index
+[1m[92m Downloading[0m crates ...
+[1m[92m  Downloaded[0m fallible-iterator v0.3.0
+[1m[92m  Downloaded[0m smallvec v1.16.3
+[1m[92m  Downloaded[0m fs2 v0.4.3
+[1m[92m  Downloaded[0m find-msvc-tools v0.1.14
+[1m[92m  Downloaded[0m foldhash v0.2.0
+[1m[92m  Downloaded[0m fallible-streaming-iterator v0.1.9
+[1m[92m  Downloaded[0m pkg-config v0.3.34
+[1m[92m  Downloaded[0m anyhow v1.0.104
+[1m[92m  Downloaded[0m shlex v2.0.1
+[1m[92m  Downloaded[0m hashlink v0.12.2
+[1m[92m  Downloaded[0m bitflags v2.13.2
+[1m[92m  Downloaded[0m cc v1.8.0
+[1m[92m  Downloaded[0m hashbrown v0.17.1
+[1m[92m  Downloaded[0m rusqlite v0.40.2
+[1m[92m  Downloaded[0m vcpkg v0.2.15
+[1m[92m  Downloaded[0m libc v0.2.190
+[1m[92m  Downloaded[0m libsqlite3-sys v0.38.2
+[1m[92m   Compiling[0m shlex v2.0.1
+[1m[92m   Compiling[0m find-msvc-tools v0.1.14
+[1m[92m   Compiling[0m pkg-config v0.3.34
+[1m[92m   Compiling[0m vcpkg v0.2.15
+[1m[92m   Compiling[0m cc v1.8.0
+[1m[92m   Compiling[0m libc v0.2.190
+[1m[92m   Compiling[0m foldhash v0.2.0
+[1m[92m   Compiling[0m hashbrown v0.17.1
+[1m[92m   Compiling[0m anyhow v1.0.104
+[1m[92m   Compiling[0m libsqlite3-sys v0.38.2
+[1m[92m   Compiling[0m hashlink v0.12.2
+[1m[92m   Compiling[0m fallible-streaming-iterator v0.1.9
+[1m[92m   Compiling[0m fallible-iterator v0.3.0
+[1m[92m   Compiling[0m bitflags v2.13.2
+[1m[92m   Compiling[0m smallvec v1.16.3
+[1m[92m   Compiling[0m fs2 v0.4.3
+[1m[92m   Compiling[0m rusqlite v0.40.2
+[1m[92m   Compiling[0m s7-crash-experiment v0.0.0 (/Users/runner/work/mai/mai/experiments/s7)
+[1m[92m    Finished[0m `test` profile [unoptimized + debuginfo] target(s) in 17.74s
+[1m[92m     Running[0m unittests src/main.rs (.throwaway/s7-ci.build/target/debug/deps/s7_crash_experiment-68a5e131b5dd6301)
+
+running 3 tests
+test tests::deadline_is_insert_once ... ok
+test tests::missing_evidence_is_error ... ok
+test tests::terminal_cannot_be_rewritten ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
