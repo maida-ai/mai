@@ -31,3 +31,6 @@ rustc-ice-*.txt
 !CONTRIBUTING.md
 !MAIDA_MIGRATION.md
 !README.md
+
+# Throwaway folders for experimentation
+.throwaway/

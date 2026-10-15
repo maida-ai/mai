@@ -30,3 +30,10 @@ mai is a standalone Apache-2.0 Rust project targeting 3–30 coding agents on on
 14. Objects (symbols/config keys) are the units of locking, conflict and change; file units are explicit reported fallback, never line ranges. M1 has file units; M2 adds parsers, containment and module units. Module scope is not leasable by default; renames are delete-plus-add. Follow [ADR 0004](docs/adr/0004-objects-manifests-and-priority.md).
 15. The engine computes receive-time and landing-time manifests from actual diffs, with parser/fallback evidence, JSON notes and a rebuildable index. Agent-declared touches are intent, never authoritative manifests. Manifest narrowing never proves safety or authorizes a landing.
 16. Priority orders queues, preempts leases after notice/grace and assigns conflict resolution; it never chooses content, overwrites work, bypasses leases or weakens the gate. Normal is default; sev/high grants are audited and expire. Engine aging and dependency inheritance are explicit controlled exceptions, with a sev cap. Lower-priority conflicts resolve; ties use later lander. check.sev_gate remains an unresolved maintainer decision and must not be silently enabled.
+
+## Coding and testing
+
+* No backwards compatibility required until version 0.1+
+* Use Rust and the existing toolchain. Read source, Cargo.toml, Cargo.lock, nearby tests and relevant docs before code changes. Add no production dependency without a concrete need and authorization. Prefer Git CLI merges/ref updates; in-process readers require profiling evidence.
+* Task / Work should be split into commits in its own branch.
+* Commits must be atomic and self-contained if possible.

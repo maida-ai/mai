@@ -1,0 +1,9 @@
+refs=["HEAD:refs/for/main"] options=[] exit=exit status: 0 elapsed_ms=38
+To file://<RUN_ROOT>/sync/authority.git
+*	HEAD:refs/mai/changes/15457544483547e9302191952f64c3076a82722a	[new reference]
+Done
+
+refs=["HEAD:refs/for/main"] options=[] exit=exit status: 0 elapsed_ms=38
+To file://<RUN_ROOT>/sync/authority.git
+*	HEAD:refs/mai/changes/dd6405a7ef3621d424ee07965304037e85a405a7	[new reference]
+Done

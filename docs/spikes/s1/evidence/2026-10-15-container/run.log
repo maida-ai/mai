@@ -1,0 +1,177 @@
+S1 fixture run: <RUN_ROOT>
+git version 2.43.0
+rustc 1.97.0 (2d8144b78 2026-07-07)
+Linux 7.0.0-34-generic x86_64
+2026-10-15T01:41:27Z
+PASS file-proc: registered without validator/wait process
+PASS file-proc: reference and queued receipt exist at successful push return
+PASS file-proc: separate engine visibility, retention and queue precede hook ok
+PASS file-proc: fresh pre-receive quarantine is not visible to separate engine
+PASS file-proc: submission ref is virtual and trunk has not moved
+PASS file-proc: identical retry
+PASS file-proc: retry creates one queue entry
+PASS file-proc: owned draft
+PASS file-proc: DELETE_FORBIDDEN
+PASS file-proc: REF_FORBIDDEN
+PASS file-proc: REF_FORBIDDEN
+PASS file-proc: REF_FORBIDDEN
+PASS file-proc: REF_FORBIDDEN
+PASS file-proc: REF_FORBIDDEN
+PASS file-proc: GRANT_REQUIRED
+PASS file-proc: GRANT_REQUIRED
+PASS file-proc: INVALID_PRIORITY
+PASS file-proc: INACTIVE_INCIDENT
+PASS file-proc: UNKNOWN_OPTION
+PASS file-proc: INVALID_TOUCHES
+PASS file-proc: DUPLICATE_OPTION
+PASS file-proc: OPTION_LIMIT
+PASS file-proc: OPTION_LIMIT
+PASS file-proc: declared file identity can be spoofed (not authentication)
+PASS file-proc: GRANT_REQUIRED
+PASS file-proc: REF_FORBIDDEN
+PASS file-proc: mixed push retains admitted ref while rejecting trunk
+PASS file-proc: ENGINE_UNAVAILABLE
+PASS file-proc: engine down yields no admission
+PASS file-proc: retry after engine recovery
+PASS file-proc: INTERRUPTED_AFTER_REF
+PASS file-proc: interrupted registration retains object without queue claim
+PASS file-proc: retry reconciles retained object
+PASS file-proc: hook exits after registration before reply
+PASS file-proc: retry after lost reply
+PASS file-proc: lost reply retry does not duplicate registration
+PASS file-proc: killed client leaves acknowledged-side registration recoverable
+PASS file-proc: retry after client disconnect
+PASS file-proc: disconnect retry is idempotent
+PASS file-proc: no validation or landing fabricated
+PASS file-fallback: fallback transport success is not queued admission
+PASS file-fallback: incoming ref retains unregistered commit
+PASS file-fallback: identical fallback retry is up-to-date
+PASS file-fallback: up-to-date retry does not rerun post-receive
+PASS file-fallback: reconciliation registers retained incoming exactly once
+PASS file-fallback: repeated reconciliation idempotent
+PASS file-fallback: REF_FORBIDDEN
+PASS file-fallback: REF_FORBIDDEN
+PASS file-fallback: REF_FORBIDDEN
+PASS file-fallback: GRANT_REQUIRED
+PASS file-fallback: fallback healthy post-receive admission
+PASS file-fallback: fallback healthy commit is retained and queued
+PASS sync: parent submitted
+PASS sync: dependent child submitted before parent lands
+PASS sync: pending parent blocks sync without changing local tip
+PASS sync: rejected parent preserves descendant work
+PASS sync: dirty sync refuses without losing work
+PASS sync: untracked sync refuses without losing work
+PASS sync: ignored local files also block sync without data loss
+PASS sync: squash sync replays subsequent work
+PASS sync: exactly child and later commit replayed
+PASS sync: sync preserves final tree and does not replay accepted parent
+PASS sync: original submitted dependency remains retained
+PASS sync: original submitted child is no longer a valid local replay boundary
+PASS sync: mapped rewritten child permits second squash sync
+PASS http-proc: registered without validator/wait process
+PASS http-proc: reference and queued receipt exist at successful push return
+PASS http-proc: separate engine visibility, retention and queue precede hook ok
+PASS http-proc: fresh pre-receive quarantine is not visible to separate engine
+PASS http-proc: submission ref is virtual and trunk has not moved
+PASS http-proc: identical retry
+PASS http-proc: retry creates one queue entry
+PASS http-proc: owned draft
+PASS http-proc: DELETE_FORBIDDEN
+PASS http-proc: REF_FORBIDDEN
+PASS http-proc: REF_FORBIDDEN
+PASS http-proc: REF_FORBIDDEN
+PASS http-proc: REF_FORBIDDEN
+PASS http-proc: REF_FORBIDDEN
+PASS http-proc: GRANT_REQUIRED
+PASS http-proc: GRANT_REQUIRED
+PASS http-proc: INVALID_PRIORITY
+PASS http-proc: INACTIVE_INCIDENT
+PASS http-proc: UNKNOWN_OPTION
+PASS http-proc: INVALID_TOUCHES
+PASS http-proc: DUPLICATE_OPTION
+PASS http-proc: OPTION_LIMIT
+PASS http-proc: OPTION_LIMIT
+PASS http-proc: IDENTITY_MISMATCH
+PASS http-proc: synthetic authenticated scoped incident grant
+PASS http-proc: HTTP without fixture credential denied
+PASS http-proc: REF_FORBIDDEN
+PASS http-proc: mixed push retains admitted ref while rejecting trunk
+PASS http-proc: ENGINE_UNAVAILABLE
+PASS http-proc: engine down yields no admission
+PASS http-proc: retry after engine recovery
+PASS http-proc: INTERRUPTED_AFTER_REF
+PASS http-proc: interrupted registration retains object without queue claim
+PASS http-proc: retry reconciles retained object
+PASS http-proc: hook exits after registration before reply
+PASS http-proc: retry after lost reply
+PASS http-proc: lost reply retry does not duplicate registration
+PASS http-proc: no validation or landing fabricated
+PASS http-fallback: fallback transport success is not queued admission
+PASS http-fallback: incoming ref retains unregistered commit
+PASS http-fallback: identical fallback retry is up-to-date
+PASS http-fallback: up-to-date retry does not rerun post-receive
+PASS http-fallback: reconciliation registers retained incoming exactly once
+PASS http-fallback: repeated reconciliation idempotent
+PASS http-fallback: REF_FORBIDDEN
+PASS http-fallback: REF_FORBIDDEN
+PASS http-fallback: REF_FORBIDDEN
+PASS http-fallback: GRANT_REQUIRED
+PASS http-fallback: fallback healthy post-receive admission
+PASS http-fallback: fallback healthy commit is retained and queued
+Container image: alpine/git@sha256:ce84fd6a057b4dc5cf5009da2dd832f1c6d096c1984bf50496cf3c256402264d
+Docker server: 29.8.2
+Container client: git version 2.54.0
+PASS container-proc: container cloned authority over HTTP
+PASS container-proc: registered without validator/wait process
+PASS container-proc: reference and queued receipt exist at successful push return
+PASS container-proc: separate engine visibility, retention and queue precede hook ok
+PASS container-proc: fresh pre-receive quarantine is not visible to separate engine
+PASS container-proc: submission ref is virtual and trunk has not moved
+PASS container-proc: identical retry
+PASS container-proc: retry creates one queue entry
+PASS container-proc: owned draft
+PASS container-proc: DELETE_FORBIDDEN
+PASS container-proc: REF_FORBIDDEN
+PASS container-proc: REF_FORBIDDEN
+PASS container-proc: REF_FORBIDDEN
+PASS container-proc: REF_FORBIDDEN
+PASS container-proc: REF_FORBIDDEN
+PASS container-proc: GRANT_REQUIRED
+PASS container-proc: GRANT_REQUIRED
+PASS container-proc: INVALID_PRIORITY
+PASS container-proc: INACTIVE_INCIDENT
+PASS container-proc: UNKNOWN_OPTION
+PASS container-proc: INVALID_TOUCHES
+PASS container-proc: DUPLICATE_OPTION
+PASS container-proc: OPTION_LIMIT
+PASS container-proc: OPTION_LIMIT
+PASS container-proc: IDENTITY_MISMATCH
+PASS container-proc: synthetic authenticated scoped incident grant
+PASS container-proc: HTTP without fixture credential denied
+PASS container-proc: REF_FORBIDDEN
+PASS container-proc: mixed push retains admitted ref while rejecting trunk
+PASS container-proc: ENGINE_UNAVAILABLE
+PASS container-proc: engine down yields no admission
+PASS container-proc: retry after engine recovery
+PASS container-proc: INTERRUPTED_AFTER_REF
+PASS container-proc: interrupted registration retains object without queue claim
+PASS container-proc: retry reconciles retained object
+PASS container-proc: hook exits after registration before reply
+PASS container-proc: retry after lost reply
+PASS container-proc: lost reply retry does not duplicate registration
+PASS container-proc: no validation or landing fabricated
+PASS container-fallback: container cloned authority over HTTP
+PASS container-fallback: fallback transport success is not queued admission
+PASS container-fallback: incoming ref retains unregistered commit
+PASS container-fallback: identical fallback retry is up-to-date
+PASS container-fallback: up-to-date retry does not rerun post-receive
+PASS container-fallback: reconciliation registers retained incoming exactly once
+PASS container-fallback: repeated reconciliation idempotent
+PASS container-fallback: REF_FORBIDDEN
+PASS container-fallback: REF_FORBIDDEN
+PASS container-fallback: REF_FORBIDDEN
+PASS container-fallback: GRANT_REQUIRED
+PASS container-fallback: fallback healthy post-receive admission
+PASS container-fallback: fallback healthy commit is retained and queued
+Container clone/push policy and recovery scenarios passed (Docker Desktop host.docker.internal).
+PASS: 167 assertions. PENDING: macOS, Windows, Git 2.40 minimum, production durability/IPC/grant lifecycle; S1 NOT QUALIFIED.
