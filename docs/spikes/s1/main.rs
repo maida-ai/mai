@@ -1,9 +1,11 @@
 //! Disposable S1 experiment. No mai library, daemon, database, or product defaults.
+mod scenarios;
+mod transport;
 use std::{
     env, fs,
     io::{Read, Write},
-    path::Path,
-    process::{Command, Output},
+    path::{Path, PathBuf},
+    process::{Command, Output, Stdio},
 };
 const ZERO: &str = "0000000000000000000000000000000000000000";
 fn command(program: &str) -> Command {
@@ -333,6 +335,9 @@ fn post_receive(repo: &Path) {
 fn main() {
     let args: Vec<_> = env::args().collect();
     match args.get(1).map(String::as_str) {
+        Some("run") => scenarios::run(Path::new(
+            args.get(2).expect("new output directory required"),
+        )),
         Some("proc") => proc_receive(&env::current_dir().unwrap()),
         Some("pre") => pre_receive(&env::current_dir().unwrap()),
         Some("post") => post_receive(&env::current_dir().unwrap()),
@@ -343,7 +348,7 @@ fn main() {
                 std::process::exit(1);
             }
         },
-        _ => panic!("usage: s1 proc | pre | post | engine REPOSITORY OID"),
+        _ => panic!("usage: s1 run NEW_DIRECTORY"),
     }
 }
 #[cfg(test)]
