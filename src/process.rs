@@ -61,6 +61,48 @@ pub struct RunResult {
     pub elapsed_ms: u64,
     pub stdout_tail: String,
     pub stderr_tail: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cleanup_diagnostic: Option<String>,
+}
+const CLEANUP_DIAGNOSTIC_BYTES: usize = 2048;
+fn bounded_cleanup_message(mut message: String) -> String {
+    let mut end = message.len().min(CLEANUP_DIAGNOSTIC_BYTES);
+    while !message.is_char_boundary(end) {
+        end -= 1;
+    }
+    message.truncate(end);
+    message
+}
+fn cleanup_note(diagnostic: &mut Option<String>, message: String) {
+    let message = bounded_cleanup_message(message);
+    *diagnostic = Some(bounded_cleanup_message(match diagnostic.take() {
+        Some(previous) => format!("{previous}; {message}"),
+        None => message,
+    }));
+}
+#[derive(Default)]
+struct CleanupConfirmation {
+    confirmed: bool,
+    last_error: Option<String>,
+}
+impl CleanupConfirmation {
+    fn observe(&mut self, probe: impl FnOnce() -> Result<bool>) {
+        if self.confirmed {
+            return;
+        }
+        match probe() {
+            Ok(confirmed) => {
+                self.confirmed = confirmed;
+                if confirmed {
+                    self.last_error = None;
+                }
+            }
+            Err(error) => {
+                self.confirmed = false;
+                self.last_error = Some(bounded_cleanup_message(format!("{error:#}")));
+            }
+        }
+    }
 }
 fn tail(
     mut input: impl Read,
@@ -109,6 +151,7 @@ pub fn run(spec: &RunSpec, cancellation: &CancellationToken) -> Result<RunResult
             elapsed_ms: 0,
             stdout_tail: String::new(),
             stderr_tail: String::new(),
+            cleanup_diagnostic: None,
         });
     }
     let mut command = Command::new(&spec.program);
@@ -169,30 +212,72 @@ pub fn run(spec: &RunSpec, cancellation: &CancellationToken) -> Result<RunResult
         }
         thread::sleep(Duration::from_millis(5));
     };
-    if supervision.terminate().is_err() {
+    let mut cleanup_diagnostic = None;
+    if let Err(error) = supervision.terminate() {
         outcome = ProcessOutcome::CleanupFailure;
+        cleanup_note(
+            &mut cleanup_diagnostic,
+            format!("terminate descendants: {error:#}"),
+        );
     }
     let cleanup_start = Instant::now();
     let mut child_done = false;
+    let mut confirmation = CleanupConfirmation::default();
     while cleanup_start.elapsed() < Duration::from_secs(1) {
-        child_done = child.try_wait()?.is_some();
-        if child_done
-            && out_reader.is_finished()
-            && err_reader.is_finished()
-            && supervision.quiescent().unwrap_or(false)
-        {
-            break;
+        match child.try_wait() {
+            Ok(status) => child_done = status.is_some(),
+            Err(error) => {
+                cleanup_note(
+                    &mut cleanup_diagnostic,
+                    format!("wait for direct child: {error}"),
+                );
+                break;
+            }
+        }
+        if child_done && out_reader.is_finished() && err_reader.is_finished() {
+            confirmation.observe(|| supervision.quiescent());
+            if confirmation.confirmed {
+                break;
+            }
         }
         thread::sleep(Duration::from_millis(5));
     }
-    if !child_done || !supervision.quiescent().unwrap_or(false) {
+    // No second probe: after confirmed quiescence no group member can fork,
+    // and another /proc scan could only add an unrelated disappearing-PID race.
+    if !child_done {
         outcome = ProcessOutcome::CleanupFailure;
+        cleanup_note(
+            &mut cleanup_diagnostic,
+            "direct child did not finish within cleanup bound".into(),
+        );
     }
-    for reader in [out_reader, err_reader] {
+    if !confirmation.confirmed {
+        outcome = ProcessOutcome::CleanupFailure;
+        let detail = confirmation
+            .last_error
+            .unwrap_or_else(|| "process group/job or output readers still active".into());
+        cleanup_note(
+            &mut cleanup_diagnostic,
+            format!("quiescence not confirmed within cleanup bound: {detail}"),
+        );
+    }
+    for (stream, reader) in [("stdout", out_reader), ("stderr", err_reader)] {
         // A deliberately escaped process can retain output handles. Never let
         // that convert a bounded command into an unbounded reader join.
-        if !reader.is_finished() || !matches!(reader.join(), Ok(Ok(()))) {
+        let failure = if !reader.is_finished() {
+            Some(format!(
+                "{stream} reader did not finish within cleanup bound"
+            ))
+        } else {
+            match reader.join() {
+                Ok(Ok(())) => None,
+                Ok(Err(error)) => Some(format!("{stream} reader failed: {error}")),
+                Err(_) => Some(format!("{stream} reader panicked")),
+            }
+        };
+        if let Some(failure) = failure {
             outcome = ProcessOutcome::CleanupFailure;
+            cleanup_note(&mut cleanup_diagnostic, failure);
         }
     }
     let stdout_tail = captured(&out);
@@ -203,5 +288,49 @@ pub fn run(spec: &RunSpec, cancellation: &CancellationToken) -> Result<RunResult
         elapsed_ms: start.elapsed().as_millis().try_into().unwrap_or(u64::MAX),
         stdout_tail,
         stderr_tail,
+        cleanup_diagnostic,
     })
+}
+
+#[cfg(test)]
+mod cleanup_tests {
+    use super::*;
+    #[test]
+    fn confirmed_quiescence_is_never_invalidated_by_an_unrelated_later_probe() {
+        let mut confirmation = CleanupConfirmation::default();
+        confirmation.observe(|| Ok(true));
+        let mut called = false;
+        confirmation.observe(|| {
+            called = true;
+            anyhow::bail!("unrelated /proc entry vanished")
+        });
+        assert!(
+            !called,
+            "confirmed cleanup must not inspect unrelated processes again"
+        );
+        assert!(confirmation.confirmed);
+        assert!(confirmation.last_error.is_none());
+    }
+    #[test]
+    fn persistent_probe_errors_stay_fail_closed_and_diagnostics_are_bounded() {
+        let mut confirmation = CleanupConfirmation::default();
+        confirmation.observe(|| anyhow::bail!("permission denied inspecting process group"));
+        assert!(!confirmation.confirmed);
+        assert!(
+            confirmation
+                .last_error
+                .as_deref()
+                .unwrap()
+                .contains("permission denied")
+        );
+        let mut diagnostic = None;
+        cleanup_note(
+            &mut diagnostic,
+            "quiescence probe failed: ".to_owned() + &"界".repeat(4096),
+        );
+        cleanup_note(&mut diagnostic, "second cleanup failure".into());
+        let diagnostic = diagnostic.unwrap();
+        assert!(diagnostic.len() <= CLEANUP_DIAGNOSTIC_BYTES);
+        assert!(diagnostic.starts_with("quiescence probe failed:"));
+    }
 }

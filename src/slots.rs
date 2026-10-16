@@ -106,8 +106,13 @@ fn git(cwd: &Path, arguments: &[&std::ffi::OsStr]) -> Result<String> {
     )?;
     ensure!(
         result.outcome == ProcessOutcome::Success,
-        "slot Git {:?}: {}",
+        "slot Git {:?}: {}{}",
         result.outcome,
+        result
+            .cleanup_diagnostic
+            .as_ref()
+            .map(|diagnostic| format!("{diagnostic}; "))
+            .unwrap_or_default(),
         result.stderr_tail
     );
     Ok(result.stdout_tail.trim().to_owned())
@@ -133,7 +138,7 @@ impl SlotPool {
                 cache
                     .components()
                     .next()
-                    .is_some_and(|part| part.as_os_str() != ".git"),
+                    .is_some_and(|part| !part.as_os_str().eq_ignore_ascii_case(".git")),
                 "cache cannot include .git"
             );
         }
@@ -269,8 +274,8 @@ impl SlotLease {
                 path.push(part);
                 match fs::symlink_metadata(&path) {
                     Ok(metadata) => ensure!(
-                        !metadata.file_type().is_symlink(),
-                        "symlink in cache path {}",
+                        metadata.file_type().is_dir(),
+                        "cache path component must be a directory, not a file or symlink: {}",
                         path.display()
                     ),
                     Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
@@ -359,6 +364,7 @@ impl SlotLease {
                 &self.clone,
                 &[
                     "ls-tree".as_ref(),
+                    "-z".as_ref(),
                     "-r".as_ref(),
                     "--name-only".as_ref(),
                     candidate.as_ref(),
@@ -380,6 +386,9 @@ impl SlotLease {
                 candidate.as_ref(),
             ],
         )?;
+        // Checkout can introduce symlinks/files at previously safe ancestors.
+        // Validate every destination before any mkdir or restoration rename.
+        self.verify_cache_paths()?;
         for (index, cache) in self.pool.settings.caches.iter().enumerate() {
             let saved = staging.join(index.to_string());
             if saved.exists() {
