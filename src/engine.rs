@@ -8,10 +8,12 @@ use std::{
     fs::{self, File, OpenOptions},
     io::{self, Read, Write},
     path::{Path, PathBuf},
-    process::{Command, Stdio},
     thread,
     time::{Duration, Instant},
 };
+
+#[cfg(unix)]
+use std::process::{Command, Stdio};
 
 const PROTOCOL_VERSION: u32 = 1;
 const MAX_FRAME: usize = 4096;
@@ -232,22 +234,7 @@ pub fn status(root: &Path, autostart: bool) -> Result<Status> {
         .create(true)
         .append(true)
         .open(&log_path)?;
-    let mut command = Command::new(std::env::current_exe()?);
-    command
-        .arg("serve")
-        .arg(root.canonicalize()?)
-        .arg("--foreground")
-        .stdin(Stdio::null())
-        .stdout(Stdio::null())
-        .stderr(log);
-    #[cfg(windows)]
-    {
-        use std::os::windows::process::CommandExt;
-        // Background autostart must not create/inherit an interactive console;
-        // foreground supervision keeps the caller's normal console behavior.
-        command.creation_flags(windows_sys::Win32::System::Threading::CREATE_NO_WINDOW);
-    }
-    let mut child = command.spawn().context("failed to spawn engine")?;
+    let mut child = spawn_background(&root.canonicalize()?, log)?;
     loop {
         if let Ok(status) = exchange(&local, Action::Status, Duration::from_millis(200)) {
             return Ok(status);
@@ -271,6 +258,26 @@ pub fn status(root: &Path, autostart: bool) -> Result<Status> {
         thread::sleep(POLL);
     }
 }
+
+#[cfg(unix)]
+fn spawn_background(root: &Path, log: File) -> Result<std::process::Child> {
+    Command::new(std::env::current_exe()?)
+        .arg("serve")
+        .arg(root)
+        .arg("--foreground")
+        .stdin(Stdio::null())
+        .stdout(Stdio::null())
+        .stderr(log)
+        .spawn()
+        .context("failed to spawn engine")
+}
+
+#[cfg(windows)]
+use background::spawn_background;
+
+#[cfg(windows)]
+#[path = "engine/windows_process.rs"]
+mod background;
 
 pub fn stop(root: &Path) -> Result<Status> {
     exchange(&local_dir(root)?, Action::Stop, IO_TIMEOUT)
@@ -501,8 +508,8 @@ mod transport {
     };
     use windows_sys::Win32::{
         Foundation::{
-            ERROR_BROKEN_PIPE, ERROR_NO_DATA, ERROR_PIPE_CONNECTED, ERROR_PIPE_LISTENING,
-            INVALID_HANDLE_VALUE,
+            ERROR_BROKEN_PIPE, ERROR_NO_DATA, ERROR_PIPE_BUSY, ERROR_PIPE_CONNECTED,
+            ERROR_PIPE_LISTENING, INVALID_HANDLE_VALUE,
         },
         Storage::FileSystem::{FILE_FLAG_FIRST_PIPE_INSTANCE, PIPE_ACCESS_DUPLEX, ReadFile},
         System::Pipes::{
@@ -641,11 +648,19 @@ mod transport {
         }
     }
     pub fn connect(local: &Path, deadline: Instant) -> Result<Stream> {
-        ensure!(Instant::now() < deadline, "IPC connect timed out");
-        let file = OpenOptions::new()
-            .read(true)
-            .write(true)
-            .open(name(local))?;
+        let file = loop {
+            ensure!(Instant::now() < deadline, "IPC connect timed out");
+            match OpenOptions::new().read(true).write(true).open(name(local)) {
+                Ok(file) => break file,
+                Err(error) if error.raw_os_error() == Some(ERROR_PIPE_BUSY as i32) => {
+                    // The previous acknowledged client may still be closing.
+                    // Respect the caller's original deadline while the single
+                    // server instance disconnects and becomes available again.
+                    thread::sleep(POLL.min(deadline.saturating_duration_since(Instant::now())));
+                }
+                Err(error) => return Err(error.into()),
+            }
+        };
         let mode = PIPE_READMODE_BYTE | PIPE_NOWAIT;
         // SAFETY: valid pipe handle and mode pointer; optional output pointers absent.
         ensure!(
@@ -681,6 +696,9 @@ mod transport {
             let listener = Listener::bind(temp.path()).unwrap();
             let mut client = connect(temp.path(), Instant::now() + IO_TIMEOUT).unwrap();
             let mut server = accept(&listener);
+            let start = Instant::now();
+            assert!(connect(temp.path(), start + Duration::from_millis(40)).is_err());
+            assert!(start.elapsed() < Duration::from_secs(1));
             let mut byte = [0];
             assert_eq!(
                 client.read(&mut byte).unwrap_err().kind(),

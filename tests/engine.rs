@@ -43,7 +43,7 @@ struct Fixture {
 impl Fixture {
     fn new() -> Self {
         let temp = tempfile::tempdir().unwrap();
-        let root = temp.path().join("authority");
+        let root = temp.path().join("authority space-é");
         let out = cli(&["init"], &root);
         assert!(
             out.status.success(),
@@ -166,32 +166,92 @@ fn killed_engine_restarts_without_changing_git_refs() {
 #[test]
 fn concurrent_autostart_converges_to_one_engine() {
     let f = Fixture::new();
-    let mut clients: Vec<_> = (0..4)
-        .map(|_| {
-            Command::new(env!("CARGO_BIN_EXE_mai"))
+    let clients: Vec<_> = (0..4)
+        .map(|index| {
+            let stdout = f.root.join(format!("client-{index}.out"));
+            let stderr = f.root.join(format!("client-{index}.err"));
+            let child = Command::new(env!("CARGO_BIN_EXE_mai"))
                 .args(["status", "--json"])
                 .arg(&f.root)
-                .stdout(Stdio::piped())
-                .stderr(Stdio::piped())
+                .stdout(std::fs::File::create(&stdout).unwrap())
+                .stderr(std::fs::File::create(&stderr).unwrap())
                 .spawn()
-                .unwrap()
+                .unwrap();
+            (EngineProcess(child), stdout, stderr)
         })
         .collect();
     let values: Vec<serde_json::Value> = clients
-        .drain(..)
-        .map(|c| {
-            let out = c.wait_with_output().unwrap();
+        .into_iter()
+        .map(|(mut child, stdout, stderr)| {
+            let status = wait(&mut child);
             assert!(
-                out.status.success(),
+                status.success(),
                 "{}\n{}",
-                String::from_utf8_lossy(&out.stderr),
+                std::fs::read_to_string(stderr).unwrap(),
                 f.diagnostics()
             );
-            serde_json::from_slice(&out.stdout).unwrap()
+            serde_json::from_slice(&std::fs::read(stdout).unwrap()).unwrap()
         })
         .collect();
     assert!(values.iter().all(|v| v["pid"] == values[0]["pid"]));
     f.stop();
+}
+
+#[test]
+fn autostart_closes_captured_output_before_engine_shutdown() {
+    use std::io::Read;
+    let f = Fixture::new();
+    let mut child = EngineProcess(
+        Command::new(env!("CARGO_BIN_EXE_mai"))
+            .args(["status", "--json"])
+            .arg(&f.root)
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .unwrap(),
+    );
+    let mut stdout = child.stdout.take().unwrap();
+    let mut stderr = child.stderr.take().unwrap();
+    let (tx, rx) = std::sync::mpsc::channel();
+    let reader = thread::spawn(move || {
+        let mut out = Vec::new();
+        let mut err = Vec::new();
+        let result = stdout
+            .read_to_end(&mut out)
+            .and_then(|_| stderr.read_to_end(&mut err));
+        let _ = tx.send((result, out, err));
+    });
+    let exit = wait(&mut child);
+    let captured = rx.recv_timeout(Duration::from_secs(2));
+    // Stop the engine before asserting a failed EOF check, so a broken
+    // inherited handle cannot hang the entire test suite or obscure failures.
+    let stopped = cli(&["stop"], &f.root);
+    if captured.is_err() {
+        let _ = rx.recv_timeout(Duration::from_secs(2));
+    }
+    if reader.is_finished() {
+        reader.join().unwrap();
+    }
+    assert!(
+        captured.is_ok(),
+        "background engine inherited the CLI output pipe\n{}",
+        f.diagnostics()
+    );
+    let (read, out, err) = captured.unwrap();
+    read.unwrap();
+    assert!(
+        exit.success(),
+        "{}\n{}",
+        String::from_utf8_lossy(&err),
+        f.diagnostics()
+    );
+    let status: serde_json::Value = serde_json::from_slice(&out).unwrap();
+    assert_eq!(status["state"], "ready");
+    assert!(
+        stopped.status.success(),
+        "{}",
+        String::from_utf8_lossy(&stopped.stderr)
+    );
 }
 
 #[test]
