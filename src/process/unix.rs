@@ -8,6 +8,28 @@ use std::{
     process::{Child, Command},
 };
 
+#[cfg(target_os = "linux")]
+fn process_disappeared(error: &io::Error) -> bool {
+    error.kind() == io::ErrorKind::NotFound || error.raw_os_error() == Some(libc::ESRCH)
+}
+
+#[cfg(target_os = "linux")]
+fn stat_has_live_group(stat: &[u8], group: libc::pid_t) -> bool {
+    // comm is arbitrary bytes and may contain whitespace and ')'. Numeric
+    // fields after its final delimiter are ASCII, independent of that name.
+    let Some(end) = stat.iter().rposition(|byte| *byte == b')') else {
+        return false;
+    };
+    let mut fields = stat[end + 1..]
+        .split(u8::is_ascii_whitespace)
+        .filter(|field| !field.is_empty());
+    let state = fields.next();
+    let _parent = fields.next();
+    let process_group = fields
+        .next()
+        .and_then(|field| std::str::from_utf8(field).ok()?.parse::<libc::pid_t>().ok());
+    process_group == Some(group) && !matches!(state, Some(b"Z" | b"X"))
+}
 /// A separate, async-signal-safe watchdog outlives a killed owner. Its lifeline
 /// is CLOEXEC; children cannot accidentally keep their owner's claim alive.
 pub(super) struct Supervision {
@@ -154,20 +176,19 @@ impl Supervision {
                 {
                     continue;
                 }
-                let stat = match std::fs::read_to_string(entry.path().join("stat")) {
+                let stat = match std::fs::read(entry.path().join("stat")) {
                     Ok(stat) => stat,
-                    Err(error) if error.kind() == io::ErrorKind::NotFound => continue,
-                    Err(error) => return Err(error.into()),
+                    Err(error) if process_disappeared(&error) => continue,
+                    Err(error) => {
+                        return Err(error).with_context(|| {
+                            format!(
+                                "inspect process {} during quiescence",
+                                entry.file_name().to_string_lossy()
+                            )
+                        });
+                    }
                 };
-                let Some((_, fields)) = stat.rsplit_once(')') else {
-                    continue;
-                };
-                let fields: Vec<_> = fields.split_whitespace().collect();
-                if fields.len() > 2
-                    && fields[2].parse::<libc::pid_t>().ok() == Some(group)
-                    && fields[0] != "Z"
-                    && fields[0] != "X"
-                {
+                if stat_has_live_group(&stat, group) {
                     return Ok(false);
                 }
             }
@@ -209,5 +230,38 @@ impl Drop for Supervision {
         unsafe {
             libc::waitpid(self.watcher, std::ptr::null_mut(), 0);
         }
+    }
+}
+
+#[cfg(all(test, target_os = "linux"))]
+mod proc_tests {
+    use super::*;
+    #[test]
+    fn only_missing_process_errors_are_ignored() {
+        assert!(process_disappeared(&io::Error::from_raw_os_error(
+            libc::ENOENT
+        )));
+        assert!(process_disappeared(&io::Error::from_raw_os_error(
+            libc::ESRCH
+        )));
+        assert!(!process_disappeared(&io::Error::from_raw_os_error(
+            libc::EACCES
+        )));
+        assert!(!process_disappeared(&io::Error::from_raw_os_error(
+            libc::EIO
+        )));
+    }
+}
+
+#[cfg(all(test, target_os = "linux"))]
+mod tests {
+    use super::*;
+    #[test]
+    fn stat_fields_ignore_arbitrary_name_bytes_and_zombies() {
+        assert!(stat_has_live_group(b"42 (other) \xff) S 1 321 0", 321));
+        assert!(!stat_has_live_group(b"42 (other) \xff) S 1 322 0", 321));
+        assert!(!stat_has_live_group(b"42 (other) \xff) Z 1 321 0", 321));
+        assert!(!stat_has_live_group(b"42 (other) \xff) X 1 321 0", 321));
+        assert!(!stat_has_live_group(b"invalid", 321));
     }
 }

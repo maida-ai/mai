@@ -106,8 +106,13 @@ fn git(cwd: &Path, arguments: &[&std::ffi::OsStr]) -> Result<String> {
     )?;
     ensure!(
         result.outcome == ProcessOutcome::Success,
-        "slot Git {:?}: {}",
+        "slot Git {:?}: {}{}",
         result.outcome,
+        result
+            .cleanup_diagnostic
+            .as_ref()
+            .map(|diagnostic| format!("{diagnostic}; "))
+            .unwrap_or_default(),
         result.stderr_tail
     );
     Ok(result.stdout_tail.trim().to_owned())
@@ -381,6 +386,9 @@ impl SlotLease {
                 candidate.as_ref(),
             ],
         )?;
+        // Checkout can introduce symlinks/files at previously safe ancestors.
+        // Validate every destination before any mkdir or restoration rename.
+        self.verify_cache_paths()?;
         for (index, cache) in self.pool.settings.caches.iter().enumerate() {
             let saved = staging.join(index.to_string());
             if saved.exists() {

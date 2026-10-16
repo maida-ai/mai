@@ -368,3 +368,46 @@ fn replacing_a_cache_directory_with_a_file_quarantines_the_slot() {
     assert!(lease.release().is_err());
     assert!(pool.acquire().is_err());
 }
+
+#[cfg(unix)]
+#[test]
+fn candidate_symlink_cache_ancestor_cannot_redirect_restoration() {
+    let root = tempfile::tempdir().unwrap();
+    let source = repository(root.path());
+    let clean = git(&source, &["rev-parse", "HEAD"]);
+    let external = root.path().join("external");
+    std::fs::create_dir(&external).unwrap();
+    std::fs::write(external.join("keep"), "untouched").unwrap();
+    std::os::unix::fs::symlink(&external, source.join("build")).unwrap();
+    git(&source, &["add", "build"]);
+    git(&source, &["commit", "-m", "symlink cache ancestor"]);
+    let poisoned = git(&source, &["rev-parse", "HEAD"]);
+    let pool = SlotPool::open(
+        &root.path().join("pool"),
+        &source,
+        settings(vec!["build/cache".into()]),
+    )
+    .unwrap();
+    let mut lease = pool.acquire().unwrap();
+    lease.materialize(&clean).unwrap();
+    std::fs::create_dir_all(lease.path().join("build/cache")).unwrap();
+    std::fs::write(lease.path().join("build/cache/warm"), "retain").unwrap();
+    // Ordinary nested ancestors remain supported.
+    lease.materialize(&clean).unwrap();
+    assert!(lease.path().join("build/cache/warm").is_file());
+    assert!(lease.materialize(&poisoned).is_err());
+    assert!(
+        !external.join("cache").exists(),
+        "no restoration may follow candidate symlinks"
+    );
+    assert_eq!(
+        std::fs::read_to_string(external.join("keep")).unwrap(),
+        "untouched"
+    );
+    assert!(lease.release().is_err());
+    assert!(
+        root.path()
+            .join("pool/slot-0/cache-staging/0/warm")
+            .exists()
+    );
+}
