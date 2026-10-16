@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use std::{
     collections::{BTreeMap, BTreeSet},
+    ffi::OsStr,
     fs::{self, OpenOptions},
     io::Write,
     path::{Path, PathBuf},
@@ -16,7 +17,7 @@ use std::{
 
 use crate::{
     lifecycle::{GenerationId, Outcome, State},
-    repository_scope::{validate_git_version, validate_source},
+    repository_scope::{external_git_path, validate_git_version, validate_source},
     state::{LandingRecord, StateStore, ValidationEvidence},
 };
 
@@ -83,13 +84,13 @@ impl Authority {
             git(
                 None,
                 &[
-                    "clone",
-                    "--bare",
-                    "--no-local",
-                    "--no-hardlinks",
-                    "--",
-                    path_text(&source.path)?,
-                    path_text(&git_dir)?,
+                    "clone".into(),
+                    "--bare".into(),
+                    "--no-local".into(),
+                    "--no-hardlinks".into(),
+                    "--".into(),
+                    external_git_path(&source.path),
+                    external_git_path(&git_dir),
                 ],
                 None,
             )?;
@@ -97,10 +98,10 @@ impl Authority {
             git(
                 None,
                 &[
-                    "init",
-                    "--bare",
-                    "--object-format=sha1",
-                    path_text(&git_dir)?,
+                    "init".into(),
+                    "--bare".into(),
+                    "--object-format=sha1".into(),
+                    external_git_path(&git_dir),
                 ],
                 None,
             )?;
@@ -646,10 +647,6 @@ fn reject_symlink(path: &Path) -> Result<()> {
     }
     Ok(())
 }
-fn path_text(path: &Path) -> Result<&str> {
-    path.to_str()
-        .context("authority paths must be representable as UTF-8")
-}
 fn install_exclusive(source: &Path, destination: &Path) -> Result<()> {
     fs::create_dir(destination).context(
         "installation destination changed; preserve incomplete initialization and retry elsewhere",
@@ -677,10 +674,14 @@ fn install_exclusive(source: &Path, destination: &Path) -> Result<()> {
     }
     Ok(())
 }
-fn git(path: Option<&Path>, args: &[&str], input: Option<&[u8]>) -> Result<String> {
+fn git<S: AsRef<OsStr>>(path: Option<&Path>, args: &[S], input: Option<&[u8]>) -> Result<String> {
     String::from_utf8(git_bytes(path, args, input)?).context("unexpected non-UTF-8 Git metadata")
 }
-fn git_bytes(path: Option<&Path>, args: &[&str], input: Option<&[u8]>) -> Result<Vec<u8>> {
+fn git_bytes<S: AsRef<OsStr>>(
+    path: Option<&Path>,
+    args: &[S],
+    input: Option<&[u8]>,
+) -> Result<Vec<u8>> {
     let mut command = Command::new("git");
     for (key, _) in std::env::vars_os() {
         if key.to_string_lossy().starts_with("GIT_") {
@@ -714,7 +715,7 @@ fn git_bytes(path: Option<&Path>, args: &[&str], input: Option<&[u8]>) -> Result
             "protocol.file.allow=always",
         ]);
     if let Some(path) = path {
-        command.arg("--git-dir").arg(path);
+        command.arg("--git-dir").arg(external_git_path(path));
     }
     let mut child = command
         .args(args)
@@ -730,7 +731,9 @@ fn git_bytes(path: Option<&Path>, args: &[&str], input: Option<&[u8]>) -> Result
     ensure!(
         output.status.success(),
         "git {} failed: {}",
-        args.first().unwrap_or(&""),
+        args.first()
+            .map(|arg| arg.as_ref().to_string_lossy())
+            .unwrap_or_default(),
         String::from_utf8_lossy(&output.stderr).trim()
     );
     Ok(output.stdout)

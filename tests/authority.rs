@@ -1,4 +1,5 @@
 use fs2::FileExt;
+use mai::repository_scope::external_git_path;
 use mai::{
     authority::Authority,
     lifecycle::{AttemptStatus, State},
@@ -17,7 +18,7 @@ use std::{
 fn git(path: &Path, args: &[&str], input: Option<&[u8]>) -> String {
     let mut child = Command::new("git")
         .arg("--git-dir")
-        .arg(path)
+        .arg(external_git_path(path))
         .args(args)
         .env("GIT_CONFIG_NOSYSTEM", "1")
         .env(
@@ -209,9 +210,9 @@ fn receive_is_disabled_until_durable_registration_exists() {
     let remote = Authority::init(&temp.path().join("remote"), None).unwrap();
     let output = Command::new("git")
         .arg("--git-dir")
-        .arg(authority.git_dir())
+        .arg(external_git_path(&authority.git_dir()))
         .args(["push"])
-        .arg(remote.git_dir())
+        .arg(external_git_path(&remote.git_dir()))
         .arg("HEAD:refs/heads/unsafe")
         .output()
         .unwrap();
@@ -563,4 +564,31 @@ fn symlink_destinations_are_not_followed() {
     std::os::unix::fs::symlink(&real, &link).unwrap();
     assert!(Authority::init(&link, None).is_err());
     assert!(fs::read_dir(real).unwrap().next().is_none());
+}
+
+#[cfg(unix)]
+#[test]
+fn non_utf8_authority_paths_survive_init_import_and_reconcile() {
+    use std::{ffi::OsString, os::unix::ffi::OsStringExt};
+    let temp = tempfile::tempdir().unwrap();
+    let authority = Authority::init(
+        &temp
+            .path()
+            .join(OsString::from_vec(b"authority-\xff".to_vec())),
+        None,
+    )
+    .unwrap();
+    let imported = Authority::init(
+        &temp
+            .path()
+            .join(OsString::from_vec(b"import-\xfe".to_vec())),
+        Some(&authority.git_dir()),
+    )
+    .unwrap();
+    let mut imported = Authority::open(imported.root()).unwrap();
+    reconcile(&mut imported).unwrap();
+    assert_eq!(
+        git(&authority.git_dir(), &["rev-parse", "HEAD"], None),
+        git(&imported.git_dir(), &["rev-parse", "HEAD"], None)
+    );
 }
