@@ -3,6 +3,8 @@
 set -euo pipefail
 root="${1:-.throwaway/s3-$(date -u +%Y%m%dT%H%M%SZ)}"
 build="${root}.build"
+mode="${S3_MODE:-run}"
+[[ "$mode" == run || "$mode" == functional ]] || { echo "Unknown S3_MODE" >&2; exit 1; }
 if [[ -e "$root" || -e "$build" ]]; then
   echo 'Choose a new output path; existing fixtures/builds are never overwritten.' >&2
   exit 1
@@ -14,6 +16,7 @@ case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*) suffix='.exe';; esac
   date -u +%Y-%m-%dT%H:%M:%SZ
   git rev-parse HEAD
   git status --short -- experiments/s3 .github/workflows/experiment-s3.yml .github/workflows/evidence-experiment-runner.yml
+  printf 'mode=%s\n' "$mode"
   git --version
   rustc -vV
   uname -srm
@@ -38,4 +41,4 @@ rustfmt --edition 2024 --check experiments/s3/main.rs 2>&1 | tee "$build/format.
 rustc --edition 2024 -D warnings --test experiments/s3/main.rs -o "$build/unit$suffix" 2>&1 | tee "$build/compile-unit.log"
 "$build/unit$suffix" 2>&1 | tee "$build/unit.log"
 rustc --edition 2024 -D warnings experiments/s3/main.rs -o "$build/s3$suffix" 2>&1 | tee "$build/compile.log"
-"$build/s3$suffix" run "$root" 2>&1 | tee "$build/run.log"
+"$build/s3$suffix" "$mode" "$root" 2>&1 | tee "$build/run.log"
