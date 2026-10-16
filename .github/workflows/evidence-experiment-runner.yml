@@ -46,7 +46,7 @@ jobs:
           esac
         env:
           PLATFORM: ${{ inputs.platform }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
         id: checkout
         with:
           persist-credentials: false
@@ -60,7 +60,7 @@ jobs:
         run: bash "experiments/$EXPERIMENT/collect.sh" ".throwaway/$EXPERIMENT-ci" evidence-output
       - name: Upload evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: ${{ inputs.experiment }}-${{ runner.os }}-${{ runner.arch }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: evidence-output/
