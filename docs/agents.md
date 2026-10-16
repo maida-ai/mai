@@ -1,8 +1,8 @@
 # Agent integration
 
-## Current 0.0.1 precautions
+## Current 0.0.1 foundation
 
-The existing binary uses linked worktrees, not the proposed clone/push protocol. Give each agent a unique workspace, inspect `git status --short --untracked-files=all` before `mai diff` or `mai submit`, and quiesce editing during submit/refresh. Both commands stage all nonignored files. Do not commit, amend, rebase or switch branches: HEAD is the submit base and shared main can bypass policy. A recovered receipt can describe older work while new changes remain pending; inspect accepted content before claiming success. Preserve complete drafts outside the workspace before any destructive recovery. See the [current CLI reference](cli.md).
+The old worktree engine and its submit/refresh commands are retired. The replacement foundation exposes versioned lifecycle types, while the binary currently supports help and version only. No agent submission, workspace or sync protocol is enabled at this layer. Continue using ordinary Git and existing review processes for real work. See the [current CLI reference](cli.md); the protocol below remains planned.
 
 ## Planned protocol — not runnable yet
 

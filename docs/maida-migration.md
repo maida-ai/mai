@@ -14,7 +14,7 @@
 
 ## Gates before production writes
 
-The existing 0.0.1 engine is experimental and has known worktree/submission limitations. The Git-native rewrite is unimplemented and must first complete [M0 qualification](project.md#m0-qualification). Neither the old test suite nor a passing throwaway spike qualifies production adoption.
+The 0.0.1 MVP foundation has replaced the experimental worktree engine after [scoped M0 acceptance](project.md#m0-qualification). The complete Git-native queue and its operational safeguards remain under development. Neither model tests nor passing throwaway spikes qualify production adoption; each implemented correctness path and the production adoption gates below still need evidence.
 
 Qualify acknowledged-push object retention, exact pipeline validation, first-parent revision provenance, crash reconciliation and authority/state.db backup restoration. Exercise dependent squash submissions, interrupted sync, protected-path approval and upstream export cycles. Process-kill evidence does not certify power-loss durability. Local clones that borrow objects through alternates require proven retention or dissociation before authority maintenance or removal.
 

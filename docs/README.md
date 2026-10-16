@@ -1,6 +1,6 @@
 # mai documentation
 
-The current code is the experimental 0.0.1 worktree engine. The rewrite design is unimplemented and has completed scoped M0 acceptance under ADR 0010; product replacement is authorized, with feature-specific correctness gates.
+The current 0.0.1 code is the replacement MVP foundation. The old worktree engine is retired. Scoped M0 acceptance is complete under ADR 0010, but the full Git receive/validation/landing queue remains unimplemented; each enabled path requires its own correctness tests.
 
 ## Evaluate the current binary
 

@@ -2,7 +2,7 @@
 
 [ADR 0010](adr/0010-staged-mvp-qualification.md) controls MVP scope. Priority, speculative/batch tuning and automated fix-forward examples below remain deferred proposals, not required or enabled initial MVP behavior. The initial queue is single-class and dependency-aware; core validation, ownership and recovery correctness remain mandatory. Priority RFC #93 and feature-specific tests precede future enablement.
 
-**Not implemented.** The existing 0.0.1 binary has no daemon or validation slots. Its current recovery limitations are documented in [CLI reference](cli.md#submission-results-and-recovery). This page specifies the operational contract to implement and qualify after M0, not commands to run against an existing authority.
+**Target operational contract.** The old worktree engine is retired. This MVP foundation layer provides lifecycle types; initialization, persistence and serving arrive in dependent layers. Validation slots and the full receive/landing queue are not available. See the [current CLI reference](cli.md) for the implemented surface; this page describes mechanisms to implement and qualify, not a claim of operational readiness.
 
 ## Lifecycle and trust
 

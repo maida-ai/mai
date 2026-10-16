@@ -1,6 +1,6 @@
 # Agent instructions for contributing to mai
 
-mai is a standalone Apache-2.0 Rust project targeting 3–30 coding agents on one repository. [ADR 0003](docs/adr/0003-git-native-integration-queue.md) defines the rewrite; [architecture](docs/architecture.md) summarizes it and [philosophy](docs/philosophy.md) explains why. Current 0.0.1 still uses the old worktree engine. Never describe the rewrite as shipped.
+mai is a standalone Apache-2.0 Rust project targeting 3–30 coding agents on one repository. [ADR 0003](docs/adr/0003-git-native-integration-queue.md) defines the rewrite; [architecture](docs/architecture.md) summarizes it and [philosophy](docs/philosophy.md) explains why. Current 0.0.1 contains the replacement MVP foundation; the old worktree engine is retired. Never describe the full integration queue as shipped.
 
 ## Work and design gates
 
