@@ -160,6 +160,7 @@ fn slot_run_injects_resources_and_private_temp() {
         "cmd.exe",
         vec![
             "/D".into(),
+            "/S".into(),
             "/C".into(),
             "echo %MAI_SLOT%:%MAI_PORT_BASE%:".into(),
         ],
