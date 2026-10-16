@@ -566,7 +566,7 @@ fn symlink_destinations_are_not_followed() {
     assert!(fs::read_dir(real).unwrap().next().is_none());
 }
 
-#[cfg(unix)]
+#[cfg(target_os = "linux")]
 #[test]
 fn non_utf8_authority_paths_survive_init_import_and_reconcile() {
     use std::{ffi::OsString, os::unix::ffi::OsStringExt};
@@ -591,4 +591,44 @@ fn non_utf8_authority_paths_survive_init_import_and_reconcile() {
         git(&authority.git_dir(), &["rev-parse", "HEAD"], None),
         git(&imported.git_dir(), &["rev-parse", "HEAD"], None)
     );
+}
+
+#[test]
+fn unicode_authority_paths_survive_init_import_and_reconcile() {
+    let temp = tempfile::tempdir().unwrap();
+    let authority = Authority::init(&temp.path().join("authority-é-日本"), None).unwrap();
+    let imported = Authority::init(
+        &temp.path().join("import-é-日本"),
+        Some(&authority.git_dir()),
+    )
+    .unwrap();
+    let mut imported = Authority::open(imported.root()).unwrap();
+    reconcile(&mut imported).unwrap();
+    assert_eq!(
+        git(&authority.git_dir(), &["rev-parse", "HEAD"], None),
+        git(&imported.git_dir(), &["rev-parse", "HEAD"], None)
+    );
+}
+
+#[cfg(target_os = "macos")]
+#[test]
+fn unsupported_non_utf8_authority_paths_reject_without_mutation() {
+    use std::{ffi::OsString, os::unix::ffi::OsStringExt};
+    let temp = tempfile::tempdir().unwrap();
+    let sentinel = temp.path().join("user-file");
+    fs::write(&sentinel, b"preserve me").unwrap();
+    let unsupported = temp
+        .path()
+        .join(OsString::from_vec(b"authority-\xff".to_vec()));
+    // Native macOS filesystems reject invalid UTF-8 names. This is an explicit
+    // safe-rejection contract, not a skipped path qualification test.
+    assert!(Authority::init(&unsupported, None).is_err());
+    assert!(Authority::open(&unsupported).is_err());
+    assert!(Authority::init(&temp.path().join("import"), Some(&unsupported)).is_err());
+    assert_eq!(fs::read(&sentinel).unwrap(), b"preserve me");
+    let entries: Vec<_> = fs::read_dir(temp.path())
+        .unwrap()
+        .map(|entry| entry.unwrap().file_name())
+        .collect();
+    assert_eq!(entries, vec![sentinel.file_name().unwrap().to_os_string()]);
 }
