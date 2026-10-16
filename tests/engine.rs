@@ -14,6 +14,28 @@ fn cli(args: &[&str], root: &Path) -> Output {
         .output()
         .unwrap()
 }
+struct EngineProcess(Child);
+impl std::ops::Deref for EngineProcess {
+    type Target = Child;
+    fn deref(&self) -> &Child {
+        &self.0
+    }
+}
+impl std::ops::DerefMut for EngineProcess {
+    fn deref_mut(&mut self) -> &mut Child {
+        &mut self.0
+    }
+}
+impl Drop for EngineProcess {
+    fn drop(&mut self) {
+        // Test-owned process handle only: failed assertions cannot orphan a
+        // foreground engine whose IPC may be the feature under investigation.
+        if self.0.try_wait().ok().flatten().is_none() {
+            let _ = self.0.kill();
+        }
+        let _ = self.0.wait();
+    }
+}
 struct Fixture {
     _temp: TempDir,
     root: PathBuf,
@@ -30,14 +52,32 @@ impl Fixture {
         );
         Self { _temp: temp, root }
     }
-    fn start(&self) -> Child {
-        Command::new(env!("CARGO_BIN_EXE_mai"))
-            .args(["serve", "--foreground"])
-            .arg(&self.root)
-            .stdout(Stdio::null())
-            .stderr(Stdio::null())
-            .spawn()
-            .unwrap()
+    fn diagnostics(&self) -> String {
+        ["foreground.log", "engine.log"]
+            .iter()
+            .map(|name| {
+                let text =
+                    std::fs::read_to_string(self.root.join(".mai").join(name)).unwrap_or_default();
+                format!("{name}: {text}")
+            })
+            .collect::<Vec<_>>()
+            .join("\n")
+    }
+    fn start(&self) -> EngineProcess {
+        let log = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(self.root.join(".mai/foreground.log"))
+            .unwrap();
+        EngineProcess(
+            Command::new(env!("CARGO_BIN_EXE_mai"))
+                .args(["serve", "--foreground"])
+                .arg(&self.root)
+                .stdout(Stdio::null())
+                .stderr(log)
+                .spawn()
+                .unwrap(),
+        )
     }
     fn ready(&self) -> serde_json::Value {
         let deadline = Instant::now() + Duration::from_secs(10);
@@ -48,8 +88,9 @@ impl Fixture {
             }
             assert!(
                 Instant::now() < deadline,
-                "engine never ready: {}",
-                String::from_utf8_lossy(&out.stderr)
+                "engine never ready: {}\n{}",
+                String::from_utf8_lossy(&out.stderr),
+                self.diagnostics()
             );
             thread::sleep(Duration::from_millis(30));
         }
@@ -142,8 +183,9 @@ fn concurrent_autostart_converges_to_one_engine() {
             let out = c.wait_with_output().unwrap();
             assert!(
                 out.status.success(),
-                "{}",
-                String::from_utf8_lossy(&out.stderr)
+                "{}\n{}",
+                String::from_utf8_lossy(&out.stderr),
+                f.diagnostics()
             );
             serde_json::from_slice(&out.stdout).unwrap()
         })

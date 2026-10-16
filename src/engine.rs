@@ -492,7 +492,7 @@ mod transport {
 mod transport {
     use super::*;
     use std::{
-        cell::RefCell,
+        cell::Cell,
         hash::{Hash, Hasher},
         os::windows::{
             ffi::OsStrExt,
@@ -501,12 +501,14 @@ mod transport {
     };
     use windows_sys::Win32::{
         Foundation::{
-            ERROR_NO_DATA, ERROR_PIPE_CONNECTED, ERROR_PIPE_LISTENING, INVALID_HANDLE_VALUE,
+            ERROR_BROKEN_PIPE, ERROR_NO_DATA, ERROR_PIPE_CONNECTED, ERROR_PIPE_LISTENING,
+            INVALID_HANDLE_VALUE,
         },
-        Storage::FileSystem::{FILE_FLAG_FIRST_PIPE_INSTANCE, PIPE_ACCESS_DUPLEX},
+        Storage::FileSystem::{FILE_FLAG_FIRST_PIPE_INSTANCE, PIPE_ACCESS_DUPLEX, ReadFile},
         System::Pipes::{
-            ConnectNamedPipe, CreateNamedPipeW, PIPE_NOWAIT, PIPE_READMODE_BYTE,
-            PIPE_REJECT_REMOTE_CLIENTS, PIPE_TYPE_BYTE, SetNamedPipeHandleState,
+            ConnectNamedPipe, CreateNamedPipeW, DisconnectNamedPipe, PIPE_NOWAIT,
+            PIPE_READMODE_BYTE, PIPE_REJECT_REMOTE_CLIENTS, PIPE_TYPE_BYTE,
+            SetNamedPipeHandleState,
         },
     };
     fn name(local: &Path) -> String {
@@ -542,37 +544,45 @@ mod transport {
         Ok(unsafe { File::from_raw_handle(handle) })
     }
     pub struct Listener {
-        local: PathBuf,
-        pending: RefCell<Option<File>>,
+        file: File,
+        connected: Cell<bool>,
     }
     impl Listener {
         pub fn bind(local: &Path) -> Result<Self> {
             Ok(Self {
-                local: local.to_path_buf(),
-                pending: RefCell::new(Some(create(local)?)),
+                file: create(local)?,
+                connected: Cell::new(false),
             })
         }
         pub fn accept(&self) -> Result<Option<Stream>> {
-            let mut pending = self.pending.borrow_mut();
-            if pending.is_none() {
-                *pending = Some(create(&self.local)?);
+            if self.connected.replace(false) {
+                // SAFETY: listener retains the original valid server handle.
+                // The previous response has been acknowledged or timed out.
+                // Reuse this instance even while a previous client closes its
+                // handle; creating another FIRST_PIPE_INSTANCE would race it.
+                unsafe {
+                    DisconnectNamedPipe(self.file.as_raw_handle());
+                }
             }
             // SAFETY: File owns a valid named pipe; nonblocking mode needs no OVERLAPPED.
-            let connected = unsafe {
-                ConnectNamedPipe(
-                    pending.as_ref().unwrap().as_raw_handle(),
-                    std::ptr::null_mut(),
-                )
-            };
+            let connected =
+                unsafe { ConnectNamedPipe(self.file.as_raw_handle(), std::ptr::null_mut()) };
             if connected != 0 {
                 return Ok(None);
-            } // PIPE_NOWAIT: transitioned to listening, not connected.
+            } // PIPE_NOWAIT transitioned to listening.
             let error = io::Error::last_os_error();
             match error.raw_os_error().map(|code| code as u32) {
-                Some(ERROR_PIPE_CONNECTED) => Ok(Some(Stream(pending.take().unwrap()))),
+                Some(ERROR_PIPE_CONNECTED) => {
+                    self.connected.set(true);
+                    Ok(Some(Stream(self.file.try_clone()?)))
+                }
                 Some(ERROR_PIPE_LISTENING) => Ok(None),
                 Some(ERROR_NO_DATA) => {
-                    *pending = None;
+                    // SAFETY: a client closed before acceptance; reset the
+                    // owned instance so the next client can connect.
+                    unsafe {
+                        DisconnectNamedPipe(self.file.as_raw_handle());
+                    }
                     Ok(None)
                 }
                 _ => Err(error.into()),
@@ -591,7 +601,32 @@ mod transport {
     }
     impl Read for Stream {
         fn read(&mut self, bytes: &mut [u8]) -> io::Result<usize> {
-            map_nonblocking(self.0.read(bytes))
+            if bytes.is_empty() {
+                return Ok(0);
+            }
+            let mut count = 0;
+            // SAFETY: valid synchronous pipe handle and writable buffer/count;
+            // PIPE_NOWAIT bounds this call and no OVERLAPPED is required.
+            // Do not use File::read: Rust maps ERROR_NO_DATA to BrokenPipe and
+            // then EOF, losing the distinction between idle and disconnected.
+            let success = unsafe {
+                ReadFile(
+                    self.0.as_raw_handle(),
+                    bytes.as_mut_ptr(),
+                    bytes.len().min(u32::MAX as usize) as u32,
+                    &mut count,
+                    std::ptr::null_mut(),
+                )
+            };
+            if success != 0 {
+                return Ok(count as usize);
+            }
+            let error = io::Error::last_os_error();
+            match error.raw_os_error().map(|code| code as u32) {
+                Some(ERROR_NO_DATA) => Err(io::ErrorKind::WouldBlock.into()),
+                Some(ERROR_BROKEN_PIPE) => Ok(0),
+                _ => Err(error),
+            }
         }
     }
     impl Write for Stream {
@@ -626,6 +661,53 @@ mod transport {
             io::Error::last_os_error()
         );
         Ok(Stream(file))
+    }
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        fn accept(listener: &Listener) -> Stream {
+            let deadline = Instant::now() + IO_TIMEOUT;
+            loop {
+                if let Some(stream) = listener.accept().unwrap() {
+                    return stream;
+                }
+                assert!(Instant::now() < deadline, "named pipe was not accepted");
+                thread::sleep(POLL);
+            }
+        }
+        #[test]
+        fn idle_pipe_read_is_would_block_and_instance_survives_old_client_handle() {
+            let temp = tempfile::tempdir().unwrap();
+            let listener = Listener::bind(temp.path()).unwrap();
+            let mut client = connect(temp.path(), Instant::now() + IO_TIMEOUT).unwrap();
+            let mut server = accept(&listener);
+            let mut byte = [0];
+            assert_eq!(
+                client.read(&mut byte).unwrap_err().kind(),
+                io::ErrorKind::WouldBlock
+            );
+            assert_eq!(
+                server.read(&mut byte).unwrap_err().kind(),
+                io::ErrorKind::WouldBlock
+            );
+            client.write_all(b"x").unwrap();
+            assert_eq!(server.read(&mut byte).unwrap(), 1);
+            assert_eq!(byte, [b'x']);
+            server.write_all(b"y").unwrap();
+            assert_eq!(client.read(&mut byte).unwrap(), 1);
+            assert_eq!(byte, [b'y']);
+            drop(server);
+            // Keep the old client alive deliberately. The listener resets and
+            // reuses its instance instead of racing FIRST_PIPE_INSTANCE.
+            assert!(listener.accept().unwrap().is_none());
+            let mut next = connect(temp.path(), Instant::now() + IO_TIMEOUT).unwrap();
+            let mut server = accept(&listener);
+            next.write_all(b"z").unwrap();
+            assert_eq!(server.read(&mut byte).unwrap(), 1);
+            assert_eq!(byte, [b'z']);
+            drop(next);
+            assert_eq!(server.read(&mut byte).unwrap(), 0);
+        }
     }
 }
 
