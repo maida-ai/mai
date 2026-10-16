@@ -1,0 +1,8 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci
+command=npm ["--version"]
+timeout_ms=120000
+11.19.0
+
+status=exit status: 0
+timeout=false
+elapsed_ms=641

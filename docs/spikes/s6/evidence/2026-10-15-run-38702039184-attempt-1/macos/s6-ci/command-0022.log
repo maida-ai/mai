@@ -1,0 +1,8 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/cargo
+command=git ["checkout", "-b", "candidate", "c94d98a4306fc829be30898f7ab8f236a6c356b4"]
+timeout_ms=120000
+Switched to a new branch 'candidate'
+
+status=exit status: 0
+timeout=false
+elapsed_ms=50

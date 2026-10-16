@@ -1,0 +1,11 @@
+cwd=/home/runner/work/mai/mai/.throwaway/s6-ci/uv
+command=uv ["run", "--no-sync", "--offline", "python", "gate.py"]
+timeout_ms=120000
+Traceback (most recent call last):
+  File "/home/runner/work/mai/mai/.throwaway/s6-ci/uv/gate.py", line 1, in <module>
+    raise RuntimeError('injected gate failure')
+RuntimeError: injected gate failure
+
+status=exit status: 1
+timeout=false
+elapsed_ms=20

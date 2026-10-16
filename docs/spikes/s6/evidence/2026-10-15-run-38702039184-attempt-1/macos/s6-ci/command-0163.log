@@ -1,0 +1,8 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/uv
+command=git ["rev-parse", "957a82b35ba0639d59a07356f1df2a7146b37c4a:gate.py"]
+timeout_ms=120000
+af4d5a9e610fa374351d9329e1eba50a4667b00c
+
+status=exit status: 0
+timeout=false
+elapsed_ms=16

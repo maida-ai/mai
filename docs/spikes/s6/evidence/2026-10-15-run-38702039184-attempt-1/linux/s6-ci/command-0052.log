@@ -1,0 +1,8 @@
+cwd=/home/runner/work/mai/mai/.throwaway/s6-ci/cargo
+command=git ["hash-object", "--", "trusted-policy"]
+timeout_ms=120000
+00802b031627c677885703e518194ec2880313ee
+
+status=exit status: 0
+timeout=false
+elapsed_ms=10

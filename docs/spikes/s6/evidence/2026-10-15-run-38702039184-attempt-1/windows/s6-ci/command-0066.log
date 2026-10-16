@@ -1,0 +1,8 @@
+cwd=D:/a/mai/mai/.throwaway/s6-ci\cargo
+command=git ["rev-parse", "accepted^"]
+timeout_ms=120000
+969f4550c928bf4f403accd4e7514b3aab071770
+
+status=exit code: 0
+timeout=false
+elapsed_ms=22

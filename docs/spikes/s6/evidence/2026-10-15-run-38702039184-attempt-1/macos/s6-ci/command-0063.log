@@ -1,0 +1,8 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/cargo
+command=git ["commit-tree", "d58f2043b1da5fffb8b7d7f7c32ebf68d10b45be", "-p", "da4b026befb9992fa0fd1861fe83d1da47aa3434", "-m", "accepted regenerated candidate\n\nMai-Revision: r1"]
+timeout_ms=120000
+cbf7a9ab9b9ec984c4ae203c6ee17dedbcd60b40
+
+status=exit status: 0
+timeout=false
+elapsed_ms=22

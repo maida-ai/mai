@@ -1,0 +1,8 @@
+cwd=/home/runner/work/mai/mai/.throwaway/s6-ci/cargo
+command=git ["rev-parse", "HEAD"]
+timeout_ms=120000
+986275941c12358854436fcaed54b1c220c5693b
+
+status=exit status: 0
+timeout=false
+elapsed_ms=10

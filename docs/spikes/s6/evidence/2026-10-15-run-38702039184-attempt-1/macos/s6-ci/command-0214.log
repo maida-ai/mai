@@ -1,0 +1,8 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/uv
+command=git ["write-tree"]
+timeout_ms=120000
+d5d7458f6f389a2962f5c1a18fec42a06b63e1b7
+
+status=exit status: 0
+timeout=false
+elapsed_ms=29

@@ -1,0 +1,8 @@
+cwd=/home/runner/work/mai/mai/.throwaway/s6-ci/npm
+command=git ["commit-tree", "95e44763f781e1ecfbc26c3e47a037bf5c5a7431", "-p", "e1a166335782b0148f0f3811301f5282ebee0a7d", "-m", "accepted regenerated candidate\n\nMai-Revision: r1"]
+timeout_ms=120000
+f3d0bfd590302b343ff36f6bcadac1105bb15603
+
+status=exit status: 0
+timeout=false
+elapsed_ms=10

@@ -1,0 +1,11 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/cargo
+command=cargo ["run", "--locked", "--offline"]
+timeout_ms=120000
+[1m[92m   Compiling[0m beta v1.0.0 (/Users/runner/work/mai/mai/.throwaway/s6-ci/cargo/vendor/beta)
+[1m[92m   Compiling[0m s6-fixture v0.0.1 (/Users/runner/work/mai/mai/.throwaway/s6-ci/cargo)
+[1m[92m    Finished[0m `dev` profile [unoptimized + debuginfo] target(s) in 0.15s
+[1m[92m     Running[0m `/Users/runner/work/mai/mai/.throwaway/s6-ci/target/debug/s6-fixture`
+
+status=exit status: 0
+timeout=false
+elapsed_ms=207
