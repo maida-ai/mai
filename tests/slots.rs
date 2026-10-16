@@ -10,7 +10,9 @@ use std::{
 fn git(path: &Path, args: &[&str]) -> String {
     let output = Command::new("git")
         .args(args)
-        .current_dir(path)
+        .current_dir(PathBuf::from(mai::repository_scope::external_git_path(
+            path,
+        )))
         .output()
         .unwrap();
     assert!(
@@ -77,7 +79,10 @@ fn independent_clones_resources_residue_and_poisoned_metadata() {
     assert!(!first.path().join(".git/info/sparse-checkout").exists());
     first.release().unwrap();
     second.release().unwrap();
-    assert!(pool.acquire().is_ok());
+    let reused = pool
+        .acquire()
+        .expect("all successfully released slots must be reusable");
+    reused.release().unwrap();
 }
 #[test]
 fn interrupted_claim_and_failed_materialization_are_never_reused() {
@@ -239,4 +244,44 @@ fn separate_process_owner_death_preserves_claim_across_restart() {
     settings.count = 1;
     let pool = SlotPool::open(&root.path().join("pool"), &source, settings).unwrap();
     assert!(pool.acquire().is_err());
+}
+
+#[test]
+fn empty_repository_marker_temp_helper() {
+    let Some(root) = std::env::var_os("MAI_SLOT_MARKER_TEST_ROOT") else {
+        return;
+    };
+    let root = PathBuf::from(root);
+    let mut settings = settings(vec![]);
+    settings.count = 1;
+    let pool = SlotPool::open(&root.join("pool"), &root.join("source"), settings).unwrap();
+    let error = match pool.acquire() {
+        Ok(_) => panic!("empty .git marker must exclude temporary directory"),
+        Err(error) => error,
+    };
+    assert!(
+        format!("{error:#}").contains("temporary directory must be outside a repository"),
+        "{error:#}"
+    );
+    assert!(root.join("pool/slot-0/occupied").exists());
+}
+#[test]
+fn even_an_empty_git_marker_excludes_a_temporary_root() {
+    let root = tempfile::tempdir().unwrap();
+    std::fs::create_dir(root.path().join(".git")).unwrap();
+    std::fs::create_dir(root.path().join("source")).unwrap();
+    let output = Command::new(std::env::current_exe().unwrap())
+        .args(["--exact", "empty_repository_marker_temp_helper"])
+        .env("MAI_SLOT_MARKER_TEST_ROOT", root.path())
+        .env("TMPDIR", root.path())
+        .env("TMP", root.path())
+        .env("TEMP", root.path())
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}\n{}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
 }
