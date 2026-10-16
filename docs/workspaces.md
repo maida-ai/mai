@@ -1,0 +1,13 @@
+# Independent agent workspaces
+
+`mai workspace PROJECT AGENT DESTINATION` creates an ordinary Git clone of the authority's selected trunk commit. The clone has a `mai` remote and local `mai.agent` configuration. It has independent object storage and writable files, with no alternates, shared environments or copy-on-write template. Receive and landing remain unavailable; the remote does not imply that submissions are enabled.
+
+The destination must not exist, including an empty directory or a symlink. Its parent must already exist. Creation reserves the destination exclusively and never overwrites it on retry. A clone or setup failure preserves the destination for inspection. An incomplete operation or unsuccessful bootstrap leaves `.mai-workspace-incomplete`; choose a new destination when retrying creation. A failed bootstrap returns the bounded structured process result, including its outcome and diagnostic tails.
+
+If selected trunk has no `mai.toml`, or its implemented `workspaces.bootstrap` setting is absent, no setup command runs. If configured, bootstrap runs automatically. `--skip-bootstrap` explicitly skips it. A present policy must use the strict implemented schema described in the validator guide; unsupported versions and fields are rejected without migration. The full proposed configuration surface is not enabled.
+
+Bootstrap uses the same bounded process runner as validators. Its script and declared executable dependencies come from a separate selected-trunk policy checkout. Commands start in that checkout with `MAI_POLICY_ROOT` pointing there and `MAI_CANDIDATE_ROOT` pointing at the independent workspace. A setup script explicitly changes into `MAI_CANDIDATE_ROOT` to write the workspace's environment. Temporary directories are private to the bootstrap invocation. These native processes execute trusted local commands and candidate code; they are not an OS sandbox.
+
+Validator bootstrap fingerprints bind the serialized command configuration, trusted script and declared executable dependencies, actual declared candidate input contents, and resolved tool paths, executable contents and version output. Symlink inputs are rejected. A changed fingerprint requires successful bootstrap before a reusable validator stamp can be written. Candidate control scripts never replace trusted scripts. Only configured validator caches survive slot reuse; workspace environments are never shared between agents.
+
+JSON results retain platform-tagged native paths, including Unix non-UTF-8 bytes and Windows UTF-16 path units. They are local identities and must not be decoded as ordinary portable strings. No workspace state or schema migration is provided.
