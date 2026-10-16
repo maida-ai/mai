@@ -1,5 +1,4 @@
-#[path = "../src/repository_scope.rs"]
-mod repository_scope;
+use mai::repository_scope;
 
 use repository_scope::validate_source;
 use std::path::Path;
