@@ -1,6 +1,6 @@
 # CLI reference
 
-**MVP foundation layer.** The previous worktree engine has been retired. This binary currently supports `mai --help` and `mai --version` only; the version is `0.0.1`. Unsupported commands exit 2. Initialization and local serving will be added by dependent implementation layers. The planned Git-push receive/queue interface is not enabled.
+**MVP foundation layer.** The previous worktree engine has been retired. The version is `0.0.1`; unsupported commands exit 2. The binary supports `init PROJECT [--from SOURCE]`, `serve PROJECT --foreground`, `status PROJECT [--no-autostart]` and `stop PROJECT`, plus help and version. `--json` is a global option. Status autostarts a local engine by default; stop never autostarts. See the [engine guide](engine.md) and [authority startup contract](authority-startup.md) for outputs, readiness bounds and failure handling. The planned Git-push receive/queue interface is not enabled.
 
 ## Versioned lifecycle contract
 
@@ -12,11 +12,11 @@ Each validation attempt has its own increasing number. Interrupting an attempt r
 
 Rejected outcomes carry stable reasons: `invalid_submission`, `dependency_failed`, `conflict`, `check_failed`, `policy_denied` or `infrastructure`. Optional conflict, check, log-tail, candidate-ref and next-action diagnostics are each bounded to 4096 UTF-8 bytes. Oversized values reject rather than silently truncate. Candidate refs must be under `refs/mai/candidates/` and use safe ASCII components. Unknown schema versions, unknown fields and inconsistent snapshots refuse decoding; there are no migrations or compatibility readers.
 
-Stable process categories for upcoming commands are success 0, invalid input 2, terminal rejection/supersession/cancellation 3, unavailable transport 4, infrastructure failure 5 and pending 6. This layer supplies the types; no submit/wait command or JSON transport is exposed yet. Pure model transitions do not certify validation evidence, durable acknowledgment or Git CAS publication. Persistence and authority layers must enforce those separately.
+Stable process categories for upcoming commands are success 0, invalid input 2, terminal rejection/supersession/cancellation 3, unavailable transport 4, infrastructure failure 5 and pending 6. The foundation currently uses infrastructure exit 5 for command failures; lifecycle rejection and pending categories remain for future commands. Versioned JSON is available for current commands, but submit/wait is not exposed yet. Pure model transitions do not certify validation evidence, durable acknowledgment or Git CAS publication. Persistence and authority layers must enforce those separately.
 
 ## Planned interface — unavailable
 
-M1 will support ordinary clones and `git push mai HEAD:refs/for/main`; push success acknowledges durable registration, not landing. Planned commands include `init`, `serve`, `workspace`, `submit`, `wait`, `sync`, `status`, `queue`, `lease` and `approve`. Exact flags and response schemas must be implemented and tested before use. Explicit sync must preserve unsubmitted local work after squash landing. See [agent protocol](agents.md), [configuration](configuration.md) and [operations](operations.md).
+M1 will support ordinary clones and `git push mai HEAD:refs/for/main`; push success acknowledges durable registration, not landing. Additional planned commands include `workspace`, `submit`, `wait`, `sync`, `queue`, `lease` and `approve`; current `status` reports engine readiness only. Exact flags and response schemas must be implemented and tested before use. Explicit sync must preserve unsubmitted local work after squash landing. See [agent protocol](agents.md), [configuration](configuration.md) and [operations](operations.md).
 
 Differentiated priority and automated incident recovery remain deferred under [ADR 0010](adr/0010-staged-mvp-qualification.md) and RFC #93. They are not represented as enabled features or speculative fields in the current schema. The initial MVP uses a single-class dependency-aware queue.
 

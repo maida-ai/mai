@@ -17,7 +17,7 @@
 
 mai aims to shorten recovery when agents fail, conflict or lose their environment, while keeping a blocking gate at the shared trunk boundary. The proposed rewrite uses plain Git submissions and an integrated validation queue so agents spend less time on rebases and humans spend less time coordinating parallel changes.
 
-**MVP foundations under development.** Scoped design acceptance and native S3 functional verification permit replacement under [ADR 0010](docs/adr/0010-staged-mvp-qualification.md). The old worktree engine has been retired. This layer provides a versioned, tested lifecycle model; the binary currently exposes only help and version. The queue flow below is planned, not shipped. Built in Rust, backed by Git, open source under [Apache 2.0](LICENSE), and independent of core Maida.
+**MVP foundations under development.** Scoped design acceptance and native S3 functional verification permit replacement under [ADR 0010](docs/adr/0010-staged-mvp-qualification.md). The old worktree engine has been retired. The foundation now provides a versioned lifecycle model, SQLite persistence, safe authority initialization and a local single-writer engine. The supported `init`, `serve`, `status` and `stop` commands are described in the [engine guide](docs/engine.md). The queue flow below is planned, not shipped. Built in Rust, backed by Git, open source under [Apache 2.0](LICENSE), and independent of core Maida.
 
 ## Two agents. One integration queue.
 
