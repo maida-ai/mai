@@ -285,3 +285,83 @@ fn even_an_empty_git_marker_excludes_a_temporary_root() {
         String::from_utf8_lossy(&output.stderr)
     );
 }
+
+#[test]
+fn tracked_whitespace_cache_name_is_rejected_before_checkout() {
+    use std::io::Write;
+    use std::process::Stdio;
+    let root = tempfile::tempdir().unwrap();
+    let source = repository(root.path());
+    let blob = git(&source, &["rev-parse", "HEAD:tracked"]);
+    // Build a real Git tree without asking Windows to materialize a filename
+    // which its ordinary filesystem APIs cannot create.
+    let mut tree_command = Command::new("git")
+        .args(["mktree", "-z"])
+        .current_dir(&source)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+    tree_command
+        .stdin
+        .take()
+        .unwrap()
+        .write_all(format!("100644 blob {blob}\t \0").as_bytes())
+        .unwrap();
+    let tree = tree_command.wait_with_output().unwrap();
+    assert!(
+        tree.status.success(),
+        "{}",
+        String::from_utf8_lossy(&tree.stderr)
+    );
+    let tree = String::from_utf8(tree.stdout).unwrap();
+    let candidate = git(
+        &source,
+        &[
+            "commit-tree",
+            tree.trim(),
+            "-p",
+            "HEAD",
+            "-m",
+            "tracked whitespace filename",
+        ],
+    );
+    let mut settings = settings(vec![" ".into()]);
+    settings.count = 1;
+    let pool = SlotPool::open(&root.path().join("pool"), &source, settings).unwrap();
+    let mut lease = pool.acquire().unwrap();
+    let error = lease
+        .materialize(&candidate)
+        .expect_err("tracked whitespace cache must not disappear from the overlap query");
+    assert!(
+        format!("{error:#}").contains("cache overlaps candidate tracked content"),
+        "{error:#}"
+    );
+    assert!(
+        !lease.path().join(" ").exists(),
+        "rejected candidate must not have been checked out"
+    );
+    assert!(lease.release().is_err());
+    assert!(pool.acquire().is_err());
+}
+#[test]
+fn replacing_a_cache_directory_with_a_file_quarantines_the_slot() {
+    let root = tempfile::tempdir().unwrap();
+    let source = repository(root.path());
+    let candidate = git(&source, &["rev-parse", "HEAD"]);
+    let mut settings = settings(vec!["cache".into()]);
+    settings.count = 1;
+    let pool = SlotPool::open(&root.path().join("pool"), &source, settings).unwrap();
+    let mut lease = pool.acquire().unwrap();
+    lease.materialize(&candidate).unwrap();
+    std::fs::create_dir(lease.path().join("cache")).unwrap();
+    std::fs::remove_dir(lease.path().join("cache")).unwrap();
+    std::fs::write(lease.path().join("cache"), "poisoned file").unwrap();
+    assert!(
+        lease.materialize(&candidate).is_err(),
+        "only configured directories may be retained as caches"
+    );
+    assert!(lease.release().is_err());
+    assert!(pool.acquire().is_err());
+}

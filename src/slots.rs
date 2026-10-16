@@ -269,8 +269,8 @@ impl SlotLease {
                 path.push(part);
                 match fs::symlink_metadata(&path) {
                     Ok(metadata) => ensure!(
-                        !metadata.file_type().is_symlink(),
-                        "symlink in cache path {}",
+                        metadata.file_type().is_dir(),
+                        "cache path component must be a directory, not a file or symlink: {}",
                         path.display()
                     ),
                     Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
@@ -359,6 +359,7 @@ impl SlotLease {
                 &self.clone,
                 &[
                     "ls-tree".as_ref(),
+                    "-z".as_ref(),
                     "-r".as_ref(),
                     "--name-only".as_ref(),
                     candidate.as_ref(),
