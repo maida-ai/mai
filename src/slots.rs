@@ -3,8 +3,9 @@
 use crate::{
     native_path::NativePath,
     process::{self, CancellationToken, ProcessOutcome, RunResult, RunSpec},
+    repository_scope::external_git_path,
 };
-use anyhow::{Result, bail, ensure};
+use anyhow::{Context, Result, bail, ensure};
 use fs2::FileExt;
 use serde::{Deserialize, Serialize};
 use std::{
@@ -32,6 +33,10 @@ struct PoolRecord {
     version: u32,
     source: NativePath,
     settings: SlotSettings,
+}
+fn lock_is_contended(error: &std::io::Error) -> bool {
+    error.kind() == std::io::ErrorKind::WouldBlock
+        || error.raw_os_error() == fs2::lock_contended_error().raw_os_error()
 }
 pub struct SlotLease {
     pool: SlotPool,
@@ -79,7 +84,7 @@ fn git(cwd: &Path, arguments: &[&std::ffi::OsStr]) -> Result<String> {
         &RunSpec {
             program: "git".into(),
             args,
-            cwd: cwd.to_owned(),
+            cwd: PathBuf::from(external_git_path(cwd)),
             env: [
                 ("GIT_LITERAL_PATHSPECS".into(), "1".into()),
                 ("GIT_CONFIG_NOSYSTEM".into(), "1".into()),
@@ -180,6 +185,7 @@ impl SlotPool {
         })
     }
     pub fn acquire(&self) -> Result<SlotLease> {
+        let mut unavailable = Vec::new();
         for index in 0..self.settings.count {
             let directory = self.root.join(format!("slot-{index}"));
             private_directory(&directory)?;
@@ -191,11 +197,17 @@ impl SlotPool {
                 .open(directory.join("lock"))?;
             match lock.try_lock_exclusive() {
                 Ok(()) => {}
-                Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => continue,
-                Err(error) => return Err(error.into()),
+                Err(error) if lock_is_contended(&error) => {
+                    unavailable.push(format!("slot {index}: native lock contention ({error})"));
+                    continue;
+                }
+                Err(error) => {
+                    return Err(error).with_context(|| format!("lock validator slot {index}"));
+                }
             }
             let claim = directory.join("occupied");
             if claim.exists() {
+                unavailable.push(format!("slot {index}: occupied claim retained"));
                 continue;
             }
             let marker = OpenOptions::new()
@@ -212,8 +224,7 @@ impl SlotPool {
             ensure!(
                 !temporary
                     .ancestors()
-                    .any(|ancestor| ancestor.join(".git").is_file()
-                        || ancestor.join(".git/HEAD").is_file()),
+                    .any(|ancestor| ancestor.join(".git").symlink_metadata().is_ok()),
                 "validator temporary directory must be outside a repository"
             );
             private_directory(&temporary)?;
@@ -232,7 +243,8 @@ impl SlotPool {
             });
         }
         bail!(
-            "no validator slot available; occupied/interrupted slots require trusted cleanup before reuse"
+            "no validator slot available ({}); occupied/interrupted slots require trusted cleanup before reuse",
+            unavailable.join("; ")
         )
     }
 }
@@ -283,6 +295,8 @@ impl SlotLease {
     }
     pub fn materialize(&mut self, candidate: &str) -> Result<()> {
         self.healthy = false;
+        let external_source = external_git_path(&self.pool.source);
+        let external_clone = external_git_path(&self.clone);
         ensure!(
             (candidate.len() == 40 || candidate.len() == 64)
                 && candidate.bytes().all(|byte| byte.is_ascii_hexdigit()),
@@ -314,8 +328,8 @@ impl SlotLease {
                 "--no-hardlinks".as_ref(),
                 "--no-checkout".as_ref(),
                 "--".as_ref(),
-                self.pool.source.as_os_str(),
-                self.clone.as_os_str(),
+                external_source.as_os_str(),
+                external_clone.as_os_str(),
             ],
         )?;
         git(
@@ -324,7 +338,7 @@ impl SlotLease {
                 "fetch".as_ref(),
                 "--no-tags".as_ref(),
                 "--".as_ref(),
-                self.pool.source.as_os_str(),
+                external_source.as_os_str(),
                 candidate.as_ref(),
             ],
         )?;
@@ -409,6 +423,9 @@ impl SlotLease {
         fs::remove_dir_all(&self.temporary)?;
         fs::remove_file(self.directory.join("temporary.json"))?;
         fs::remove_file(self.directory.join("occupied"))?;
+        // Other concurrent watchdog forks can still hold duplicate descriptors.
+        // Close alone would retain their shared flock until every copy closes.
+        FileExt::unlock(&self._lock).context("unlock cleaned validator slot")?;
         Ok(())
     }
 }
@@ -433,4 +450,48 @@ fn prune(root: &Path, relative: &Path, caches: &[PathBuf]) -> Result<()> {
         }
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[cfg(unix)]
+    #[test]
+    fn release_unlocks_even_while_a_duplicate_descriptor_survives() {
+        let directory = tempfile::tempdir().unwrap();
+        let source = directory.path().join("source");
+        fs::create_dir(&source).unwrap();
+        let pool = SlotPool::open(
+            &directory.path().join("pool"),
+            &source,
+            SlotSettings {
+                count: 1,
+                port_base: 24000,
+                ports_per_slot: 1,
+                caches: vec![],
+            },
+        )
+        .unwrap();
+        let lease = pool.acquire().unwrap();
+        let duplicate = lease._lock.try_clone().unwrap();
+        lease.release().unwrap();
+        let next = pool.acquire().expect(
+            "successful release must unlock inherited/duplicated file descriptions immediately",
+        );
+        next.release().unwrap();
+        drop(duplicate);
+    }
+    #[test]
+    fn only_native_lock_contention_is_treated_as_an_occupied_slot() {
+        assert!(lock_is_contended(&fs2::lock_contended_error()));
+        assert!(lock_is_contended(&std::io::Error::from(
+            std::io::ErrorKind::WouldBlock
+        )));
+        assert!(!lock_is_contended(&std::io::Error::from(
+            std::io::ErrorKind::PermissionDenied
+        )));
+        assert!(!lock_is_contended(&std::io::Error::from_raw_os_error(
+            12345
+        )));
+    }
 }

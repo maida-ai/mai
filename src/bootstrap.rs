@@ -71,7 +71,7 @@ pub fn fingerprint(policy: &TrustedPolicy, command: &CommandPolicy, cwd: &Path) 
 fn hash_file(path: &Path) -> Result<String> {
     let result = crate::policy::safe_git()
         .args(["hash-object", "--no-filters", "--"])
-        .arg(path)
+        .arg(crate::repository_scope::external_git_path(path))
         .output()?;
     ensure!(
         result.status.success(),

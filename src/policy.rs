@@ -350,9 +350,9 @@ impl TrustedPolicy {
         cwd: &Path,
     ) -> Result<crate::process::RunSpec> {
         let mut env = std::collections::BTreeMap::new();
-        env.insert("MAI_POLICY_ROOT".into(), self.root().as_os_str().to_owned());
-        env.insert("MAI_CANDIDATE_ROOT".into(), cwd.as_os_str().to_owned());
-        let mut args: Vec<OsString> = vec![self.script(command)?.into_os_string()];
+        env.insert("MAI_POLICY_ROOT".into(), external_command_path(self.root()));
+        env.insert("MAI_CANDIDATE_ROOT".into(), external_command_path(cwd));
+        let mut args: Vec<OsString> = vec![external_command_path(&self.script(command)?)];
         args.extend(command.args.iter().map(OsString::from));
         Ok(crate::process::RunSpec {
             program: host_tool(&command.program)?.into_os_string(),
@@ -362,5 +362,42 @@ impl TrustedPolicy {
             timeout: std::time::Duration::from_millis(command.timeout_ms),
             output_tail_bytes: command.output_tail_bytes,
         })
+    }
+}
+
+/// Native files and JSON retain canonical paths. Shell-facing policy arguments
+/// use ordinary drive paths with slashes so Git for Windows sh can consume them.
+pub fn external_command_path(path: &Path) -> OsString {
+    let path = crate::repository_scope::external_git_path(path);
+    #[cfg(windows)]
+    {
+        use std::os::windows::ffi::{OsStrExt, OsStringExt};
+        OsString::from_wide(
+            &path
+                .encode_wide()
+                .map(|unit| if unit == 92 { 47 } else { unit })
+                .collect::<Vec<_>>(),
+        )
+    }
+    #[cfg(not(windows))]
+    {
+        path
+    }
+}
+
+#[cfg(all(test, windows))]
+mod command_path_tests {
+    use super::*;
+    use std::os::windows::ffi::{OsStrExt, OsStringExt};
+    #[test]
+    fn shell_paths_preserve_native_utf16_units() {
+        let units = [92, 92, 63, 92, 67, 58, 92, 116, 109, 112, 92, 0xd800];
+        let original = PathBuf::from(OsString::from_wide(&units));
+        assert_eq!(
+            external_command_path(&original)
+                .encode_wide()
+                .collect::<Vec<_>>(),
+            [67, 58, 47, 116, 109, 112, 47, 0xd800]
+        );
     }
 }
