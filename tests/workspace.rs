@@ -72,7 +72,6 @@ fn non_utf8_workspace_destination_round_trips_json() {
         }
     }
 }
-#[cfg(unix)]
 fn configured_project(failing: bool) -> (tempfile::TempDir, Authority) {
     let temp = tempfile::tempdir().unwrap();
     let source = temp.path().join("source");
@@ -117,7 +116,6 @@ output_tail_bytes = 512
     let authority = Authority::init(&temp.path().join("project"), Some(&source)).unwrap();
     (temp, authority)
 }
-#[cfg(unix)]
 #[test]
 fn automatic_bootstrap_skip_failure_and_independent_environments() {
     use mai::process::ProcessOutcome;
@@ -223,7 +221,6 @@ fn changed_tool_binary_with_same_version_invalidates_bootstrap() {
     );
 }
 
-#[cfg(unix)]
 #[test]
 fn workspace_cli_reports_failed_bootstrap_without_losing_json_or_work() {
     let (temp, authority) = configured_project(true);
