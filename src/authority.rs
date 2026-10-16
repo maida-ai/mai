@@ -52,6 +52,24 @@ impl Authority {
     pub fn init(path: &Path, source: Option<&Path>) -> Result<Self> {
         validate_git_version()?;
         reject_symlink(path)?;
+        // Resolve the destination before choosing its staging parent. In
+        // particular, the lexical parent of `.` is not its filesystem parent;
+        // staging there would make the destination nonempty ourselves.
+        let destination = if path.exists() {
+            path.canonicalize()?
+        } else {
+            let parent = path
+                .parent()
+                .filter(|parent| !parent.as_os_str().is_empty())
+                .unwrap_or(Path::new("."))
+                .canonicalize()
+                .context("destination parent must already exist")?;
+            parent.join(
+                path.file_name()
+                    .context("destination must name a directory")?,
+            )
+        };
+        let path = destination.as_path();
         let validated = source.map(validate_source).transpose()?;
         if path.join(".mai/config.toml").exists() && !path.join(MARKER).exists() {
             let mut authority = Self::open(path)?;
@@ -73,8 +91,7 @@ impl Authority {
         }
         let parent = path
             .parent()
-            .filter(|p| !p.as_os_str().is_empty())
-            .unwrap_or(Path::new("."));
+            .context("destination must have a parent directory for staging")?;
         ensure!(parent.is_dir(), "destination parent must already exist");
         let stage = tempfile::Builder::new()
             .prefix(".mai-stage-")

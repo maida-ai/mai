@@ -610,6 +610,81 @@ fn unicode_authority_paths_survive_init_import_and_reconcile() {
     );
 }
 
+#[test]
+fn relative_destination_aliases_initialize_and_retry_without_staging_inside() {
+    for destination in [".", "./", "../work/.", "../work/../work"] {
+        let temp = tempfile::tempdir().unwrap();
+        let work = temp.path().join("work");
+        fs::create_dir(&work).unwrap();
+        let output = Command::new(std::env::current_exe().unwrap())
+            .args(["--ignored", "--exact", "relative_init_worker"])
+            .current_dir(&work)
+            .env("MAI_INIT_PATH", destination)
+            .env("MAI_INIT_CASE", "success")
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "destination {destination}: {} {}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert!(!work.join(".mai-initializing").exists());
+        assert_eq!(fs::read_dir(temp.path()).unwrap().count(), 1);
+    }
+}
+
+#[test]
+fn relative_nonempty_destinations_reject_without_mutation() {
+    for destination in [".", "../work/."] {
+        let temp = tempfile::tempdir().unwrap();
+        let work = temp.path().join("work");
+        fs::create_dir(&work).unwrap();
+        fs::write(work.join("user-data"), b"preserve").unwrap();
+        let output = Command::new(std::env::current_exe().unwrap())
+            .args(["--ignored", "--exact", "relative_init_worker"])
+            .current_dir(&work)
+            .env("MAI_INIT_PATH", destination)
+            .env("MAI_INIT_CASE", "nonempty")
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "{} {}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert_eq!(fs::read(work.join("user-data")).unwrap(), b"preserve");
+        assert_eq!(fs::read_dir(&work).unwrap().count(), 1);
+        assert_eq!(fs::read_dir(temp.path()).unwrap().count(), 1);
+    }
+}
+
+#[test]
+#[ignore = "subprocess fixture isolating the current directory"]
+fn relative_init_worker() {
+    let destination = std::env::var_os("MAI_INIT_PATH").unwrap();
+    let path = Path::new(&destination);
+    if std::env::var("MAI_INIT_CASE").unwrap() == "nonempty" {
+        assert!(Authority::init(path, None).is_err());
+        return;
+    }
+    // A rejected import must leave the empty current directory reusable.
+    assert!(Authority::init(path, Some(Path::new("missing-source"))).is_err());
+    assert_eq!(fs::read_dir(".").unwrap().count(), 0);
+    let authority = Authority::init(path, None).unwrap();
+    let baseline = git(&authority.git_dir(), &["rev-parse", "HEAD"], None);
+    let repeated = Authority::init(path, None).unwrap();
+    assert_eq!(
+        authority.root(),
+        std::env::current_dir().unwrap().canonicalize().unwrap()
+    );
+    assert_eq!(
+        baseline,
+        git(&repeated.git_dir(), &["rev-parse", "HEAD"], None)
+    );
+}
+
 #[cfg(target_os = "macos")]
 #[test]
 fn unsupported_non_utf8_authority_paths_reject_without_mutation() {
