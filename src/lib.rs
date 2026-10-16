@@ -7,3 +7,7 @@ pub mod repository_scope;
 pub mod state;
 
 pub mod native_path;
+
+pub mod process;
+
+pub mod slots;
