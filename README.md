@@ -17,7 +17,7 @@
 
 mai aims to shorten recovery when agents fail, conflict or lose their environment, while keeping a blocking gate at the shared trunk boundary. The proposed rewrite uses plain Git submissions and an integrated validation queue so agents spend less time on rebases and humans spend less time coordinating parallel changes.
 
-**Rewrite design; not implemented.** The code here is the experimental 0.0.1 worktree engine. M0 qualification must pass before replacement product code starts; the commands below describe the proposed interface, not the current binary. Built in Rust, backed by Git, open source under [Apache 2.0](LICENSE), and independent of core Maida.
+**Rewrite design; not implemented.** The code here is the experimental 0.0.1 worktree engine. Scoped M0 acceptance under [ADR 0010](docs/adr/0010-staged-mvp-qualification.md), including S3 functional readiness, precedes replacement product code; the commands below describe the proposed interface, not the current binary. Built in Rust, backed by Git, open source under [Apache 2.0](LICENSE), and independent of core Maida.
 
 ## Two agents. One integration queue.
 
@@ -62,7 +62,7 @@ Use disposable trusted repositories and the [current getting-started guide](docs
 | [GitButler](https://docs.gitbutler.com/ai-agents/parallel-agents) | Documents parallel-agent workflows using multiple branches in a shared workspace. |
 | [GitHub merge queues](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue) | Run required checks on changes combined with the target branch and earlier queued work. |
 
-mai's proposed focus is a local, harness-neutral validation queue with typed outcomes, dependent changes, engine-computed change manifests, priority-aware coordination and bounded recovery. M1 starts with file units; M2 adds object precision. Priority never bypasses the trunk gate, and a confirmed post-landing failure gets a bounded fix-forward lane with a validated revert backstop. This comparison is not a claim that other tools lack integration or agent support. The final tagline remains a maintainer decision.
+mai's proposed focus is a local, harness-neutral validation queue with typed outcomes, dependent changes, engine-computed change manifests, priority-aware coordination and bounded recovery. M1 starts with file units and a simple single-class dependency-aware queue; M2 adds object precision. Differentiated priority and automated recovery remain deferred proposals under ADR 0010 and RFC #93. Priority never bypasses the trunk gate, and a confirmed post-landing failure gets a bounded fix-forward lane with a validated revert backstop. This comparison is not a claim that other tools lack integration or agent support. The final tagline remains a maintainer decision.
 
 ## Keep going
 

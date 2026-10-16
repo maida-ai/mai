@@ -3,7 +3,7 @@
 set -euo pipefail
 root="${1:-.throwaway/s3-$(date -u +%Y%m%dT%H%M%SZ)}"
 build="${root}.build"
-mode="${S3_MODE:-run}"
+mode="${S3_MODE:-functional}"
 [[ "$mode" == run || "$mode" == functional ]] || { echo "Unknown S3_MODE" >&2; exit 1; }
 if [[ -e "$root" || -e "$build" ]]; then
   echo 'Choose a new output path; existing fixtures/builds are never overwritten.' >&2
