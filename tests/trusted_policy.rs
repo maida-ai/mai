@@ -186,3 +186,135 @@ fn trusted_script_symlinks_and_renames_are_fail_closed() {
     );
     assert!(TrustedPolicy::load(&authority, &oid).is_err());
 }
+
+#[test]
+fn lexical_policy_path_aliases_are_rejected_before_protection_matching() {
+    for alias in [
+        "scripts/./gate.sh",
+        "scripts//gate.sh",
+        "scripts/gate.sh/",
+        "scripts/.",
+    ] {
+        assert!(
+            mai::policy::relative_path(Path::new(alias)).is_err(),
+            "accepted noncanonical path {alias:?}"
+        );
+    }
+    for path in ["gate.sh", "scripts/gate.sh", "scripts/non-ascii-é"] {
+        mai::policy::relative_path(Path::new(path)).unwrap();
+    }
+}
+
+#[test]
+fn aliases_cannot_enter_any_trusted_path_configuration_field() {
+    let (_temp, authority, source) = fixture();
+    fs::create_dir(source.join("scripts")).unwrap();
+    fs::write(source.join("scripts/gate.sh"), "exit 0\n").unwrap();
+    for alias in ["scripts/./gate.sh", "scripts//gate.sh"] {
+        for field in [
+            "script",
+            "executable_dependencies",
+            "inputs",
+            "protected",
+            "caches",
+        ] {
+            let policy = match field {
+                "script" => POLICY.replace("script=\"gate.sh\"", &format!("script=\"{alias}\"")),
+                "executable_dependencies" | "inputs" => POLICY.replace(
+                    "script=\"gate.sh\"",
+                    &format!("script=\"gate.sh\"\n{field}=[\"{alias}\"]"),
+                ),
+                "protected" => POLICY.replace("protected/**", alias),
+                _ => POLICY.replace("slots=1", &format!("slots=1\ncaches=[\"{alias}\"]")),
+            };
+            fs::write(source.join("mai.toml"), policy).unwrap();
+            let oid = candidate(&authority, &source);
+            git(
+                &authority.git_dir(),
+                &["update-ref", "refs/heads/trunk", &oid],
+            );
+            assert!(
+                TrustedPolicy::load(&authority, &oid).is_err(),
+                "accepted {field} alias {alias:?}"
+            );
+        }
+    }
+}
+
+#[test]
+fn exact_git_tree_spelling_is_required_for_executable_policy() {
+    let (_temp, authority, source) = fixture();
+    fs::write(
+        source.join("mai.toml"),
+        POLICY.replace("gate.sh", "GATE.SH"),
+    )
+    .unwrap();
+    let oid = candidate(&authority, &source);
+    git(
+        &authority.git_dir(),
+        &["update-ref", "refs/heads/trunk", &oid],
+    );
+    let error = match TrustedPolicy::load(&authority, &oid) {
+        Ok(_) => panic!("accepted case alias"),
+        Err(error) => error,
+    };
+    assert!(error.to_string().contains("trusted Git path"), "{error:#}");
+}
+
+#[test]
+fn git_symlink_modes_reject_even_when_working_copy_is_a_regular_file() {
+    let (_temp, authority, source) = fixture();
+    let blob = git(&source, &["hash-object", "gate.sh"]);
+    git(
+        &source,
+        &[
+            "update-index",
+            "--cacheinfo",
+            &format!("120000,{blob},gate.sh"),
+        ],
+    );
+    git(&source, &["commit", "-m", "symlink-mode executable policy"]);
+    let oid = git(&source, &["rev-parse", "HEAD"]);
+    git(
+        &authority.git_dir(),
+        &["fetch", source.to_str().unwrap(), &oid],
+    );
+    git(
+        &authority.git_dir(),
+        &["update-ref", "refs/heads/trunk", &oid],
+    );
+    let error = match TrustedPolicy::load(&authority, &oid) {
+        Ok(_) => panic!("accepted symlink Git mode"),
+        Err(error) => error,
+    };
+    assert!(error.to_string().contains("regular-file mode"), "{error:#}");
+}
+
+#[test]
+fn candidate_bootstrap_inputs_require_regular_git_modes() {
+    let (_temp, authority, source) = fixture();
+    let blob = git(&source, &["hash-object", "input"]);
+    git(
+        &source,
+        &[
+            "update-index",
+            "--cacheinfo",
+            &format!("120000,{blob},input"),
+        ],
+    );
+    git(&source, &["commit", "-m", "symlink-mode candidate input"]);
+    let oid = git(&source, &["rev-parse", "HEAD"]);
+    git(
+        &authority.git_dir(),
+        &["fetch", source.to_str().unwrap(), &oid],
+    );
+    let policy = TrustedPolicy::load(&authority, &oid).unwrap();
+    assert!(source.join("input").is_file());
+    assert!(
+        policy
+            .check_candidate_input("input")
+            .unwrap_err()
+            .to_string()
+            .contains("regular-file mode")
+    );
+}

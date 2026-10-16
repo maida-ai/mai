@@ -100,13 +100,14 @@ impl TrustedPolicy {
             "--no-hardlinks".into(),
             "--no-checkout".into(),
             "--".into(),
-            repo.into_os_string(),
-            checkout.path().as_os_str().to_owned(),
+            crate::repository_scope::external_git_path(&repo),
+            crate::repository_scope::external_git_path(checkout.path()),
         ])?;
         git(
             checkout.path(),
             &["-c", "core.hooksPath=", "checkout", "--detach", &base],
         )?;
+        checked_git_file(&authority.git_dir(), &base, "mai.toml")?;
         let policy_path = checked_file(checkout.path(), "mai.toml")?;
         let config: Policy = toml::from_str(&fs::read_to_string(policy_path)?)
             .context("invalid trusted mai.toml policy")?;
@@ -140,6 +141,7 @@ impl TrustedPolicy {
                 .chain(cmd.executable_dependencies.iter())
                 .chain(cmd.inputs.iter())
             {
+                checked_git_file(&authority.git_dir(), &base, path)?;
                 checked_file(checkout.path(), path)?;
                 protected.insert(path.clone());
             }
@@ -197,12 +199,33 @@ impl TrustedPolicy {
     pub fn script(&self, command: &CommandPolicy) -> Result<PathBuf> {
         checked_file(self.root(), &command.script)
     }
+    pub fn check_candidate_input(&self, path: &str) -> Result<()> {
+        checked_git_file(
+            &self.binding.authority.as_path().join("authority.git"),
+            &self.binding.candidate,
+            path,
+        )
+    }
 }
 pub fn relative_path(path: &Path) -> Result<()> {
     ensure!(
         !path.as_os_str().is_empty()
             && path.components().all(|c| matches!(c, Component::Normal(_))),
         "policy path must be a normalized repository-relative path"
+    );
+    // Components and Path equality normalize interior `.` and separators. Compare
+    // the original native spelling to a reconstructed slash-separated spelling
+    // before using strings as authoritative protection keys.
+    let mut normalized = OsString::new();
+    for component in path.components() {
+        if !normalized.is_empty() {
+            normalized.push("/");
+        }
+        normalized.push(component.as_os_str());
+    }
+    ensure!(
+        path.as_os_str() == normalized.as_os_str(),
+        "policy path must use canonical repository-relative spelling"
     );
     ensure!(
         !path
@@ -213,6 +236,37 @@ pub fn relative_path(path: &Path) -> Result<()> {
     ensure!(
         !path.to_string_lossy().contains('\\'),
         "backslash paths are unsupported"
+    );
+    Ok(())
+}
+/// Git modes and exact tree spelling remain authoritative on filesystems that
+/// materialize symlinks as ordinary files or compare names without case.
+fn checked_git_file(repo: &Path, tree: &str, path: &str) -> Result<()> {
+    relative_path(Path::new(path))?;
+    let entries = git_bytes(repo, &["ls-tree", "-z", tree, "--", path])?;
+    let mut entries = entries
+        .split(|byte| *byte == 0)
+        .filter(|entry| !entry.is_empty());
+    let entry = entries
+        .next()
+        .context("trusted Git path is missing or not spelled exactly")?;
+    ensure!(
+        entries.next().is_none(),
+        "trusted Git path must name exactly one file"
+    );
+    let (identity, name) = entry.split_at(
+        entry
+            .iter()
+            .position(|byte| *byte == b'\t')
+            .context("invalid Git tree record")?,
+    );
+    ensure!(
+        name.get(1..) == Some(path.as_bytes()),
+        "trusted Git path is not spelled exactly"
+    );
+    ensure!(
+        identity.starts_with(b"100644 blob ") || identity.starts_with(b"100755 blob "),
+        "trusted Git path must have a regular-file mode"
     );
     Ok(())
 }
@@ -265,6 +319,7 @@ pub(crate) fn safe_git() -> Command {
         }
     }
     cmd.args([
+        "--literal-pathspecs",
         "-c",
         "core.hooksPath=",
         "-c",

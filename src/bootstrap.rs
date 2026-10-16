@@ -34,6 +34,7 @@ pub fn fingerprint(policy: &TrustedPolicy, command: &CommandPolicy, cwd: &Path) 
         identities.push(hash_file(&checked_file(policy.root(), name)?)?);
     }
     for name in &command.inputs {
+        policy.check_candidate_input(name)?;
         identities.push(hash_file(&checked_file(cwd, name)?)?);
     }
     for tool in std::iter::once(&command.program).chain(command.tools.iter()) {

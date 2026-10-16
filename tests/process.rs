@@ -268,3 +268,51 @@ fn cmd_single_script_preserves_quotes_metacharacters_and_quoted_paths() {
     ambiguous.args.push("extra".into());
     assert!(process::run(&ambiguous, &CancellationToken::default()).is_err());
 }
+
+#[cfg(target_os = "linux")]
+#[test]
+fn non_utf8_process_name_helper() {
+    let Some(ready) = std::env::var_os("MAI_NON_UTF8_PROCESS_READY") else {
+        return;
+    };
+    // Rename the process leader, rather than only this test harness thread.
+    std::fs::write(
+        format!("/proc/self/task/{}/comm", std::process::id()),
+        b"other)\xff",
+    )
+    .unwrap();
+    assert!(std::fs::read("/proc/self/stat").unwrap().contains(&0xff));
+    std::fs::write(ready, "ready").unwrap();
+    std::thread::sleep(Duration::from_secs(30));
+}
+#[cfg(target_os = "linux")]
+#[test]
+fn unrelated_non_utf8_process_name_does_not_break_cleanup() {
+    struct Child(std::process::Child);
+    impl Drop for Child {
+        fn drop(&mut self) {
+            let _ = self.0.kill();
+            let _ = self.0.wait();
+        }
+    }
+    let directory = tempfile::tempdir().unwrap();
+    let ready = directory.path().join("ready");
+    let _child = Child(
+        std::process::Command::new(std::env::current_exe().unwrap())
+            .args(["--exact", "non_utf8_process_name_helper"])
+            .env("MAI_NON_UTF8_PROCESS_READY", &ready)
+            .spawn()
+            .unwrap(),
+    );
+    let deadline = std::time::Instant::now() + Duration::from_secs(5);
+    while !ready.exists() {
+        assert!(std::time::Instant::now() < deadline);
+        std::thread::sleep(Duration::from_millis(5));
+    }
+    let result = process::run(
+        &spec(directory.path(), "echo checked"),
+        &CancellationToken::default(),
+    )
+    .unwrap();
+    assert_eq!(result.outcome, ProcessOutcome::Success, "{result:?}");
+}
