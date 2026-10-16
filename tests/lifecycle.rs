@@ -604,3 +604,96 @@ fn empty_or_oversized_annotations_reject() {
     }
     assert!(l.get(&id).unwrap().annotations().is_empty());
 }
+
+#[test]
+fn restored_landing_cannot_bypass_unfinished_older_generation() {
+    for interrupted in [false, true] {
+        let mut lifecycle = Lifecycle::new();
+        let older = register(&mut lifecycle, "change", 'a', vec![]);
+        lifecycle.queue(&older).unwrap();
+        let attempt = lifecycle.begin_attempt(&older).unwrap();
+        let newer = register(&mut lifecycle, "change", 'b', vec![]);
+        lifecycle.queue(&newer).unwrap();
+        if interrupted {
+            lifecycle.retry_attempt(&older, attempt).unwrap();
+        }
+        let mut snapshot: serde_json::Value =
+            serde_json::from_str(&lifecycle.to_json().unwrap()).unwrap();
+        snapshot["submissions"][1]["predecessor"] = serde_json::Value::Null;
+        snapshot["submissions"][1]["state"] = serde_json::json!({
+            "kind": "terminal",
+            "outcome": {"kind": "landed", "revision": 1, "commit": "c".repeat(40)}
+        });
+        snapshot["submissions"][1]["attempts"] =
+            serde_json::json!([{"number": 1, "status": "completed"}]);
+        assert!(
+            Lifecycle::from_json(&snapshot.to_string()).is_err(),
+            "a fabricated landing must not bypass an older unfinished generation (interrupted={interrupted})"
+        );
+    }
+}
+
+#[test]
+fn restored_landing_accepts_completed_predecessor_ordering() {
+    for rejected in [false, true] {
+        let mut lifecycle = Lifecycle::new();
+        let older = register(&mut lifecycle, "change", 'a', vec![]);
+        lifecycle.queue(&older).unwrap();
+        let attempt = lifecycle.begin_attempt(&older).unwrap();
+        let newer = register(&mut lifecycle, "change", 'b', vec![]);
+        lifecycle.queue(&newer).unwrap();
+        let outcome = if rejected {
+            Outcome::Rejected {
+                reason: ReasonCode::CheckFailed,
+                diagnostics: Diagnostics::default(),
+            }
+        } else {
+            Outcome::Landed {
+                revision: 1,
+                commit: "c".repeat(40),
+            }
+        };
+        lifecycle
+            .complete_attempt(&older, attempt, outcome)
+            .unwrap();
+        let attempt = lifecycle.begin_attempt(&newer).unwrap();
+        lifecycle
+            .complete_attempt(
+                &newer,
+                attempt,
+                Outcome::Landed {
+                    revision: if rejected { 1 } else { 2 },
+                    commit: "d".repeat(40),
+                },
+            )
+            .unwrap();
+        let serialized = lifecycle.to_json().unwrap();
+        let restored = Lifecycle::from_json(&serialized).unwrap();
+        assert_eq!(restored.to_json().unwrap(), serialized);
+    }
+}
+
+#[test]
+fn replacement_may_be_rejected_or_cancelled_before_predecessor_finishes() {
+    for rejected in [false, true] {
+        let mut lifecycle = Lifecycle::new();
+        let older = register(&mut lifecycle, "change", 'a', vec![]);
+        lifecycle.queue(&older).unwrap();
+        let attempt = lifecycle.begin_attempt(&older).unwrap();
+        let newer = register(&mut lifecycle, "change", 'b', vec![]);
+        lifecycle.queue(&newer).unwrap();
+        if rejected {
+            lifecycle
+                .reject(&newer, ReasonCode::PolicyDenied, Diagnostics::default())
+                .unwrap();
+        } else {
+            lifecycle.cancel(&newer, Diagnostics::default()).unwrap();
+        }
+        let restored = Lifecycle::from_json(&lifecycle.to_json().unwrap()).unwrap();
+        assert_eq!(
+            restored.get(&older).unwrap().state(),
+            &State::Validating { attempt }
+        );
+        assert!(restored.get(&newer).unwrap().state().is_terminal());
+    }
+}

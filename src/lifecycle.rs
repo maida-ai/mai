@@ -672,7 +672,17 @@ impl Lifecycle {
                 );
             }
         }
-        for s in self.submissions.values().filter(|s| !s.state.is_terminal()) {
+        // A restored landing must retain the same predecessor barrier as queued work.
+        // Other terminal outcomes can legitimately occur while an older attempt runs.
+        for s in self.submissions.values().filter(|s| {
+            !s.state.is_terminal()
+                || matches!(
+                    s.state,
+                    State::Terminal {
+                        outcome: Outcome::Landed { .. }
+                    }
+                )
+        }) {
             for older in self.submissions.values().filter(|older| {
                 older.id.change_id == s.id.change_id
                     && older.id.generation < s.id.generation
