@@ -12,11 +12,11 @@ Use only disposable trusted repositories. Linked worktrees share authority refs;
 
 ## Rewrite sequence
 
-The maintainer accepted [ADR 0010](adr/0010-staged-mvp-qualification.md) on 2026-10-16: build a small correct MVP before realistic performance qualification or differentiated priority policy. Scoped design acceptance and fresh native verification of S3 functional corrections remain pending. Qualification is not established by a prototype or a report from one platform.
+The maintainer accepted [ADR 0010](adr/0010-staged-mvp-qualification.md) on 2026-10-16: build a small correct MVP before realistic performance qualification or differentiated priority policy. Scoped MVP design acceptance and fresh native verification of S3 functional corrections are recorded in ADRs 0003/0004 and the S3 functional review. Qualification is not established by a prototype or a report from one platform.
 
 | Stage | Exit criteria |
 | --- | --- |
-| M0 — Scoped design lock | Verify fresh native verification of S3 functional correctionss with fresh native CI; review mechanism evidence and ADR 0010; accept MVP portions of ADRs 0003/0004 through #58/#70. S4 and future S7 coverage are not blanket blockers |
+| M0 — Scoped design lock | Completed: fresh native S3 functional evidence, mechanism review and MVP acceptance in ADRs 0003/0004 through #58/#70. S4 and future S7 coverage are not blanket blockers |
 | M1 — Local MVP | Single-writer engine, durable registration, typed outcomes, dependent squash landing, serial exact-candidate validation, protected approval, ordinary leases, clones/drafts/sync/bootstrap and file manifests. Feature-specific crash tests and opt-in local metrics; no differentiated priority or realistic performance guarantee |
 | M1b — Containers and forge | Loopback smart HTTP/tokens and validated upstream sync/export. Priority-driven automatic recovery awaits RFC #93 and feature-specific crash qualification; it does not block the initial MVP |
 | Gate — External users | 5–10 users on real repositories; compare worktrees plus PRs with mai on human minutes, time to land and broken trunk |

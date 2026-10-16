@@ -17,7 +17,7 @@
 
 mai aims to shorten recovery when agents fail, conflict or lose their environment, while keeping a blocking gate at the shared trunk boundary. The proposed rewrite uses plain Git submissions and an integrated validation queue so agents spend less time on rebases and humans spend less time coordinating parallel changes.
 
-**Rewrite design; not implemented.** The code here is the experimental 0.0.1 worktree engine. Scoped M0 acceptance under [ADR 0010](docs/adr/0010-staged-mvp-qualification.md), including S3 functional readiness, precedes replacement product code; the commands below describe the proposed interface, not the current binary. Built in Rust, backed by Git, open source under [Apache 2.0](LICENSE), and independent of core Maida.
+**Rewrite design; not implemented.** The code here is the experimental 0.0.1 worktree engine. Scoped M0 acceptance under [ADR 0010](docs/adr/0010-staged-mvp-qualification.md), including S3 functional readiness, is complete and authorizes the planned replacement; the commands below describe the proposed interface, not the current binary. Built in Rust, backed by Git, open source under [Apache 2.0](LICENSE), and independent of core Maida.
 
 ## Two agents. One integration queue.
 
