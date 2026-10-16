@@ -4,7 +4,7 @@
 
 ## Local workflow
 
-Install Rust 1.85+, a C compiler for bundled SQLite, and Git 2.36+ on Linux/macOS/Windows (Git for Windows and MSVC C build tools for native Windows builds). No Python runtime is required.
+Install Rust 1.85+, a C compiler for bundled SQLite, and Git 2.40+ on Linux/macOS/Windows (Git for Windows and MSVC C build tools for native Windows builds). No Python runtime is required.
 
 ```sh
 cargo build --locked --bin mai
@@ -12,11 +12,9 @@ cargo fmt --check
 cargo clippy --all-targets --locked -- -D warnings
 cargo test --all-targets --locked
 cargo build --release --locked --bins
-bash examples/demo.sh
-# Windows PowerShell: ./examples/demo.ps1
 ```
 
-CI runs formatting, Clippy, tests, release builds, a native-platform demo, and a CLI benchmark smoke test on Linux, macOS, and Windows. Unix executable-mode/process-control/symlink tests run on Unix; Linux additionally tests raw invalid filename bytes, which APFS cannot create. A filesystem-independent unit test checks invalid Git path bytes on every platform. Common conflict, lease, binary/rename, recovery-state, hook suppression, and separate-process publication coverage runs on all platforms.
+CI runs formatting, Clippy, tests and release builds on Linux, macOS and Windows. The old engine, demonstrations and benchmark executable have been retired; replacement lifecycle regressions cover the enabled foundation. Each later persistence, initialization, receive and landing path needs its own native-platform and interruption tests before enablement.
 
 Real-Git tests use disposable repositories and local bare remotes, never credentials or customer repositories. Add success/error regressions for current semantics. Concurrent changes need disjoint, contended, same-workspace, and separate-process coverage as appropriate. Durability changes require interruption-state and recovery tests; state simulation alone does not certify power-loss safety.
 
@@ -36,7 +34,7 @@ This project has no existing users and no backward-compatibility obligations. Re
 
 ## Versioning
 
-The current MVP starts at `0.0.1`; increment `0.0.x` during MVP development. Promote to `0.1.0` when leaving MVP and to `1.0.0` when stable. Keep Cargo package metadata, CLI output tests, and current documentation consistent; benchmark labels derive from Cargo metadata. Preserve original version labels in historical benchmark records. See [version policy](docs/project.md#versioning).
+The current MVP starts at `0.0.1`; increment `0.0.x` during MVP development. Promote to `0.1.0` when leaving MVP and to `1.0.0` when stable. Keep Cargo package metadata, CLI output tests, and current documentation consistent; historical experiment records retain their original version labels. See [version policy](docs/project.md#versioning).
 
 ## Security and release boundaries
 

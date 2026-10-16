@@ -17,7 +17,7 @@
 
 mai aims to shorten recovery when agents fail, conflict or lose their environment, while keeping a blocking gate at the shared trunk boundary. The proposed rewrite uses plain Git submissions and an integrated validation queue so agents spend less time on rebases and humans spend less time coordinating parallel changes.
 
-**Rewrite design; not implemented.** The code here is the experimental 0.0.1 worktree engine. Scoped M0 acceptance under [ADR 0010](docs/adr/0010-staged-mvp-qualification.md), including S3 functional readiness, is complete and authorizes the planned replacement; the commands below describe the proposed interface, not the current binary. Built in Rust, backed by Git, open source under [Apache 2.0](LICENSE), and independent of core Maida.
+**MVP foundations under development.** Scoped design acceptance and native S3 functional verification permit replacement under [ADR 0010](docs/adr/0010-staged-mvp-qualification.md). The old worktree engine has been retired. This layer provides a versioned, tested lifecycle model; the binary currently exposes only help and version. The queue flow below is planned, not shipped. Built in Rust, backed by Git, open source under [Apache 2.0](LICENSE), and independent of core Maida.
 
 ## Two agents. One integration queue.
 
@@ -41,17 +41,19 @@ Push success will acknowledge durable registration, not landing. Each agent wait
 
 The intended audience is one developer or team running 3–30 agents across harnesses. Humans keep their forge and review process; mai integrates agent changes into an export branch. Recovery times, human interventions, time to land and broken-trunk rate will measure whether this design earns its place. None of those improvements has been measured for the rewrite yet.
 
-## Evaluate the current prototype
+## Build the MVP foundation
 
-The existing 0.0.1 engine can still be built with Rust 1.85+, Git 2.36+ and a C compiler:
+Use Rust 1.85+, Git 2.40+ and a C compiler for bundled SQLite:
 
 ```sh
 git clone https://github.com/maida-ai/mai.git
 cd mai
-cargo install --path . --locked --bin mai
+cargo build --locked --bin mai
+cargo test --all-targets --locked
+cargo run --locked -- --version
 ```
 
-Use disposable trusted repositories and the [current getting-started guide](docs/getting-started.md). The current binary has no receive queue, daemon, integrated validation, tokens or upstream sync. Its linked worktrees share authority refs; normal local commits are unsafe for its submission protocol. The proposed authority requires Git ≥ 2.40, subject to M0 qualification.
+See [getting started](docs/getting-started.md). Submission, validation and publication are not enabled in this layer; no legacy worktree commands or format migrations are provided. Performance targets and differentiated priority remain deferred until practical MVP observations.
 
 ## Where mai fits
 
