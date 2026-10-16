@@ -256,7 +256,11 @@ pub(crate) fn git(repo: &Path, args: &[&str]) -> Result<String> {
 pub(crate) fn safe_git() -> Command {
     let mut cmd = Command::new("git");
     for (key, _) in std::env::vars_os() {
-        if key.to_string_lossy().starts_with("GIT_") {
+        if key
+            .to_string_lossy()
+            .to_ascii_uppercase()
+            .starts_with("GIT_")
+        {
             cmd.env_remove(key);
         }
     }
