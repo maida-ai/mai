@@ -43,11 +43,34 @@ fn non_utf8_workspace_destination_round_trips_json() {
     let temp = tempfile::tempdir().unwrap();
     let authority = Authority::init(&temp.path().join("project"), None).unwrap();
     let destination = temp.path().join(OsString::from_vec(b"clone-\xff".to_vec()));
-    let result = workspace::create(authority.root(), "alice", &destination, true).unwrap();
-    let json = serde_json::to_value(&result).unwrap();
-    let path: mai::native_path::NativePath =
-        serde_json::from_value(json["destination"].clone()).unwrap();
-    assert_eq!(path.as_path(), destination);
+    // Lossless JSON remains valid even on filesystems (such as APFS) that
+    // cannot materialize this otherwise valid Unix pathname byte sequence.
+    let encoded = mai::native_path::NativePath::from_path(&destination).unwrap();
+    let decoded: mai::native_path::NativePath =
+        serde_json::from_value(serde_json::to_value(encoded).unwrap()).unwrap();
+    assert_eq!(decoded.as_path(), destination);
+    match workspace::create(authority.root(), "alice", &destination, true) {
+        Ok(result) => {
+            let json = serde_json::to_value(&result).unwrap();
+            let path: mai::native_path::NativePath =
+                serde_json::from_value(json["destination"].clone()).unwrap();
+            assert_eq!(path.as_path(), destination.canonicalize().unwrap());
+        }
+        Err(error) => {
+            #[cfg(target_os = "macos")]
+            {
+                assert!(
+                    error.chain().any(|cause| cause
+                        .downcast_ref::<std::io::Error>()
+                        .is_some_and(|e| e.raw_os_error() == Some(libc::EILSEQ))),
+                    "{error:#}"
+                );
+                assert!(!destination.exists());
+            }
+            #[cfg(not(target_os = "macos"))]
+            panic!("{error:#}");
+        }
+    }
 }
 #[cfg(unix)]
 fn configured_project(failing: bool) -> (tempfile::TempDir, Authority) {
@@ -217,6 +240,6 @@ fn workspace_cli_reports_failed_bootstrap_without_losing_json_or_work() {
     assert_eq!(result["bootstrap"]["outcome"], "failure");
     let returned: mai::native_path::NativePath =
         serde_json::from_value(result["destination"].clone()).unwrap();
-    assert_eq!(returned.as_path(), destination);
+    assert_eq!(returned.as_path(), destination.canonicalize().unwrap());
     assert!(destination.join(".mai-workspace-incomplete").exists());
 }
