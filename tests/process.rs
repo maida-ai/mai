@@ -238,3 +238,33 @@ fn native_owner_death_closes_descendant_ownership() {
     std::thread::sleep(Duration::from_millis(2100));
     assert!(!directory.path().join("escaped").exists());
 }
+
+#[cfg(windows)]
+#[test]
+fn cmd_single_script_preserves_quotes_metacharacters_and_quoted_paths() {
+    let directory = tempfile::tempdir().unwrap();
+    let result = process::run(
+        &spec(directory.path(), r#"echo "quoted space" & exit /b 7"#),
+        &CancellationToken::default(),
+    )
+    .unwrap();
+    assert_eq!(result.outcome, ProcessOutcome::Failure, "{result:?}");
+    assert_eq!(result.exit_code, Some(7));
+    assert!(
+        result.stdout_tail.contains("\"quoted space\""),
+        "{result:?}"
+    );
+    let script = directory.path().join("trusted & check.cmd");
+    std::fs::write(&script, "@echo file invoked\r\n@exit /b 3\r\n").unwrap();
+    let result = process::run(
+        &spec(directory.path(), &format!("\"{}\"", script.display())),
+        &CancellationToken::default(),
+    )
+    .unwrap();
+    assert_eq!(result.outcome, ProcessOutcome::Failure, "{result:?}");
+    assert_eq!(result.exit_code, Some(3));
+    assert!(result.stdout_tail.contains("file invoked"), "{result:?}");
+    let mut ambiguous = spec(directory.path(), "echo hello");
+    ambiguous.args.push("extra".into());
+    assert!(process::run(&ambiguous, &CancellationToken::default()).is_err());
+}

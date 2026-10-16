@@ -92,25 +92,6 @@ fn wide(value: &OsStr) -> Result<Vec<u16>> {
     ensure!(!result.contains(&0), "NUL in process argument/path");
     Ok(result)
 }
-fn quote(value: &OsStr) -> Result<Vec<u16>> {
-    let mut output = vec![34];
-    let mut slashes = 0;
-    for unit in wide(value)? {
-        if unit == 92 {
-            slashes += 1;
-            continue;
-        }
-        output.extend(std::iter::repeat_n(
-            92,
-            if unit == 34 { 2 * slashes + 1 } else { slashes },
-        ));
-        slashes = 0;
-        output.push(unit);
-    }
-    output.extend(std::iter::repeat_n(92, 2 * slashes));
-    output.push(34);
-    Ok(output)
-}
 fn pipe() -> Result<(File, OwnedHandle)> {
     let mut read: HANDLE = std::ptr::null_mut();
     let mut write: HANDLE = std::ptr::null_mut();
@@ -268,12 +249,12 @@ pub(super) fn spawn(command: &Command) -> Result<(Supervision, Child)> {
     startup.StartupInfo.hStdOutput = out_writer.as_raw_handle();
     startup.StartupInfo.hStdError = err_writer.as_raw_handle();
     startup.lpAttributeList = attributes.0.as_mut_ptr().cast();
-    let mut arguments = quote(executable.as_os_str())?;
-    for argument in command.get_args() {
-        arguments.push(32);
-        arguments.extend(quote(argument)?);
-    }
-    arguments.push(0);
+    let cmd = executable
+        .file_name()
+        .is_some_and(|name| name.eq_ignore_ascii_case("cmd.exe"));
+    let args = command.get_args().map(wide).collect::<Result<Vec<_>>>()?;
+    let mut arguments =
+        super::windows_arguments::command_line(&wide(executable.as_os_str())?, &args, cmd)?;
     let mut environment: std::collections::BTreeMap<_, _> = std::env::vars_os().collect();
     for (key, value) in command.get_envs() {
         if let Some(value) = value {

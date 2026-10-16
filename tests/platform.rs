@@ -54,6 +54,67 @@ fn authority_minimum_executable_and_explicit_base_merge() {
     let error = qualify_git(&temp.path().join("missing-git")).unwrap_err();
     assert!(error.to_string().contains("install Git >= 2.40"));
 }
+// A concurrent fork can briefly inherit a fixture writer descriptor between
+// write and exec. Retry only that OS condition, keeping real Git errors intact.
+#[cfg(unix)]
+fn retry_fixture_text_busy<T>(
+    mut operation: impl FnMut() -> anyhow::Result<T>,
+) -> anyhow::Result<T> {
+    use std::time::{Duration, Instant};
+    let deadline = Instant::now() + Duration::from_secs(1);
+    loop {
+        match operation() {
+            Err(error)
+                if error.chain().any(|cause| {
+                    cause
+                        .downcast_ref::<std::io::Error>()
+                        .is_some_and(|io| io.raw_os_error() == Some(libc::ETXTBSY))
+                }) && Instant::now() < deadline =>
+            {
+                std::thread::sleep(Duration::from_millis(5));
+            }
+            result => return result,
+        }
+    }
+}
+
+#[cfg(unix)]
+#[test]
+fn fixture_retry_only_retries_text_busy_and_preserves_real_errors() {
+    let mut attempts = 0;
+    let error = retry_fixture_text_busy::<()>(|| {
+        attempts += 1;
+        if attempts == 1 {
+            Err(
+                anyhow::Error::new(std::io::Error::from_raw_os_error(libc::ETXTBSY))
+                    .context("fixture temporarily held by inherited descriptor"),
+            )
+        } else {
+            anyhow::bail!("expected Git diagnostic")
+        }
+    })
+    .unwrap_err();
+    assert_eq!(attempts, 2);
+    assert_eq!(error.to_string(), "expected Git diagnostic");
+
+    let mut attempts = 0;
+    let error = retry_fixture_text_busy::<()>(|| {
+        attempts += 1;
+        Err(anyhow::Error::new(std::io::Error::from_raw_os_error(
+            libc::EACCES,
+        )))
+    })
+    .unwrap_err();
+    assert_eq!(attempts, 1);
+    assert_eq!(
+        error
+            .downcast_ref::<std::io::Error>()
+            .unwrap()
+            .raw_os_error(),
+        Some(libc::EACCES)
+    );
+}
+
 #[cfg(unix)]
 #[test]
 fn old_and_broken_git_fail_actionably() {
@@ -74,7 +135,7 @@ fn old_and_broken_git_fail_actionably() {
         let executable = temp.path().join(format!("git-{index}"));
         fs::write(&executable, script).unwrap();
         fs::set_permissions(&executable, fs::Permissions::from_mode(0o755)).unwrap();
-        let error = qualify_git(&executable).unwrap_err();
+        let error = retry_fixture_text_busy(|| qualify_git(&executable)).unwrap_err();
         assert!(error.to_string().contains(message), "{error:#}");
     }
 }

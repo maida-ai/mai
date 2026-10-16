@@ -19,6 +19,8 @@ use std::{
 mod unix;
 #[cfg(windows)]
 mod windows;
+#[cfg(any(windows, test))]
+mod windows_arguments;
 #[cfg(unix)]
 use unix as platform;
 #[cfg(windows)]
