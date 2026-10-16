@@ -133,7 +133,7 @@ impl SlotPool {
                 cache
                     .components()
                     .next()
-                    .is_some_and(|part| part.as_os_str() != ".git"),
+                    .is_some_and(|part| !part.as_os_str().eq_ignore_ascii_case(".git")),
                 "cache cannot include .git"
             );
         }

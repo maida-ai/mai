@@ -103,7 +103,10 @@ fn tracked_cache_overlap_and_invalid_settings_fail_closed() {
     let root = tempfile::tempdir().unwrap();
     let source = repository(root.path());
     let oid = git(&source, &["rev-parse", "HEAD"]);
-    for (index, cache) in ["../escape", ".git/objects", "tracked"].iter().enumerate() {
+    for (index, cache) in ["../escape", ".git/objects", ".GIT/objects", "tracked"]
+        .iter()
+        .enumerate()
+    {
         let pool = SlotPool::open(
             &root.path().join(format!("pool-{index}")),
             &source,
