@@ -1,6 +1,6 @@
 # ADR 0010: Staged MVP qualification and evidence-led optimization
 
-Status: accepted scope and sequencing decision by the maintainer on 2026-10-16; implementation is not shipped. This amends the blanket M0 qualification requirement in ADRs 0003/0004. It does not accept their remaining MVP design details or close acceptance tasks #58/#70.
+Status: accepted scope and sequencing decision by the maintainer on 2026-10-16; implementation is not shipped. This amends the blanket M0 qualification requirement in ADRs 0003/0004. The subsequent scoped acceptance review in ADRs 0003/0004 records completion of design tasks #58/#70; future proposals remain deferred.
 
 ## Context
 
@@ -28,9 +28,9 @@ Non-negotiable correctness includes retaining acknowledged objects, exact submit
 
 ## S3 implementation and evidence status
 
-The lower S3 fix layer gives the pinned ripgrep suite private non-repository temporary directories, corrects its warm/poison source path to `crates/core/main.rs`, validates tracked fixture paths and replaces separator-sensitive slot assertions with native path comparisons. The real upstream gate remains unchanged. Local Linux functional checks pass; native Windows/macOS confirmation remains pending manual CI and does not follow from local success.
+The lower S3 fix layer gives the pinned ripgrep suite private non-repository temporary directories, corrects its warm/poison source path to `crates/core/main.rs`, validates tracked fixture paths and replaces separator-sensitive slot assertions with native path comparisons. The real upstream gate remains unchanged. [Fresh native run 38947607178](../spikes/s3/functional-qualification.md) confirms functional checks on Linux, macOS and Windows; each platform passes 11 units and all functional scenarios.
 
-S3 now records functional and performance outcomes separately. This amendment selects functional mode by default for the wrapper/manual workflow; `S3_MODE=run` still enforces the original strict <15% threshold. Both modes run the same samples and correctness checks and retain failed performance results. Functional failures always exit nonzero. This is an explicit acceptance-policy change, not a new performance pass. Existing evidence and original NO-GO reports are unchanged; #53 remains open for fresh native evidence. Harmless manifest-byte invalidation and unimplemented Windows COW probing remain documented limits, not newly qualified behaviors.
+S3 now records functional and performance outcomes separately. This amendment selects functional mode by default for the wrapper/manual workflow; `S3_MODE=run` still enforces the original strict <15% threshold. Both modes run the same samples and correctness checks and retain failed performance results. Functional failures always exit nonzero. This is an explicit acceptance-policy change, not a new performance pass. Existing evidence and original NO-GO reports are unchanged; #53 retains broader original limitations; fresh native functional evidence is now reviewed. Harmless manifest-byte invalidation and unimplemented Windows COW probing remain documented limits, not newly qualified behaviors.
 
 ## Data collection after an MVP exists
 
@@ -40,6 +40,6 @@ Dogfood on this repository, then use consented volunteer repositories through [#
 
 ## Consequences and tracking
 
-Keep #53 open until fresh native CI verifies the functional corrections, #54 open as post-MVP empirical research and #57 open as incremental crash qualification. Their prior NO-GO reports remain valid assessments of their original broader criteria. Remove S4/S7 completion dependencies from #58/#70; retain review of their evidence and this accepted redesign. Do not require priority implementation to complete baseline validation or its regression harness. M1 no longer requires five-agent zero-intervention/zero-broken-trunk performance demonstrations before it can supply data; use bounded dogfood observations and report failures honestly. The external-user gate for M2 and later remains unchanged.
+#53 now has reviewed native functional corrections; retain its original performance and fixture limitations, #54 open as post-MVP empirical research and #57 open as incremental crash qualification. Their prior NO-GO reports remain valid assessments of their original broader criteria. Remove S4/S7 completion dependencies from #58/#70; retain review of their evidence and this accepted redesign. Do not require priority implementation to complete baseline validation or its regression harness. M1 no longer requires five-agent zero-intervention/zero-broken-trunk performance demonstrations before it can supply data; use bounded dogfood observations and report failures honestly. The external-user gate for M2 and later remains unchanged.
 
-Premature optimization is discouraged. Prefer a small, maintainable, correct MVP and collect measurements while using it. This decision authorizes the staged plan, not automatic issue closure, an accepted production release, replacement of source before scoped design acceptance.
+Premature optimization is discouraged. Prefer a small, maintainable, correct MVP and collect measurements while using it. This decision and the subsequent scoped acceptance authorize the staged implementation plan, not automatic issue closure or an accepted production release.

@@ -4,19 +4,19 @@ mai is an Apache-2.0 Rust project for 3–30 coding agents working on one reposi
 
 ## Working today
 
-The existing 0.0.1 engine uses linked worktrees, path leases, conservative path conflicts, numbered revisions, workspace checks and optional downstream mirroring. It is retained during design qualification and will be replaced entirely when M1 begins. The proposed daemon, clone protocol, integrated queue and inbound forge synchronization are not implemented. [Getting started](getting-started.md) and the current section of [CLI reference](cli.md) document the existing binary.
+The 0.0.1 MVP foundation replaces the old worktree engine with a versioned lifecycle model: immutable generations, exact dependency identities, explicit attempts and terminal outcomes. The binary exposes help and version at this layer. Persistence, initialization and serving are dependent implementation layers; receive, validation and landing remain future work. [Getting started](getting-started.md) and [CLI reference](cli.md) document the implemented surface.
 
 ## Current limits
 
-Use only disposable trusted repositories. Linked worktrees share authority refs; committing on main can bypass publication checks, and local commits break the submission base assumption. Checks run in the agent workspace, not the integrated candidate. Recovery receipts can refer to earlier accepted work while new edits remain pending. There is no daemon, authentication, automatic dirty update or remote multi-tenant support. Preserve drafts before recovery and follow the [current CLI precautions](cli.md#current-workspace-precautions).
+Use only disposable trusted repositories during MVP development. Model tests and snapshot round trips do not establish durable registration, exact-candidate validation or publication safety. Those paths need dedicated persistence, Git and interruption tests before enablement. No complete integration queue, authentication or remote multi-tenant service is available. Consult the [current CLI surface](cli.md) before using planned commands.
 
 ## Rewrite sequence
 
-The maintainer accepted [ADR 0010](adr/0010-staged-mvp-qualification.md) on 2026-10-16: build a small correct MVP before realistic performance qualification or differentiated priority policy. Scoped design acceptance and fresh native verification of S3 functional corrections remain pending. Qualification is not established by a prototype or a report from one platform.
+The maintainer accepted [ADR 0010](adr/0010-staged-mvp-qualification.md) on 2026-10-16: build a small correct MVP before realistic performance qualification or differentiated priority policy. Scoped MVP design acceptance and fresh native verification of S3 functional corrections are recorded in ADRs 0003/0004 and the S3 functional review. Qualification is not established by a prototype or a report from one platform.
 
 | Stage | Exit criteria |
 | --- | --- |
-| M0 — Scoped design lock | Verify fresh native verification of S3 functional correctionss with fresh native CI; review mechanism evidence and ADR 0010; accept MVP portions of ADRs 0003/0004 through #58/#70. S4 and future S7 coverage are not blanket blockers |
+| M0 — Scoped design lock | Completed: fresh native S3 functional evidence, mechanism review and MVP acceptance in ADRs 0003/0004 through #58/#70. S4 and future S7 coverage are not blanket blockers |
 | M1 — Local MVP | Single-writer engine, durable registration, typed outcomes, dependent squash landing, serial exact-candidate validation, protected approval, ordinary leases, clones/drafts/sync/bootstrap and file manifests. Feature-specific crash tests and opt-in local metrics; no differentiated priority or realistic performance guarantee |
 | M1b — Containers and forge | Loopback smart HTTP/tokens and validated upstream sync/export. Priority-driven automatic recovery awaits RFC #93 and feature-specific crash qualification; it does not block the initial MVP |
 | Gate — External users | 5–10 users on real repositories; compare worktrees plus PRs with mai on human minutes, time to land and broken trunk |
@@ -69,8 +69,8 @@ Profiled in-process Git reads may justify gitoxide. Overlay/lazy materialization
 
 ## Development policy
 
-There are no backward-compatibility obligations. Do not build legacy readers, schema migrations, converters, deprecated aliases or downgrade paths. A mismatched rewrite state schema refuses startup; disposable evaluation repositories are recreated. This policy does not relax acknowledged-write recovery or authorize destroying user work. Delete the old `src/`, `tests/`, `benchmarks/` and `examples/` only when M1 implementation starts after M0; keep licensing, assets, contribution guidance and the CI skeleton.
+There are no backward-compatibility obligations. Do not build legacy readers, schema migrations, converters, deprecated aliases or downgrade paths. A mismatched rewrite state schema refuses startup; disposable evaluation repositories are recreated. This policy does not relax acknowledged-write recovery or authorize destroying user work. The first M1 scaffold retired the old source, tests, benchmarks and examples after scoped M0 acceptance, while preserving licensing, assets, contribution guidance, experiment evidence and the CI skeleton.
 
 ## Versioning
 
-The prototype is 0.0.1. MVP releases use 0.0.x; leaving MVP uses 0.1.0 and demonstrated stability uses 1.0.0. Milestone completion alone does not promote a version. Keep package metadata, CLI tests and implemented documentation consistent.
+The MVP foundation remains 0.0.1. MVP releases use 0.0.x; leaving MVP uses 0.1.0 and demonstrated stability uses 1.0.0. Milestone completion alone does not promote a version. Keep package metadata, CLI tests and implemented documentation consistent.

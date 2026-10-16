@@ -4,7 +4,7 @@
 
 ## Local workflow
 
-Install Rust 1.85+, a C compiler for bundled SQLite, and Git 2.36+ on Linux/macOS/Windows (Git for Windows and MSVC C build tools for native Windows builds). No Python runtime is required.
+Install Rust 1.85+, a C compiler for bundled SQLite, and Git 2.40+ on Linux/macOS/Windows (Git for Windows and MSVC C build tools for native Windows builds). No Python runtime is required.
 
 ```sh
 cargo build --locked --bin mai
@@ -12,17 +12,15 @@ cargo fmt --check
 cargo clippy --all-targets --locked -- -D warnings
 cargo test --all-targets --locked
 cargo build --release --locked --bins
-bash examples/demo.sh
-# Windows PowerShell: ./examples/demo.ps1
 ```
 
-CI runs formatting, Clippy, tests, release builds, a native-platform demo, and a CLI benchmark smoke test on Linux, macOS, and Windows. Unix executable-mode/process-control/symlink tests run on Unix; Linux additionally tests raw invalid filename bytes, which APFS cannot create. A filesystem-independent unit test checks invalid Git path bytes on every platform. Common conflict, lease, binary/rename, recovery-state, hook suppression, and separate-process publication coverage runs on all platforms.
+CI runs formatting, Clippy, tests and release builds on Linux, macOS and Windows. The old engine, demonstrations and benchmark executable have been retired; replacement lifecycle regressions cover the enabled foundation. Each later persistence, initialization, receive and landing path needs its own native-platform and interruption tests before enablement.
 
 Real-Git tests use disposable repositories and local bare remotes, never credentials or customer repositories. Add success/error regressions for current semantics. Concurrent changes need disjoint, contended, same-workspace, and separate-process coverage as appropriate. Durability changes require interruption-state and recovery tests; state simulation alone does not certify power-loss safety.
 
 ## Rewrite entry conditions
 
-The current 0.0.1 engine remains buildable during M0. Follow the accepted [ADR 0010 staging amendment](docs/adr/0010-staged-mvp-qualification.md): verify the fresh native verification of S3 functional correctionss with fresh native CI and accept the scoped MVP design before replacement product code. S4 realistic performance and future S7 coverage are not blanket blockers; actual feature-specific correctness tests pass before enablement. The [project plan](docs/project.md) and [architecture](docs/architecture.md) distinguish decided direction, spike-pending mechanisms and maintainer decisions. When M1 starts, replace the old source, tests, benchmarks and examples; preserve licensing, assets, contribution guidance and the CI skeleton. Do not preemptively delete executable code during documentation work.
+The 0.0.1 replacement foundation has begun after the accepted [ADR 0010 staging amendment](docs/adr/0010-staged-mvp-qualification.md), fresh native S3 functional verification and scoped MVP acceptance of ADRs 0003/0004. The old source, tests, benchmarks and examples are retired; licensing, assets, contribution guidance, experiment evidence and the CI skeleton remain. S4 realistic performance and future S7 coverage are not blanket blockers; each implemented correctness path needs tests before enablement. The [project plan](docs/project.md) and [architecture](docs/architecture.md) distinguish implemented foundations, accepted direction and deferred mechanisms.
 
 The target is a plain-Git receive protocol, single-writer engine and integrated validation queue for 3–30 agents. Keep Git CLI merge/ref correctness, exact pipeline evidence, durable registration, typed terminal outcomes, protected trunk policy, dependent changes and safe explicit sync central. M1 adds file-unit manifests; differentiated priority policy awaits RFC #93. M2 refines objects rather than trusting agent-declared scope. Before any later priority feature is enabled, validate grant expiry, inheritance, aging, preemption grace and preservation of lower-priority work. Bounded fix-forward requires normal gate plus full confirmation; a validated revert remains the backstop. Do not implement a narrower severe gate without the explicit maintainer decision. Batch-tip evidence must not be misrepresented as a separate pass on each intermediate revision. Do not carry over linked-worktree base refs, publication gates or group-commit optimization into the rewrite.
 
@@ -36,7 +34,7 @@ This project has no existing users and no backward-compatibility obligations. Re
 
 ## Versioning
 
-The current MVP starts at `0.0.1`; increment `0.0.x` during MVP development. Promote to `0.1.0` when leaving MVP and to `1.0.0` when stable. Keep Cargo package metadata, CLI output tests, and current documentation consistent; benchmark labels derive from Cargo metadata. Preserve original version labels in historical benchmark records. See [version policy](docs/project.md#versioning).
+The current MVP starts at `0.0.1`; increment `0.0.x` during MVP development. Promote to `0.1.0` when leaving MVP and to `1.0.0` when stable. Keep Cargo package metadata, CLI output tests, and current documentation consistent; historical experiment records retain their original version labels. See [version policy](docs/project.md#versioning).
 
 ## Security and release boundaries
 
