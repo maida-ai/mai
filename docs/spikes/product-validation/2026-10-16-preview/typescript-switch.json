@@ -1,0 +1,43 @@
+{
+  "approval": null,
+  "binding": {
+    "authority": {
+      "data": "L3Zhci90bXAvbWFpLXByb2R1Y3QtdmFsaWRhdGlvbi0yMDI2MTAxNi1iL3R5cGVzY3JpcHQtYXV0aG9yaXR5",
+      "encoding": "unix_bytes"
+    },
+    "base": "c249982db8031f6f21a19552299b38fabd172432",
+    "candidate": "95369a56d62704aa18d1fd20fce5ceb9d80f264f",
+    "policy": "c249982db8031f6f21a19552299b38fabd172432",
+    "schema_version": 1,
+    "submitted_identity": null,
+    "tree": "f7627c309e25e5cd7ec6613dd93f86d684006b3e"
+  },
+  "bootstrap": null,
+  "bootstrap_reused": true,
+  "diagnostic": null,
+  "elapsed_ms": 5764,
+  "outcome": "success",
+  "process": {
+    "elapsed_ms": 4346,
+    "exit_code": 0,
+    "outcome": "success",
+    "stderr_tail": "npm warn Unknown env config \"version-commit-hooks\". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.\nnpm warn Unknown env config \"cache-folder\". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.\nnpm warn Unknown env config \"version-tag-prefix\". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.\nnpm warn Unknown env config \"version-git-message\". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.\nnpm warn Unknown env config \"argv\". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.\nnpm warn Unknown env config \"version-git-tag\". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.\nPASS src/__tests__/string.test.ts\nPASS src/__tests__/error.test.ts\nPASS src/__tests__/async-parsing.test.ts\nPASS src/__tests__/primitive.test.ts\nPASS src/__tests__/object.test.ts\nPASS src/__tests__/discriminated-unions.test.ts\nPASS src/__tests__/refine.test.ts\nPASS src/__tests__/readonly.test.ts\nPASS src/__tests__/partials.test.ts\nPASS src/__tests__/function.test.ts\nPASS src/__tests__/catch.test.ts\nPASS src/__tests__/coerce.test.ts\nPASS src/__tests__/number.test.ts\nPASS src/__tests__/transformer.test.ts\nPASS src/__tests__/deepmasking.test.ts\nPASS src/__tests__/all-errors.test.ts\nPASS src/__tests__/set.test.ts\nPASS src/__tests__/preprocess.test.ts\nPASS src/__tests__/validations.test.ts\nPASS src/__tests__/recursive.test.ts\nPASS src/__tests__/record.test.ts\nPASS src/__tests__/pickomit.test.ts\nPASS src/__tests__/map.test.ts\nPASS src/__tests__/default.test.ts\nPASS src/__tests__/intersection.test.ts\nPASS src/__tests__/enum.test.ts\nPASS src/__tests__/tuple.test.ts\nPASS src/__tests__/standard-schema.test.ts\nPASS src/__tests__/promise.test.ts\nPASS src/__tests__/firstparty.test.ts\nPASS src/__tests__/nativeEnum.test.ts\nPASS src/__tests__/bigint.test.ts\nPASS src/__tests__/array.test.ts\nPASS src/__tests__/branded.test.ts\nPASS src/__tests__/async-refinements.test.ts\nPASS src/__tests__/unions.test.ts\nPASS src/__tests__/generics.test.ts\nPASS src/__tests__/description.test.ts\nPASS src/__tests__/optional.test.ts\nPASS src/__tests__/nullable.test.ts\nPASS src/__tests__/instanceof.test.ts\nPASS src/__tests__/parser.test.ts\nPASS src/__tests__/literal.test.ts\nPASS src/__tests__/date.test.ts\nPASS src/__tests__/custom.test.ts\nPASS src/__tests__/parseUtil.test.ts\nPASS src/__tests__/pipeline.test.ts\nPASS src/__tests__/firstpartyschematypes.test.ts\nPASS src/__tests__/base.test.ts\nPASS src/__tests__/object-in-es5-env.test.ts\nPASS src/__tests__/masking.test.ts\nPASS src/__tests__/anyunknown.test.ts\nPASS src/__tests__/safeparse.test.ts\nPASS src/__tests__/complex.test.ts\nPASS src/__tests__/nan.test.ts\nPASS src/__tests__/object-augmentation.test.ts\nPASS src/__tests__/mocker.test.ts\nPASS src/__tests__/void.test.ts\n\nTest Suites: 58 passed, 58 total\nTests:       544 passed, 544 total\nSnapshots:   0 total\nTime:        3.729 s\nRan all test suites.\n",
+    "stdout_tail": "yarn run v1.22.22\n$ npx jest --config ./configs/ts-jest.config.json --runInBand\nDone in 4.21s.\n"
+  },
+  "protected_changes": [],
+  "schema_version": 1,
+  "experiment_bootstrap_before": [
+    {
+      "name": ".mai/validator-bootstrap-0.json",
+      "mtime_ns": 1792189077480483915,
+      "content": "{\"fingerprint\":\"12bf8872f28d7a36a2df18ada9716fa08ac51810\",\"version\":1}"
+    }
+  ],
+  "experiment_bootstrap_after": [
+    {
+      "name": ".mai/validator-bootstrap-0.json",
+      "mtime_ns": 1792189077480483915,
+      "content": "{\"fingerprint\":\"12bf8872f28d7a36a2df18ada9716fa08ac51810\",\"version\":1}"
+    }
+  ]
+}

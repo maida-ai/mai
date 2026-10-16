@@ -1,0 +1,48 @@
+{
+  "utc": "2026-10-16T22:16:56Z",
+  "platform": "Linux-7.0.0-34-generic-x86_64-with-glibc2.39",
+  "binary_sha256": "fd24833709a865310562053dbcde8382010f5eef0660f85d94611a9aaa33e3df",
+  "harness_sha256": "9eeeaacd917c9cbd75ba084655c496eb8a1b03c3aea8e22cae8373f8fcf8b557",
+  "fixtures": {
+    "rust": [
+      "https://github.com/BurntSushi/ripgrep.git",
+      "4649aa9700619f94cf9c66876e9549d83420e16c",
+      "Cargo.toml",
+      "crates/core/main.rs"
+    ],
+    "python": [
+      "https://github.com/pallets/itsdangerous.git",
+      "096c8d42545d3b68ea21a4f890fb2b2d8979c0bd",
+      "pyproject.toml",
+      "src/itsdangerous/__init__.py"
+    ],
+    "typescript": [
+      "https://github.com/colinhacks/zod.git",
+      "e30870369d5b8f31ff4d0130d4439fd997deb523",
+      "package.json",
+      "src/index.ts"
+    ]
+  },
+  "product_source_sha256": {
+    "Cargo.toml": "299fac6f8051469163dc218fbd3d3a53eca31e7b3b15eae5999474773cce0f3e",
+    "Cargo.lock": "ec3d2d7c4b17dc7632d6fe20d69b5b08082abc62109ffbd918c04157978fb581",
+    "src/approval.rs": "5bb8a5ba5e3d2742f0f4e03bdc1e5283b76b4d226cbe676fa41fab64f197206f",
+    "src/authority.rs": "e698ef60a1d2aa7db527871a76aa75409b24bff52920911038a0431b48410a0e",
+    "src/bootstrap.rs": "5f47b21a0ff335bdaf21c841083affe2de9094a4d6281ffb786face7e86891c4",
+    "src/engine/windows_process.rs": "4a0b94649bddf77a8c876423931322cb8796c8a97df13af53085b45cfc0982c6",
+    "src/engine.rs": "c7b7c7f613811fa25ab54960222565f6c2020b60cfdab7497dff89a4b4f25504",
+    "src/lib.rs": "1b6423e473bf827f31558905ccd0d2c179e03202fa593795a5bb50dcf2b62d0b",
+    "src/lifecycle.rs": "40960fe0f5e9f822095f7c89a128271d21d69d76bc9af077df65d5d419b51d8f",
+    "src/main.rs": "49e63873cf2a99c975fc0794568299dbb7ba844aac4e92a7bb8782c66faaf18d",
+    "src/native_path.rs": "3c9f8ce55a4540798392e2cc0b6b6c80514c553e3ef91c4e496a50313912f612",
+    "src/policy.rs": "df41526439c5d337eafc60feaffd92a6500293b528bbdfeb16d4a4260e35fe00",
+    "src/process/unix.rs": "8cc5f2c4e3a06daf187f80418920397e9fd2032d7d76e770197a83ad65ee3be7",
+    "src/process/windows.rs": "dbc35b7d438ced4a51e71ff3c8e22f37a144dd1a90f58805de42f77c06a79f21",
+    "src/process.rs": "0cd35a3e18633385252ef7bb9d24dab0b46eda0b46255c5beec71a5365cb6f64",
+    "src/repository_scope.rs": "bd9237ce491bf6364590239ba1cd1738a3d2158dd8eecd6511ce9517c785cd07",
+    "src/slots.rs": "f67fd0f0c896df4260de3b695247386b8119fd4b8b58d58b1081eb857ecf8e06",
+    "src/state.rs": "ba5375d952c46e33be0467ed1bd83b64a704219c636972f163a0085949789995",
+    "src/validator.rs": "b9cd5babbc9894c1347a89e5e797c5c86a2dc45dccda194b9248c70ac14e212c",
+    "src/workspace.rs": "ff39dad78d665fbe144b7cb872066f35a1c0ab91f6e6e11582c087add5cb044b"
+  }
+}

@@ -182,7 +182,11 @@ fn git(path: &Path, args: &[&OsStr]) -> Result<String> {
 pub(crate) fn git_command() -> Command {
     let mut command = Command::new("git");
     for (key, _) in std::env::vars_os() {
-        if key.to_string_lossy().starts_with("GIT_") {
+        if key
+            .to_string_lossy()
+            .to_ascii_uppercase()
+            .starts_with("GIT_")
+        {
             command.env_remove(key);
         }
     }

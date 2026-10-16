@@ -199,3 +199,24 @@ fn changed_tool_binary_with_same_version_invalidates_bootstrap() {
         bootstrap::fingerprint(&trusted, &command, &destination).unwrap()
     );
 }
+
+#[cfg(unix)]
+#[test]
+fn workspace_cli_reports_failed_bootstrap_without_losing_json_or_work() {
+    let (temp, authority) = configured_project(true);
+    let destination = temp.path().join("cli-failed");
+    let output = Command::new(env!("CARGO_BIN_EXE_mai"))
+        .args(["--json", "workspace"])
+        .arg(authority.root())
+        .arg("alice")
+        .arg(&destination)
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(3));
+    let result: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(result["bootstrap"]["outcome"], "failure");
+    let returned: mai::native_path::NativePath =
+        serde_json::from_value(result["destination"].clone()).unwrap();
+    assert_eq!(returned.as_path(), destination);
+    assert!(destination.join(".mai-workspace-incomplete").exists());
+}

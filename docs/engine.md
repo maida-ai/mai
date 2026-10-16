@@ -1,6 +1,6 @@
 # Authority engine foundation
 
-This MVP foundation initializes an authority, reconciles its durable state, and runs one local owner. It does not accept submissions, validate candidates, land changes, or implement the planned workspace commands. A ready engine is not a ready integration queue. Receive registration and landing follow in #60 and #61.
+This MVP foundation initializes an authority, reconciles its durable state, and runs one local owner. It does not accept submissions or land changes. Explicit [manual validation](manual-validator.md) and [workspace creation](workspaces.md) operate separately from the engine queue. A ready engine is not a ready integration queue. Receive registration and landing follow in #60 and #61.
 
 See the [authority startup contract](authority-startup.md) for initialization and exact-evidence reconciliation.
 

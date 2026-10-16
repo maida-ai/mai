@@ -1,0 +1,1 @@
+typescript-cold: expected success, got failure
