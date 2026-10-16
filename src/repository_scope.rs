@@ -103,11 +103,92 @@ fn version_supported(version: &str) -> bool {
         _ => false,
     }
 }
+/// Qualify the authority executable rather than trusting its version banner alone.
+/// Transport probes live in `tests/platform.rs`; receive remains unavailable.
 pub fn validate_git_version() -> Result<()> {
-    let bytes = output(Path::new("."), &["--version"])?;
+    qualify_git(Path::new("git"))
+}
+
+/// The explicit executable argument supports embedders and deterministic diagnostics
+/// without mutating process-wide PATH. Never use a candidate-controlled executable.
+pub fn qualify_git(executable: &Path) -> Result<()> {
+    let run = |cwd: &Path, args: &[&str], input: Option<&[u8]>| -> Result<Vec<u8>> {
+        let mut command = Command::new(executable);
+        for (key, _) in std::env::vars_os() {
+            if key.to_string_lossy().starts_with("GIT_") {
+                command.env_remove(key);
+            }
+        }
+        let mut child = command
+            // Keep executable/PATH resolution relative to the caller. Git's -C
+            // selects the disposable probe without changing the child cwd.
+            .arg("-C")
+            .arg(external_git_path(cwd))
+            .args(["-c", "core.hooksPath=", "-c", "core.fsmonitor=false"])
+            .args(args)
+            .env("GIT_CONFIG_NOSYSTEM", "1")
+            .env(
+                "GIT_CONFIG_GLOBAL",
+                if cfg!(windows) { "NUL" } else { "/dev/null" },
+            )
+            .env("GIT_AUTHOR_NAME", "mai qualification")
+            .env("GIT_AUTHOR_EMAIL", "qualification@localhost")
+            .env("GIT_COMMITTER_NAME", "mai qualification")
+            .env("GIT_COMMITTER_EMAIL", "qualification@localhost")
+            .env("GIT_TERMINAL_PROMPT", "0")
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::null())
+            .spawn()
+            .context(
+                "cannot execute Git; install Git >= 2.40 and check PATH/executable permissions",
+            )?;
+        if let Some(input) = input {
+            child
+                .stdin
+                .take()
+                .context("Git stdin unavailable")?
+                .write_all(input)?;
+        }
+        drop(child.stdin.take());
+        let output = child.wait_with_output()?;
+        ensure!(
+            output.status.success(),
+            "Git qualification command {} failed ({}); install a working Git >= 2.40",
+            args[0],
+            output.status
+        );
+        Ok(output.stdout)
+    };
+    let version = run(Path::new("."), &["--version"], None)?;
     ensure!(
-        version_supported(std::str::from_utf8(&bytes)?),
-        "Git >= 2.40 is required"
+        std::str::from_utf8(&version).is_ok_and(version_supported),
+        "authority requires Git >= 2.40; upgrade Git and check the executable selected by PATH (including Apple Git)"
+    );
+    let directory = tempfile::tempdir().context("create disposable Git capability probe")?;
+    let cwd = directory.path();
+    run(
+        cwd,
+        &["init", "--bare", "--template=", "--object-format=sha1", "."],
+        None,
+    )?;
+    let tree = String::from_utf8(run(cwd, &["mktree"], Some(b""))?)?;
+    let base = String::from_utf8(run(cwd, &["commit-tree", tree.trim(), "-m", "base"], None)?)?;
+    let left = String::from_utf8(run(
+        cwd,
+        &["commit-tree", tree.trim(), "-p", base.trim(), "-m", "left"],
+        None,
+    )?)?;
+    let right = String::from_utf8(run(
+        cwd,
+        &["commit-tree", tree.trim(), "-p", base.trim(), "-m", "right"],
+        None,
+    )?)?;
+    let merged = run(cwd, &["merge-tree", "--write-tree", &format!("--merge-base={}", base.trim()), left.trim(), right.trim()], None)
+        .context("Git must support explicit-base merge-tree; no implicit-base fallback is safe for dependent changes")?;
+    ensure!(
+        merged == tree.as_bytes(),
+        "Git explicit-base merge-tree returned an unexpected tree; repair the Git installation"
     );
     Ok(())
 }
