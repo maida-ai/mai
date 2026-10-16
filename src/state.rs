@@ -119,6 +119,15 @@ impl StateStore {
     }
 
     fn validate(&self) -> Result<()> {
+        // A WAL writer may commit while startup reads. Keep every integrity check on
+        // one read snapshot so a valid transition cannot look like partial corruption.
+        let transaction = self.connection.unchecked_transaction()?;
+        self.validate_snapshot()?;
+        transaction.commit()?;
+        Ok(())
+    }
+
+    fn validate_snapshot(&self) -> Result<()> {
         let version: u32 = self
             .connection
             .query_row(
@@ -156,6 +165,12 @@ impl StateStore {
             "foreign-key integrity failure"
         );
         let model = self.load_lifecycle()?;
+        #[cfg(test)]
+        VALIDATION_OBSERVER.with(|observer| {
+            if let Some(observer) = observer.borrow_mut().take() {
+                observer();
+            }
+        });
         validate_relations(&self.connection, &model)?;
         for (key, value) in self.metadata()? {
             validate_metadata(&key, &value)?;
@@ -737,4 +752,67 @@ pub(crate) fn canonical_path(unit: &str) -> Result<Vec<u8>> {
         "invalid repository-relative file unit"
     );
     Ok(decoded)
+}
+
+#[cfg(test)]
+thread_local! {
+    // Interleave a real second SQLite connection at the vulnerable read boundary.
+    static VALIDATION_OBSERVER: std::cell::RefCell<Option<Box<dyn FnOnce()>>> = const { std::cell::RefCell::new(None) };
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn opening_observes_one_snapshot_during_concurrent_landing_commit() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("state.db");
+        let mut writer = StateStore::create(&path).unwrap();
+        let mut lifecycle = writer.load_lifecycle().unwrap();
+        let submitted = "a".repeat(40);
+        let generation = lifecycle
+            .register("change", "agent", &submitted, vec![])
+            .unwrap();
+        lifecycle.queue(&generation).unwrap();
+        lifecycle.begin_attempt(&generation).unwrap();
+        writer.save_lifecycle(&mut lifecycle).unwrap();
+        let expected_generation = generation.clone();
+        VALIDATION_OBSERVER.with(|observer| {
+            *observer.borrow_mut() = Some(Box::new(move || {
+                let evidence = ValidationEvidence {
+                    generation: generation.clone(),
+                    attempt: 1,
+                    submitted_commit: submitted,
+                    candidate_commit: "b".repeat(40),
+                    candidate_tree: "c".repeat(40),
+                    candidate_parent: "d".repeat(40),
+                    trusted_policy: "e".repeat(40),
+                    passed: true,
+                    manifest: vec!["file:src/main.rs".into()],
+                };
+                writer.record_evidence(&evidence).unwrap();
+                writer
+                    .record_landing(&LandingRecord {
+                        generation,
+                        attempt: 1,
+                        commit: evidence.candidate_commit,
+                        revision: 1,
+                    })
+                    .unwrap();
+            }));
+        });
+        let reader =
+            StateStore::open(&path).expect("valid concurrent commit must not appear corrupt");
+        // Validation's read transaction is released: subsequent reads see the committed landing.
+        let current = reader.load_lifecycle().unwrap();
+        assert!(matches!(
+            current.get(&expected_generation).unwrap().state(),
+            State::Terminal {
+                outcome: Outcome::Landed { revision: 1, .. }
+            }
+        ));
+        assert_eq!(reader.landings().unwrap().len(), 1);
+        assert_eq!(reader.unit_revisions("file:src/main.rs").unwrap(), vec![1]);
+    }
 }
