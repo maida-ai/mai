@@ -1,0 +1,43 @@
+{
+  "approval": null,
+  "binding": {
+    "authority": {
+      "data": "L2hvbWUvemF0b2ljaGkvRGVza3RvcC9HaXQvTWFpZGEuQUkvbWFpZGEtbWFpLy50aHJvd2F3YXkvbmV4dC1iYXRjaC9maW5hbC1uYXRpdmUtY29ycmVjdGlvbnMvcnVzdC1hdXRob3JpdHk=",
+      "encoding": "unix_bytes"
+    },
+    "base": "3dc281d211b3ec6442bf38e723ef52dcc8965a39",
+    "candidate": "f8f8d946f440802fbd34cdcbdfcf76442faf8224",
+    "policy": "3dc281d211b3ec6442bf38e723ef52dcc8965a39",
+    "schema_version": 1,
+    "submitted_identity": null,
+    "tree": "b37abcb0573085d218e9988d1d0069792a05f998"
+  },
+  "bootstrap": null,
+  "bootstrap_reused": true,
+  "diagnostic": null,
+  "elapsed_ms": 1231,
+  "outcome": "failure",
+  "process": {
+    "elapsed_ms": 663,
+    "exit_code": 101,
+    "outcome": "failure",
+    "stderr_tail": "   Compiling grep-matcher v0.1.7 (/home/zatoichi/Desktop/Git/Maida.AI/maida-mai/.throwaway/next-batch/final-native-corrections/rust-authority/.mai/validators/slot-0/candidate/crates/matcher)\n   Compiling ripgrep v14.1.1 (/home/zatoichi/Desktop/Git/Maida.AI/maida-mai/.throwaway/next-batch/final-native-corrections/rust-authority/.mai/validators/slot-0/candidate)\n   Compiling globset v0.4.15 (/home/zatoichi/Desktop/Git/Maida.AI/maida-mai/.throwaway/next-batch/final-native-corrections/rust-authority/.mai/validators/slot-0/candidate/crates/globset)\n   Compiling grep-regex v0.1.13 (/home/zatoichi/Desktop/Git/Maida.AI/maida-mai/.throwaway/next-batch/final-native-corrections/rust-authority/.mai/validators/slot-0/candidate/crates/regex)\n   Compiling grep-searcher v0.1.14 (/home/zatoichi/Desktop/Git/Maida.AI/maida-mai/.throwaway/next-batch/final-native-corrections/rust-authority/.mai/validators/slot-0/candidate/crates/searcher)\n   Compiling grep-pcre2 v0.1.8 (/home/zatoichi/Desktop/Git/Maida.AI/maida-mai/.throwaway/next-batch/final-native-corrections/rust-authority/.mai/validators/slot-0/candidate/crates/pcre2)\n   Compiling grep-cli v0.1.11 (/home/zatoichi/Desktop/Git/Maida.AI/maida-mai/.throwaway/next-batch/final-native-corrections/rust-authority/.mai/validators/slot-0/candidate/crates/cli)\n   Compiling ignore v0.4.23 (/home/zatoichi/Desktop/Git/Maida.AI/maida-mai/.throwaway/next-batch/final-native-corrections/rust-authority/.mai/validators/slot-0/candidate/crates/ignore)\n   Compiling grep-printer v0.2.2 (/home/zatoichi/Desktop/Git/Maida.AI/maida-mai/.throwaway/next-batch/final-native-corrections/rust-authority/.mai/validators/slot-0/candidate/crates/printer)\n   Compiling grep v0.3.2 (/home/zatoichi/Desktop/Git/Maida.AI/maida-mai/.throwaway/next-batch/final-native-corrections/rust-authority/.mai/validators/slot-0/candidate/crates/grep)\nerror: expected one of `!` or `::`, found `<eof>`\n   --> crates/core/main.rs:485:1\n    |\n485 | THIS_IS_A_DELIBERATELY_INVALID_PRODUCT_EXPERIMENT\n    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected one of `!` or `::`\n\nerror: could not compile `ripgrep` (bin \"rg\") due to 1 previous error\nwarning: build failed, waiting for other jobs to finish...\nerror: could not compile `ripgrep` (bin \"rg\" test) due to 1 previous error\n",
+    "stdout_tail": ""
+  },
+  "protected_changes": [],
+  "schema_version": 1,
+  "experiment_bootstrap_before": [
+    {
+      "name": ".mai/validator-bootstrap-0.json",
+      "mtime_ns": 1792189894556962362,
+      "content": "{\"fingerprint\":\"7d9a05888af7df44b0388674eb1679006ce9f335\",\"version\":1}"
+    }
+  ],
+  "experiment_bootstrap_after": [
+    {
+      "name": ".mai/validator-bootstrap-0.json",
+      "mtime_ns": 1792189894556962362,
+      "content": "{\"fingerprint\":\"7d9a05888af7df44b0388674eb1679006ce9f335\",\"version\":1}"
+    }
+  ]
+}
