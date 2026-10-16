@@ -77,6 +77,23 @@ fn candidate_policy_narrowing_does_not_replace_trusted_controls_and_approval_is_
     fs::write(source.join("protected/file"), "value").unwrap();
     let oid = candidate(&authority, &source);
     let trusted = TrustedPolicy::load(&authority, &oid).unwrap();
+    let spec = trusted
+        .command_spec(&trusted.config.check, source.as_path())
+        .unwrap();
+    assert_eq!(spec.cwd, trusted.root());
+    assert_eq!(
+        spec.env.get(std::ffi::OsStr::new("MAI_POLICY_ROOT")),
+        Some(&mai::policy::external_command_path(trusted.root()))
+    );
+    assert_eq!(
+        spec.env.get(std::ffi::OsStr::new("MAI_CANDIDATE_ROOT")),
+        Some(&mai::policy::external_command_path(&source))
+    );
+    assert_eq!(
+        spec.args[0],
+        mai::policy::external_command_path(&trusted.script(&trusted.config.check).unwrap())
+    );
+
     assert_eq!(
         fs::read_to_string(trusted.root().join("gate.sh")).unwrap(),
         "exit 9\n"

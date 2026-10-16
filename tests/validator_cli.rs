@@ -1,4 +1,3 @@
-#![cfg(unix)]
 use serde_json::Value;
 use std::{
     fs,
@@ -55,7 +54,7 @@ fn manual_validator_preserves_json_and_shell_failure_categories() {
         source.join("mai.toml"),
         r#"version = 1
 [check]
-program = "/bin/sh"
+program = "sh"
 script = "gate.sh"
 timeout_ms = 5000
 output_tail_bytes = 1024
