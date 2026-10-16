@@ -1,12 +1,17 @@
 use mai::repository_scope;
 
 use repository_scope::validate_source;
+use std::io::Write;
 use std::path::Path;
-use std::process::Command;
+use std::process::{Command, Stdio};
 use tempfile::TempDir;
 
 fn git(path: &Path, args: &[&str]) -> String {
-    let output = Command::new("git")
+    git_input(path, args, b"")
+}
+
+fn git_input(path: &Path, args: &[&str], input: &[u8]) -> String {
+    let mut child = Command::new("git")
         .arg("-C")
         .arg(path)
         .args(args)
@@ -16,8 +21,13 @@ fn git(path: &Path, args: &[&str]) -> String {
         .env("GIT_AUTHOR_EMAIL", "scope@example.invalid")
         .env("GIT_COMMITTER_NAME", "Scope Test")
         .env("GIT_COMMITTER_EMAIL", "scope@example.invalid")
-        .output()
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
         .unwrap();
+    child.stdin.take().unwrap().write_all(input).unwrap();
+    let output = child.wait_with_output().unwrap();
     assert!(
         output.status.success(),
         "{args:?}: {}",
@@ -198,9 +208,37 @@ fn environment_child() {
         validate_source(Path::new(&path)).unwrap();
     }
 }
-#[cfg(unix)]
 #[test]
-fn preserves_non_utf8_paths() {
+fn preserves_non_utf8_git_paths_without_materializing_them() {
+    // APFS and Windows cannot materialize arbitrary Git path bytes. Construct the
+    // raw tree through plumbing so import qualification is exercised everywhere.
+    for (contents, accepted) in [
+        ("safe content", true),
+        ("version https://git-lfs.github.com/spec/v1\n", false),
+    ] {
+        let dir = repo();
+        let blob = git_input(
+            dir.path(),
+            &["hash-object", "-w", "--stdin"],
+            contents.as_bytes(),
+        );
+        let mut entry = format!("100644 blob {blob}\t").into_bytes();
+        entry.extend_from_slice(b"odd-\xff\nname\0");
+        let tree = git_input(dir.path(), &["mktree", "-z"], &entry);
+        let commit = git(dir.path(), &["commit-tree", &tree, "-m", "raw Git path"]);
+        git(dir.path(), &["update-ref", "HEAD", &commit]);
+        let result = validate_source(dir.path());
+        if accepted {
+            assert_eq!(result.unwrap().head.as_deref(), Some(commit.as_str()));
+        } else {
+            assert!(result.unwrap_err().to_string().contains("LFS"));
+        }
+        assert_eq!(std::fs::read_dir(dir.path()).unwrap().count(), 1);
+    }
+}
+#[cfg(target_os = "linux")]
+#[test]
+fn preserves_non_utf8_linux_worktree_paths() {
     use std::os::unix::ffi::OsStringExt;
     let dir = repo();
     let name = std::ffi::OsString::from_vec(b"odd-\xff\nname".to_vec());
