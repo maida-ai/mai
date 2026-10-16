@@ -12,6 +12,42 @@ pub struct ValidatedSource {
     pub head: Option<String>,
 }
 
+/// Convert canonical Windows paths at the Git argument boundary only. Filesystem
+/// and IPC identities retain their original canonical representation. Ordinary,
+/// relative and device paths are unchanged; this does not qualify network shares.
+pub fn external_git_path(path: &Path) -> std::ffi::OsString {
+    #[cfg(windows)]
+    {
+        use std::os::windows::ffi::{OsStrExt, OsStringExt};
+        std::ffi::OsString::from_wide(&windows_external_units(
+            &path.as_os_str().encode_wide().collect::<Vec<_>>(),
+        ))
+    }
+    #[cfg(not(windows))]
+    {
+        path.as_os_str().to_owned()
+    }
+}
+
+#[cfg(any(windows, test))]
+fn windows_external_units(path: &[u16]) -> Vec<u16> {
+    // Work in UTF-16 units: valid Windows paths can contain unpaired surrogates.
+    const VERBATIM: &[u16] = &[92, 92, 63, 92];
+    const UNC: &[u16] = &[92, 92, 63, 92, 85, 78, 67, 92];
+    if path.starts_with(VERBATIM)
+        && path.len() >= 7
+        && ((65..=90).contains(&path[4]) || (97..=122).contains(&path[4]))
+        && path[5] == 58
+        && path[6] == 92
+    {
+        path[4..].to_vec()
+    } else if path.starts_with(UNC) {
+        [vec![92, 92], path[8..].to_vec()].concat()
+    } else {
+        path.to_vec()
+    }
+}
+
 fn git(path: &Path) -> Command {
     let mut cmd = Command::new("git");
     for (key, _) in std::env::vars_os() {
@@ -20,7 +56,7 @@ fn git(path: &Path) -> Command {
         }
     }
     cmd.arg("-C")
-        .arg(path)
+        .arg(external_git_path(path))
         .args([
             "-c",
             "protocol.allow=never",
@@ -275,6 +311,51 @@ fn visit_objects(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn external_windows_paths_preserve_native_units() {
+        let wide = |s: &str| s.encode_utf16().collect::<Vec<_>>();
+        assert_eq!(
+            windows_external_units(&wide(r"\\?\C:\space here\repo")),
+            wide(r"C:\space here\repo")
+        );
+        assert_eq!(
+            windows_external_units(&wide(r"\\?\UNC\server\share\repo")),
+            wide(r"\\server\share\repo")
+        );
+        for path in [
+            r"relative\repo",
+            r"C:\repo",
+            r"\\server\share",
+            r"\\.\device",
+            r"\\?\Volume{abc}\",
+        ] {
+            assert_eq!(windows_external_units(&wide(path)), wide(path));
+        }
+        let mut unpaired = wide(r"\\?\C:\repo\");
+        unpaired.push(0xd800);
+        assert_eq!(windows_external_units(&unpaired), unpaired[4..]);
+    }
+    #[cfg(unix)]
+    #[test]
+    fn external_unix_paths_preserve_raw_bytes() {
+        use std::os::unix::ffi::OsStringExt;
+        let path = PathBuf::from(std::ffi::OsString::from_vec(
+            b"/tmp/raw-\xff\\name".to_vec(),
+        ));
+        assert_eq!(external_git_path(&path), path.as_os_str());
+    }
+    #[cfg(windows)]
+    #[test]
+    fn external_native_windows_arguments_use_ordinary_prefixes() {
+        use std::os::windows::ffi::{OsStrExt, OsStringExt};
+        let original = std::ffi::OsString::from_wide(&[92, 92, 63, 92, 67, 58, 92, 0xd800]);
+        assert_eq!(
+            external_git_path(Path::new(&original))
+                .encode_wide()
+                .collect::<Vec<_>>(),
+            vec![67, 58, 92, 0xd800]
+        );
+    }
     #[test]
     fn minimum_version_and_vendor_suffixes() {
         for v in [
