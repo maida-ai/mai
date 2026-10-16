@@ -16,6 +16,7 @@ The current code is the experimental 0.0.1 worktree engine. The rewrite design i
 - [Configuration](configuration.md): proposed `mai.toml`, bounded recovery, priority settings and engine-local boundaries.
 - [Operations](operations.md): proposed lifecycle, bounded fix-forward, manifest reconciliation, priority operations, backup and retention.
 - [ADRs](adr/): architecture decisions and explicitly superseded worktree-era assumptions.
+- [Staged MVP qualification](adr/0010-staged-mvp-qualification.md): correctness gates, deferred performance research and priority policy.
 - [Contributing](../CONTRIBUTING.md): current checks and rewrite entry conditions.
 - [Branding](branding.md): symbol and visual assets.
 - [Maida adoption](maida-migration.md): separate production adoption boundary; no automatic migration.

@@ -1,6 +1,6 @@
 # ADR 0004: Objects, change manifests and priority
 
-Status: proposed design amendment, unimplemented. M0 remains pending; product code must wait. D10–D12 extend [ADR 0003](0003-git-native-integration-queue.md), which now carries all exact integrated-validation requirements from the former ADR 0004. Existing 0.0.1 has none of these interfaces.
+Status: MVP file-unit/manifest design acceptance pending, unimplemented. [ADR 0010](0010-staged-mvp-qualification.md) governs staged M0; D12 priority policy is deferred to RFC #93 and is not an initial MVP requirement. D10–D12 extend [ADR 0003](0003-git-native-integration-queue.md), which now carries all exact integrated-validation requirements from the former ADR 0004. Existing 0.0.1 has none of these interfaces.
 
 ## D10: one unit scheme
 
@@ -23,7 +23,9 @@ Store JSON in refs/notes/mai-objects and index unit-to-change/revision relations
 
 Agents declare intent through mai intent or mai.touches push options. Compare declarations with computed manifests: scope_drift warns about undeclared units; configured protected-object policy may reject. M2 owns precise intent comparison. Manifests support lease enforcement, awareness, affected-test input, why and mai log --object. They can narrow bisection search, never exclude other possible culprits without fallback or replace reproducible evidence. They never approve a change.
 
-## D12: priority and safeguards
+## D12: priority and safeguards (deferred RFC proposal)
+
+The following is input to [RFC #93](https://github.com/maida-ai/mai/issues/93), not an accepted MVP policy. The initial MVP uses one class with dependency-aware arrival ordering; priority-driven preemption, grants, aging and resolver precedence remain unavailable until separately accepted and tested.
 
 Classes are sev > high > normal > low; normal is default. Normal/low are self-assigned. Sev/high need audited expiring grants from authorized humans or a designated role; who may grant remains a maintainer decision. The engine can grant temporary scoped sev for a confirmed trunk fix. Record grant, reason, subject, issuer, scope, expiry and revocation. Distinguish requested/granted priority from effective aged/inherited priority; engine promotions apply only to the affected change and its specified queue, lease and resolver effects, not portable grants. Recompute effective priority on revocation, expiry or dependency changes.
 
@@ -31,7 +33,7 @@ Apply priority only to queue order, lease preemption and resolver assignment. Or
 
 Higher-class lease requests notify holders and transfer ownership only after lease_grace. Preserve preempted work; check effective lease ownership at landing so stale holders cannot publish over new owners. Resolve expiry, revocation and competing transfer requests deterministically. M1 applies this to path leases; M2 extends it to contained objects. In a conflict, the higher-priority side retains precedence and the lower-priority side is resolver; ties use later lander. “Wins” means responsibility/ordering, never automatically choosing text or discarding another change. Lease enforcement and checks still apply.
 
-Dependencies inherit the higher effective class to avoid inversion; remove inherited elevation when its cause ends. Aging promotes waiting changes one class per configured interval, capped at high, with audited engine promotion distinct from self-assigned grants. max_sev_in_flight caps sev validation including inherited work; avoid deadlock by scheduling prerequisites before dependents within the cap. S4 must demonstrate no class starves rather than claim aging alone guarantees it.
+Dependencies inherit the higher effective class to avoid inversion; remove inherited elevation when its cause ends. Aging promotes waiting changes one class per configured interval, capped at high, with audited engine promotion distinct from self-assigned grants. max_sev_in_flight caps sev validation including inherited work; avoid deadlock by scheduling prerequisites before dependents within the cap. Any future starvation claim requires stated admissible-load assumptions and evidence; aging alone does not establish it. This is not a pre-MVP gate.
 
 Priority never skips or weakens the normal gate. check.sev_gate remains an unresolved maintainer decision; no narrower gate is enabled or implied here. Any future approved narrower policy must identify its distinct evidence and mandatory full confirmation honestly, and cannot inherit the ordinary full-gate guarantee.
 
@@ -41,7 +43,7 @@ Priority never skips or weakens the normal gate. check.sev_gate remains an unres
 
 This evidence uses synthetic authentication/grants and provisional option grammar and limits, not production policy. Options are collected before policy-limit rejection, so the result does not establish bounded memory use while receiving malicious input. Real grant issuance, expiry/revocation and roles, priority scheduling and starvation, authoritative manifests and precise touch comparison remain separate qualification or implementation work. S1 does not accept this ADR, settle grant roles, make declared touches authoritative or enable a narrower severe gate.
 
-S4 varies priority mix, failures/flakes/conflicts, sequential/pipeline/batch modes and 5/15/30-minute fix windows versus immediate revert. Publish per-class time-to-land, time-to-green and changes stacked on red; choose mode/slots/window only from qualified results. Policy values such as grant TTL, grace, aging and sev cap are proposed configuration values, not measured guarantees.
+S4 varies priority mix, failures/flakes/conflicts, sequential/pipeline/batch modes and 5/15/30-minute fix windows versus immediate revert. Publish per-class time-to-land, time-to-green and changes stacked on red; use these as exploratory inputs; final policy and realistic performance claims await MVP observations under ADR 0010. Policy values such as grant TTL, grace, aging and sev cap are proposed configuration values, not measured guarantees.
 
 | Risk | Likelihood | Impact | Mitigation | Spike |
 | --- | --- | --- | --- | --- |

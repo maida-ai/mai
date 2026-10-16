@@ -57,6 +57,8 @@ Harnesses own agent scheduling and context preparation. mai does not run agents,
 
 ## Objects, priority and recovery — proposed amendment
 
+[ADR 0010](adr/0010-staged-mvp-qualification.md) keeps file-unit manifests in MVP scope but defers differentiated priority and automated recovery to RFC #93. The priority/fix/grant/preemption behavior below is future proposal material, not initial MVP behavior or permission to enable it.
+
 M1 represents every changed file as an explicit file unit and computes manifests itself at receive and landing; agents never supply the authoritative affected-object list. M2 adds symbol IDs such as `src/api.rs::Router::add_route`, config keys such as `Cargo.toml::dependencies.serde`, and module scope `src/api.rs::<module>`. Unsupported inputs fall back to file units with a reason. Class leases cover methods; file leases cover every contained object. Module scope is not leasable by default, and moves initially appear as delete-plus-add. Line ranges are never units.
 
 Planned push options augment the normal submission:
@@ -65,6 +67,6 @@ Planned push options augment the normal submission:
 - `-o mai.priority=<class>` requests `sev`, `high`, `normal` or `low`. Normal and low are self-assigned; severe and high require audited, expiring grants. Who may issue those grants remains a maintainer decision.
 - `-o mai.fixes=<change>` links a bounded fix-forward attempt to its confirmed culprit and temporary severe grant. The engine verifies an active incident and its scoped grant; this option alone does not authorize a priority upgrade or bypass validation.
 
-These rules apply to the Claude Code, Codex and Aider snippets above. Respond to lease-preemption notice by preserving work, not discarding it; after grace the new owner is enforced at landing. Higher class takes queue/conflict precedence and the lower side resolves, with later lander resolving ties. Priority never silently overwrites either draft or approves a merge. Dependencies inherit class and waiting work ages up to high as engine-derived effective-priority exceptions, not self-granted requested classes; only severe work may preempt lower-class speculative slots.
+When the future features are accepted and enabled, these rules apply to the Claude Code, Codex and Aider snippets above. Respond to lease-preemption notice by preserving work, not discarding it; after grace the new owner is enforced at landing. Higher class takes queue/conflict precedence and the lower side resolves, with later lander resolving ties. Priority never silently overwrites either draft or approves a merge. Dependencies inherit class and waiting work ages up to high as engine-derived effective-priority exceptions, not self-granted requested classes; only severe work may preempt lower-class speculative slots.
 
 Use `mai log --object <unit>` to inspect indexed object history once implemented. Grant administration is proposed as `mai priority grant <agent|change> <class> --reason ... --ttl ...` and `mai priority revoke`; do not invent permissions or revoke flags. A severe fix must pass the normal gate and full confirmation within its recovery bound. If it cannot, preserve work for relanding after the validated revert backstop. A narrower severe gate is only an open proposal, not permission to skip checks.

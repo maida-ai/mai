@@ -12,13 +12,13 @@ Use only disposable trusted repositories. Linked worktrees share authority refs;
 
 ## Rewrite sequence
 
-Design choices are proposed for implementation, M0 mechanisms are spike pending, and eight defaults/order choices below remain open. Qualification is not established by a prototype or a report from one platform.
+The maintainer accepted [ADR 0010](adr/0010-staged-mvp-qualification.md) on 2026-10-16: build a small correct MVP before realistic performance qualification or differentiated priority policy. Scoped design acceptance and fresh native verification of S3 functional corrections remain pending. Qualification is not established by a prototype or a report from one platform.
 
 | Stage | Exit criteria |
 | --- | --- |
-| M0 — Design lock | Accept [ADR 0003](adr/0003-git-native-integration-queue.md) (acceptance task [#58](https://github.com/maida-ai/mai/issues/58)); accept [ADR 0004](adr/0004-objects-manifests-and-priority.md) (acceptance task [#70](https://github.com/maida-ai/mai/issues/70)) for objects, manifests and priority; complete S1–S7 with go evidence or redesign failed assumptions before any product code |
-| M1 — Agent integration queue, local | Single-writer engine; durable receive registration; typed outcomes; dependent squash landing; pipeline checks, protected paths and approval; merge rules and limits; clones, drafts, sync and bootstrap; [file-unit manifests/indexing](https://github.com/maida-ai/mai/issues/71); [priority grants, inheritance and aging](https://github.com/maida-ai/mai/issues/72), plus [path-lease preemption](https://github.com/maida-ai/mai/issues/73); metrics; three harness snippets; five agents on a real repository with zero manual integration and zero broken trunk |
-| M1b — Containers and forge | Loopback smart HTTP and per-agent tokens; upstream sync revisions and export branch/PR; full-tier culprit confirmation, bounded `sev` fix-forward with full confirmation, validated revert backstop and freeze fallback |
+| M0 — Scoped design lock | Verify fresh native verification of S3 functional correctionss with fresh native CI; review mechanism evidence and ADR 0010; accept MVP portions of ADRs 0003/0004 through #58/#70. S4 and future S7 coverage are not blanket blockers |
+| M1 — Local MVP | Single-writer engine, durable registration, typed outcomes, dependent squash landing, serial exact-candidate validation, protected approval, ordinary leases, clones/drafts/sync/bootstrap and file manifests. Feature-specific crash tests and opt-in local metrics; no differentiated priority or realistic performance guarantee |
+| M1b — Containers and forge | Loopback smart HTTP/tokens and validated upstream sync/export. Priority-driven automatic recovery awaits RFC #93 and feature-specific crash qualification; it does not block the initial MVP |
 | Gate — External users | 5–10 users on real repositories; compare worktrees plus PRs with mai on human minutes, time to land and broken trunk |
 | M2 — Object-aware integration | Parsers add symbol, config-key and module-scope units; object leases use containment/preemption; manifests gain object precision and [scope-drift outcomes](https://github.com/maida-ai/mai/issues/74) |
 | M3 — Live awareness | #42–#44: intent, draft-derived activity and deterministic conflict ownership |
@@ -36,30 +36,32 @@ Architecture decisions and their rationale live in versioned ADRs. Discussions c
 | --- | --- |
 | [S1](https://github.com/maida-ai/mai/issues/51) Transport | Host and container receive, options, status, draft policy and fallback on Linux/macOS Git ≥ 2.40; record Windows result |
 | [S2](https://github.com/maida-ai/mai/issues/52) Merge | Differential corpus matching cherry-pick for disjoint/same hunks, rename/edit, delete/edit, modes, binary and file/directory; median below 100 ms on 100k files |
-| [S3](https://github.com/maida-ai/mai/issues/53) Validators | Rust, Python and TypeScript real repositories; two-slot warm-switch overhead below 15% of gate time; documented resource isolation |
-| [S4](https://github.com/maida-ai/mai/issues/54) Queue model | Realistic 30-agent simulation with priority mix across sequential, pipeline and batch policies; compare 5/15/30-minute fix windows with immediate revert on time-to-green and changes stacked on red; select mode/slots/window; publish time-to-land per class; pipeline-2 beats sequential at realistic failure rates and no class starves |
+| [S3](https://github.com/maida-ai/mai/issues/53) Validators | Functional real-repository gates, isolation, invalidation, cache/residue and cancellation correctness remain required; preserve timings, defer the <15% target |
+| [S4](https://github.com/maida-ai/mai/issues/54) Queue model | Post-MVP research: labeled real traces, mode/recovery economics and explicitly bounded claims. Synthetic grid retained; not an M0 completion dependency |
 | [S5](https://github.com/maida-ai/mai/issues/55) Upstream loop | Three export/squash/sync cycles including concurrent human changes, without spurious conflicts |
 | [S6](https://github.com/maida-ai/mai/issues/56) Lockfiles | Concurrent Cargo, npm and uv dependency additions regenerate and pass the gate |
-| [S7](https://github.com/maida-ai/mai/issues/57) Crash windows | Interrupt registration and every landing step; no lost or duplicate landing; terminal outcomes after restart |
+| [S7](https://github.com/maida-ai/mai/issues/57) Crash windows | Incremental tests before each feature is enabled: no lost acknowledgments, duplicate landing/compensation, invented evidence or reset deadlines. Unimplemented mechanisms do not block unrelated work |
 
-Experiment harnesses belong under `experiments/`; short results and selected evidence belong under `docs/spikes/` when performed. Experiment CI runs only on manual dispatch. No results are asserted here. Failed go criteria require an ADR design correction before M1.
+Experiment harnesses belong under `experiments/`; short results and selected evidence belong under `docs/spikes/` when performed. Experiment CI runs only on manual dispatch. Historical reports retain their original decisions. ADR 0010 records the accepted staging redesign without changing measurements or calling missing evidence a pass.
 
 ## Open maintainer decisions
 
 1. Final tagline; the proposed wording is “The local integration queue for coding agents. Push with Git; mai validates, lands, and keeps every agent in sync.”
 2. Default merge mode with a configured gate; `textual` is recommended. Without a gate, use conservative path rejection.
-3. Default validation mode and slot count; pipeline with two slots is recommended, pending S4.
-4. Default full-tier failure policy; bounded `fix-forward` with a validated revert backstop and freeze only if that revert fails is recommended. S4 determines the window.
+3. Initial implementation uses a simple serial single-class queue respecting dependencies. Final mode/slot tuning and speculative concurrency await measured need; no S4 performance guarantee is required to build the MVP.
+4. Automated full-tier recovery remains deferred; priority RFC and feature-specific correctness tests precede enablement. No fix window is selected now.
 5. Whether M1b precedes the external-users gate; recommended, not an accepted sequencing constraint yet.
 6. Initial merge-rule example ecosystems; Cargo, npm and uv are recommended.
 7. Who can grant `sev` and `high`: humans only, or also a designated orchestrator token; both with audit is recommended, not authorized yet.
 8. Whether to allow an explicitly configured narrower `check.sev_gate` for severe fixes, pinned to trunk and recorded in evidence with mandatory full confirmation. This exception is not accepted: the normal gate remains required.
 
-These decisions do not authorize weakened validation evidence. Batch tips and intermediate revisions must not be reported as equivalent evidence. M4 raw-context access/handoff and concrete retention limits still require a design before implementation; sharing intent does not authorize sharing raw context.
+Priority questions 7–8 belong to RFC #93 after preliminary observations and do not block scoped MVP acceptance. Nonessential tagline, examples and tuning choices are not implementation gates. These decisions do not authorize weakened validation evidence. Batch tips and intermediate revisions must not be reported as equivalent evidence. M4 raw-context access/handoff and concrete retention limits still require a design before implementation; sharing intent does not authorize sharing raw context.
 
 ## Success measurements
 
-Collect from M1 and expose through the proposed `mai status --metrics`; no rewrite measurements exist yet. Record p50/p95 rejection-to-reland, detected-breakage-to-green, and (from M4) agent-death-to-resumed-landing. Track full-tier failures per landed change and revert rate as trunk guardrails. Split time to land into queue wait and validation; include gate duration, slot utilization, discarded speculation, reason-code mix and flaky rate. Report time to land per priority class, human interventions including grants, lease preemptions, aging promotions and fix-forward success within the window versus reverts. Add scope-drift rate from M2, late-conflict waste from M3 and resume success from M4. Compare equivalent repository workloads, hardware, suite versions and warm/cold conditions against a worktree/PR baseline.
+Use #11 for opt-in local bounded event recording, opaque identifiers, documented retention and explicit export review; exclude source contents, prompts, secrets and raw agent context. Collect from M1 and expose through the proposed `mai status --metrics`; no rewrite measurements exist yet. Record p50/p95 rejection-to-reland, detected-breakage-to-green, and (from M4) agent-death-to-resumed-landing. Track full-tier failures per landed change and revert rate as trunk guardrails. Split time to land into queue wait and validation; include gate duration, slot utilization, discarded speculation, reason-code mix and flaky rate. Only after the corresponding features are accepted and enabled, report time to land per priority class, human interventions including grants, lease preemptions, aging promotions and fix-forward success within the window versus reverts. Add scope-drift rate from M2, late-conflict waste from M3 and resume success from M4. Compare equivalent repository workloads, hardware, suite versions and warm/cold conditions against a worktree/PR baseline.
+
+Realistic workload experiments follow dogfooding and consented volunteers (#37), then replay through S4’s existing CSV interface. Existing CI histories may supply rough duration/failure distributions, not representative urgency/conflict demand; collection is optional. Record failures and unavailable metrics honestly. Discourage premature optimization: require a measured practical problem before tuning, additional concurrency, batching or materialization complexity.
 
 ## Possible futures
 
