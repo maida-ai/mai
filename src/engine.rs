@@ -1,6 +1,6 @@
 //! One trusted-local engine owns an authority. The OS lock, never PID metadata,
 //! is the ownership decision. Receive and landing are deliberately unavailable.
-use crate::authority::Authority;
+use crate::{authority::Authority, native_path::NativePath};
 use anyhow::{Context, Result, bail, ensure};
 use fs2::FileExt;
 use serde::{Deserialize, Serialize};
@@ -26,7 +26,7 @@ const POLL: Duration = Duration::from_millis(20);
 pub struct Status {
     pub protocol_version: u32,
     pub pid: u32,
-    pub authority: PathBuf,
+    pub authority: NativePath,
     pub state: String,
     pub registration_available: bool,
 }
@@ -116,7 +116,7 @@ pub fn serve(root: &Path) -> Result<()> {
     let mut status = Status {
         protocol_version: PROTOCOL_VERSION,
         pid: std::process::id(),
-        authority: root.canonicalize()?,
+        authority: NativePath::from_path(&root.canonicalize()?)?,
         state: "ready".into(),
         registration_available: false,
     };
@@ -201,7 +201,7 @@ fn exchange(local: &Path, action: Action, timeout: Duration) -> Result<Status> {
         "unsupported engine IPC version"
     );
     ensure!(
-        response.authority == local.parent().unwrap(),
+        response.authority.as_path() == local.parent().unwrap(),
         "engine responded for another authority"
     );
     write_frame(

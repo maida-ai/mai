@@ -361,3 +361,39 @@ fn unrelated_endpoint_or_diagnostic_symlinks_are_preserved() {
         );
     }
 }
+
+#[cfg(target_os = "linux")]
+#[test]
+fn non_utf8_authority_round_trips_through_init_status_and_stop() {
+    use base64::{Engine, engine::general_purpose::STANDARD};
+    use std::os::unix::ffi::{OsStrExt, OsStringExt};
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp
+        .path()
+        .join(std::ffi::OsString::from_vec(b"authority-\xff".to_vec()));
+    let init = cli(&["init", "--json"], &root);
+    assert!(
+        init.status.success(),
+        "{}",
+        String::from_utf8_lossy(&init.stderr)
+    );
+    let init: serde_json::Value = serde_json::from_slice(&init.stdout).unwrap();
+    let path = &init["authority"];
+    assert_eq!(path["encoding"], "unix_bytes");
+    assert_eq!(
+        STANDARD.decode(path["data"].as_str().unwrap()).unwrap(),
+        root.canonicalize().unwrap().as_os_str().as_bytes()
+    );
+    let f = Fixture { _temp: temp, root };
+    let mut owner = f.start();
+    assert_eq!(f.ready()["authority"], *path);
+    let stop = cli(&["stop", "--json"], &f.root);
+    assert!(
+        stop.status.success(),
+        "{}",
+        String::from_utf8_lossy(&stop.stderr)
+    );
+    let stop: serde_json::Value = serde_json::from_slice(&stop.stdout).unwrap();
+    assert_eq!(stop["authority"], *path);
+    assert!(wait(&mut owner).success());
+}

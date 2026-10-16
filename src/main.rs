@@ -4,6 +4,7 @@ use mai::{
     authority::Authority,
     engine,
     lifecycle::{ExitCode, SCHEMA_VERSION},
+    native_path::NativePath,
 };
 use serde_json::{Value, json};
 use std::path::PathBuf;
@@ -47,7 +48,7 @@ fn run(command: Action) -> Result<Value> {
     Ok(match command {
         Action::Init { project, source } => {
             let authority = Authority::init(&project, source.as_deref())?;
-            json!({"schema_version": SCHEMA_VERSION, "authority": authority.root(), "initialized": true, "registration_available": false})
+            json!({"schema_version": SCHEMA_VERSION, "authority": NativePath::from_path(authority.root())?, "initialized": true, "registration_available": false})
         }
         Action::Serve { project, .. } => {
             engine::serve(&project)?;
