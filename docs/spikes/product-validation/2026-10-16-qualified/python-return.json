@@ -1,0 +1,43 @@
+{
+  "approval": null,
+  "binding": {
+    "authority": {
+      "data": "L2hvbWUvemF0b2ljaGkvRGVza3RvcC9HaXQvTWFpZGEuQUkvbWFpZGEtbWFpLy50aHJvd2F3YXkvbmV4dC1iYXRjaC9xdWFsaWZpZWQtcnVuL3B5dGhvbi1hdXRob3JpdHk=",
+      "encoding": "unix_bytes"
+    },
+    "base": "46095fdb69404373b17311dced9f28e1196fcd2a",
+    "candidate": "46095fdb69404373b17311dced9f28e1196fcd2a",
+    "policy": "46095fdb69404373b17311dced9f28e1196fcd2a",
+    "schema_version": 1,
+    "submitted_identity": null,
+    "tree": "2fd6c6369e0edb70b83050194a3b23ce682644cf"
+  },
+  "bootstrap": null,
+  "bootstrap_reused": true,
+  "diagnostic": null,
+  "elapsed_ms": 968,
+  "outcome": "success",
+  "process": {
+    "elapsed_ms": 586,
+    "exit_code": 0,
+    "outcome": "success",
+    "stderr_tail": "",
+    "stdout_tail": "============================= test session starts ==============================\nplatform linux -- Python 3.12.3, pytest-8.1.1, pluggy-1.4.0\nrootdir: /home/zatoichi/Desktop/Git/Maida.AI/maida-mai/.throwaway/next-batch/qualified-run/python-authority/.mai/validators/slot-0/candidate\nconfigfile: pyproject.toml\ntestpaths: tests\ncollected 297 items\n\ntests/test_itsdangerous/test_encoding.py ........                        [  2%]\ntests/test_itsdangerous/test_serializer.py ............................. [ 12%]\n............                                                             [ 16%]\ntests/test_itsdangerous/test_signer.py .................                 [ 22%]\ntests/test_itsdangerous/test_timed.py .................................. [ 33%]\n...................................................................      [ 56%]\ntests/test_itsdangerous/test_url_safe.py ............................... [ 66%]\n........................................................................ [ 90%]\n...........................                                              [100%]\n\n============================= 297 passed in 0.36s ==============================\n"
+  },
+  "protected_changes": [],
+  "schema_version": 1,
+  "experiment_bootstrap_before": [
+    {
+      "name": ".mai/validator-bootstrap-0.json",
+      "mtime_ns": 1792190979608249638,
+      "content": "{\"fingerprint\":\"04b4ae599fcfa28ff32d5ab477f36598cfb6d0a7\",\"version\":1}"
+    }
+  ],
+  "experiment_bootstrap_after": [
+    {
+      "name": ".mai/validator-bootstrap-0.json",
+      "mtime_ns": 1792190979608249638,
+      "content": "{\"fingerprint\":\"04b4ae599fcfa28ff32d5ab477f36598cfb6d0a7\",\"version\":1}"
+    }
+  ]
+}

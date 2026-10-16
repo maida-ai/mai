@@ -1,0 +1,17 @@
+{
+  "agent": "experiment-agent",
+  "base": "03981a92e4030d80cc1a04e469a665b81bf8e4b9",
+  "bootstrap": {
+    "elapsed_ms": 3527,
+    "exit_code": 0,
+    "outcome": "success",
+    "stderr_tail": "warning Ignored scripts due to flag.\n",
+    "stdout_tail": "yarn install v1.22.22\n[1/4] Resolving packages...\n[2/4] Fetching packages...\n[3/4] Linking dependencies...\n[4/4] Building fresh packages...\nDone in 3.34s.\n"
+  },
+  "bootstrap_skipped": false,
+  "destination": {
+    "data": "L2hvbWUvemF0b2ljaGkvRGVza3RvcC9HaXQvTWFpZGEuQUkvbWFpZGEtbWFpLy50aHJvd2F3YXkvbmV4dC1iYXRjaC9xdWFsaWZpZWQtcnVuL3R5cGVzY3JpcHQtd29ya3NwYWNl",
+    "encoding": "unix_bytes"
+  },
+  "schema_version": 1
+}
