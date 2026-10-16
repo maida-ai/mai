@@ -1,0 +1,14 @@
+{
+  "id": 38701689155,
+  "run_attempt": 1,
+  "name": "S2 evidence (all) by @z-a-f",
+  "event": "workflow_dispatch",
+  "head_sha": "ad30707b3214a7a91b3b2541d7ad90056c5c3291",
+  "head_branch": "main",
+  "status": "completed",
+  "conclusion": "success",
+  "created_at": "2026-10-15T07:52:22Z",
+  "updated_at": "2026-10-15T07:53:26Z",
+  "html_url": "https://github.com/maida-ai/mai/actions/runs/38701689155",
+  "path": ".github/workflows/experiment-s2.yml"
+}
