@@ -280,12 +280,13 @@ pub fn validate_source(path: &Path) -> Result<ValidatedSource> {
                 );
                 ensure!(remainder.len() >= nul + 21, "malformed SHA-1 tree entry");
                 if &entry[space + 1..] == b".gitattributes" {
-                    attrs.insert(
-                        remainder[nul + 1..nul + 21]
-                            .iter()
-                            .map(|b| format!("{b:02x}"))
-                            .collect::<String>(),
-                    );
+                    const HEX: &[u8; 16] = b"0123456789abcdef";
+                    let mut oid = String::with_capacity(40);
+                    for byte in &remainder[nul + 1..nul + 21] {
+                        oid.push(HEX[(byte >> 4) as usize] as char);
+                        oid.push(HEX[(byte & 15) as usize] as char);
+                    }
+                    attrs.insert(oid);
                 }
                 remainder = &remainder[nul + 21..];
             }
