@@ -406,6 +406,11 @@ impl Authority {
             parent = commit.clone();
         }
         // Validate the entire ledger before updating any landing or derived note.
+        if crate::receive::enabled(self)? {
+            for submission in lifecycle.submissions() {
+                self.restore_received_note(submission)?;
+            }
+        }
         for (reference, commit) in missing_candidates {
             self.git(
                 &[
@@ -516,6 +521,21 @@ impl Authority {
         )
     }
 
+    pub(crate) fn restore_received_note(
+        &self,
+        submission: &crate::lifecycle::Submission,
+    ) -> Result<()> {
+        let parent = self.git(&["show", "-s", "--format=%P", submission.commit()], None)?;
+        let parents: Vec<_> = parent.split_whitespace().collect();
+        ensure!(
+            parents.len() == 1,
+            "received commit must have exactly one parent"
+        );
+        let manifest = crate::manifest::compute(&self.git_dir(), parents[0], submission.commit())?;
+        let note = json!({"phase":"received", "generation":submission.id(), "submitted_commit":submission.commit(), "base":parents[0], "tree":manifest.result_tree, "entries":manifest.entries});
+        self.restore_note(submission.commit(), note)
+    }
+
     fn restore_note(&self, commit: &str, record: Value) -> Result<()> {
         let listing = self.git(&["notes", "--ref", NOTES, "list"], None)?;
         let current = listing.lines().find_map(|line| {
@@ -548,11 +568,13 @@ impl Authority {
                 )),
                 "duplicate manifest phase/generation association"
             );
-            if previous["phase"] == "landed" && previous["generation"] == record["generation"] {
-                ensure!(!matched, "duplicate landed manifest association");
+            if previous["phase"] == record["phase"]
+                && previous["generation"] == record["generation"]
+            {
+                ensure!(!matched, "duplicate manifest association");
                 ensure!(
                     *previous == record,
-                    "existing landed manifest contradicts durable evidence"
+                    "existing manifest contradicts durable evidence"
                 );
                 matched = true;
             }
@@ -568,7 +590,11 @@ impl Authority {
         Ok(())
     }
 
-    fn git(&self, args: &[&str], input: Option<&[u8]>) -> Result<String> {
+    pub(crate) fn git_bytes(&self, args: &[&str], input: Option<&[u8]>) -> Result<Vec<u8>> {
+        git_bytes(Some(&self.git_dir()), args, input)
+    }
+
+    pub(crate) fn git(&self, args: &[&str], input: Option<&[u8]>) -> Result<String> {
         git(Some(&self.git_dir()), args, input)
     }
 }

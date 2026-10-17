@@ -3,7 +3,7 @@ use clap::{Parser, Subcommand};
 use mai::{
     authority::Authority,
     engine,
-    lifecycle::{ExitCode, SCHEMA_VERSION},
+    lifecycle::{ExitCode, GenerationId, SCHEMA_VERSION},
     native_path::NativePath,
 };
 use serde_json::{Value, json};
@@ -23,6 +23,22 @@ struct Cli {
 }
 #[derive(Subcommand)]
 enum Action {
+    /// Configure explicit limits and enable trusted-local Git admission.
+    Receive {
+        #[command(subcommand)]
+        command: ReceiveAction,
+    },
+    /// Show the durable state of a registered submission.
+    Show {
+        project: PathBuf,
+        change: String,
+        #[arg(long, default_value_t = 1)]
+        generation: u64,
+    },
+    #[command(hide = true)]
+    ReceiveHook { project: PathBuf },
+    #[command(hide = true)]
+    ReceivePreflight { project: PathBuf },
     /// Initialize or safely reopen an authority; receive and landing are unavailable.
     Init {
         project: PathBuf,
@@ -70,12 +86,56 @@ enum Action {
     },
 }
 #[derive(Subcommand)]
+enum ReceiveAction {
+    /// Enable refs/for/main admission with an explicit maximum input pack size.
+    Enable {
+        project: PathBuf,
+        #[arg(long)]
+        max_input_bytes: u64,
+        #[arg(long)]
+        max_file_bytes: u64,
+        #[arg(long)]
+        max_changed_files: u64,
+    },
+}
+#[derive(Subcommand)]
 enum ValidatorAction {
     /// Run the trusted current-trunk gate on an exact candidate in an isolated slot.
     Run { project: PathBuf, candidate: String },
 }
 fn run(command: Action) -> Result<Value> {
     Ok(match command {
+        Action::Receive {
+            command:
+                ReceiveAction::Enable {
+                    project,
+                    max_input_bytes,
+                    max_file_bytes,
+                    max_changed_files,
+                },
+        } => {
+            engine::enable_receive(&project, max_input_bytes, max_file_bytes, max_changed_files)?;
+            json!({"schema_version": SCHEMA_VERSION, "registration_available": true, "max_input_bytes": max_input_bytes, "max_file_bytes": max_file_bytes, "max_changed_files": max_changed_files, "landing_available": false})
+        }
+        Action::Show {
+            project,
+            change,
+            generation,
+        } => serde_json::to_value(engine::show(
+            &project,
+            GenerationId {
+                change_id: change,
+                generation,
+            },
+        )?)?,
+        Action::ReceiveHook { project } => {
+            mai::receive::hook(&project, false)?;
+            Value::Null
+        }
+        Action::ReceivePreflight { project } => {
+            mai::receive::hook(&project, true)?;
+            Value::Null
+        }
         Action::Init { project, source } => {
             let authority = Authority::init(&project, source.as_deref())?;
             json!({"schema_version": SCHEMA_VERSION, "authority": NativePath::from_path(authority.root())?, "initialized": true, "registration_available": false})

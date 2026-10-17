@@ -1,6 +1,11 @@
 //! One trusted-local engine owns an authority. The OS lock, never PID metadata,
-//! is the ownership decision. Receive and landing are deliberately unavailable.
-use crate::{authority::Authority, native_path::NativePath};
+//! is the ownership decision. Receive admission is explicitly enabled; landing remains unavailable.
+use crate::{
+    authority::Authority,
+    lifecycle::{GenerationId, Submission},
+    native_path::NativePath,
+    receive,
+};
 use anyhow::{Context, Result, bail, ensure};
 use fs2::FileExt;
 use serde::{Deserialize, Serialize};
@@ -42,6 +47,26 @@ enum Action {
     Status,
     Stop,
     Ack,
+    EnableReceive {
+        max_input_bytes: u64,
+        max_file_bytes: u64,
+        max_changed_files: u64,
+    },
+    Register {
+        agent: String,
+        commit: String,
+    },
+    Show {
+        generation: GenerationId,
+    },
+}
+#[derive(Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct Reply {
+    protocol_version: u32,
+    authority: NativePath,
+    result: Option<Submission>,
+    error: Option<String>,
 }
 
 fn local_dir(root: &Path) -> Result<PathBuf> {
@@ -118,7 +143,7 @@ pub fn serve(root: &Path) -> Result<()> {
         pid: std::process::id(),
         authority: NativePath::from_path(&root.canonicalize()?)?,
         state: "ready".into(),
-        registration_available: false,
+        registration_available: receive::enabled(&authority)?,
     };
     loop {
         if let Some(mut stream) = listener.accept()? {
@@ -129,10 +154,56 @@ pub fn serve(root: &Path) -> Result<()> {
                     request.protocol_version == PROTOCOL_VERSION,
                     "unsupported IPC version"
                 );
+                if matches!(
+                    request.action,
+                    Action::EnableReceive { .. } | Action::Register { .. } | Action::Show { .. }
+                ) {
+                    let result: Result<Option<Submission>> = match request.action {
+                        Action::EnableReceive {
+                            max_input_bytes,
+                            max_file_bytes,
+                            max_changed_files,
+                        } => receive::enable(
+                            &authority,
+                            max_input_bytes,
+                            max_file_bytes,
+                            max_changed_files,
+                        )
+                        .map(|()| None),
+                        Action::Register { agent, commit } => {
+                            receive::register(&authority, &agent, &commit).map(Some)
+                        }
+                        Action::Show { generation } => {
+                            receive::query(&authority, &generation).map(Some)
+                        }
+                        _ => unreachable!(),
+                    };
+                    status.registration_available = receive::enabled(&authority)?;
+                    let reply = match result {
+                        Ok(result) => Reply {
+                            protocol_version: PROTOCOL_VERSION,
+                            authority: status.authority.clone(),
+                            result,
+                            error: None,
+                        },
+                        Err(error) => Reply {
+                            protocol_version: PROTOCOL_VERSION,
+                            authority: status.authority.clone(),
+                            result: None,
+                            error: Some(format!("{error:#}").chars().take(1024).collect()),
+                        },
+                    };
+                    // An expired/disconnected client changes no durable result.
+                    let deadline = Instant::now() + IO_TIMEOUT;
+                    write_frame(&mut stream, &reply, deadline)?;
+                    let _ = read_frame::<Request>(&mut stream, deadline);
+                    return Ok(false);
+                }
                 let stop = match request.action {
                     Action::Status => false,
                     Action::Stop => true,
                     Action::Ack => bail!("unexpected acknowledgment"),
+                    _ => unreachable!(),
                 };
                 if stop {
                     status.state = "stopping".into();
@@ -278,6 +349,68 @@ use background::spawn_background;
 #[cfg(windows)]
 #[path = "engine/windows_process.rs"]
 mod background;
+
+fn operation(root: &Path, action: Action) -> Result<Option<Submission>> {
+    let local = local_dir(root)?;
+    let deadline = Instant::now() + Duration::from_secs(10);
+    let mut stream = transport::connect(&local, deadline)?;
+    write_frame(
+        &mut stream,
+        &Request {
+            protocol_version: PROTOCOL_VERSION,
+            action,
+        },
+        deadline,
+    )?;
+    let response: Reply = read_frame(&mut stream, deadline)?;
+    ensure!(
+        response.protocol_version == PROTOCOL_VERSION
+            && response.authority.as_path() == local.parent().unwrap(),
+        "engine IPC identity mismatch"
+    );
+    write_frame(
+        &mut stream,
+        &Request {
+            protocol_version: PROTOCOL_VERSION,
+            action: Action::Ack,
+        },
+        deadline,
+    )?;
+    if let Some(error) = response.error {
+        bail!("{error}");
+    }
+    Ok(response.result)
+}
+pub fn enable_receive(
+    root: &Path,
+    max_input_bytes: u64,
+    max_file_bytes: u64,
+    max_changed_files: u64,
+) -> Result<()> {
+    status(root, true)?;
+    operation(
+        root,
+        Action::EnableReceive {
+            max_input_bytes,
+            max_file_bytes,
+            max_changed_files,
+        },
+    )?;
+    Ok(())
+}
+pub fn register(root: &Path, agent: &str, commit: &str) -> Result<Submission> {
+    operation(
+        root,
+        Action::Register {
+            agent: agent.into(),
+            commit: commit.into(),
+        },
+    )?
+    .context("engine returned no submission")
+}
+pub fn show(root: &Path, generation: GenerationId) -> Result<Submission> {
+    operation(root, Action::Show { generation })?.context("engine returned no submission")
+}
 
 pub fn stop(root: &Path) -> Result<Status> {
     exchange(&local_dir(root)?, Action::Stop, IO_TIMEOUT)

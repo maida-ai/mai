@@ -1,4 +1,4 @@
-//! MVP authority foundations. Registration and landing transports are not enabled.
+//! MVP authority foundations with explicit trusted-local receive admission.
 pub mod lifecycle;
 
 pub mod authority;
@@ -18,3 +18,4 @@ pub mod workspace;
 
 pub mod landing;
 pub mod manifest;
+pub mod receive;
