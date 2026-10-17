@@ -1,6 +1,6 @@
 # ADR 0003: Git-native agents, single-writer queue and forge topology
 
-Status: rewrite direction decided; design acceptance pending M0 S1–S7 and maintainer defaults. Nothing here is implemented in 0.0.1. This replaces the former workspace-base/ref-guard proposal at this path and supersedes conflicting ADR 0001 decisions 2–6 and ADR 0002. [Philosophy](../philosophy.md) supplies the motivation; [architecture](../architecture.md) is the compact overview.
+Status: MVP scope accepted by the maintainer-approved implementation plan on 2026-10-16 under [ADR 0010](0010-staged-mvp-qualification.md). Nothing here is implemented in 0.0.1. This replaces the former workspace-base/ref-guard proposal at this path and supersedes conflicting ADR 0001 decisions 2–6 and ADR 0002. [Philosophy](../philosophy.md) supplies the motivation; [architecture](../architecture.md) is the compact overview.
 
 ## Decisions
 
@@ -22,13 +22,15 @@ SQLite WAL is the queue and metadata store, not the acceptance ledger. Refuse sc
 
 ## Validation and trust
 
-Pipeline candidates accumulate queued changes and validate in parallel. Publish only with exact final tree, parent and approved configuration evidence. Failure/rejection/supersession invalidates stacked candidates; rebuild independent descendants, and block/reject changes whose prerequisite no longer exists. A later dependency on a reverted change needs explicit re-evaluation, not automatic replay onto incompatible trunk.
+The initial MVP uses a serial, single-class dependency-aware queue under ADR 0010. The following speculative pipeline and batch mechanisms are later optional work, not MVP prerequisites. Pipeline candidates accumulate queued changes and validate in parallel. Publish only with exact final tree, parent and approved configuration evidence. Failure/rejection/supersession invalidates stacked candidates; rebuild independent descendants, and block/reject changes whose prerequisite no longer exists. A later dependency on a reverted change needs explicit re-evaluation, not automatic replay onto incompatible trunk.
 
 Explicit batch mode validates only the batch tip and bisects failure. Intermediate revisions say “validated as batch tip”; they do not satisfy pipeline's per-revision guarantee. This distinction must remain visible in notes, outcomes and metrics. Flake retries stay on the same candidate; passing after failure is recorded, never fabricated. Slots expose resource variables, private temp directories, bounded output and process-group timeout cleanup without claiming test sandboxing.
 
 Gate configuration comes from trusted trunk. Protected paths require explicit approval. A trunk-owned command string invoking a candidate-modified script is not sufficient protection: pin executable policy inputs and check/affected-test/driver/regeneration logic to the approved version, and define the approval transition before shipping. Repository tests still execute candidate code; describe that trust boundary honestly. Git merge-driver behavior and generated-file handling must be qualified, not inferred from using Git CLI.
 
 ## D9 amendment: bounded fix-forward
+
+Deferred proposal under ADR 0010 and priority RFC #93. These requirements apply before automated recovery is enabled; they do not require a sev lane or automatic recovery in the initial MVP.
 
 Cheap code favors fix-forward, but only within a bound: new changes on red trunk compound failure and complicate later reversion while every agent tests a broken base. Give the confirmed culprit's agent a short sev lane, then use a compensating revert; the agent can cheaply re-land a corrected change. This replaces immediate automatic revert as the recommended policy, without selecting the unresolved shipping default.
 
@@ -47,7 +49,7 @@ Priority never weakens exact-tree/parent/configuration evidence. A narrower `che
 
 ### S1 qualification: accepted 2026-10-15
 
-[S1 (#51)](https://github.com/maida-ai/mai/issues/51) is closed following maintainer confirmation of the [qualification report](../spikes/s1/README.md) and [recorded evidence](../spikes/s1/evidence/README.md). Native Linux, macOS and Windows host runs passed; Linux Docker Desktop evidence covers container clients. This accepts the tested transport approach and the constraints below, not a production implementation. S2–S7, remaining maintainer decisions and overall ADR/M0 acceptance are still pending.
+[S1 (#51)](https://github.com/maida-ai/mai/issues/51) is closed following maintainer confirmation of the [qualification report](../spikes/s1/README.md) and [recorded evidence](../spikes/s1/evidence/README.md). Native Linux, macOS and Windows host runs passed; Linux Docker Desktop evidence covers container clients. This accepts the tested transport approach and the constraints below, not a production implementation. S2/S5/S6 have since received scoped GO evidence. S3 corrected functional paths now have reviewed native evidence; scoped ADR/M0 acceptance is recorded below; S4 and future S7 coverage follow ADR 0010.
 
 - **Registration timing:** pre-receive quarantine visibility does not establish object visibility to a clean, separate engine process. The tested proc-receive phase permits that process to read and reference submitted objects before acknowledgment. Preserve this ordering; S7 still owns broader crash-recovery qualification.
 - **Fallback reconciliation:** post-receive transport success does not establish queued admission. When registration fails, keep the incoming ref reachable and reconcile it through startup/background recovery. An identical retry is already up to date and does not rerun post-receive, so push retry alone is insufficient.
@@ -58,8 +60,25 @@ Coverage is limited to the report's scenarios and versions. Exact Git 2.40 compa
 
 ### Remaining qualification and decisions
 
-M0 requires S1 transport (Linux/macOS and recorded Windows/fallback results), S2 differential merges, S3 warm validators, S4 queue simulation including priority mix, starvation and fix-window comparisons, S5 forge cycles, S6 lockfile regeneration and S7 crash windows. Throwaway harnesses belong under `experiments/`; reports and selected evidence belong under `docs/spikes/`. Failure requires an ADR redesign before product code. Git ≥2.40, SHA-1-only authority, unsupported submodules/LFS and best-effort Windows are qualification targets, not tested support claims.
+[ADR 0010](0010-staged-mvp-qualification.md) supersedes the blanket S1–S7 completion gate. The mechanism review below and accepted MVP file-unit contract in ADR 0004 complete the scoped #58/#70 design gate. S4 realistic performance and priority economics move after MVP data collection; S7 becomes incremental feature-enablement crash qualification. The initial queue is single-class and dependency-aware. Existing failed targets and NO-GO reports remain historical evidence, not retroactively passing results. Throwaway harnesses stay under `experiments/`, reports under `docs/spikes/`.
 
-The maintainer must settle tagline, merge default with a gate, validation mode/slot count after S4, full-failure default, M1b position relative to the users gate, initial merge-rule ecosystems, priority grant roles and whether any explicitly narrower sev gate is permitted. S4 must qualify fix_window and publish per-class time-to-land with no starvation. Direction favors textual merging with a gate, pipeline validation and bounded fix-forward with a revert backstop, but these recommendations are not selected defaults. No check means path mode and no claim of a validated trunk. Context access/retention and later parser choices remain open in their later-stage ADRs.
+Remaining choices are tracked in [project status](../project.md#open-maintainer-decisions). Settle only decisions needed for the enabled MVP scope before implementation. Priority grant roles, narrower severe gates and automated recovery windows await RFC #93 and later evidence; no narrower gate is authorized. Final tuning, tagline and example selection do not block core correctness work. No check means path mode and no claim of a validated trunk. Git/platform support must be stated from evidence, not assumptions.
 
-No compatibility shims, model acceptance, synchronous push-until-tests-complete, custom storage, line-range locks, per-draft mutable namespaces beyond one draft ref per agent, or fleet features without evidence. Product replacement waits for M0; no source deletion is authorized by merely reading this ADR.
+No compatibility shims, model acceptance, synchronous push-until-tests-complete, custom storage, line-range locks, per-draft mutable namespaces beyond one draft ref per agent, or fleet features without evidence. The maintainer-approved implementation plan authorizes product replacement after this scoped M0 review; merely reading this ADR never authorizes deleting unrelated user work.
+
+
+### Scoped MVP acceptance review — 2026-10-16
+
+The maintainer explicitly approved implementation of this scoped design. This accepts the simple serial, single-class dependency-aware reference path and ADR 0004's file-unit/manifest contract, not every future proposal or a shipped implementation. Product replacement may begin; each feature must satisfy its own failure/crash tests before enablement.
+
+| Evidence reviewed | Accepted mechanism and retained boundary |
+| --- | --- |
+| [S1](../spikes/s1/README.md) | Native Git transport, retention-before-acknowledgment and typed rejection; synthetic authentication, exact Git floor and broader disconnect/durability coverage remain unqualified |
+| [S2](../spikes/s2/README.md) | Explicit-base merge differential corpus and restricted manifests on three platforms; fixture grammar is not a production parser and warm small-blob timing is not a realistic workload guarantee |
+| [S3 corrected native review](../spikes/s3/functional-qualification.md) | All three platforms pass functional scenarios and 11 unit checks; Rust/TypeScript fail the retained 15% target. Performance is deferred by ADR 0010, not relabeled as passing |
+| [S5](../spikes/s5/README.md) | Squash/rebase export cycles in faithful local topology; GitHub API/protection and remote races remain future integration work |
+| [S6](../spikes/s6/README.md) | Cargo/npm/uv final regenerated tree and gate evidence; local pinned fixtures do not qualify arbitrary registry graphs/backends |
+| [S4 evidence PR #89](https://github.com/maida-ai/mai/pull/89) | Native deterministic synthetic grid, 16 units and identical metrics; original NO-GO retained. Realistic workloads, coupled recovery economics and starvation claims await observations |
+| [S7 evidence PR #92](https://github.com/maida-ai/mai/pull/92) | Native 26 process-kill checkpoints, retries and independent corruption probes; original NO-GO retained. Real dependency/priority/recovery races require feature-specific qualification; no power-loss claim |
+
+Trusted trunk supplies gate commands and executable policy, protected changes need explicit approval, and exact candidate tree/parent/policy evidence is mandatory before CAS landing. Missing or contradictory durable evidence stops reconciliation actionably without inventing a pass, deleting retained submissions or rewriting trunk. No automatic recovery, narrower gate, priority grant or preemption is enabled. Ordinary lease enforcement and work preservation remain required when those paths are introduced. Foundation initialization/serving does not admit or land submissions before #60/#61 qualification. Final tuning, tagline, ecosystem examples and M1b/external-user ordering remain open; none changes these safety rules.

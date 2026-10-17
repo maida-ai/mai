@@ -1,0 +1,26 @@
+{
+  "utc": "2026-10-16T22:16:05Z",
+  "platform": "Linux-7.0.0-34-generic-x86_64-with-glibc2.39",
+  "binary_sha256": "fd24833709a865310562053dbcde8382010f5eef0660f85d94611a9aaa33e3df",
+  "harness_sha256": "7a1bc894c05242333da0e671f4d1e53a06e8c7b0999dd5a10f9bae83817b5b00",
+  "fixtures": {
+    "rust": [
+      "https://github.com/BurntSushi/ripgrep.git",
+      "4649aa9700619f94cf9c66876e9549d83420e16c",
+      "Cargo.toml",
+      "crates/core/main.rs"
+    ],
+    "python": [
+      "https://github.com/pallets/itsdangerous.git",
+      "096c8d42545d3b68ea21a4f890fb2b2d8979c0bd",
+      "pyproject.toml",
+      "src/itsdangerous/__init__.py"
+    ],
+    "typescript": [
+      "https://github.com/colinhacks/zod.git",
+      "e30870369d5b8f31ff4d0130d4439fd997deb523",
+      "package.json",
+      "src/index.ts"
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+cwd=/home/runner/work/mai/mai/.throwaway/s6-ci/uv
+command=uv ["sync", "--locked", "--offline"]
+timeout_ms=120000
+Using CPython 3.12.3 interpreter at: /usr/bin/python3
+Creating virtual environment at: .venv
+Resolved 3 packages in 0.72ms
+   Building alpha @ file:///home/runner/work/mai/mai/.throwaway/s6-ci/uv/vendor/alpha
+   Building beta @ file:///home/runner/work/mai/mai/.throwaway/s6-ci/uv/vendor/beta
+      Built alpha @ file:///home/runner/work/mai/mai/.throwaway/s6-ci/uv/vendor/alpha
+      Built beta @ file:///home/runner/work/mai/mai/.throwaway/s6-ci/uv/vendor/beta
+Prepared 2 packages in 60ms
+Installed 2 packages in 0.45ms
+ + alpha==1.0.0 (from file:///home/runner/work/mai/mai/.throwaway/s6-ci/uv/vendor/alpha)
+ + beta==1.0.0 (from file:///home/runner/work/mai/mai/.throwaway/s6-ci/uv/vendor/beta)
+
+status=exit status: 0
+timeout=false
+elapsed_ms=80

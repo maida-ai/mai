@@ -1,27 +1,38 @@
-# S6 lockfile regeneration qualification
+# S6 Cargo/npm/uv lockfile regeneration qualification
 
-**Harness prepared; CI evidence and M0/S6 acceptance remain pending.** The isolated [harness](../../../experiments/s6/README.md) runs real Cargo/npm/uv gates and Git operations over small version-pinned local dependency fixtures. No product implementation or shipping example selection is included. Refs #56.
+**GO for #56's three-ecosystem fixture qualification.** All three native platforms passed six unit tests and the Cargo, npm and uv scenarios. This qualifies the documented local-source fixture boundary, not arbitrary registry graphs or production validator security.
 
-## Criterion mapping
+## Criterion assessment
 
-| Issue criterion | Harness coverage | Remaining qualification |
+| #56 criterion | Observed evidence | Assessment |
 | --- | --- | --- |
-| Cargo, npm, uv independent additions | Two stale agent commits, separate generated locks, actual three-way manifest merge, baseline lock reset, real manager regeneration and gates | Representative registry dependency graphs and native hosted platforms |
-| Both additions survive | Cargo executes both crates; Node requires both installed modules; uv installs wheels and Python imports both; values 11/22 asserted | Broader ecosystem fixtures |
-| Cache/offline assumptions | Isolated Cargo/npm/uv caches; all fixture commands offline; uv uses host Python with automatic downloads disabled; source dependencies need no registry downloads | Cold/warm remote registry availability, transitive dependency cache behavior |
-| Deterministic output | Two regenerations starting from identical baseline lock bytes produce byte-identical final lockfiles for each ecosystem | Cross-manager-version and cross-platform reproducibility |
-| Failure behavior | Cargo incompatible local version, npm conflicting exact peer constraint (ERESOLVE), uv incompatible Python requirement (No solution found), separate offline-unavailable versions and failing gates required to fail in all three ecosystems | Registry-specific diagnostics and large resolver graphs |
-| Timeout behavior | Native worker process killed after 100 ms, classified as timeout, never success | Actual resolver hangs and descendant-process cleanup |
-| Exact final-tree evidence | Pre-regeneration tree differs; successful evidence records final tree, parent, baseline config blob and attempt; stale tree/parent/attempt rejected; published commit matches final tree/parent | Production engine publication/restart protocol belongs to later implementation and S7 |
-| Trusted configuration/executables | Both protected config and gate-script replacement independently fail baseline Git-blob verification before candidate execution | Full policy closure including arbitrary build backends, hooks and third-party scripts; candidate builds remain executable trusted-local code, not sandboxed |
-| Scripts and report | Standalone Rust harness, fixture wheel backend, wrappers, manual workflow, evidence collection | Maintainer review; native macOS/Windows manual CI |
+| Merge independent manifest additions, begin with trunk lock and regenerate | Two agent branches and real Git three-way manifest merge; baseline lock bytes asserted; actual Cargo/npm/uv regeneration | PASS in all nine ecosystem/platform combinations |
+| Both dependencies survive and native gate passes | Cargo executes both crates, Node requires both modules, uv builds/installs wheels and Python imports both; 11/22 values asserted | PASS |
+| Cache/offline assumptions and determinism | Isolated caches, offline fixture commands; two regenerations from identical baseline locks are byte-identical | PASS within recorded tool/input versions |
+| Failure behavior | Broken gate rejected; Cargo local version mismatch; npm/uv offline-unavailable versions; npm ERESOLVE and uv No solution found incompatible-constraint fixtures | PASS; offline unavailability is distinguished from solver contradiction |
+| Timeout behavior | Three worker timeouts per platform, each classified non-success | PASS for native timeout probe; not an actual resolver hang or descendant cleanup proof |
+| Evidence binds final regenerated tree | Each final tree equals checked tree and differs from pre-regeneration tree; parent/policy/attempt bound; stale evidence rejected; published tree/parent asserted | PASS |
+| Trusted trunk configuration cannot be replaced | Baseline Git-blob checks reject candidate policy, gate script and both uv backend replacements before their execution | PASS for explicit protected closure |
+| Scripts/report and no shipping-default selection | Source hashes verified; commands/results and short go/no-go report retained | PASS |
 
-## Evidence collection
+## Final-tree evidence
 
-Qualification evidence will be collected from manual CI workflow runs after this PR is merged. This preparation includes no local evidence snapshots or measured-result claims. Review the resulting artifacts separately before accepting the spike; no workflow is dispatched by this change.
+| Ecosystem | Final/checked tree on all three platforms |
+| --- | --- |
+| Cargo | `d58f2043b1da5fffb8b7d7f7c32ebf68d10b45be` |
+| npm | `95e44763f781e1ecfbc26c3e47a037bf5c5a7431` |
+| uv | `d5d7458f6f389a2962f5c1a18fec42a06b63e1b7` |
 
-## Decision
+Review independently compared final/checked/pre-regeneration IDs and found the final fixture tree identical across native platforms for each ecosystem. Result logs preserve the distinct parent/landed commit identities, config blob and attempt. This observation does not promise reproducibility across arbitrary manager versions or registry inputs.
 
-These fixtures test discarding agent lockfile deltas, regenerating from trunk and binding gate evidence to the regenerated tree. Results across native platforms and representative package graphs remain pending. Keep S6 and M0 pending; use the manual workflow and additional explicit fixture inputs to collect that evidence. No shipping defaults are selected.
+## Limits and disposition
 
-The harness also pins both uv fixture build backends to baseline Git blobs, rejects their replacement, and snapshots the candidate tracked tree before the gate and verifies it is unchanged afterward. Separate npm/uv offline-unavailable failures are not claimed as unsatisfiable solver constraints. Additional fixtures require npm ERESOLVE for an exact incompatible alpha peer and uv No solution found for beta requiring Python >=4 against the project supporting >=3.10.
+Fixtures use source-pinned local alpha/beta 1.0.0 dependencies, not representative public registries or large transitive graphs. Offline gates need no registry network; uv tool bootstrap may require an index. Tool versions and commands remain in provenance/command logs. Timeout testing kills a synthetic sleeper after 100 ms, not a hung resolver; arbitrary descendants are not covered. Candidate builds still execute trusted-local code and are not sandboxed. Full policy closure for arbitrary backends/hooks and production restart/publication belong to later work. #56 asks to record these assumptions and behaviors, not to qualify every registry graph: recommend closing the scoped issue on merge. Shipping examples remain a maintainer decision; M0 still depends on other spikes and ADR acceptance.
+
+## Reviewed evidence and verification
+
+[Run 38702039184, attempt 1](https://github.com/maida-ai/mai/actions/runs/38702039184) executed `3228eeb221581e4bd583bc8973cc03d24470d374` on 2026-10-15. The [snapshot](evidence/2026-10-15-run-38702039184-attempt-1/README.md) retains every collected artifact file with original and retained SHA-256s, job conclusions, source hashes and independently checked summaries. All recorded harness source hashes match the executed revision. See the [go/no-go decision](go-no-go.md) and [reproduction instructions](../../../experiments/s6/README.md).
+
+This evidence-only review checked source identity, artifact completeness, reported outcomes against raw logs and the executed assertions, documentation links and whitespace. No experiment was rerun or workflow dispatched; no product code, thresholds, defaults or ADR status changed.
+
+Baseline product checks passed during review: `cargo fmt --check`, `cargo clippy --all-targets --locked -- -D warnings` and `cargo test --all-targets --locked` (34 tests). Disposable builds stayed under `.throwaway/`. No new local experiment evidence was generated.

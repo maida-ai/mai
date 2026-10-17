@@ -1,0 +1,8 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/npm
+command=git ["hash-object", "--", "gate.js"]
+timeout_ms=120000
+a3eb1fa66b2967d9ce4ab29b4219aefd039eb21c
+
+status=exit status: 0
+timeout=false
+elapsed_ms=25

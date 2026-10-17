@@ -1,0 +1,8 @@
+cwd=D:/a/mai/mai/.throwaway/s6-ci\uv
+command=git ["checkout", "-b", "agent-alpha"]
+timeout_ms=120000
+Switched to a new branch 'agent-alpha'
+
+status=exit code: 0
+timeout=false
+elapsed_ms=33

@@ -1,0 +1,8 @@
+cwd=D:/a/mai/mai/.throwaway/s6-ci
+command=uv ["--version"]
+timeout_ms=120000
+uv 0.12.18 (01cb90c1a 2026-09-22 x86_64-pc-windows-msvc)
+
+status=exit code: 0
+timeout=false
+elapsed_ms=25

@@ -1,0 +1,7 @@
+{
+  "url": "https://github.com/BurntSushi/ripgrep.git",
+  "revision": "4649aa9700619f94cf9c66876e9549d83420e16c",
+  "locks": {
+    "Cargo.lock": "1a99f2f04d96411238379485e36623a19b0158d9446796e6d85d58746023f441"
+  }
+}

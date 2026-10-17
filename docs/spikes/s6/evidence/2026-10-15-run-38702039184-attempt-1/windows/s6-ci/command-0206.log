@@ -1,0 +1,9 @@
+cwd=D:/a/mai/mai/.throwaway/s6-ci\uv
+command=uv ["sync", "--locked", "--offline"]
+timeout_ms=120000
+Resolved 3 packages in 1ms
+Checked 2 packages in 0.51ms
+
+status=exit code: 0
+timeout=false
+elapsed_ms=32

@@ -1,0 +1,7 @@
+cwd=D:/a/mai/mai/.throwaway/s6-ci\cargo
+command=D:/a/mai/mai/.throwaway/s6-ci.build/s6.exe ["sleep"]
+timeout_ms=100
+
+status=exit code: 1
+timeout=true
+elapsed_ms=168

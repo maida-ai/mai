@@ -1,0 +1,418 @@
+//! Independent end-to-end admission checks through real receive-pack and engine processes.
+use mai::{authority::Authority, state::StateStore};
+use std::{
+    path::{Path, PathBuf},
+    process::{Child, Command, Output, Stdio},
+    thread,
+    time::{Duration, Instant},
+};
+
+fn success(output: Output) -> String {
+    assert!(
+        output.status.success(),
+        "stdout={} stderr={}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+    String::from_utf8(output.stdout).unwrap().trim().to_owned()
+}
+fn git(path: &Path, args: &[&str]) -> Output {
+    Command::new("git")
+        .arg("-C")
+        .arg(path)
+        .args(args)
+        .env("LC_ALL", "C")
+        .env("GIT_CONFIG_NOSYSTEM", "1")
+        .env(
+            "GIT_CONFIG_GLOBAL",
+            if cfg!(windows) { "NUL" } else { "/dev/null" },
+        )
+        .env("GIT_AUTHOR_NAME", "QA")
+        .env("GIT_AUTHOR_EMAIL", "qa@localhost")
+        .env("GIT_COMMITTER_NAME", "QA")
+        .env("GIT_COMMITTER_EMAIL", "qa@localhost")
+        .output()
+        .unwrap()
+}
+fn cli(root: &Path, args: &[&str]) -> Output {
+    Command::new(env!("CARGO_BIN_EXE_mai"))
+        .args(args)
+        .arg(root)
+        .output()
+        .unwrap()
+}
+struct Owner(Child);
+impl Drop for Owner {
+    fn drop(&mut self) {
+        if self.0.try_wait().ok().flatten().is_none() {
+            let _ = self.0.kill();
+        }
+        let _ = self.0.wait();
+    }
+}
+struct Fixture {
+    _temp: tempfile::TempDir,
+    root: PathBuf,
+    client: PathBuf,
+}
+impl Fixture {
+    fn new() -> Self {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path().join("authority");
+        let client = temp.path().join("client");
+        success(cli(&root, &["init"]));
+        success(
+            Command::new("git")
+                .args(["clone", "--no-local"])
+                .arg(root.join("authority.git"))
+                .arg(&client)
+                .output()
+                .unwrap(),
+        );
+        Self {
+            _temp: temp,
+            root,
+            client,
+        }
+    }
+    fn start(&self) -> Owner {
+        let mut owner = Owner(
+            Command::new(env!("CARGO_BIN_EXE_mai"))
+                .args(["serve", "--foreground"])
+                .arg(&self.root)
+                .stdout(Stdio::null())
+                .stderr(std::fs::File::create(self.root.join("engine-qa.log")).unwrap())
+                .spawn()
+                .unwrap(),
+        );
+        let deadline = Instant::now() + Duration::from_secs(10);
+        loop {
+            if cli(&self.root, &["status", "--no-autostart"])
+                .status
+                .success()
+            {
+                return owner;
+            }
+            assert!(
+                owner.0.try_wait().unwrap().is_none(),
+                "engine exited before readiness: {}",
+                std::fs::read_to_string(self.root.join("engine-qa.log")).unwrap_or_default()
+            );
+            assert!(Instant::now() < deadline, "engine readiness timed out");
+            thread::sleep(Duration::from_millis(25));
+        }
+    }
+    fn enable(&self) {
+        success(cli(
+            &self.root,
+            &[
+                "receive",
+                "enable",
+                "--max-input-bytes",
+                "1048576",
+                "--max-file-bytes",
+                "65536",
+                "--max-changed-files",
+                "16",
+            ],
+        ));
+    }
+    fn commit(&self, name: &str) -> String {
+        std::fs::write(self.client.join(name), name).unwrap();
+        success(git(&self.client, &["add", name]));
+        success(git(&self.client, &["commit", "-m", name]));
+        success(git(&self.client, &["rev-parse", "HEAD"]))
+    }
+    fn push(&self, refs: &[&str]) -> Output {
+        let mut args = vec!["push", "-o", "agent=qa", "origin"];
+        args.extend_from_slice(refs);
+        git(&self.client, &args)
+    }
+    fn submissions(&self) -> Vec<mai::lifecycle::Submission> {
+        let authority = Authority::open(&self.root).unwrap();
+        StateStore::open(authority.state_path())
+            .unwrap()
+            .load_lifecycle()
+            .unwrap()
+            .submissions()
+            .cloned()
+            .collect()
+    }
+}
+
+#[test]
+fn acknowledged_submission_is_retained_and_survives_owner_death_once() {
+    let f = Fixture::new();
+    let mut owner = f.start();
+    f.enable();
+    let commit = f.commit("one.txt");
+    let trunk = success(git(
+        &f.root.join("authority.git"),
+        &["rev-parse", "refs/heads/trunk"],
+    ));
+    success(f.push(&["HEAD:refs/for/main"]));
+    let before = f.submissions();
+    assert_eq!(before.len(), 1);
+    assert_eq!(before[0].commit(), commit);
+    let id = before[0].id();
+    let retained = format!("refs/mai/changes/{}/{}", id.change_id, id.generation);
+    assert_eq!(
+        success(git(
+            &f.root.join("authority.git"),
+            &["rev-parse", &retained]
+        )),
+        commit
+    );
+    owner.0.kill().unwrap();
+    owner.0.wait().unwrap();
+    let _restarted = f.start();
+    success(f.push(&["HEAD:refs/for/main"]));
+    assert_eq!(f.submissions(), before);
+    assert_eq!(
+        success(git(
+            &f.root.join("authority.git"),
+            &["rev-parse", "refs/heads/trunk"]
+        )),
+        trunk
+    );
+}
+
+#[test]
+fn unavailable_owner_and_mixed_forbidden_push_do_not_admit() {
+    let f = Fixture::new();
+    let owner = f.start();
+    f.enable();
+    drop(owner);
+    f.commit("one.txt");
+    assert!(!f.push(&["HEAD:refs/for/main"]).status.success());
+    assert!(f.submissions().is_empty());
+    let _owner = f.start();
+    let trunk = success(git(
+        &f.root.join("authority.git"),
+        &["rev-parse", "refs/heads/trunk"],
+    ));
+    assert!(
+        !f.push(&["HEAD:refs/for/main", "HEAD:refs/heads/trunk"])
+            .status
+            .success()
+    );
+    assert!(
+        f.submissions().is_empty(),
+        "partially admitted rejected multi-ref push"
+    );
+    assert_eq!(
+        success(git(
+            &f.root.join("authority.git"),
+            &["rev-parse", "refs/heads/trunk"]
+        )),
+        trunk
+    );
+}
+
+#[test]
+fn pending_submitted_parent_is_explicit_dependency_but_unknown_chain_rejects() {
+    let f = Fixture::new();
+    let _owner = f.start();
+    f.enable();
+    f.commit("parent.txt");
+    success(f.push(&["HEAD:refs/for/main"]));
+    let parent = f.submissions()[0].id().clone();
+    let child = f.commit("child.txt");
+    success(f.push(&["HEAD:refs/for/main"]));
+    let all = f.submissions();
+    assert_eq!(all.len(), 2);
+    let submitted_child = all.iter().find(|s| s.commit() == child).unwrap();
+    assert_eq!(submitted_child.dependencies(), &[parent]);
+    f.commit("unsubmitted.txt");
+    f.commit("unknown-chain.txt");
+    assert!(!f.push(&["HEAD:refs/for/main"]).status.success());
+    assert_eq!(f.submissions(), all);
+}
+
+#[cfg(unix)]
+#[test]
+fn disconnected_registration_response_retries_same_durable_identity() {
+    use std::{io::Write, os::unix::net::UnixStream};
+    let f = Fixture::new();
+    let _owner = f.start();
+    f.enable();
+    let commit = f.commit("lost-reply.txt");
+    // Import objects without submitting: this isolates the IPC acknowledgment
+    // window from receive-pack's separately tested transport ordering.
+    success(
+        Command::new("git")
+            .arg("--git-dir")
+            .arg(f.root.join("authority.git"))
+            .arg("fetch")
+            .arg(&f.client)
+            .arg("HEAD:refs/qa/import")
+            .output()
+            .unwrap(),
+    );
+    let request = serde_json::json!({"protocol_version":1,"action":{"register":{"agent":"qa","commit":commit}}});
+    let mut socket = UnixStream::connect(f.root.join(".mai/engine.sock")).unwrap();
+    writeln!(socket, "{request}").unwrap();
+    drop(socket); // Complete request, intentionally no response read or ACK.
+    let deadline = Instant::now() + Duration::from_secs(10);
+    while f.submissions().is_empty() {
+        assert!(
+            Instant::now() < deadline,
+            "disconnected registration was never persisted"
+        );
+        thread::sleep(Duration::from_millis(20));
+    }
+    let before = f.submissions();
+    success(f.push(&["HEAD:refs/for/main"]));
+    assert_eq!(f.submissions(), before);
+    assert_eq!(before.len(), 1);
+    assert_eq!(before[0].commit(), commit);
+}
+
+#[test]
+fn rejected_scope_leaves_no_registered_or_retained_submission() {
+    for path in [".env", "oversized.bin"] {
+        let f = Fixture::new();
+        let _owner = f.start();
+        f.enable();
+        let data = if path == ".env" {
+            vec![b'x'; 12]
+        } else {
+            vec![b'x'; 65537]
+        };
+        std::fs::write(f.client.join(path), data).unwrap();
+        success(git(&f.client, &["add", path]));
+        success(git(&f.client, &["commit", "-m", "rejected fixture"]));
+        let output = f.push(&["HEAD:refs/for/main"]);
+        assert!(!output.status.success());
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        assert!(
+            stderr.contains(if path == ".env" {
+                "blocked receive path"
+            } else {
+                "per-file byte limit exceeded"
+            }),
+            "wrong rejection: {stderr}"
+        );
+        assert!(f.submissions().is_empty());
+        assert!(
+            success(git(
+                &f.root.join("authority.git"),
+                &["for-each-ref", "--format=%(refname)", "refs/mai/changes/"]
+            ))
+            .is_empty()
+        );
+    }
+}
+
+#[test]
+fn orphan_retention_retry_and_missing_received_note_rebuild_converge() {
+    let f = Fixture::new();
+    let mut owner = f.start();
+    f.enable();
+    let commit = f.commit("orphan.txt");
+    let retained = format!("refs/mai/changes/qa-{commit}/1");
+    // Reproduce the durable prefix of registration before its database write.
+    success(
+        Command::new("git")
+            .arg("--git-dir")
+            .arg(f.root.join("authority.git"))
+            .arg("fetch")
+            .arg(&f.client)
+            .arg(format!("HEAD:{retained}"))
+            .output()
+            .unwrap(),
+    );
+    assert!(f.submissions().is_empty());
+    success(f.push(&["HEAD:refs/for/main"]));
+    let before = f.submissions();
+    assert_eq!(before.len(), 1);
+    let repo = f.root.join("authority.git");
+    let note = success(git(&repo, &["notes", "--ref=mai-objects", "show", &commit]));
+    success(git(&repo, &["update-ref", "-d", "refs/notes/mai-objects"]));
+    owner.0.kill().unwrap();
+    owner.0.wait().unwrap();
+    let mut restarted = f.start();
+    assert_eq!(
+        success(git(&repo, &["notes", "--ref=mai-objects", "show", &commit])),
+        note
+    );
+    assert_eq!(f.submissions(), before);
+    restarted.0.kill().unwrap();
+    restarted.0.wait().unwrap();
+    let _again = f.start();
+    assert_eq!(
+        success(git(&repo, &["notes", "--ref=mai-objects", "show", &commit])),
+        note
+    );
+    assert_eq!(f.submissions(), before);
+}
+
+#[test]
+fn changed_file_count_limit_rejects_before_retention() {
+    let f = Fixture::new();
+    let _owner = f.start();
+    f.enable();
+    for index in 0..17 {
+        std::fs::write(f.client.join(format!("file-{index}.txt")), "tiny").unwrap();
+    }
+    success(git(&f.client, &["add", "."]));
+    success(git(&f.client, &["commit", "-m", "too many files"]));
+    let output = f.push(&["HEAD:refs/for/main"]);
+    assert!(!output.status.success());
+    assert!(String::from_utf8_lossy(&output.stderr).contains("changed-file limit exceeded"));
+    assert!(f.submissions().is_empty());
+    assert!(
+        success(git(
+            &f.root.join("authority.git"),
+            &["for-each-ref", "--format=%(refname)", "refs/mai/changes/"]
+        ))
+        .is_empty()
+    );
+}
+
+#[test]
+fn incoming_pack_limit_rejects_before_engine_admission() {
+    let f = Fixture::new();
+    let _owner = f.start();
+    success(cli(
+        &f.root,
+        &[
+            "receive",
+            "enable",
+            "--max-input-bytes",
+            "1024",
+            "--max-file-bytes",
+            "65536",
+            "--max-changed-files",
+            "16",
+        ],
+    ));
+    // Deterministic incompressible-enough fixture; no network or random-source dependency.
+    let mut state = 1_u32;
+    let data: Vec<u8> = (0..32768)
+        .map(|_| {
+            state ^= state << 13;
+            state ^= state >> 17;
+            state ^= state << 5;
+            state as u8
+        })
+        .collect();
+    std::fs::write(f.client.join("pack.bin"), data).unwrap();
+    success(git(&f.client, &["add", "pack.bin"]));
+    success(git(&f.client, &["commit", "-m", "pack exceeds input cap"]));
+    let output = f.push(&["HEAD:refs/for/main"]);
+    assert!(!output.status.success());
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(
+        stderr.contains("maximum allowed size"),
+        "wrong rejection: {stderr}"
+    );
+    assert!(f.submissions().is_empty());
+    assert!(
+        success(git(
+            &f.root.join("authority.git"),
+            &["for-each-ref", "--format=%(refname)", "refs/mai/changes/"]
+        ))
+        .is_empty()
+    );
+}

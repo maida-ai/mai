@@ -1,0 +1,8 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/npm
+command=git ["rev-parse", "accepted^"]
+timeout_ms=120000
+b6962cc40fcedf84c08abd5903d1063f0a89830a
+
+status=exit status: 0
+timeout=false
+elapsed_ms=50

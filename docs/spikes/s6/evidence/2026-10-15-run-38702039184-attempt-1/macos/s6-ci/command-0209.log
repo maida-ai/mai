@@ -1,0 +1,11 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/uv
+command=uv ["lock", "--offline"]
+timeout_ms=120000
+error: No solution found when resolving dependencies
+  cause: Because alpha was not found in the cache and your project depends on alpha==999999.0.0, we can conclude that your project's requirements are unsatisfiable.
+
+hint: Packages were unavailable because the network was disabled. When the network is disabled, registry packages may only be read from the cache.
+
+status=exit status: 1
+timeout=false
+elapsed_ms=53

@@ -1,0 +1,7 @@
+cwd=/home/runner/work/mai/mai/.throwaway/s6-ci/cargo
+command=git ["update-ref", "refs/heads/accepted", "66602f2c7a2ada777c6cddadcbe5ac540201b5d0", "0000000000000000000000000000000000000000"]
+timeout_ms=120000
+
+status=exit status: 0
+timeout=false
+elapsed_ms=10

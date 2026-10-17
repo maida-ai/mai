@@ -1,0 +1,8 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/cargo
+command=git ["init", "-b", "main"]
+timeout_ms=120000
+Initialized empty Git repository in /Users/runner/work/mai/mai/.throwaway/s6-ci/cargo/.git/
+
+status=exit status: 0
+timeout=false
+elapsed_ms=27

@@ -15,43 +15,41 @@
   <a href="CONTRIBUTING.md">Contribute</a>
 </p>
 
-mai aims to shorten recovery when agents fail, conflict or lose their environment, while keeping a blocking gate at the shared trunk boundary. The proposed rewrite uses plain Git submissions and an integrated validation queue so agents spend less time on rebases and humans spend less time coordinating parallel changes.
+mai aims to let multiple coding agents contribute in parallel without managing shared branches or routine rebase and conflict chores. The proposed rewrite uses plain Git submissions and an integrated validation queue to coordinate overlapping work while keeping a blocking gate at the shared trunk boundary. Mean time to recovery is an underlying design principle supporting that collaboration when a change fails or genuinely conflicts; resolving conflicting intent still requires an explicit correction.
 
-**Rewrite design; not implemented.** The code here is the experimental 0.0.1 worktree engine. M0 qualification must pass before replacement product code starts; the commands below describe the proposed interface, not the current binary. Built in Rust, backed by Git, open source under [Apache 2.0](LICENSE), and independent of core Maida.
+**MVP foundations under development.** Scoped design acceptance and native S3 functional verification permit replacement under [ADR 0010](docs/adr/0010-staged-mvp-qualification.md). The old worktree engine has been retired. The foundation now provides a versioned lifecycle model, SQLite persistence, safe authority initialization, a local single-writer engine, manual trusted-gate validation, independent agent workspaces, explicit durable receive and serial integration of named generations. The authority commands are described in the [engine guide](docs/engine.md); see [manual validation](docs/manual-validator.md) and [workspaces](docs/workspaces.md) for the new explicit operations. This scoped explicit workflow is available; the full automatic queue, drafts and in-place sync/autostash remain unimplemented. Built in Rust, backed by Git, open source under [Apache 2.0](LICENSE), and independent of core Maida.
 
-## Two agents. One integration queue.
+## Receive, inspect, integrate
 
-Planned flow after creating Alice's and Bob's clones with `mai workspace`:
+Create an authority with explicit trusted gate policy and independent workspaces, then enable receive with explicit limits. Each push registers one immutable generation; it never lands implicitly. An operator selects each generation for serial integration, parent before dependent child:
 
 ```sh
-# In Alice's clone:
-printf 'Hello UI\n' > ui.txt
-git add ui.txt
-git commit -m 'Add UI'
-git push mai HEAD:refs/for/main
-
-# In Bob's clone:
-printf 'Hello API\n' > api.txt
-git add api.txt
-git commit -m 'Add API'
-git push mai HEAD:refs/for/main
+# In an agent workspace, after committing:
+git push -o agent=alice mai HEAD:refs/for/main
+# At the authority, using the change ID returned by push:
+mai show PROJECT CHANGE --generation 1 --json
+mai integrate PROJECT CHANGE --mode textual --wait-seconds 60 --json
 ```
 
-Push success will acknowledge durable registration, not landing. Each agent waits for its change's typed outcome with `mai wait <change>` and runs `mai sync` after landing; the engine combines and checks candidates without requiring a pre-submission rebase. A conflict or failed check returns an actionable outcome and a fetchable candidate. Pipeline mode must validate each landed tree exactly as landed; optional batch mode must label its weaker intermediate-revision evidence explicitly.
+The [runnable walkthrough](docs/getting-started.md) builds an authority, submits a parent and child, integrates both through the trusted gate and verifies a fresh clone. [Receive and integration](docs/receive.md) documents exact retry identity, admission limits, leases and uncertain responses. File manifests come from actual diffs; landing requires the checked tree and matching parent/policy evidence. Textual integration currently rejects attributes/custom merge drivers. [Copy-based continuation](docs/continuation.md) replays a clean unregistered suffix after an exact landed identity into a new workspace, preserving the original clone. In-place sync/autostash remains deferred.
 
-The intended audience is one developer or team running 3–30 agents across harnesses. Humans keep their forge and review process; mai integrates agent changes into an export branch. Recovery times, human interventions, time to land and broken-trunk rate will measure whether this design earns its place. None of those improvements has been measured for the rewrite yet.
+The intended audience is one developer or team running 3–30 agents across harnesses. Humans keep their forge and review process; mai integrates agent changes into an export branch. Recovery times, human interventions, time to land and broken-trunk rate will measure whether this design earns its place. Small reproducible functional measurements now exist, including [explicit Linux validator recovery](docs/spikes/validator-recovery/2026-10-17/README.md); they do not establish improvements over an equivalent workflow, production MTTR or representative throughput. See the [benchmark protocol](docs/benchmarking.md) for comparable workloads and recovery measurements. The longer-term ambition is hundreds or thousands of overlapping agents; that scale and distributed operation are outside the qualified local MVP.
 
-## Evaluate the current prototype
+Opted-in Linux validators can use [explicit proof-backed recovery](docs/validator-recovery.md) after engine death. Missing cleanup proof, worker death and host failure remain preserved blockers; recovery never skips the normal gate.
 
-The existing 0.0.1 engine can still be built with Rust 1.85+, Git 2.36+ and a C compiler:
+## Build the MVP foundation
+
+Use Rust 1.85+, Git 2.40+ and a C compiler for bundled SQLite:
 
 ```sh
 git clone https://github.com/maida-ai/mai.git
 cd mai
-cargo install --path . --locked --bin mai
+cargo build --locked --bin mai
+cargo test --all-targets --locked
+cargo run --locked -- --version
 ```
 
-Use disposable trusted repositories and the [current getting-started guide](docs/getting-started.md). The current binary has no receive queue, daemon, integrated validation, tokens or upstream sync. Its linked worktrees share authority refs; normal local commits are unsafe for its submission protocol. The proposed authority requires Git ≥ 2.40, subject to M0 qualification.
+See [getting started](docs/getting-started.md). Submission requires explicit enablement and integration requires an explicit command; manual validation requires trusted policy and does not land changes; no legacy worktree commands or format migrations are provided. Performance targets and differentiated priority remain deferred until practical MVP observations.
 
 ## Where mai fits
 
@@ -62,7 +60,9 @@ Use disposable trusted repositories and the [current getting-started guide](docs
 | [GitButler](https://docs.gitbutler.com/ai-agents/parallel-agents) | Documents parallel-agent workflows using multiple branches in a shared workspace. |
 | [GitHub merge queues](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue) | Run required checks on changes combined with the target branch and earlier queued work. |
 
-mai's proposed focus is a local, harness-neutral validation queue with typed outcomes, dependent changes, engine-computed change manifests, priority-aware coordination and bounded recovery. M1 starts with file units; M2 adds object precision. Priority never bypasses the trunk gate, and a confirmed post-landing failure gets a bounded fix-forward lane with a validated revert backstop. This comparison is not a claim that other tools lack integration or agent support. The final tagline remains a maintainer decision.
+mai's proposed focus is a local, harness-neutral validation queue with typed outcomes, dependent changes, engine-computed change manifests, priority-aware coordination and bounded recovery. M1 starts with file units and a simple single-class dependency-aware queue. The intended finer locking unit is a semantic object, such as a function, method, variable or configuration key. Current manifests and leases use file units; semantic-object locking and stable object identity are not shipped. M2 is the planned object-precision stage, and robust object-key identification remains future work. Differentiated priority and automated recovery remain deferred proposals under ADR 0010 and RFC #93. Priority never bypasses the trunk gate, and a confirmed post-landing failure gets a bounded fix-forward lane with a validated revert backstop. This comparison is not a claim that other tools lack integration or agent support. The final tagline remains a maintainer decision.
+
+See the [current delivery and next decisions](docs/release-status.md) for the complete implemented user loop, evidence limits and unfinished scope.
 
 ## Keep going
 

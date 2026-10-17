@@ -1,0 +1,18 @@
+2026-10-15T07:55:04Z
+conflict_owner=fixture-upstream-owner
+4a58e63e77a5604a1454da85dd26603770195716
+git version 2.55.0
+rustc 1.99.0 (b940084d7 2026-09-28)
+binary: rustc
+commit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4
+commit-date: 2026-09-28
+host: x86_64-unknown-linux-gnu
+release: 1.99.0
+LLVM version: 23.1.1
+Linux 6.17.0-1022-azure x86_64
+runner_os=Linux
+runner_arch=X64
+image_os=ubuntu24
+image_version=20261012.334.1
+run_id=38701977194
+run_attempt=1

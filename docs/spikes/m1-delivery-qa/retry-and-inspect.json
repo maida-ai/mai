@@ -1,0 +1,249 @@
+{
+  "source_commit": "34d85b1228a81e4abd145b6f60e2df7410a2fe3a",
+  "binary_sha256": "8476b8aeb6228ac86c74cf54681e706eeccca624b523c202ee63f1ea9adf3b0b",
+  "demo_root": "/tmp/mai-demo.tvPZSR",
+  "initial_engine_pid": 392799,
+  "restarted_engine_pid": 393970,
+  "submitted_parent": "a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f",
+  "submitted_child": "07652b6ad73244d41cc1f5abb5a69f8bc2187bf5",
+  "accepted_parent": "9077999b804567b6fc7a1486fb25c70fa5d0401f",
+  "accepted_child": "0e8a1f97a98b626cc7a4f7015fa03cdfd2170423",
+  "database_counts": {
+    "generations": 2,
+    "landings": 2,
+    "evidence": 2
+  },
+  "retry_operations": 4,
+  "retry_attempt_count_each": 1,
+  "refs_unchanged_after_retries": true,
+  "fresh_workspace_files": [
+    "parent.txt",
+    "child.txt"
+  ],
+  "original_agent_head_preserved": true,
+  "commands": [
+    {
+      "argv": [
+        "/tmp/mai-qa-frozen-34d85b1/target/debug/mai",
+        "status",
+        "/tmp/mai-demo.tvPZSR/project",
+        "--json"
+      ],
+      "exit": 0,
+      "stdout": "{\"authority\":{\"data\":\"L3RtcC9tYWktZGVtby50dlBaU1IvcHJvamVjdA==\",\"encoding\":\"unix_bytes\"},\"pid\":393970,\"protocol_version\":1,\"registration_available\":true,\"state\":\"ready\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "--git-dir",
+        "/tmp/mai-demo.tvPZSR/project/authority.git",
+        "show-ref"
+      ],
+      "exit": 0,
+      "stdout": "6769b3c3d1671870bbe216616d8b00f7ae6ff775 refs/heads/main\n0e8a1f97a98b626cc7a4f7015fa03cdfd2170423 refs/heads/trunk\n0e8a1f97a98b626cc7a4f7015fa03cdfd2170423 refs/mai/candidates/alice-07652b6ad73244d41cc1f5abb5a69f8bc2187bf5/1/1\n9077999b804567b6fc7a1486fb25c70fa5d0401f refs/mai/candidates/alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f/1/1\n07652b6ad73244d41cc1f5abb5a69f8bc2187bf5 refs/mai/changes/alice-07652b6ad73244d41cc1f5abb5a69f8bc2187bf5/1\na34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f refs/mai/changes/alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f/1\nb76682e3a98a87e87e2f18c64a953dc28bb0ccef refs/notes/mai-objects\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/mai-qa-frozen-34d85b1/target/debug/mai",
+        "integrate",
+        "/tmp/mai-demo.tvPZSR/project",
+        "alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f",
+        "--mode",
+        "textual",
+        "--wait-seconds",
+        "60",
+        "--json"
+      ],
+      "exit": 0,
+      "stdout": "{\"commit\":\"9077999b804567b6fc7a1486fb25c70fa5d0401f\",\"generation\":{\"change_id\":\"alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f\",\"generation\":1},\"kind\":\"landed\",\"revision\":1,\"schema_version\":1}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/tmp/mai-demo.tvPZSR/alice",
+        "push",
+        "-o",
+        "agent=alice",
+        "mai",
+        "a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f:refs/for/main"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "remote: mai received alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f generation 1; not landed        \nTo /tmp/mai-demo.tvPZSR/project/authority.git\n * [new reference]   a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f -> refs/mai/changes/alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f/1\n"
+    },
+    {
+      "argv": [
+        "/tmp/mai-qa-frozen-34d85b1/target/debug/mai",
+        "show",
+        "/tmp/mai-demo.tvPZSR/project",
+        "alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f",
+        "--generation",
+        "1",
+        "--json"
+      ],
+      "exit": 0,
+      "stdout": "{\"agent\":\"alice\",\"annotations\":[],\"approval_pending\":false,\"attempts\":[{\"number\":1,\"status\":\"completed\"}],\"commit\":\"a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f\",\"dependencies\":[],\"id\":{\"change_id\":\"alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f\",\"generation\":1},\"predecessor\":null,\"schema_version\":1,\"state\":{\"kind\":\"terminal\",\"outcome\":{\"commit\":\"9077999b804567b6fc7a1486fb25c70fa5d0401f\",\"kind\":\"landed\",\"revision\":1}}}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/mai-qa-frozen-34d85b1/target/debug/mai",
+        "integrate",
+        "/tmp/mai-demo.tvPZSR/project",
+        "alice-07652b6ad73244d41cc1f5abb5a69f8bc2187bf5",
+        "--mode",
+        "textual",
+        "--wait-seconds",
+        "60",
+        "--json"
+      ],
+      "exit": 0,
+      "stdout": "{\"commit\":\"0e8a1f97a98b626cc7a4f7015fa03cdfd2170423\",\"generation\":{\"change_id\":\"alice-07652b6ad73244d41cc1f5abb5a69f8bc2187bf5\",\"generation\":1},\"kind\":\"landed\",\"revision\":2,\"schema_version\":1}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/tmp/mai-demo.tvPZSR/alice",
+        "push",
+        "-o",
+        "agent=alice",
+        "mai",
+        "07652b6ad73244d41cc1f5abb5a69f8bc2187bf5:refs/for/main"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "remote: mai received alice-07652b6ad73244d41cc1f5abb5a69f8bc2187bf5 generation 1; not landed        \nTo /tmp/mai-demo.tvPZSR/project/authority.git\n * [new reference]   07652b6ad73244d41cc1f5abb5a69f8bc2187bf5 -> refs/mai/changes/alice-07652b6ad73244d41cc1f5abb5a69f8bc2187bf5/1\n"
+    },
+    {
+      "argv": [
+        "/tmp/mai-qa-frozen-34d85b1/target/debug/mai",
+        "show",
+        "/tmp/mai-demo.tvPZSR/project",
+        "alice-07652b6ad73244d41cc1f5abb5a69f8bc2187bf5",
+        "--generation",
+        "1",
+        "--json"
+      ],
+      "exit": 0,
+      "stdout": "{\"agent\":\"alice\",\"annotations\":[],\"approval_pending\":false,\"attempts\":[{\"number\":1,\"status\":\"completed\"}],\"commit\":\"07652b6ad73244d41cc1f5abb5a69f8bc2187bf5\",\"dependencies\":[{\"change_id\":\"alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f\",\"generation\":1}],\"id\":{\"change_id\":\"alice-07652b6ad73244d41cc1f5abb5a69f8bc2187bf5\",\"generation\":1},\"predecessor\":null,\"schema_version\":1,\"state\":{\"kind\":\"terminal\",\"outcome\":{\"commit\":\"0e8a1f97a98b626cc7a4f7015fa03cdfd2170423\",\"kind\":\"landed\",\"revision\":2}}}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "--git-dir",
+        "/tmp/mai-demo.tvPZSR/project/authority.git",
+        "show-ref"
+      ],
+      "exit": 0,
+      "stdout": "6769b3c3d1671870bbe216616d8b00f7ae6ff775 refs/heads/main\n0e8a1f97a98b626cc7a4f7015fa03cdfd2170423 refs/heads/trunk\n0e8a1f97a98b626cc7a4f7015fa03cdfd2170423 refs/mai/candidates/alice-07652b6ad73244d41cc1f5abb5a69f8bc2187bf5/1/1\n9077999b804567b6fc7a1486fb25c70fa5d0401f refs/mai/candidates/alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f/1/1\n07652b6ad73244d41cc1f5abb5a69f8bc2187bf5 refs/mai/changes/alice-07652b6ad73244d41cc1f5abb5a69f8bc2187bf5/1\na34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f refs/mai/changes/alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f/1\nb76682e3a98a87e87e2f18c64a953dc28bb0ccef refs/notes/mai-objects\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "--git-dir",
+        "/tmp/mai-demo.tvPZSR/project/authority.git",
+        "rev-parse",
+        "trunk"
+      ],
+      "exit": 0,
+      "stdout": "0e8a1f97a98b626cc7a4f7015fa03cdfd2170423\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "--git-dir",
+        "/tmp/mai-demo.tvPZSR/project/authority.git",
+        "rev-parse",
+        "trunk^"
+      ],
+      "exit": 0,
+      "stdout": "9077999b804567b6fc7a1486fb25c70fa5d0401f\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/tmp/mai-demo.tvPZSR/alice",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "stdout": "07652b6ad73244d41cc1f5abb5a69f8bc2187bf5\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/tmp/mai-demo.tvPZSR/fresh",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "stdout": "0e8a1f97a98b626cc7a4f7015fa03cdfd2170423\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "--git-dir",
+        "/tmp/mai-demo.tvPZSR/project/authority.git",
+        "rev-list",
+        "--count",
+        "9077999b804567b6fc7a1486fb25c70fa5d0401f^..trunk"
+      ],
+      "exit": 0,
+      "stdout": "2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "--git-dir",
+        "/tmp/mai-demo.tvPZSR/project/authority.git",
+        "notes",
+        "--ref=mai-objects",
+        "show",
+        "9077999b804567b6fc7a1486fb25c70fa5d0401f"
+      ],
+      "exit": 0,
+      "stdout": "{\"format_version\":1,\"records\":[{\"base\":\"6769b3c3d1671870bbe216616d8b00f7ae6ff775\",\"entries\":[{\"fallback_reason\":\"mvp-file-only\",\"granularity\":\"file\",\"operation\":\"added\",\"parser\":null,\"unit\":\"file:parent.txt\"}],\"generation\":{\"change_id\":\"alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f\",\"generation\":1},\"landed_commit\":\"9077999b804567b6fc7a1486fb25c70fa5d0401f\",\"parent\":\"6769b3c3d1671870bbe216616d8b00f7ae6ff775\",\"phase\":\"landed\",\"revision\":1,\"submitted_commit\":\"a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f\",\"tree\":\"d26c25d16621f2fe6a068eda0f0380a1dec8a366\"}]}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "--git-dir",
+        "/tmp/mai-demo.tvPZSR/project/authority.git",
+        "notes",
+        "--ref=mai-objects",
+        "show",
+        "0e8a1f97a98b626cc7a4f7015fa03cdfd2170423"
+      ],
+      "exit": 0,
+      "stdout": "{\"format_version\":1,\"records\":[{\"base\":\"9077999b804567b6fc7a1486fb25c70fa5d0401f\",\"entries\":[{\"fallback_reason\":\"mvp-file-only\",\"granularity\":\"file\",\"operation\":\"added\",\"parser\":null,\"unit\":\"file:child.txt\"}],\"generation\":{\"change_id\":\"alice-07652b6ad73244d41cc1f5abb5a69f8bc2187bf5\",\"generation\":1},\"landed_commit\":\"0e8a1f97a98b626cc7a4f7015fa03cdfd2170423\",\"parent\":\"9077999b804567b6fc7a1486fb25c70fa5d0401f\",\"phase\":\"landed\",\"revision\":2,\"submitted_commit\":\"07652b6ad73244d41cc1f5abb5a69f8bc2187bf5\",\"tree\":\"5a2155f11854adf7ced9c8c51962459c983f50c7\"}]}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/mai-qa-frozen-34d85b1/target/debug/mai",
+        "stop",
+        "/tmp/mai-demo.tvPZSR/project",
+        "--json"
+      ],
+      "exit": 0,
+      "stdout": "{\"authority\":{\"data\":\"L3RtcC9tYWktZGVtby50dlBaU1IvcHJvamVjdA==\",\"encoding\":\"unix_bytes\"},\"pid\":393970,\"protocol_version\":1,\"registration_available\":true,\"state\":\"stopping\"}\n",
+      "stderr": ""
+    }
+  ]
+}

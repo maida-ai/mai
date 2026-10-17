@@ -1,0 +1,8 @@
+cwd=D:/a/mai/mai/.throwaway/s6-ci\uv
+command=git ["commit-tree", "d5d7458f6f389a2962f5c1a18fec42a06b63e1b7", "-p", "a3e76c4e890c7951b72ccfd914b1dc636f5149a9", "-m", "accepted regenerated candidate\n\nMai-Revision: r1"]
+timeout_ms=120000
+1fadb93d5c6739622ebcb3334a68164bc205a416
+
+status=exit code: 0
+timeout=false
+elapsed_ms=22

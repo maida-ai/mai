@@ -1,0 +1,6 @@
+SUCCESS: The process with PID 5248 (child process of PID 1472) has been terminated.
+PASS cargo
+SUCCESS: The process with PID 5380 (child process of PID 1472) has been terminated.
+PASS npm
+SUCCESS: The process with PID 4124 (child process of PID 1472) has been terminated.
+PASS uv

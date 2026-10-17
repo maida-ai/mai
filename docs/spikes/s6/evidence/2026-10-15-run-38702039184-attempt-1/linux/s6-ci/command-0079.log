@@ -1,0 +1,8 @@
+cwd=/home/runner/work/mai/mai/.throwaway/s6-ci/npm
+command=git ["checkout", "-b", "agent-beta", "21b5c2a70aff944f76cbc6779b89f037f7f619e3"]
+timeout_ms=120000
+Switched to a new branch 'agent-beta'
+
+status=exit status: 0
+timeout=false
+elapsed_ms=10

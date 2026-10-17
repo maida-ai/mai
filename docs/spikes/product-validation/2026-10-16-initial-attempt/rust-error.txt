@@ -1,0 +1,1 @@
+rust: cold run did not record fresh bootstrap

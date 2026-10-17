@@ -1,0 +1,20 @@
+cwd=D:/a/mai/mai/.throwaway/s6-ci\uv
+command=git ["commit", "-m", "baseline fixture"]
+timeout_ms=120000
+[main (root-commit) 80c95d7] baseline fixture
+ 11 files changed, 123 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 gate.py
+ create mode 100644 pyproject.toml
+ create mode 100644 trusted-policy
+ create mode 100644 uv.lock
+ create mode 100644 vendor/alpha/alpha.py
+ create mode 100644 vendor/alpha/backend.py
+ create mode 100644 vendor/alpha/pyproject.toml
+ create mode 100644 vendor/beta/backend.py
+ create mode 100644 vendor/beta/beta.py
+ create mode 100644 vendor/beta/pyproject.toml
+
+status=exit code: 0
+timeout=false
+elapsed_ms=53

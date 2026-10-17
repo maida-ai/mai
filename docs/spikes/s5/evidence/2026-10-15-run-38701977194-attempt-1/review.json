@@ -1,0 +1,54 @@
+{
+  "source_sha": "4a58e63e77a5604a1454da85dd26603770195716",
+  "source_hashes_verified": true,
+  "platforms": {
+    "linux": {
+      "unit_result": "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "cycles": [
+        "CYCLE mode=squash cycle=1 trunk=743ec6e40cc0df4343109b138b1495f909b2e26d upstream=e37c65c279c703d4c31cc4d77ef4941725448bc6",
+        "CYCLE mode=squash cycle=2 trunk=9ecaf0034aa13718fa89304a3454b043ed7d0672 upstream=610184269295374c1dd82c4ec3012fa750c2ea82",
+        "CYCLE mode=squash cycle=3 trunk=bf71a6056bed9da04e65fbb209f3fb5a3593e75d upstream=304af2fe2b434eddeb7b7132684e40e923bf05e1",
+        "CYCLE mode=rebase cycle=1 trunk=743ec6e40cc0df4343109b138b1495f909b2e26d upstream=e37c65c279c703d4c31cc4d77ef4941725448bc6",
+        "CYCLE mode=rebase cycle=2 trunk=516e086eea74dec4a4e3444704cc621dcf881477 upstream=14a49b63ee7d64a8d6acf5ba772591faf8d4a6d1",
+        "CYCLE mode=rebase cycle=3 trunk=4c980c04082e2b986b5af53214af96d275a8953e upstream=4b3b9b10ac22cf18ae69f6f9b6dd871a28b6dc08"
+      ],
+      "modes": [
+        "MODE PASS squash cycles=3 revisions=9 owner=fixture-upstream-owner real_forge_api=pending",
+        "MODE PASS rebase cycles=3 revisions=9 owner=fixture-upstream-owner real_forge_api=pending"
+      ],
+      "summary": "PASS assertions=122 cycles=6 modes=squash,rebase elapsed_ms=1823 platform=linux-x86_64 GitHub_API=pending\n"
+    },
+    "windows": {
+      "unit_result": "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "cycles": [
+        "CYCLE mode=squash cycle=1 trunk=743ec6e40cc0df4343109b138b1495f909b2e26d upstream=e37c65c279c703d4c31cc4d77ef4941725448bc6",
+        "CYCLE mode=squash cycle=2 trunk=9ecaf0034aa13718fa89304a3454b043ed7d0672 upstream=610184269295374c1dd82c4ec3012fa750c2ea82",
+        "CYCLE mode=squash cycle=3 trunk=bf71a6056bed9da04e65fbb209f3fb5a3593e75d upstream=304af2fe2b434eddeb7b7132684e40e923bf05e1",
+        "CYCLE mode=rebase cycle=1 trunk=743ec6e40cc0df4343109b138b1495f909b2e26d upstream=e37c65c279c703d4c31cc4d77ef4941725448bc6",
+        "CYCLE mode=rebase cycle=2 trunk=516e086eea74dec4a4e3444704cc621dcf881477 upstream=14a49b63ee7d64a8d6acf5ba772591faf8d4a6d1",
+        "CYCLE mode=rebase cycle=3 trunk=4c980c04082e2b986b5af53214af96d275a8953e upstream=4b3b9b10ac22cf18ae69f6f9b6dd871a28b6dc08"
+      ],
+      "modes": [
+        "MODE PASS squash cycles=3 revisions=9 owner=fixture-upstream-owner real_forge_api=pending",
+        "MODE PASS rebase cycles=3 revisions=9 owner=fixture-upstream-owner real_forge_api=pending"
+      ],
+      "summary": "PASS assertions=122 cycles=6 modes=squash,rebase elapsed_ms=23382 platform=windows-x86_64 GitHub_API=pending\n"
+    },
+    "macos": {
+      "unit_result": "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "cycles": [
+        "CYCLE mode=squash cycle=1 trunk=743ec6e40cc0df4343109b138b1495f909b2e26d upstream=e37c65c279c703d4c31cc4d77ef4941725448bc6",
+        "CYCLE mode=squash cycle=2 trunk=9ecaf0034aa13718fa89304a3454b043ed7d0672 upstream=610184269295374c1dd82c4ec3012fa750c2ea82",
+        "CYCLE mode=squash cycle=3 trunk=bf71a6056bed9da04e65fbb209f3fb5a3593e75d upstream=304af2fe2b434eddeb7b7132684e40e923bf05e1",
+        "CYCLE mode=rebase cycle=1 trunk=743ec6e40cc0df4343109b138b1495f909b2e26d upstream=e37c65c279c703d4c31cc4d77ef4941725448bc6",
+        "CYCLE mode=rebase cycle=2 trunk=516e086eea74dec4a4e3444704cc621dcf881477 upstream=14a49b63ee7d64a8d6acf5ba772591faf8d4a6d1",
+        "CYCLE mode=rebase cycle=3 trunk=4c980c04082e2b986b5af53214af96d275a8953e upstream=4b3b9b10ac22cf18ae69f6f9b6dd871a28b6dc08"
+      ],
+      "modes": [
+        "MODE PASS squash cycles=3 revisions=9 owner=fixture-upstream-owner real_forge_api=pending",
+        "MODE PASS rebase cycles=3 revisions=9 owner=fixture-upstream-owner real_forge_api=pending"
+      ],
+      "summary": "PASS assertions=122 cycles=6 modes=squash,rebase elapsed_ms=5487 platform=macos-aarch64 GitHub_API=pending\n"
+    }
+  }
+}

@@ -1,38 +1,37 @@
 # S2 Git merge qualification
 
-**Decision: GO for the tested checkout-free Git merge approach; NO-GO for full S2/#52 acceptance until the corrected object-manifest checks pass fresh native CI.** All three native CI jobs passed, including the unchanged median <100 ms criterion. The green run does not establish the missing manifest semantics. See the completed [go/no-go assessment](go-no-go.md) for the blocking finding and acceptance conditions. No issue closure, ADR acceptance or M0/product implementation is implied.
+**GO for #52's scoped Git CLI and restricted-manifest qualification.** The corrected harness passes on Linux, macOS and native Windows. This supersedes the earlier NO-GO for missing removed-unit assertions; the earlier evidence remains unchanged. It does not accept ADRs or complete M0 by itself.
 
-## Reviewed CI evidence
+## Results
 
-[Workflow run 38694778050, attempt 1](https://github.com/maida-ai/mai/actions/runs/38694778050) ran on 2026-10-15 UTC from `main` at `ff55f478f861d85c1a75347f685bfa5bc691d5c3`, the merged S2 harness. The [reviewed snapshot](evidence/2026-10-15-run-38694778050-attempt-1/README.md) retains all three platforms, source hashes, provenance, command/conflict/manifest logs, all timing samples and GitHub job/artifact metadata. Each artifact's four harness SHA-256 entries match the exact source revision that ran. No locally generated experiment evidence is included.
+| Platform | Unit checks | Differential cases | Samples / tracked paths | Median ms | Strict <100 ms |
+| --- | --- | --- | --- | --- | --- |
+| Linux x86_64 | 14 passed | 10 passed | 31 / 100,000 | 1.840866 | PASS |
+| macOS arm64 | 14 passed | 10 passed | 31 / 100,000 | 13.213542 | PASS |
+| Windows x86_64 | 14 passed | 10 passed | 31 / 100,000 | 21.682200 | PASS |
 
-| Native platform | Git | Host recorded by runner | Median, 31 samples | Criterion |
-| --- | --- | --- | --- | --- |
-| Linux x86_64 | 2.55.0 | AMD EPYC 9V45, 4 visible CPUs; Ubuntu 24 image | 1.415511 ms | PASS: <100 ms |
-| macOS arm64 | 2.55.0 | Apple M2 Pro (Virtual), 14 GiB; macOS 26 image | 6.393542 ms | PASS: <100 ms |
-| Windows x86_64 | 2.55.0.windows.5 | AMD64 Family 26 Model 2, 4 cores; Windows 2025 image | 15.302000 ms | PASS: <100 ms |
+All samples, including process startup and evidence logging, are retained. Review independently checked sample IDs 0–30, 100,000 unique tracked paths and each median. Git was 2.55.0 on Linux/macOS and 2.55.0.windows.5 on Windows; Rust was 1.99.0. Runner image/architecture details remain in each provenance log.
 
-Each platform passed nine unit checks and ten differential cases. Review independently counted exactly 100,000 unique tracked paths in each original log, verified sample IDs 0–30 and recomputed the median from every retained sample. The benchmark is a warm-object-store fixture with shared small blobs, 100 directories and two endpoint edits; it measures Git process startup plus evidence logging as well as merge work. It does not establish cold-cache, large-content, arbitrary workload or minimum-Git-version performance. No threshold was relaxed and no sample was dropped.
+## Criterion assessment
 
-## Issue #52 criterion assessment
-
-| Criterion | Assessment | Supporting evidence and limit |
+| #52 criterion | Observed evidence | Assessment |
 | --- | --- | --- |
-| Disjoint same-file hunks, same-hunk conflict, rename/edit, delete/edit, executable mode, binary and file/directory cases versus cherry-pick | PASS for the corpus on all three platforms | `PASS case=` records; clean trees match independent expected trees and the oracle; conflicted paths, index stages, modes and blobs match the oracle. |
-| Stale and squash-dependent submissions use intended bases | PASS for fixture semantics | Stale and dependent-squash cases pass; the child applies its submitted-parent delta after the parent's squash and a subsequent trunk edit. The deliberately wrong root base conflicts. Dependency mapping lifecycle remains separate S7/product work. |
-| Missing/multiple merge-base policy | PASS for explicit experiment policy | Unrelated histories and criss-cross graph are exercised. Reject zero/multiple bases unless a separately verified dependency mapping supplies the intended base; never guess. This does not select pending shipping defaults. |
-| Median <100 ms on 100k tracked files with reproducible provenance | PASS on all recorded hosts | Every platform has exactly 100,000 paths, 31 raw samples, unchanged strict threshold, Git/compiler/image/hardware provenance and matching source hashes. |
-| Attributes/custom drivers and checkout-free integration | PASS for tested behavior and trust boundary | Integration repository is bare. Approved `info/attributes` selects a configured constant-output driver. A malicious candidate-tracked script is never checked out; invoking that relative script fails. Approved `-merge` policy forces a conflict. Candidate-attribute conflict behavior is compared with cherry-pick, not generalized to arbitrary drivers. |
-| File/symbol/config/module fixtures, containment, generated/ambiguous fallback and rename delete-plus-add | PARTIAL | Restricted `.units` grammar and fallback/containment checks pass; Git reports file rename as delete-plus-add. This is not a real-language parser or proof of semantic independence. Object-level change kinds and removed objects are not asserted. |
-| Receive versus final post-regeneration manifests | PARTIAL — blocks full acceptance | File-level diffs distinguish one changed receive path from two final paths and include generated-file fallback. Unit extraction reads only the after snapshot; the removed `database.host` key is absent from both printed views, and the expected full manifests are not asserted. See the go/no-go report. |
-| Reproducible fixture and go/no-go report | COMPLETE for this evidence review | Harness remains under `experiments/s2/` per repository conventions; this report, decision and selected CI evidence are under `docs/spikes/s2/`. |
+| Content, rename/edit, delete/edit, mode, binary and file/directory cases versus cherry-pick | Ten `PASS case=` rows per platform; exact expected clean trees and oracle conflicted index entries asserted | PASS |
+| Stale and squash-dependent intended bases; missing/multiple base policy | Stale and dependent-squash checks, wrong-old-base rejection, zero/multiple-base checks | PASS for explicit fixture policy |
+| Median <100 ms on 100k paths | Raw timing samples and independently recomputed medians above | PASS without threshold adjustment |
+| Checkout-free attributes/custom-driver trust | Bare integration, approved driver, rejected candidate-relative executable and approved binary-policy conflict | PASS for tested driver boundary |
+| File/symbol/config/module, containment, generated/ambiguous fallback | Unit assertions plus complete Git-derived manifests | PASS for restricted grammar |
+| Receive/final post-regeneration manifests and rename delete-plus-add | Receive: host deletion and port addition only; final: those plus generated-file fallback; rename: four added and four deleted units; deletion: four deleted units | PASS; original gap closed |
+| Reproducible harness and report | Hashed sources, exact commands, original artifact hashes, this report and go/no-go assessment | PASS |
 
-## Interpretation and follow-up
+## Limits and disposition
 
-The merge and timing results support retaining Git CLI explicit-base, checkout-free integration for the tested scope. Attributes and configured drivers are trusted executable policy, not a sandbox. Approved policy must remain outside candidate control; these fixtures do not qualify arbitrary hooks/drivers or the full production policy closure. The cherry-pick oracle deliberately uses its own checkout, while integration does not.
+The synthetic identity grammar is not a source-language parser and cannot authorize semantic independence. Regeneration widening is a generated-file fixture; actual tool regeneration belongs to S6. The benchmark uses a warm object store and shared small blobs, not cold storage or realistic large-content workloads. Exact minimum Git 2.40 and arbitrary custom drivers remain unqualified. These are recorded scope limits, not failures of #52's agreed fixture criteria. Recommend closing #52 when this evidence is merged; no production implementation or shipping default is selected.
 
-The narrow manifest correction described in [go-no-go.md](go-no-go.md) is now implemented and passes local non-timed checks. Collect fresh native CI evidence for the changed harness; the table above assesses only the original recorded run. Real parser qualification belongs to later object work; it is not necessary to replace the restricted grammar merely to assert correct synthetic object deltas. Real Cargo/npm/uv regeneration remains S6 coverage. Keep #52 and M0 open pending the missing assertions and maintainer review. No ADR redesign is indicated by the passing merge/timing criteria; the current blocker is a qualification gap, not evidence that the Git approach fails.
+## Reviewed evidence and verification
 
-## Review verification
+[Run 38701689155, attempt 1](https://github.com/maida-ai/mai/actions/runs/38701689155) executed `ad30707b3214a7a91b3b2541d7ad90056c5c3291` on 2026-10-15. The [snapshot](evidence/2026-10-15-run-38701689155-attempt-1/README.md) retains every collected artifact file with original and retained SHA-256s, job conclusions, source hashes and independently checked summaries. All recorded harness source hashes match the executed revision. See the [go/no-go decision](go-no-go.md) and [reproduction instructions](../../../experiments/s2/README.md).
 
-The review checked every run/job conclusion, artifact availability, source hash against the executed commit, unit summary, ten differential outcomes, unique file count, complete timing sequence, recomputed median and manifest output. Snapshot normalization is documented explicitly. Documentation links, shell/workflow structure and whitespace checks passed. `cargo fmt --check`, `cargo clippy --all-targets --locked -- -D warnings` and `cargo test --all-targets --locked` passed during review (34 product tests); no experiment was rerun or workflow dispatched during evidence review.
+This evidence-only review checked source identity, artifact completeness, reported outcomes against raw logs and the executed assertions, documentation links and whitespace. No experiment was rerun or workflow dispatched; no product code, thresholds, defaults or ADR status changed.
+
+Baseline product checks passed during review: `cargo fmt --check`, `cargo clippy --all-targets --locked -- -D warnings` and `cargo test --all-targets --locked` (34 tests). Disposable builds stayed under `.throwaway/`. No new local experiment evidence was generated.

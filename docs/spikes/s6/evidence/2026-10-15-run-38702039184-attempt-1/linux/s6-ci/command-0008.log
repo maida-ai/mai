@@ -1,0 +1,7 @@
+cwd=/home/runner/work/mai/mai/.throwaway/s6-ci/cargo
+command=git ["config", "user.name", "S6 experiment"]
+timeout_ms=120000
+
+status=exit status: 0
+timeout=false
+elapsed_ms=10

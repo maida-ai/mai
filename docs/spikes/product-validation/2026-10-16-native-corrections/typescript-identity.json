@@ -1,0 +1,10 @@
+{
+  "url": "https://github.com/colinhacks/zod.git",
+  "revision": "e30870369d5b8f31ff4d0130d4439fd997deb523",
+  "locks": {
+    "yarn.lock": "84f5076e65d8a5ee731f27973dcc8bdc9de05ef7b3369b9ab42f5c5807f22cc7"
+  },
+  "tree": "8ff89ed6e4420cb8cfdc4389e33726db0b59b196",
+  "import_mode": "pinned_tree_snapshot_without_upstream_history",
+  "archive_sha256": "83fe6018692992d3cdc79f7e5c78304b251f0dd0f62b1a9f589a659473aba813"
+}

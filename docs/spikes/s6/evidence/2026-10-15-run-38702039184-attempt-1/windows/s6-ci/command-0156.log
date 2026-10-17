@@ -1,0 +1,9 @@
+cwd=D:/a/mai/mai/.throwaway/s6-ci\uv
+command=git ["commit", "-m", "beta manifest"]
+timeout_ms=120000
+[beta-manifest c2eda5e] beta manifest
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+status=exit code: 0
+timeout=false
+elapsed_ms=42

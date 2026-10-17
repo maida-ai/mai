@@ -1,0 +1,7 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/uv
+command=uv ["run", "--no-sync", "--offline", "python", "gate.py"]
+timeout_ms=120000
+
+status=exit status: 0
+timeout=false
+elapsed_ms=55

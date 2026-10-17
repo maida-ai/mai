@@ -1,0 +1,7 @@
+{
+  "url": "https://github.com/pallets/itsdangerous.git",
+  "revision": "096c8d42545d3b68ea21a4f890fb2b2d8979c0bd",
+  "locks": {
+    "requirements/tests.txt": "6989747e91fc4c09ee14c58305a277a9387fb9ca71615dacf21b5b085c017c4f"
+  }
+}

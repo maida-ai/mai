@@ -1,0 +1,9 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/cargo
+command=git ["commit", "-m", "alpha manifest"]
+timeout_ms=120000
+[candidate a7f2176] alpha manifest
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+status=exit status: 0
+timeout=false
+elapsed_ms=33

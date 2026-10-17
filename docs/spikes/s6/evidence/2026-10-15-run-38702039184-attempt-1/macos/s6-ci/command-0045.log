@@ -1,0 +1,7 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/cargo
+command=git ["add", "-u"]
+timeout_ms=120000
+
+status=exit status: 0
+timeout=false
+elapsed_ms=50

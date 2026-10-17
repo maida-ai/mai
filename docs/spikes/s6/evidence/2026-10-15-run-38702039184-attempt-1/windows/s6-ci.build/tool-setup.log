@@ -1,0 +1,9 @@
+Collecting uv==0.12.18
+  Downloading uv-0.12.18-py3-none-win_amd64.whl.metadata (11 kB)
+Downloading uv-0.12.18-py3-none-win_amd64.whl (18.0 MB)
+   ---------------------------------------- 18.0/18.0 MB 162.6 MB/s eta 0:00:00
+Installing collected packages: uv
+Successfully installed uv-0.12.18
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2.1
+[notice] To update, run: D:\a\mai\mai\.throwaway\s6-ci.build\tool-venv\Scripts\python.exe -m pip install --upgrade pip

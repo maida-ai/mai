@@ -1,0 +1,14 @@
+{
+  "id": 38701977194,
+  "run_attempt": 1,
+  "name": "S5 evidence (all) by @z-a-f",
+  "event": "workflow_dispatch",
+  "head_sha": "4a58e63e77a5604a1454da85dd26603770195716",
+  "head_branch": "main",
+  "status": "completed",
+  "conclusion": "success",
+  "created_at": "2026-10-15T07:54:54Z",
+  "updated_at": "2026-10-15T07:56:09Z",
+  "html_url": "https://github.com/maida-ai/mai/actions/runs/38701977194",
+  "path": ".github/workflows/experiment-s5.yml"
+}
