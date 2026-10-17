@@ -224,6 +224,20 @@ fn register_with_checkpoints(
     crate::repository_scope::validate_commit(&authority.git_dir(), commit)?;
     let id = lifecycle.register(&format!("{agent}-{commit}"), agent, commit, dependencies)?;
     let reference = retained_ref(&id);
+    let associations = authority.git(
+        &[
+            "for-each-ref",
+            "--points-at",
+            commit,
+            "--format=%(refname)",
+            "refs/mai/changes/",
+        ],
+        None,
+    )?;
+    ensure!(
+        associations.lines().all(|existing| existing == reference),
+        "retained commit already belongs to another immutable submission identity"
+    );
     // Git and SQLite are separate durable writes. An orphan exact ref is safe:
     // retain it indefinitely and complete registration only on an identical retry.
     let existing = authority.git(
@@ -579,6 +593,10 @@ mod tests {
                 .count();
             assert_eq!(count, usize::from(stage == "Stored"), "{stage}");
             authority.reconcile().unwrap();
+            assert!(
+                register(&authority, "bob", &commit).is_err(),
+                "orphan ownership must survive {stage}"
+            );
             let first = register(&authority, "alice", &commit).unwrap();
             let retry = register(&authority, "alice", &commit).unwrap();
             assert_eq!(first, retry);
