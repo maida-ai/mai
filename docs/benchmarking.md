@@ -37,3 +37,5 @@ Start with a small deterministic local smoke workload. Its purpose is to make co
 ## Available offline smoke comparison
 
 Run `python3 experiments/product-validation/synthetic.py /tmp/mai-synthetic-run --mai /absolute/path/to/mai --iterations 3` from the repository checkout. This accepts a supplied binary, creates fresh disposable fixtures and compares identical gate truth against plain Git without network access. The [harness guide](../experiments/product-validation/README.md#small-offline-comparison) defines exact timing scopes and the provenance, command, sample and summary JSON schemas. Collect reviewable evidence with `python3 experiments/product-validation/collect.py /tmp/mai-synthetic-run /tmp/mai-synthetic-evidence`. Neither command builds mai. Do not infer operational recovery or queue performance from this synthetic manual-validator experiment.
+
+The [initial Linux smoke evidence](spikes/product-validation/2026-10-17-synthetic/README.md) records three iterations and a successful foundation walkthrough, with exact timing scopes and limitations.

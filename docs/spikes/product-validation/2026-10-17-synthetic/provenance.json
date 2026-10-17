@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "scope": "synthetic_manual_validation_only",
+  "utc": "2026-10-17T06:34:33Z",
+  "platform": "Linux-7.0.0-39-generic-x86_64-with-glibc2.43",
+  "python": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]",
+  "cpu_count": 32,
+  "iterations": 3,
+  "binary_path": "/home/takeshi/Documents/Codex/2026-10-16/task-2/integration/target/debug/mai",
+  "binary_sha256": "08db3fad236a36562489a28441f30604614e023ad35fc4d8b2dbe1bce8096b92",
+  "harness_sha256": "2c962c01b52c83d58eb7f8daf04f68531bad64d71e6efa965d1b591e206ec061",
+  "cache_policy": "No bootstrap or declared caches; cold=fresh clone/slot, warm=reused clone/slot; OS caches not flushed",
+  "git_version": "git version 2.53.0",
+  "mai_version": "mai 0.0.1",
+  "shell_path": "/usr/bin/dash",
+  "shell_sha256": "c626229526bb58ec2d0f585f3c3ae1412e6f973b4353385042d11c38d8426917",
+  "harness_revision": "37b3ec98e342eeaaa030bacfb4ba6a1246b42318",
+  "harness_status": "",
+  "passing_commit": "a25fcc2c1a44347c95f48fdee629d0531dba5fad",
+  "failing_commit": "bbc82999bdc1f51e20b5372553cec62b3cad25ae",
+  "candidate_trees": {
+    "a25fcc2c1a44347c95f48fdee629d0531dba5fad": "f61440a83f4745a64e8adec7d6d7831f63174db9",
+    "bbc82999bdc1f51e20b5372553cec62b3cad25ae": "37e21cfe98b5ef62c8226064009dc3384a0de96a"
+  },
+  "tracked_files": 3,
+  "tracked_bytes": 228,
+  "gate_sha256": "cbf68c0b9f2140b0fcd5fb8cae0721b86bdf21bb8c4ac8eb7ed440d0c4d6c7f2"
+}

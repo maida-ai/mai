@@ -1,0 +1,302 @@
+[
+  {
+    "iteration": 0,
+    "side": "git",
+    "phase": "setup",
+    "elapsed_s": 0.016751652001403272
+  },
+  {
+    "iteration": 0,
+    "side": "git",
+    "phase": "cold",
+    "candidate": "a25fcc2c1a44347c95f48fdee629d0531dba5fad",
+    "tree": "f61440a83f4745a64e8adec7d6d7831f63174db9",
+    "expected_outcome": "success",
+    "verified": true,
+    "elapsed_s": 0.006026262000887073,
+    "operation_elapsed_s": 0.0022869139993417775
+  },
+  {
+    "iteration": 0,
+    "side": "git",
+    "phase": "warm",
+    "candidate": "a25fcc2c1a44347c95f48fdee629d0531dba5fad",
+    "tree": "f61440a83f4745a64e8adec7d6d7831f63174db9",
+    "expected_outcome": "success",
+    "verified": true,
+    "elapsed_s": 0.0060012209996784804,
+    "operation_elapsed_s": 0.0023350150004262105
+  },
+  {
+    "iteration": 0,
+    "side": "git",
+    "phase": "failing",
+    "candidate": "bbc82999bdc1f51e20b5372553cec62b3cad25ae",
+    "tree": "37e21cfe98b5ef62c8226064009dc3384a0de96a",
+    "expected_outcome": "failure",
+    "verified": true,
+    "elapsed_s": 0.0065032919992518146,
+    "operation_elapsed_s": 0.002049853999778861
+  },
+  {
+    "iteration": 0,
+    "side": "git",
+    "phase": "after-failure",
+    "candidate": "a25fcc2c1a44347c95f48fdee629d0531dba5fad",
+    "tree": "f61440a83f4745a64e8adec7d6d7831f63174db9",
+    "expected_outcome": "success",
+    "verified": true,
+    "elapsed_s": 0.006414671999664279,
+    "operation_elapsed_s": 0.0022844539998914115
+  },
+  {
+    "iteration": 0,
+    "side": "mai",
+    "phase": "setup",
+    "elapsed_s": 0.13162955699954182
+  },
+  {
+    "iteration": 0,
+    "side": "mai",
+    "phase": "cold",
+    "candidate": "a25fcc2c1a44347c95f48fdee629d0531dba5fad",
+    "tree": "f61440a83f4745a64e8adec7d6d7831f63174db9",
+    "expected_outcome": "success",
+    "verified": true,
+    "elapsed_s": 0.1651507299993682,
+    "operation_elapsed_s": 0.1649717899999814
+  },
+  {
+    "iteration": 0,
+    "side": "mai",
+    "phase": "warm",
+    "candidate": "a25fcc2c1a44347c95f48fdee629d0531dba5fad",
+    "tree": "f61440a83f4745a64e8adec7d6d7831f63174db9",
+    "expected_outcome": "success",
+    "verified": true,
+    "elapsed_s": 0.16430037899954186,
+    "operation_elapsed_s": 0.16410734800047067
+  },
+  {
+    "iteration": 0,
+    "side": "mai",
+    "phase": "failing",
+    "candidate": "bbc82999bdc1f51e20b5372553cec62b3cad25ae",
+    "tree": "37e21cfe98b5ef62c8226064009dc3384a0de96a",
+    "expected_outcome": "failure",
+    "verified": true,
+    "elapsed_s": 0.15709889400022803,
+    "operation_elapsed_s": 0.1569307440004195
+  },
+  {
+    "iteration": 0,
+    "side": "mai",
+    "phase": "after-failure",
+    "candidate": "a25fcc2c1a44347c95f48fdee629d0531dba5fad",
+    "tree": "f61440a83f4745a64e8adec7d6d7831f63174db9",
+    "expected_outcome": "success",
+    "verified": true,
+    "elapsed_s": 0.1822212719998788,
+    "operation_elapsed_s": 0.18203249200087157
+  },
+  {
+    "iteration": 1,
+    "side": "mai",
+    "phase": "setup",
+    "elapsed_s": 0.1983044919998065
+  },
+  {
+    "iteration": 1,
+    "side": "mai",
+    "phase": "cold",
+    "candidate": "a25fcc2c1a44347c95f48fdee629d0531dba5fad",
+    "tree": "f61440a83f4745a64e8adec7d6d7831f63174db9",
+    "expected_outcome": "success",
+    "verified": true,
+    "elapsed_s": 0.169703818999551,
+    "operation_elapsed_s": 0.16952402899914887
+  },
+  {
+    "iteration": 1,
+    "side": "mai",
+    "phase": "warm",
+    "candidate": "a25fcc2c1a44347c95f48fdee629d0531dba5fad",
+    "tree": "f61440a83f4745a64e8adec7d6d7831f63174db9",
+    "expected_outcome": "success",
+    "verified": true,
+    "elapsed_s": 0.16792658499980462,
+    "operation_elapsed_s": 0.16775134499948763
+  },
+  {
+    "iteration": 1,
+    "side": "mai",
+    "phase": "failing",
+    "candidate": "bbc82999bdc1f51e20b5372553cec62b3cad25ae",
+    "tree": "37e21cfe98b5ef62c8226064009dc3384a0de96a",
+    "expected_outcome": "failure",
+    "verified": true,
+    "elapsed_s": 0.144286110999019,
+    "operation_elapsed_s": 0.14410128100098518
+  },
+  {
+    "iteration": 1,
+    "side": "mai",
+    "phase": "after-failure",
+    "candidate": "a25fcc2c1a44347c95f48fdee629d0531dba5fad",
+    "tree": "f61440a83f4745a64e8adec7d6d7831f63174db9",
+    "expected_outcome": "success",
+    "verified": true,
+    "elapsed_s": 0.17596256000069843,
+    "operation_elapsed_s": 0.17576843000097142
+  },
+  {
+    "iteration": 1,
+    "side": "git",
+    "phase": "setup",
+    "elapsed_s": 0.01855082499969285
+  },
+  {
+    "iteration": 1,
+    "side": "git",
+    "phase": "cold",
+    "candidate": "a25fcc2c1a44347c95f48fdee629d0531dba5fad",
+    "tree": "f61440a83f4745a64e8adec7d6d7831f63174db9",
+    "expected_outcome": "success",
+    "verified": true,
+    "elapsed_s": 0.006526043000121717,
+    "operation_elapsed_s": 0.0024399450012424495
+  },
+  {
+    "iteration": 1,
+    "side": "git",
+    "phase": "warm",
+    "candidate": "a25fcc2c1a44347c95f48fdee629d0531dba5fad",
+    "tree": "f61440a83f4745a64e8adec7d6d7831f63174db9",
+    "expected_outcome": "success",
+    "verified": true,
+    "elapsed_s": 0.006387701998392004,
+    "operation_elapsed_s": 0.002375373998802388
+  },
+  {
+    "iteration": 1,
+    "side": "git",
+    "phase": "failing",
+    "candidate": "bbc82999bdc1f51e20b5372553cec62b3cad25ae",
+    "tree": "37e21cfe98b5ef62c8226064009dc3384a0de96a",
+    "expected_outcome": "failure",
+    "verified": true,
+    "elapsed_s": 0.00657460200091009,
+    "operation_elapsed_s": 0.0023584240007039625
+  },
+  {
+    "iteration": 1,
+    "side": "git",
+    "phase": "after-failure",
+    "candidate": "a25fcc2c1a44347c95f48fdee629d0531dba5fad",
+    "tree": "f61440a83f4745a64e8adec7d6d7831f63174db9",
+    "expected_outcome": "success",
+    "verified": true,
+    "elapsed_s": 0.007341963999351719,
+    "operation_elapsed_s": 0.0021922539999650326
+  },
+  {
+    "iteration": 2,
+    "side": "git",
+    "phase": "setup",
+    "elapsed_s": 0.01710607200038794
+  },
+  {
+    "iteration": 2,
+    "side": "git",
+    "phase": "cold",
+    "candidate": "a25fcc2c1a44347c95f48fdee629d0531dba5fad",
+    "tree": "f61440a83f4745a64e8adec7d6d7831f63174db9",
+    "expected_outcome": "success",
+    "verified": true,
+    "elapsed_s": 0.006553382001584396,
+    "operation_elapsed_s": 0.0023342439999396447
+  },
+  {
+    "iteration": 2,
+    "side": "git",
+    "phase": "warm",
+    "candidate": "a25fcc2c1a44347c95f48fdee629d0531dba5fad",
+    "tree": "f61440a83f4745a64e8adec7d6d7831f63174db9",
+    "expected_outcome": "success",
+    "verified": true,
+    "elapsed_s": 0.006040201000359957,
+    "operation_elapsed_s": 0.002152563998606638
+  },
+  {
+    "iteration": 2,
+    "side": "git",
+    "phase": "failing",
+    "candidate": "bbc82999bdc1f51e20b5372553cec62b3cad25ae",
+    "tree": "37e21cfe98b5ef62c8226064009dc3384a0de96a",
+    "expected_outcome": "failure",
+    "verified": true,
+    "elapsed_s": 0.006371511999532231,
+    "operation_elapsed_s": 0.002208093999797711
+  },
+  {
+    "iteration": 2,
+    "side": "git",
+    "phase": "after-failure",
+    "candidate": "a25fcc2c1a44347c95f48fdee629d0531dba5fad",
+    "tree": "f61440a83f4745a64e8adec7d6d7831f63174db9",
+    "expected_outcome": "success",
+    "verified": true,
+    "elapsed_s": 0.006375021999701858,
+    "operation_elapsed_s": 0.0025037049999809824
+  },
+  {
+    "iteration": 2,
+    "side": "mai",
+    "phase": "setup",
+    "elapsed_s": 0.19368136400044023
+  },
+  {
+    "iteration": 2,
+    "side": "mai",
+    "phase": "cold",
+    "candidate": "a25fcc2c1a44347c95f48fdee629d0531dba5fad",
+    "tree": "f61440a83f4745a64e8adec7d6d7831f63174db9",
+    "expected_outcome": "success",
+    "verified": true,
+    "elapsed_s": 0.19213366100120766,
+    "operation_elapsed_s": 0.191949799998838
+  },
+  {
+    "iteration": 2,
+    "side": "mai",
+    "phase": "warm",
+    "candidate": "a25fcc2c1a44347c95f48fdee629d0531dba5fad",
+    "tree": "f61440a83f4745a64e8adec7d6d7831f63174db9",
+    "expected_outcome": "success",
+    "verified": true,
+    "elapsed_s": 0.1592444189991511,
+    "operation_elapsed_s": 0.1590615679997427
+  },
+  {
+    "iteration": 2,
+    "side": "mai",
+    "phase": "failing",
+    "candidate": "bbc82999bdc1f51e20b5372553cec62b3cad25ae",
+    "tree": "37e21cfe98b5ef62c8226064009dc3384a0de96a",
+    "expected_outcome": "failure",
+    "verified": true,
+    "elapsed_s": 0.15256155600036436,
+    "operation_elapsed_s": 0.15237614600118832
+  },
+  {
+    "iteration": 2,
+    "side": "mai",
+    "phase": "after-failure",
+    "candidate": "a25fcc2c1a44347c95f48fdee629d0531dba5fad",
+    "tree": "f61440a83f4745a64e8adec7d6d7831f63174db9",
+    "expected_outcome": "success",
+    "verified": true,
+    "elapsed_s": 0.17069135999918217,
+    "operation_elapsed_s": 0.1705101999996259
+  }
+]
