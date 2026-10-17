@@ -20,7 +20,7 @@ Record the exact mai commit, build profile, lockfile, OS/filesystem, Git/Rust ve
 | Bootstrap/cache change | Cold/warm distinction, invalidated inputs and successful gate on the exact candidate |
 | Dirty agent workspace | Dirty/untracked contents before and after explicit sync; no hidden work loss |
 
-Only run scenarios supported by the tested implementation. A manual-validator run measures gate/bootstrap execution and slot behavior; only a separate explicit receive/integration run can measure its corresponding workflow. Safe sync remains unavailable. Process-kill experiments establish process-interruption behavior, not power-loss durability. Protected policy changes must still require explicit approval, and uncertain checks must never be counted as passes. Keep unsupported cases in the report as unavailable rather than assigning zero time or success.
+Only run scenarios supported by the tested implementation. A manual-validator run measures gate/bootstrap execution and slot behavior; only a separate explicit receive/integration run can measure its corresponding workflow. In-place sync remains unavailable; copy-based continuation has a separate clean-source preservation contract and must not be reported as dirty-tree sync. Process-kill experiments establish process-interruption behavior, not power-loss durability. Protected policy changes must still require explicit approval, and uncertain checks must never be counted as passes. Keep unsupported cases in the report as unavailable rather than assigning zero time or success.
 
 ## Report outcomes, not just speed
 
@@ -41,3 +41,7 @@ Run `python3 experiments/product-validation/synthetic.py /tmp/mai-synthetic-run 
 The [initial Linux smoke evidence](spikes/product-validation/2026-10-17-synthetic/README.md) records three iterations and a successful foundation walkthrough, with exact timing scopes and limitations.
 
 The [explicit parent/child integration evidence](spikes/product-validation/2026-10-17-explicit-integration/README.md) records the later release workflow and a separate synthetic run; it does not relabel the earlier baseline or establish scale.
+
+The [explicit validator recovery evidence](spikes/validator-recovery/2026-10-17/README.md) records a frozen-binary Linux engine-kill/reclaim/revalidation workflow from PR #112. Its 0.160-second reclaim and 0.615-second fresh landing are one tiny functional fixture, not a production MTTR distribution, comparative advantage or scale result. Missing proof and worker death remain unsupported recovery cases.
+
+The [frozen copy-continuation evidence](spikes/continuation/2026-10-17/README.md) records source preservation, overlap rejection, preserved replay failure and a gated correction to r4, plus literal execution of the documentation. Its single 0.255-second continuation observation is a tiny functional fixture, not performance qualification.

@@ -85,6 +85,18 @@ enum Action {
         #[arg(long)]
         skip_bootstrap: bool,
     },
+    /// Copy a landed submission's clean linear local suffix onto a fresh accepted-trunk workspace.
+    Continue {
+        project: PathBuf,
+        source: PathBuf,
+        destination: PathBuf,
+        #[arg(long)]
+        change: String,
+        #[arg(long)]
+        generation: u64,
+        #[arg(long)]
+        skip_bootstrap: bool,
+    },
 
     /// Manually validate exact candidates without registering or landing them.
     Validator {
@@ -307,6 +319,21 @@ fn run(command: Action) -> Result<Value> {
             &project,
             &agent,
             &destination,
+            skip_bootstrap,
+        )?)?,
+        Action::Continue {
+            project,
+            source,
+            destination,
+            change,
+            generation,
+            skip_bootstrap,
+        } => serde_json::to_value(mai::workspace::continue_landed(
+            &project,
+            &source,
+            &destination,
+            &change,
+            generation,
             skip_bootstrap,
         )?)?,
         Action::Validator {

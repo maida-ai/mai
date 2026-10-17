@@ -1,0 +1,37 @@
+Initialized empty Git repository in /var/tmp/mai-two.JYs3ru/seed/.git/
+[main (root-commit) 4259883] Seed disposable collaboration
+ 4 files changed, 13 insertions(+)
+ create mode 100644 gate.sh
+ create mode 100644 mai.toml
+ create mode 100644 parent.txt
+ create mode 100644 shared.txt
+{"authority":{"data":"L3Zhci90bXAvbWFpLXR3by5KWXMzcnUvcHJvamVjdA==","encoding":"unix_bytes"},"initialized":true,"registration_available":false,"schema_version":1}
+{"authority":{"data":"L3Zhci90bXAvbWFpLXR3by5KWXMzcnUvcHJvamVjdA==","encoding":"unix_bytes"},"pid":620740,"protocol_version":1,"registration_available":false,"state":"ready"}
+{"automatic_integration":false,"max_changed_files":32,"max_file_bytes":65536,"max_input_bytes":1048576,"registration_available":true,"schema_version":1}
+{"agent":"alice","base":"4259883a90147af9bb1f2769af2773cb4b7e9a3c","bootstrap":null,"bootstrap_skipped":false,"destination":{"data":"L3Zhci90bXAvbWFpLXR3by5KWXMzcnUvYWxpY2U=","encoding":"unix_bytes"},"schema_version":1}
+[detached HEAD 43652ad] Alice parent
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+{"commit":"30bb8a90849acd2cf09a6ec267eb7e0d46a2de4b","generation":{"change_id":"alice-43652ad45832fcf4d09f9822f5faa06512a87b0b","generation":1},"kind":"landed","revision":1,"schema_version":1}
+[detached HEAD 8d8d572] Alice later local work
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+{"agent":"bob","base":"30bb8a90849acd2cf09a6ec267eb7e0d46a2de4b","bootstrap":null,"bootstrap_skipped":false,"destination":{"data":"L3Zhci90bXAvbWFpLXR3by5KWXMzcnUvYm9i","encoding":"unix_bytes"},"schema_version":1}
+[detached HEAD 5030987] Bob additional accepted work
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+ create mode 100644 bob.txt
+{"commit":"d4819c68709d0b0b3d6300781214914b4f6e01fd","generation":{"change_id":"bob-5030987c9585a98a27c109c09119350647e5d4c7","generation":1},"kind":"landed","revision":2,"schema_version":1}
+{"agent":"alice","base_trunk":"d4819c68709d0b0b3d6300781214914b4f6e01fd","bootstrap":null,"bootstrap_skipped":false,"change":"alice-43652ad45832fcf4d09f9822f5faa06512a87b0b","destination":{"data":"L3Zhci90bXAvbWFpLXR3by5KWXMzcnUvY29udGludWVk","encoding":"unix_bytes"},"generation":1,"landed_commit":"30bb8a90849acd2cf09a6ec267eb7e0d46a2de4b","next_step":"review the replayed commits, then submit each one as a new submission; the original generation remains immutable","replay_committer":"Mai Continuation <continuation@mai.invalid>","replayed":[{"destination_commit":"43d41019189df9957dadd0e21801e47327d7d335","source_commit":"8d8d572b2d5cf52f06a58c31e3606af838c3a056"}],"schema_version":1,"submitted_commit":"43652ad45832fcf4d09f9822f5faa06512a87b0b"}
+[detached HEAD 2e10468] Bob overlapping edit
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+{"commit":"5a6bd98e4711e6cdc1f9c41f9f8697eb534baaa9","generation":{"change_id":"bob-2e10468aab757f0ed556b5caac13a519e483bc9a","generation":1},"kind":"landed","revision":3,"schema_version":1}
+{"generation":{"change_id":"alice-43d41019189df9957dadd0e21801e47327d7d335","generation":1},"kind":"rejected","reason":"conflict","schema_version":1}
+{"agent":"alice","annotations":[],"approval_pending":false,"attempts":[],"commit":"43d41019189df9957dadd0e21801e47327d7d335","dependencies":[],"id":{"change_id":"alice-43d41019189df9957dadd0e21801e47327d7d335","generation":1},"predecessor":null,"schema_version":1,"state":{"kind":"terminal","outcome":{"diagnostics":{"candidate_ref":null,"check":null,"conflict":"submitted delta conflicts with current trunk","log_tail":null,"next_action":"Resolve the conflict in your own workspace and submit a new change; dependent changes must be resubmitted against the replacement"},"kind":"rejected","reason":"conflict"}}}
+{"agent":"alice","base":"5a6bd98e4711e6cdc1f9c41f9f8697eb534baaa9","bootstrap":null,"bootstrap_skipped":false,"destination":{"data":"L3Zhci90bXAvbWFpLXR3by5KWXMzcnUvY29ycmVjdGlvbg==","encoding":"unix_bytes"},"schema_version":1}
+[detached HEAD fa30cd7] Reconcile both intended edits
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+{"commit":"085561fcd2304d7fb778eba06b2f10a278f1a2cd","generation":{"change_id":"alice-fa30cd77b56365f53cb598017fed59e9eb2b74fc","generation":1},"kind":"landed","revision":4,"schema_version":1}
+{"authority":{"data":"L3Zhci90bXAvbWFpLXR3by5KWXMzcnUvcHJvamVjdA==","encoding":"unix_bytes"},"pid":620740,"protocol_version":1,"registration_available":true,"state":"stopping"}
+Disposable work and evidence retained at /var/tmp/mai-two.JYs3ru
+
+MAI_DOC_FIXTURE=/var/tmp/mai-two.JYs3ru
+MAI_DOC_LOCAL=8d8d572b2d5cf52f06a58c31e3606af838c3a056
+MAI_DOC_FINAL=fa30cd77b56365f53cb598017fed59e9eb2b74fc
