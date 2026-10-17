@@ -21,7 +21,7 @@ use std::{
 use std::process::{Command, Stdio};
 
 const PROTOCOL_VERSION: u32 = 1;
-const MAX_FRAME: usize = 4096;
+const MAX_FRAME: usize = 65536;
 const IO_TIMEOUT: Duration = Duration::from_secs(2);
 const START_TIMEOUT: Duration = Duration::from_secs(5);
 const POLL: Duration = Duration::from_millis(20);
@@ -59,13 +59,19 @@ enum Action {
     Show {
         generation: GenerationId,
     },
+    Approve {
+        candidate: String,
+        actor: String,
+        reason: String,
+        denied: bool,
+    },
 }
 #[derive(Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 struct Reply {
     protocol_version: u32,
     authority: NativePath,
-    result: Option<Submission>,
+    result: Option<serde_json::Value>,
     error: Option<String>,
 }
 
@@ -156,9 +162,12 @@ pub fn serve(root: &Path) -> Result<()> {
                 );
                 if matches!(
                     request.action,
-                    Action::EnableReceive { .. } | Action::Register { .. } | Action::Show { .. }
+                    Action::EnableReceive { .. }
+                        | Action::Register { .. }
+                        | Action::Show { .. }
+                        | Action::Approve { .. }
                 ) {
-                    let result: Result<Option<Submission>> = match request.action {
+                    let result: Result<Option<serde_json::Value>> = match request.action {
                         Action::EnableReceive {
                             max_input_bytes,
                             max_file_bytes,
@@ -171,15 +180,28 @@ pub fn serve(root: &Path) -> Result<()> {
                         )
                         .map(|()| None),
                         Action::Register { agent, commit } => {
-                            receive::register(&authority, &agent, &commit).map(Some)
+                            receive::register(&authority, &agent, &commit)
+                                .and_then(|s| Ok(Some(serde_json::to_value(s)?)))
                         }
-                        Action::Show { generation } => {
-                            receive::query(&authority, &generation).map(Some)
-                        }
+                        Action::Show { generation } => receive::query(&authority, &generation)
+                            .and_then(|s| Ok(Some(serde_json::to_value(s)?))),
+                        Action::Approve {
+                            candidate,
+                            actor,
+                            reason,
+                            denied,
+                        } => crate::validator::approve(
+                            authority.root(),
+                            &candidate,
+                            &actor,
+                            &reason,
+                            denied,
+                        )
+                        .and_then(|approval| Ok(Some(serde_json::to_value(approval)?))),
                         _ => unreachable!(),
                     };
                     status.registration_available = receive::enabled(&authority)?;
-                    let reply = match result {
+                    let mut reply = match result {
                         Ok(result) => Reply {
                             protocol_version: PROTOCOL_VERSION,
                             authority: status.authority.clone(),
@@ -193,6 +215,10 @@ pub fn serve(root: &Path) -> Result<()> {
                             error: Some(format!("{error:#}").chars().take(1024).collect()),
                         },
                     };
+                    if serde_json::to_vec(&reply)?.len() > MAX_FRAME {
+                        reply.result = None;
+                        reply.error = Some("durable result exceeds the bounded IPC response; no result was discarded; inspect authority state".into());
+                    }
                     // An expired/disconnected client changes no durable result.
                     let deadline = Instant::now() + IO_TIMEOUT;
                     write_frame(&mut stream, &reply, deadline)?;
@@ -350,7 +376,7 @@ use background::spawn_background;
 #[path = "engine/windows_process.rs"]
 mod background;
 
-fn operation(root: &Path, action: Action) -> Result<Option<Submission>> {
+fn operation(root: &Path, action: Action) -> Result<Option<serde_json::Value>> {
     let local = local_dir(root)?;
     let deadline = Instant::now() + Duration::from_secs(10);
     let mut stream = transport::connect(&local, deadline)?;
@@ -399,17 +425,53 @@ pub fn enable_receive(
     Ok(())
 }
 pub fn register(root: &Path, agent: &str, commit: &str) -> Result<Submission> {
-    operation(
-        root,
-        Action::Register {
-            agent: agent.into(),
-            commit: commit.into(),
-        },
-    )?
-    .context("engine returned no submission")
+    Ok(serde_json::from_value(
+        operation(
+            root,
+            Action::Register {
+                agent: agent.into(),
+                commit: commit.into(),
+            },
+        )?
+        .context("engine returned no submission")?,
+    )?)
 }
 pub fn show(root: &Path, generation: GenerationId) -> Result<Submission> {
-    operation(root, Action::Show { generation })?.context("engine returned no submission")
+    Ok(serde_json::from_value(
+        operation(root, Action::Show { generation })?.context("engine returned no submission")?,
+    )?)
+}
+
+/// Administration shares publication ownership, including when no daemon runs.
+/// A failed IPC response is uncertain and is never retried as an unlocked write.
+pub fn approve(
+    root: &Path,
+    candidate: &str,
+    actor: &str,
+    reason: &str,
+    denied: bool,
+) -> Result<crate::approval::Approval> {
+    let local = local_dir(root)?;
+    let lock = lock_file(&local)?;
+    match lock.try_lock_exclusive() {
+        Ok(()) => {
+            let _ownership = Ownership(lock);
+            crate::validator::approve(root, candidate, actor, reason, denied)
+        }
+        Err(error) if error.kind() == io::ErrorKind::WouldBlock => Ok(serde_json::from_value(
+            operation(
+                root,
+                Action::Approve {
+                    candidate: candidate.into(),
+                    actor: actor.into(),
+                    reason: reason.into(),
+                    denied,
+                },
+            )?
+            .context("engine returned no approval")?,
+        )?),
+        Err(error) => Err(error).context("acquire authority ownership for approval"),
+    }
 }
 
 pub fn stop(root: &Path) -> Result<Status> {

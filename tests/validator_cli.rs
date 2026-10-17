@@ -429,3 +429,79 @@ output_tail_bytes=1024
         assert_eq!(git(&repo, &["rev-parse", "trunk"]), candidate);
     }
 }
+
+#[test]
+fn approval_administration_obeys_engine_ownership_with_and_without_daemon() {
+    use fs2::FileExt;
+    let temp = tempfile::tempdir().unwrap();
+    let source = temp.path().join("source");
+    fs::create_dir(&source).unwrap();
+    git(&source, &["init"]);
+    fs::write(source.join("gate.sh"), "exit 0\n").unwrap();
+    fs::write(source.join("mai.toml"), "version=1\n[check]\nprogram=\"sh\"\nscript=\"gate.sh\"\ntimeout_ms=1000\noutput_tail_bytes=1024\n[validators]\nslots=1\nport_base=33000\nports_per_slot=10\n").unwrap();
+    git(&source, &["add", "."]);
+    git(&source, &["commit", "-m", "trusted policy"]);
+    let project = temp.path().join("project");
+    assert!(
+        cli(&[
+            "init",
+            project.to_str().unwrap(),
+            "--from",
+            source.to_str().unwrap()
+        ])
+        .status
+        .success()
+    );
+    let candidate = git(&project.join("authority.git"), &["rev-parse", "trunk"]);
+    let approve = || {
+        cli(&[
+            "approve",
+            project.to_str().unwrap(),
+            &candidate,
+            "--actor",
+            "maintainer",
+            "--reason",
+            "fixture administration",
+        ])
+    };
+    let lock = fs::OpenOptions::new()
+        .create(true)
+        .truncate(false)
+        .read(true)
+        .write(true)
+        .open(project.join(".mai/engine.lock"))
+        .unwrap();
+    lock.try_lock_exclusive().unwrap();
+    assert!(
+        !approve().status.success(),
+        "an owner without IPC must not permit an unlocked approval write"
+    );
+    assert!(!project.join(".mai/gates.db").exists());
+    FileExt::unlock(&lock).unwrap();
+    let standalone = approve();
+    assert!(
+        standalone.status.success(),
+        "{}",
+        String::from_utf8_lossy(&standalone.stderr)
+    );
+    assert!(
+        !project.join(".mai/engine.pid").exists(),
+        "standalone administration must not leak a daemon"
+    );
+    struct Stop(std::path::PathBuf);
+    impl Drop for Stop {
+        fn drop(&mut self) {
+            let _ = cli(&["stop", self.0.to_str().unwrap()]);
+        }
+    }
+    let _stop = Stop(project.clone());
+    assert!(cli(&["status", project.to_str().unwrap()]).status.success());
+    let routed = approve();
+    assert!(
+        routed.status.success(),
+        "{}",
+        String::from_utf8_lossy(&routed.stderr)
+    );
+    assert_eq!(json(&routed)["decision"], "approved");
+    assert_eq!(json(&routed)["binding"], json(&standalone)["binding"]);
+}

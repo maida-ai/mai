@@ -51,6 +51,7 @@ impl ApprovalStore {
         }
         Ok(Self(connection))
     }
+    /// Administrative callers must hold authority ownership through publication.
     pub fn record(
         &mut self,
         binding: &Binding,

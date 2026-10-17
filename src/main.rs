@@ -39,7 +39,7 @@ enum Action {
     ReceiveHook { project: PathBuf },
     #[command(hide = true)]
     ReceivePreflight { project: PathBuf },
-    /// Initialize or safely reopen an authority; receive and landing are unavailable.
+    /// Initialize or safely reopen an authority; receive is explicitly enabled separately.
     Init {
         project: PathBuf,
         #[arg(long = "from")]
@@ -68,7 +68,7 @@ enum Action {
         skip_bootstrap: bool,
     },
 
-    /// Manually validate exact candidates; receive and landing remain unavailable.
+    /// Manually validate exact candidates without registering or landing them.
     Validator {
         #[command(subcommand)]
         command: ValidatorAction,
@@ -121,13 +121,17 @@ fn run(command: Action) -> Result<Value> {
             project,
             change,
             generation,
-        } => serde_json::to_value(engine::show(
-            &project,
-            GenerationId {
-                change_id: change,
-                generation,
-            },
-        )?)?,
+        } => {
+            let mut result = serde_json::to_value(engine::show(
+                &project,
+                GenerationId {
+                    change_id: change,
+                    generation,
+                },
+            )?)?;
+            result["schema_version"] = json!(SCHEMA_VERSION);
+            result
+        }
         Action::ReceiveHook { project } => {
             mai::receive::hook(&project, false)?;
             Value::Null
@@ -138,7 +142,7 @@ fn run(command: Action) -> Result<Value> {
         }
         Action::Init { project, source } => {
             let authority = Authority::init(&project, source.as_deref())?;
-            json!({"schema_version": SCHEMA_VERSION, "authority": NativePath::from_path(authority.root())?, "initialized": true, "registration_available": false})
+            json!({"schema_version": SCHEMA_VERSION, "authority": NativePath::from_path(authority.root())?, "initialized": true, "registration_available": mai::receive::enabled(&authority)?})
         }
         Action::Serve { project, .. } => {
             engine::serve(&project)?;
@@ -169,7 +173,7 @@ fn run(command: Action) -> Result<Value> {
             actor,
             reason,
             deny,
-        } => serde_json::to_value(mai::validator::approve(
+        } => serde_json::to_value(engine::approve(
             &project, &candidate, &actor, &reason, deny,
         )?)?,
     })
