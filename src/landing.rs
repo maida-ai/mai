@@ -376,7 +376,7 @@ fn run_one_inner(
             Diagnostics {
                 candidate_ref: Some(reference),
                 next_action: Some(
-                    "Submit a new generation after resolving the policy denial".into(),
+                    "Preserve your workspace, resolve the policy denial, and submit a new commit as a new change".into(),
                 ),
                 ..Diagnostics::default()
             },
@@ -430,7 +430,15 @@ fn run_one_inner(
             ValidationOutcome::Failure | ValidationOutcome::Timeout => ReasonCode::CheckFailed,
             _ => ReasonCode::Infrastructure,
         };
-        life.complete_attempt(id, attempt, Outcome::Rejected { reason, diagnostics: Diagnostics { candidate_ref: Some(reference), next_action: Some("Inspect the retained candidate and gate result before submitting a new generation".into()), ..Diagnostics::default() } })?;
+        let diagnostics = failed_validation_diagnostics(&result, reference)?;
+        life.complete_attempt(
+            id,
+            attempt,
+            Outcome::Rejected {
+                reason,
+                diagnostics,
+            },
+        )?;
         store.save_lifecycle(&mut life)?;
         return Ok(RunResult::Rejected { reason });
     }
@@ -474,6 +482,55 @@ fn run_one_inner(
         commit: candidate,
     })
 }
+/// Copy already retained validator output without reading workspace files.
+fn failed_validation_diagnostics(
+    result: &validator::ValidationResult,
+    reference: String,
+) -> Result<Diagnostics> {
+    let outcome = serde_json::to_value(&result.outcome)?;
+    let mut check = outcome
+        .as_str()
+        .context("invalid validator outcome")?
+        .to_owned();
+    if let Some(detail) = &result.diagnostic {
+        check.push_str(": ");
+        check.push_str(detail);
+    }
+    let process = result.process.as_ref().or(result.bootstrap.as_ref());
+    if let Some(detail) = process.and_then(|p| p.cleanup_diagnostic.as_ref()) {
+        check.push_str(": ");
+        check.push_str(detail);
+    }
+    let log_tail = process.and_then(|process| {
+        let budget = (crate::lifecycle::MAX_DIAGNOSTIC_BYTES - 32) / 2;
+        let stdout = diagnostic_tail(&process.stdout_tail, budget);
+        let stderr = diagnostic_tail(&process.stderr_tail, budget);
+        if stdout.is_empty() && stderr.is_empty() {
+            None
+        } else {
+            Some(format!("stdout:\n{stdout}\nstderr:\n{stderr}"))
+        }
+    });
+    // A NUL in native test output must not prevent recording the terminal rejection.
+    check = check.replace('\0', "\u{fffd}");
+    let mut end = check.len().min(crate::lifecycle::MAX_DIAGNOSTIC_BYTES);
+    while !check.is_char_boundary(end) {
+        end -= 1;
+    }
+    check.truncate(end);
+    let diagnostics = Diagnostics { check: Some(check), log_tail, candidate_ref: Some(reference), next_action: Some("Preserve your workspace and inspect these gate diagnostics before submitting a corrected commit as a new change".into()), ..Diagnostics::default() };
+    diagnostics.validate()?;
+    Ok(diagnostics)
+}
+fn diagnostic_tail(text: &str, budget: usize) -> String {
+    let text = text.replace('\0', "\u{fffd}");
+    let mut start = text.len().saturating_sub(budget);
+    while !text.is_char_boundary(start) {
+        start += 1;
+    }
+    text[start..].to_owned()
+}
+
 fn now_ms() -> Result<i64> {
     Ok(std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)?
@@ -485,6 +542,16 @@ fn now_ms() -> Result<i64> {
 mod crash_tests {
     use super::*;
     use std::{fs, path::Path};
+    #[test]
+    fn diagnostic_tails_bound_unicode_and_replace_nuls() {
+        let output = format!("{}\0END", "é".repeat(5000));
+        let tail = diagnostic_tail(&output, 2000);
+        assert!(tail.len() <= 2000);
+        assert!(tail.ends_with("\u{fffd}END"));
+        assert!(!tail.contains('\0'));
+        assert_eq!(diagnostic_tail("", 2000), "");
+    }
+
     // Git for Windows supplies sh, which is already required by the local receive hook.
     // Keep the trusted policy execution path identical across all native CI platforms.
     const POLICY: &str = "version = 1\n[check]\nprogram = \"sh\"\nscript = \"gate.sh\"\ntimeout_ms = 5000\noutput_tail_bytes = 1024\n[validators]\nslots = 1\nport_base = 33000\nports_per_slot = 10\n";

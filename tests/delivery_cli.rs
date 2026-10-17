@@ -84,6 +84,9 @@ impl Drop for Fixture {
 }
 impl Fixture {
     fn new() -> Self {
+        Self::with_gate(None)
+    }
+    fn with_gate(gate: Option<&str>) -> Self {
         let temp = tempfile::tempdir().unwrap();
         let source = temp.path().join("seed");
         let root = temp.path().join("authority");
@@ -92,7 +95,7 @@ impl Fixture {
         fs::create_dir(&source).unwrap();
         fs::create_dir(&control).unwrap();
         git(&source, &["init"]);
-        fs::write(source.join("gate.sh"), "if test -f \"$MAI_CANDIDATE_ROOT/hold\"; then\n  printf ready > \"$1/ready\"\n  while ! test -f \"$1/release\"; do sleep 0.02; done\nfi\ntest ! -f \"$MAI_CANDIDATE_ROOT/fail\"\n").unwrap();
+        fs::write(source.join("gate.sh"), gate.unwrap_or("if test -f \"$MAI_CANDIDATE_ROOT/hold\"; then\n  printf ready > \"$1/ready\"\n  while ! test -f \"$1/release\"; do sleep 0.02; done\nfi\ntest ! -f \"$MAI_CANDIDATE_ROOT/fail\"\n")).unwrap();
         fs::write(source.join("mai.toml"), format!("version=1\n[check]\nprogram=\"sh\"\nscript=\"gate.sh\"\nargs=[{}]\ntimeout_ms=10000\noutput_tail_bytes=1024\n[validators]\nslots=1\nport_base=33000\nports_per_slot=10\n[policy]\nprotected=[\"protected.txt\"]\n", serde_json::to_string(control.to_str().unwrap()).unwrap())).unwrap();
         fs::write(source.join("protected.txt"), "baseline\n").unwrap();
         fs::write(source.join("overlap.txt"), "baseline\n").unwrap();
@@ -489,4 +492,91 @@ fn actual_cli_requires_live_owned_lease_generation_before_landing() {
     );
     assert!(!lease_path.exists());
     assert_eq!(f.trunk(), accepted_tip);
+}
+
+#[cfg(unix)]
+#[test]
+fn timed_out_integration_keeps_running_and_exact_identity_recovers_result() {
+    let mut f = Fixture::new();
+    let baseline = f.trunk();
+    let id = f.submit(&[("hold", "wait for explicit release\n")]);
+    let pending = f
+        .command("integrate", &id)
+        .args(["--mode", "textual", "--wait-seconds", "1"])
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+    let deadline = Instant::now() + Duration::from_secs(5);
+    while !f.control.join("ready").exists() {
+        assert!(Instant::now() < deadline, "gate did not start");
+        thread::sleep(Duration::from_millis(10));
+    }
+    let response = pending.wait_with_output().unwrap();
+    assert!(!response.status.success());
+    assert!(
+        String::from_utf8_lossy(&response.stderr).contains("outcome may be uncertain"),
+        "stdout={} stderr={}",
+        String::from_utf8_lossy(&response.stdout),
+        String::from_utf8_lossy(&response.stderr)
+    );
+    assert_eq!(f.trunk(), baseline);
+    fs::write(f.control.join("release"), "continue\n").unwrap();
+    let shown = f.show(&id);
+    assert_eq!(shown["state"]["kind"], "terminal");
+    assert_eq!(shown["state"]["outcome"]["kind"], "landed");
+    let accepted = f.trunk();
+    assert_ne!(accepted, baseline);
+    let retry = f.integrate(&id);
+    assert!(retry.status.success());
+    assert_eq!(value(&retry)["commit"], accepted);
+    assert_eq!(f.trunk(), accepted);
+    succeeded(f.cli(&["stop"]));
+    assert!(f.owner.0.wait().unwrap().success());
+    f.owner = Process(
+        Command::new(env!("CARGO_BIN_EXE_mai"))
+            .args(["serve", "--foreground"])
+            .arg(&f.root)
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .spawn()
+            .unwrap(),
+    );
+    let deadline = Instant::now() + Duration::from_secs(5);
+    while !f.cli(&["status", "--no-autostart"]).status.success() {
+        assert!(f.owner.0.try_wait().unwrap().is_none());
+        assert!(Instant::now() < deadline, "restart readiness timed out");
+        thread::sleep(Duration::from_millis(10));
+    }
+    let retried_after_restart = f.integrate(&id);
+    assert!(retried_after_restart.status.success());
+    assert_eq!(value(&retried_after_restart)["commit"], accepted);
+    assert_eq!(value(&retried_after_restart)["revision"], 1);
+    let a = mai::authority::Authority::open(&f.root).unwrap();
+    let store = mai::state::StateStore::open(a.state_path()).unwrap();
+    assert_eq!(store.landings().unwrap().len(), 1);
+}
+
+#[test]
+fn failed_gate_exposes_bounded_diagnostics_through_show() {
+    let f = Fixture::with_gate(Some(
+        "i=0\nwhile test $i -lt 3000; do printf x >&2; i=$((i+1)); done\nprintf '\\nGATE_FAILURE_MARKER\\n' >&2\nexit 7\n",
+    ));
+    let id = f.submit(&[("new.txt", "change\n")]);
+    let output = f.integrate(&id);
+    assert_eq!(output.status.code(), Some(3));
+    let shown = f.show(&id);
+    let diagnostics = &shown["state"]["outcome"]["diagnostics"];
+    assert_eq!(diagnostics["check"], "failure");
+    let tail = diagnostics["log_tail"]
+        .as_str()
+        .expect("show must expose gate failure tail");
+    assert!(tail.contains("GATE_FAILURE_MARKER"));
+    assert!(tail.len() <= mai::lifecycle::MAX_DIAGNOSTIC_BYTES);
+    assert!(
+        diagnostics["next_action"]
+            .as_str()
+            .unwrap()
+            .contains("new change")
+    );
 }
