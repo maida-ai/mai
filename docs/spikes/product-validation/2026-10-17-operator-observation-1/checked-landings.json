@@ -1,0 +1,86 @@
+{
+  "kind": "operator_replay_gate_evidence",
+  "authority_baseline": {
+    "commit": "5fb2c3e6767bb7f001878573b37c0393bf199550",
+    "tree": "7d6e83dd30dbeb666405a4a80755ea23bda3e603",
+    "parent": "d84f26ae73c87c15224bd56e2a2596a124e542e1"
+  },
+  "received_before_integration": [
+    {
+      "agent": "recovery",
+      "submitted_commit": "2f3400a291408ab0a9b6d97977c20ceda2e8b3f2",
+      "state": "received"
+    },
+    {
+      "agent": "docs",
+      "submitted_commit": "12c9c59d765f4f98c87569634c96cb75f7b5cffa",
+      "state": "received"
+    },
+    {
+      "agent": "observer",
+      "submitted_commit": "e433cd3c27253f431d3bc269cdc9fa49b92e4c97",
+      "state": "received"
+    }
+  ],
+  "integrations": [
+    {
+      "agent": "recovery",
+      "revision": 1,
+      "submitted_commit": "2f3400a291408ab0a9b6d97977c20ceda2e8b3f2",
+      "checked_commit": "65f7d63f6a985b99ba61a35a0e47c69fa4013b51",
+      "checked_tree": "5b18ff2826a2933c57f45d2807b455283895648b",
+      "checked_parent": "5fb2c3e6767bb7f001878573b37c0393bf199550",
+      "trusted_policy": "5fb2c3e6767bb7f001878573b37c0393bf199550",
+      "passed": true,
+      "wait_state": "landed",
+      "wait_commit": "65f7d63f6a985b99ba61a35a0e47c69fa4013b51",
+      "wait_revision": 1,
+      "manifest": ["file:src/slots.rs"]
+    },
+    {
+      "agent": "docs",
+      "revision": 2,
+      "submitted_commit": "12c9c59d765f4f98c87569634c96cb75f7b5cffa",
+      "checked_commit": "53b57f1202851089db125a51e054deadeaa2c11d",
+      "checked_tree": "6c0469f9ac0d46ea8212c9f9abb9065e30e5f932",
+      "checked_parent": "65f7d63f6a985b99ba61a35a0e47c69fa4013b51",
+      "trusted_policy": "65f7d63f6a985b99ba61a35a0e47c69fa4013b51",
+      "passed": true,
+      "wait_state": "landed",
+      "wait_commit": "53b57f1202851089db125a51e054deadeaa2c11d",
+      "wait_revision": 2,
+      "manifest": [
+        "file:README.md",
+        "file:docs/README.md",
+        "file:docs/check-failure.md",
+        "file:docs/getting-started.md",
+        "file:docs/release-status.md"
+      ]
+    },
+    {
+      "agent": "observer",
+      "revision": 3,
+      "submitted_commit": "e433cd3c27253f431d3bc269cdc9fa49b92e4c97",
+      "checked_commit": "2a7e6eca8b295c927d6c68c4e8fdf047bb1fbe23",
+      "checked_tree": "0e5486c5e3c3ab9c7f694568d935ad5642242d30",
+      "checked_parent": "53b57f1202851089db125a51e054deadeaa2c11d",
+      "trusted_policy": "53b57f1202851089db125a51e054deadeaa2c11d",
+      "passed": true,
+      "wait_state": "landed",
+      "wait_commit": "2a7e6eca8b295c927d6c68c4e8fdf047bb1fbe23",
+      "wait_revision": 3,
+      "manifest": [
+        "file:docs/cli.md",
+        "file:docs/receive.md",
+        "file:src/engine.rs",
+        "file:src/main.rs",
+        "file:src/state.rs",
+        "file:tests/delivery_cli.rs"
+      ]
+    }
+  ],
+  "original_clones": {
+    "heads_preserved": true,
+    "clean_after_run": true
+  }
+}

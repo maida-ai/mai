@@ -1,0 +1,281 @@
+[
+  {
+    "operation": "clone-source",
+    "exit": 0,
+    "elapsed_seconds": 0.094248,
+    "stdout_bytes": 0
+  },
+  {
+    "operation": "pin-baseline",
+    "exit": 0,
+    "elapsed_seconds": 0.022368,
+    "stdout_bytes": 0
+  },
+  {
+    "operation": "source-name",
+    "exit": 0,
+    "elapsed_seconds": 0.001447,
+    "stdout_bytes": 0
+  },
+  {
+    "operation": "source-email",
+    "exit": 0,
+    "elapsed_seconds": 0.006277,
+    "stdout_bytes": 0
+  },
+  {
+    "operation": "add-policy",
+    "exit": 0,
+    "elapsed_seconds": 0.018209,
+    "stdout_bytes": 0
+  },
+  {
+    "operation": "commit-policy",
+    "exit": 0,
+    "elapsed_seconds": 0.022334,
+    "stdout_bytes": 183
+  },
+  {
+    "operation": "baseline",
+    "exit": 0,
+    "elapsed_seconds": 0.001256,
+    "stdout_bytes": 41
+  },
+  {
+    "operation": "init",
+    "exit": 0,
+    "elapsed_seconds": 0.399916,
+    "stdout_bytes": 223
+  },
+  {
+    "operation": "enable",
+    "exit": 0,
+    "elapsed_seconds": 0.082858,
+    "stdout_bytes": 157
+  },
+  {
+    "operation": "workspace-recovery",
+    "exit": 0,
+    "elapsed_seconds": 0.250514,
+    "stdout_bytes": 287
+  },
+  {
+    "operation": "name-recovery",
+    "exit": 0,
+    "elapsed_seconds": 0.001382,
+    "stdout_bytes": 0
+  },
+  {
+    "operation": "email-recovery",
+    "exit": 0,
+    "elapsed_seconds": 0.001063,
+    "stdout_bytes": 0
+  },
+  {
+    "operation": "fetch-recovery",
+    "exit": 0,
+    "elapsed_seconds": 0.012403,
+    "stdout_bytes": 0
+  },
+  {
+    "operation": "apply-recovery",
+    "exit": 0,
+    "elapsed_seconds": 0.058529,
+    "stdout_bytes": 172
+  },
+  {
+    "operation": "head-recovery",
+    "exit": 0,
+    "elapsed_seconds": 0.001281,
+    "stdout_bytes": 41
+  },
+  {
+    "operation": "workspace-docs",
+    "exit": 0,
+    "elapsed_seconds": 0.246693,
+    "stdout_bytes": 279
+  },
+  {
+    "operation": "name-docs",
+    "exit": 0,
+    "elapsed_seconds": 0.001205,
+    "stdout_bytes": 0
+  },
+  {
+    "operation": "email-docs",
+    "exit": 0,
+    "elapsed_seconds": 0.001065,
+    "stdout_bytes": 0
+  },
+  {
+    "operation": "fetch-docs",
+    "exit": 0,
+    "elapsed_seconds": 0.01291,
+    "stdout_bytes": 0
+  },
+  {
+    "operation": "apply-docs",
+    "exit": 0,
+    "elapsed_seconds": 0.050188,
+    "stdout_bytes": 260
+  },
+  {
+    "operation": "head-docs",
+    "exit": 0,
+    "elapsed_seconds": 0.001276,
+    "stdout_bytes": 41
+  },
+  {
+    "operation": "workspace-observer",
+    "exit": 0,
+    "elapsed_seconds": 0.248507,
+    "stdout_bytes": 287
+  },
+  {
+    "operation": "name-observer",
+    "exit": 0,
+    "elapsed_seconds": 0.001282,
+    "stdout_bytes": 0
+  },
+  {
+    "operation": "email-observer",
+    "exit": 0,
+    "elapsed_seconds": 0.001069,
+    "stdout_bytes": 0
+  },
+  {
+    "operation": "fetch-observer",
+    "exit": 0,
+    "elapsed_seconds": 0.017661,
+    "stdout_bytes": 0
+  },
+  {
+    "operation": "apply-observer",
+    "exit": 0,
+    "elapsed_seconds": 0.059798,
+    "stdout_bytes": 200
+  },
+  {
+    "operation": "head-observer",
+    "exit": 0,
+    "elapsed_seconds": 0.001419,
+    "stdout_bytes": 41
+  },
+  {
+    "operation": "push-recovery",
+    "exit": 0,
+    "elapsed_seconds": 0.099008,
+    "stdout_bytes": 0
+  },
+  {
+    "operation": "push-docs",
+    "exit": 0,
+    "elapsed_seconds": 0.2003,
+    "stdout_bytes": 0
+  },
+  {
+    "operation": "push-observer",
+    "exit": 0,
+    "elapsed_seconds": 0.285493,
+    "stdout_bytes": 0
+  },
+  {
+    "operation": "queue-before",
+    "exit": 0,
+    "elapsed_seconds": 0.003128,
+    "stdout_bytes": 989
+  },
+  {
+    "operation": "stop-before-observation",
+    "exit": 0,
+    "elapsed_seconds": 0.022039,
+    "stdout_bytes": 237
+  },
+  {
+    "operation": "wait-engine-down",
+    "exit": 6,
+    "elapsed_seconds": 1.002367,
+    "stdout_bytes": 244
+  },
+  {
+    "operation": "restart",
+    "exit": 0,
+    "elapsed_seconds": 0.062911,
+    "stdout_bytes": 234
+  },
+  {
+    "operation": "wait-recovery",
+    "exit": 0,
+    "elapsed_seconds": 47.354947,
+    "stdout_bytes": 447
+  },
+  {
+    "operation": "integrate-recovery",
+    "exit": 0,
+    "elapsed_seconds": 47.418717
+  },
+  {
+    "operation": "preserved-recovery",
+    "exit": 0,
+    "elapsed_seconds": 0.001393,
+    "stdout_bytes": 41
+  },
+  {
+    "operation": "wait-docs",
+    "exit": 0,
+    "elapsed_seconds": 38.513442,
+    "stdout_bytes": 439
+  },
+  {
+    "operation": "integrate-docs",
+    "exit": 0,
+    "elapsed_seconds": 38.5292
+  },
+  {
+    "operation": "preserved-docs",
+    "exit": 0,
+    "elapsed_seconds": 0.001496,
+    "stdout_bytes": 41
+  },
+  {
+    "operation": "wait-observer",
+    "exit": 0,
+    "elapsed_seconds": 48.62319,
+    "stdout_bytes": 447
+  },
+  {
+    "operation": "integrate-observer",
+    "exit": 0,
+    "elapsed_seconds": 48.62363
+  },
+  {
+    "operation": "preserved-observer",
+    "exit": 0,
+    "elapsed_seconds": 0.00118,
+    "stdout_bytes": 41
+  },
+  {
+    "operation": "queue-after",
+    "exit": 0,
+    "elapsed_seconds": 0.003336,
+    "stdout_bytes": 1070
+  },
+  {
+    "operation": "workspace-accepted",
+    "exit": 0,
+    "elapsed_seconds": 0.263539,
+    "stdout_bytes": 287
+  },
+  {
+    "operation": "accepted-status",
+    "exit": 0,
+    "elapsed_seconds": 0.025355,
+    "stdout_bytes": 0
+  },
+  {
+    "operation": "runtime-commit",
+    "exit": 0,
+    "elapsed_seconds": 0.001264,
+    "stdout_bytes": 41
+  }
+]

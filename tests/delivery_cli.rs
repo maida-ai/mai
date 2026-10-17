@@ -9,6 +9,7 @@ use serde_json::Value;
 use serde_json::json;
 use std::{
     fs,
+    io::{Read, Seek, SeekFrom},
     path::{Path, PathBuf},
     process::{Child, Command, Output, Stdio},
     thread,
@@ -16,9 +17,18 @@ use std::{
 };
 #[cfg(unix)]
 use std::{
-    io::{BufRead, BufReader, Read, Write},
+    io::{BufRead, BufReader, Write},
     os::unix::net::UnixStream,
 };
+
+fn bounded_utf8(bytes: &[u8], max_bytes: usize) -> String {
+    let text = String::from_utf8_lossy(bytes);
+    let mut start = text.len().saturating_sub(max_bytes);
+    while !text.is_char_boundary(start) {
+        start += 1;
+    }
+    text[start..].to_owned()
+}
 
 fn succeeded(output: Output) -> String {
     assert!(
@@ -210,10 +220,60 @@ impl Fixture {
         format!("qa-{oid}")
     }
     fn integrate(&self, id: &str) -> Output {
-        self.command("integrate", id)
-            .args(["--mode", "textual", "--wait-seconds", "20"])
+        // Windows CI runs many Git and CLI subprocesses concurrently, and the
+        // integration path includes trusted gate execution plus slot setup.
+        // Keep the operation bounded while allowing that native runner enough
+        // time; explicit timeout tests below retain their short budgets.
+        let wait_seconds = if cfg!(windows) { 120 } else { 20 };
+        let started = Instant::now();
+        let mut output = self
+            .command("integrate", id)
+            .args(["--mode", "textual", "--wait-seconds"])
+            .arg(wait_seconds.to_string())
             .output()
-            .unwrap()
+            .unwrap();
+
+        // A timed-out client cannot infer the integration result. Include a
+        // read-only persisted-state observation and bounded engine log tail
+        // for diagnosis, without retrying or converting the timeout to success.
+        if String::from_utf8_lossy(&output.stderr).contains("IPC read timed out") {
+            self.append_timeout_diagnostics(id, started.elapsed(), &mut output);
+        }
+        output
+    }
+    fn append_timeout_diagnostics(&self, id: &str, elapsed: Duration, output: &mut Output) {
+        let observation = match self
+            .command("wait", id)
+            .args(["--timeout-seconds", "1"])
+            .output()
+        {
+            Ok(observation) => format!(
+                "read-only wait exit={:?}, stdout={}, stderr={}",
+                observation.status.code(),
+                bounded_utf8(&observation.stdout, 1024),
+                bounded_utf8(&observation.stderr, 1024)
+            ),
+            Err(error) => format!("read-only wait could not launch: {error}"),
+        };
+        let diagnostic = format!(
+            "fixture diagnostic: integration elapsed={elapsed:?}; {observation}; engine log tail={}\n",
+            self.bounded_engine_log_tail()
+        );
+        eprintln!("{diagnostic}");
+        output.stderr.extend_from_slice(diagnostic.as_bytes());
+    }
+    fn bounded_engine_log_tail(&self) -> String {
+        const LIMIT: u64 = 2048;
+        let path = self._temp.path().join("engine.log");
+        let read_tail = || -> std::io::Result<String> {
+            let mut file = fs::File::open(&path)?;
+            let length = file.metadata()?.len();
+            file.seek(SeekFrom::Start(length.saturating_sub(LIMIT)))?;
+            let mut bytes = Vec::with_capacity(LIMIT as usize);
+            file.take(LIMIT).read_to_end(&mut bytes)?;
+            Ok(bounded_utf8(&bytes, LIMIT as usize))
+        };
+        read_tail().unwrap_or_else(|error| format!("<engine log unavailable: {error}>"))
     }
     fn show(&self, id: &str) -> Value {
         let output = self.command("show", id).output().unwrap();
@@ -1125,6 +1185,7 @@ fn timed_out_integration_keeps_running_and_exact_identity_recovers_result() {
     let mut f = Fixture::new();
     let baseline = f.trunk();
     let id = f.submit(&[("hold", "wait for explicit release\n")]);
+    let integration_started = Instant::now();
     let pending = f
         .command("integrate", &id)
         .args(["--mode", "textual", "--wait-seconds", "1"])
@@ -1137,8 +1198,10 @@ fn timed_out_integration_keeps_running_and_exact_identity_recovers_result() {
         assert!(Instant::now() < deadline, "gate did not start");
         thread::sleep(Duration::from_millis(10));
     }
-    let response = pending.wait_with_output().unwrap();
+    let mut response = pending.wait_with_output().unwrap();
+    f.append_timeout_diagnostics(&id, integration_started.elapsed(), &mut response);
     assert!(!response.status.success());
+    assert!(String::from_utf8_lossy(&response.stderr).contains("fixture diagnostic:"));
     assert!(
         String::from_utf8_lossy(&response.stderr).contains("outcome may be uncertain"),
         "stdout={} stderr={}",
