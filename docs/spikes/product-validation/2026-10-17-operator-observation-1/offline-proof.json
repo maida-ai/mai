@@ -1,0 +1,27 @@
+{
+  "kind": "owner_excluded_read_only_observation",
+  "identity": "offline-f3975467575297a0700bece1ed591cc3937f10f3",
+  "exclusive_engine_lock_held_during_wait": true,
+  "lifecycle_before_sha256": "20a91d7e92dfe81c670b70ce136e5801bca233a07483e96eff3e84b76f2daf2c",
+  "lifecycle_after_sha256": "20a91d7e92dfe81c670b70ce136e5801bca233a07483e96eff3e84b76f2daf2c",
+  "revision_before": 13,
+  "revision_after": 13,
+  "wait_exit": 6,
+  "wait_result": {
+    "generation": {
+      "change_id": "offline-f3975467575297a0700bece1ed591cc3937f10f3",
+      "generation": 1
+    },
+    "kind": "pending",
+    "message": "wait timed out before a terminal outcome; submission state is unchanged",
+    "schema_version": 1,
+    "state": {
+      "kind": "received"
+    }
+  },
+  "elapsed_seconds": 1.002358,
+  "limits": [
+    "logical lifecycle equality, not bitwise WAL sidecar equality",
+    "additional pending fixture deliberately remains received; accepted trunk unchanged"
+  ]
+}
