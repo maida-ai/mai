@@ -6,7 +6,8 @@ The current 0.0.1 code is the replacement MVP foundation. The old worktree engin
 
 ## Evaluate the current binary
 
-- [Getting started](getting-started.md): disposable-repository installation and current commands.
+- [Getting started](getting-started.md): build and land two dependent changes in short steps.
+- [Failed gate and correction](check-failure.md): distinguish a successful push from acceptance and preserve rejected work.
 - [Benchmark protocol](benchmarking.md): reproducible comparisons, recovery metrics and evidence limits.
 - [Receive and integration](receive.md): durable receipt, named-generation integration, limits and recovery.
 - [Two-agent workflow](two-agent-workflow.md): continue later work, diagnose overlap and submit an explicit correction.
