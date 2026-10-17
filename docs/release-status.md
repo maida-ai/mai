@@ -1,6 +1,6 @@
 # Current delivery and next decisions
 
-mai 0.0.1 is an evaluable trusted-local foundation, not a completed automatic integration queue. It now covers explicit creation, submission, inspection, gated landing, covered validator recovery and conservative continuation of later committed work. Use disposable repositories while the remaining MVP acceptance work is open.
+The product goal is parallel agent contribution with less branch and conflict coordination. Recovery supports that goal by preserving work and helping agents resume after failures. mai 0.0.1 is an evaluable trusted-local foundation, not a completed automatic integration queue. It now covers explicit creation, submission, inspection, gated landing, covered validator recovery and conservative continuation of later committed work. Use disposable repositories while the remaining MVP acceptance work is open.
 
 | User action | Delivered boundary |
 | --- | --- |
@@ -17,6 +17,8 @@ Start with [getting started](getting-started.md), then the [two-agent continuati
 [PR #111](https://github.com/maida-ai/mai/pull/111) delivered explicit receive/integration and its supporting invariants. [PR #112](https://github.com/maida-ai/mai/pull/112) delivered proof-backed validator recovery. [PR #113](https://github.com/maida-ai/mai/pull/113) adds copy-based continuation with an independently executed [two-agent evidence bundle](spikes/continuation/2026-10-17/README.md). Each delivered correctness path has its own failure/interruption tests and native CI evidence; the [benchmark index](benchmarking.md) distinguishes functional fixtures from performance qualification.
 
 The published recovery fixture observed 0.160 seconds to reclaim and 0.615 seconds to a fresh validated landing. The earlier tiny Git/mai smoke comparison had unequal operational scope and establishes no advantage. Neither experiment supplies production MTTR, representative throughput, a warm-overhead guarantee or evidence for hundreds/thousands of agents. Process-kill tests do not establish power-loss durability. The intended local audience remains 3–30 agents; even that workload has not been performance-qualified.
+
+Current manifests and leases operate on file units. The intended finer coordination unit is a semantic object—function, method, variable or configuration key. Semantic-object locking and stable object-key identity are future work and are not delivered or qualified by these increments.
 
 ## Still open
 
