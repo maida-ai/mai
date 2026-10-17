@@ -1,6 +1,6 @@
 # Independent agent workspaces
 
-`mai workspace PROJECT AGENT DESTINATION` creates an ordinary Git clone of the authority's selected trunk commit. The clone has a `mai` remote and local `mai.agent` configuration. It has independent object storage and writable files, with no alternates, shared environments or copy-on-write template. Receive and landing remain unavailable; the remote does not imply that submissions are enabled.
+`mai workspace PROJECT AGENT DESTINATION` creates an ordinary Git clone of the authority's selected trunk commit. The clone has a `mai` remote and local `mai.agent` configuration. It has independent object storage and writable files, with no alternates, shared environments or copy-on-write template. Receive requires explicit authority enablement; the remote alone does not imply that submissions are enabled. After explicit squash integration, a fresh workspace contains accepted trunk for new work. This does not replay subsequent commits from an old clone; preserve that clone because safe sync is unavailable.
 
 The destination must not exist, including an empty directory or a symlink. Its parent must already exist. Creation reserves the destination exclusively and never overwrites it on retry. A clone or setup failure preserves the destination for inspection. An incomplete operation or unsuccessful bootstrap leaves `.mai-workspace-incomplete`; choose a new destination when retrying creation. A failed bootstrap returns the bounded structured process result, including its outcome and diagnostic tails.
 

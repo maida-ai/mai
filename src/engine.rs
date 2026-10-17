@@ -1,6 +1,11 @@
 //! One trusted-local engine owns an authority. The OS lock, never PID metadata,
-//! is the ownership decision. Receive and landing are deliberately unavailable.
-use crate::{authority::Authority, native_path::NativePath};
+//! is the ownership decision. Admission, explicit integration, leases and approvals serialize here.
+use crate::{
+    authority::Authority,
+    lifecycle::{GenerationId, Submission},
+    native_path::NativePath,
+    receive,
+};
 use anyhow::{Context, Result, bail, ensure};
 use fs2::FileExt;
 use serde::{Deserialize, Serialize};
@@ -16,7 +21,7 @@ use std::{
 use std::process::{Command, Stdio};
 
 const PROTOCOL_VERSION: u32 = 1;
-const MAX_FRAME: usize = 4096;
+const MAX_FRAME: usize = 65536;
 const IO_TIMEOUT: Duration = Duration::from_secs(2);
 const START_TIMEOUT: Duration = Duration::from_secs(5);
 const POLL: Duration = Duration::from_millis(20);
@@ -42,6 +47,61 @@ enum Action {
     Status,
     Stop,
     Ack,
+    EnableReceive {
+        max_input_bytes: u64,
+        max_file_bytes: u64,
+        max_changed_files: u64,
+    },
+    Register {
+        agent: String,
+        commit: String,
+    },
+    Show {
+        generation: GenerationId,
+    },
+    Integrate {
+        generation: GenerationId,
+        mode: String,
+        claims: Vec<crate::lease::LeaseClaim>,
+    },
+    Lease {
+        operation: LeaseAction,
+    },
+    Approve {
+        candidate: String,
+        actor: String,
+        reason: String,
+        denied: bool,
+    },
+}
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case", deny_unknown_fields)]
+pub enum LeaseAction {
+    Acquire {
+        unit: String,
+        owner: String,
+        duration_ms: i64,
+    },
+    Renew {
+        owner: String,
+        claim: crate::lease::LeaseClaim,
+        duration_ms: i64,
+    },
+    Release {
+        owner: String,
+        claim: crate::lease::LeaseClaim,
+    },
+    Query {
+        unit: String,
+    },
+}
+#[derive(Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct Reply {
+    protocol_version: u32,
+    authority: NativePath,
+    result: Option<serde_json::Value>,
+    error: Option<String>,
 }
 
 fn local_dir(root: &Path) -> Result<PathBuf> {
@@ -118,7 +178,7 @@ pub fn serve(root: &Path) -> Result<()> {
         pid: std::process::id(),
         authority: NativePath::from_path(&root.canonicalize()?)?,
         state: "ready".into(),
-        registration_available: false,
+        registration_available: receive::enabled(&authority)?,
     };
     loop {
         if let Some(mut stream) = listener.accept()? {
@@ -129,10 +189,84 @@ pub fn serve(root: &Path) -> Result<()> {
                     request.protocol_version == PROTOCOL_VERSION,
                     "unsupported IPC version"
                 );
+                if matches!(
+                    request.action,
+                    Action::EnableReceive { .. }
+                        | Action::Register { .. }
+                        | Action::Show { .. }
+                        | Action::Approve { .. }
+                        | Action::Integrate { .. }
+                        | Action::Lease { .. }
+                ) {
+                    let result: Result<Option<serde_json::Value>> = match request.action {
+                        Action::EnableReceive {
+                            max_input_bytes,
+                            max_file_bytes,
+                            max_changed_files,
+                        } => receive::enable(
+                            &authority,
+                            max_input_bytes,
+                            max_file_bytes,
+                            max_changed_files,
+                        )
+                        .map(|()| None),
+                        Action::Register { agent, commit } => {
+                            receive::register(&authority, &agent, &commit)
+                                .and_then(|s| Ok(Some(serde_json::to_value(s)?)))
+                        }
+                        Action::Show { generation } => receive::query(&authority, &generation)
+                            .and_then(|s| Ok(Some(serde_json::to_value(s)?))),
+                        Action::Integrate {
+                            generation,
+                            mode,
+                            claims,
+                        } => integrate_owned(&mut authority, &generation, &mode, &claims).map(Some),
+                        Action::Lease { operation } => lease_owned(&authority, operation).map(Some),
+                        Action::Approve {
+                            candidate,
+                            actor,
+                            reason,
+                            denied,
+                        } => crate::validator::approve(
+                            authority.root(),
+                            &candidate,
+                            &actor,
+                            &reason,
+                            denied,
+                        )
+                        .and_then(|approval| Ok(Some(serde_json::to_value(approval)?))),
+                        _ => unreachable!(),
+                    };
+                    status.registration_available = receive::enabled(&authority)?;
+                    let mut reply = match result {
+                        Ok(result) => Reply {
+                            protocol_version: PROTOCOL_VERSION,
+                            authority: status.authority.clone(),
+                            result,
+                            error: None,
+                        },
+                        Err(error) => Reply {
+                            protocol_version: PROTOCOL_VERSION,
+                            authority: status.authority.clone(),
+                            result: None,
+                            error: Some(format!("{error:#}").chars().take(1024).collect()),
+                        },
+                    };
+                    if serde_json::to_vec(&reply)?.len() > MAX_FRAME {
+                        reply.result = None;
+                        reply.error = Some("durable result exceeds the bounded IPC response; no result was discarded; inspect authority state".into());
+                    }
+                    // An expired/disconnected client changes no durable result.
+                    let deadline = Instant::now() + IO_TIMEOUT;
+                    write_frame(&mut stream, &reply, deadline)?;
+                    let _ = read_frame::<Request>(&mut stream, deadline);
+                    return Ok(false);
+                }
                 let stop = match request.action {
                     Action::Status => false,
                     Action::Stop => true,
                     Action::Ack => bail!("unexpected acknowledgment"),
+                    _ => unreachable!(),
                 };
                 if stop {
                     status.state = "stopping".into();
@@ -278,6 +412,224 @@ use background::spawn_background;
 #[cfg(windows)]
 #[path = "engine/windows_process.rs"]
 mod background;
+
+/// An identity-checked engine reply, distinct from a missing transport response.
+#[derive(Debug)]
+struct EngineOperationError(String);
+impl std::fmt::Display for EngineOperationError {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str(&self.0)
+    }
+}
+impl std::error::Error for EngineOperationError {}
+
+fn operation(root: &Path, action: Action) -> Result<Option<serde_json::Value>> {
+    operation_with_timeout(root, action, Duration::from_secs(10))
+}
+fn operation_with_timeout(
+    root: &Path,
+    action: Action,
+    timeout: Duration,
+) -> Result<Option<serde_json::Value>> {
+    let local = local_dir(root)?;
+    let deadline = Instant::now() + timeout;
+    let mut stream = transport::connect(&local, deadline)?;
+    write_frame(
+        &mut stream,
+        &Request {
+            protocol_version: PROTOCOL_VERSION,
+            action,
+        },
+        deadline,
+    )?;
+    let response: Reply = read_frame(&mut stream, deadline)?;
+    ensure!(
+        response.protocol_version == PROTOCOL_VERSION
+            && response.authority.as_path() == local.parent().unwrap(),
+        "engine IPC identity mismatch"
+    );
+    // The response is already received and its identity verified. Failure to
+    // acknowledge it cannot turn that known result into a lost response.
+    let _ = write_frame(
+        &mut stream,
+        &Request {
+            protocol_version: PROTOCOL_VERSION,
+            action: Action::Ack,
+        },
+        deadline,
+    );
+    if let Some(error) = response.error {
+        return Err(EngineOperationError(error).into());
+    }
+    Ok(response.result)
+}
+pub fn enable_receive(
+    root: &Path,
+    max_input_bytes: u64,
+    max_file_bytes: u64,
+    max_changed_files: u64,
+) -> Result<()> {
+    status(root, true)?;
+    operation(
+        root,
+        Action::EnableReceive {
+            max_input_bytes,
+            max_file_bytes,
+            max_changed_files,
+        },
+    )?;
+    Ok(())
+}
+pub fn register(root: &Path, agent: &str, commit: &str) -> Result<Submission> {
+    Ok(serde_json::from_value(
+        operation(
+            root,
+            Action::Register {
+                agent: agent.into(),
+                commit: commit.into(),
+            },
+        )?
+        .context("engine returned no submission")?,
+    )?)
+}
+pub fn show(root: &Path, generation: GenerationId) -> Result<Submission> {
+    Ok(serde_json::from_value(
+        operation(root, Action::Show { generation })?.context("engine returned no submission")?,
+    )?)
+}
+
+fn lease_store(authority: &Authority) -> Result<crate::lease::LeaseStore> {
+    authority.lease_store()
+}
+
+fn lease_owned(authority: &Authority, action: LeaseAction) -> Result<serde_json::Value> {
+    let now: i64 = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)?
+        .as_millis()
+        .try_into()?;
+    let mut store = lease_store(authority)?;
+    let result = match action {
+        LeaseAction::Acquire {
+            unit,
+            owner,
+            duration_ms,
+        } => serde_json::to_value(store.acquire(&unit, &owner, now, duration_ms)?)?,
+        LeaseAction::Renew {
+            owner,
+            claim,
+            duration_ms,
+        } => serde_json::to_value(store.renew(&owner, &claim, now, duration_ms)?)?,
+        LeaseAction::Release { owner, claim } => {
+            store.release(&owner, &claim, now)?;
+            serde_json::json!({"released":true,"claim":claim})
+        }
+        LeaseAction::Query { unit } => serde_json::to_value(store.query(&unit, now)?)?,
+    };
+    Ok(serde_json::json!({"schema_version":1,"lease":result}))
+}
+fn integrate_owned(
+    authority: &mut Authority,
+    id: &GenerationId,
+    mode: &str,
+    claims: &[crate::lease::LeaseClaim],
+) -> Result<serde_json::Value> {
+    ensure!(
+        mode == "textual",
+        "only explicitly selected textual merge mode is available"
+    );
+    ensure!(claims.len() <= 256, "too many lease claims");
+    let mut store = crate::state::StateStore::open(authority.state_path())?;
+    let mut lifecycle = store.load_lifecycle()?;
+    let state = lifecycle
+        .get(id)
+        .context("unknown submission generation")?
+        .state();
+    if matches!(state, crate::lifecycle::State::Received) {
+        lifecycle.queue(id)?;
+        store.save_lifecycle(&mut lifecycle)?;
+    }
+    ensure!(
+        !matches!(
+            lifecycle.get(id).unwrap().state(),
+            crate::lifecycle::State::DependencyBlocked
+        ),
+        "dependency blocked; integrate the submitted parent before retrying this change"
+    );
+    let mut leases = lease_store(authority)?;
+    let mut result = serde_json::to_value(crate::landing::run_one(
+        authority,
+        id,
+        crate::landing::MergeMode::Textual,
+        &mut leases,
+        claims,
+    )?)?;
+    result["schema_version"] = serde_json::json!(1);
+    result["generation"] = serde_json::to_value(id)?;
+    Ok(result)
+}
+pub fn integrate(
+    root: &Path,
+    generation: GenerationId,
+    mode: String,
+    claims: Vec<crate::lease::LeaseClaim>,
+    wait_seconds: u64,
+) -> Result<serde_json::Value> {
+    ensure!(
+        (1..=3600).contains(&wait_seconds),
+        "wait-seconds must be between 1 and 3600"
+    );
+    operation_with_timeout(root, Action::Integrate { generation, mode, claims }, Duration::from_secs(wait_seconds))
+        .map_err(|error| {
+            if error.is::<EngineOperationError>() {
+                error
+            } else {
+                error.context("integration response unavailable; outcome may be uncertain; query the same generation before retrying")
+            }
+        })?.context("engine returned no integration result")
+}
+pub fn lease(root: &Path, operation: LeaseAction) -> Result<serde_json::Value> {
+    operation_with_timeout(root, Action::Lease { operation }, Duration::from_secs(10))?
+        .context("engine returned no lease result")
+}
+
+fn ownership_contended(error: &io::Error) -> bool {
+    error.kind() == io::ErrorKind::WouldBlock
+        || error
+            .raw_os_error()
+            .is_some_and(|code| Some(code) == fs2::lock_contended_error().raw_os_error())
+}
+
+/// Administration shares publication ownership, including when no daemon runs.
+/// A failed IPC response is uncertain and is never retried as an unlocked write.
+pub fn approve(
+    root: &Path,
+    candidate: &str,
+    actor: &str,
+    reason: &str,
+    denied: bool,
+) -> Result<crate::approval::Approval> {
+    let local = local_dir(root)?;
+    let lock = lock_file(&local)?;
+    match lock.try_lock_exclusive() {
+        Ok(()) => {
+            let _ownership = Ownership(lock);
+            crate::validator::approve(root, candidate, actor, reason, denied)
+        }
+        Err(error) if ownership_contended(&error) => Ok(serde_json::from_value(
+            operation(
+                root,
+                Action::Approve {
+                    candidate: candidate.into(),
+                    actor: actor.into(),
+                    reason: reason.into(),
+                    denied,
+                },
+            )?
+            .context("engine returned no approval")?,
+        )?),
+        Err(error) => Err(error).context("acquire authority ownership for approval"),
+    }
+}
 
 pub fn stop(root: &Path) -> Result<Status> {
     exchange(&local_dir(root)?, Action::Stop, IO_TIMEOUT)
@@ -732,6 +1084,102 @@ mod transport {
 #[cfg(test)]
 mod tests {
     use super::*;
+    fn integration_reply_fixture(
+        error: Option<&str>,
+        delay: Duration,
+        close_after_reply: bool,
+    ) -> Result<serde_json::Value> {
+        let temp = tempfile::tempdir().unwrap();
+        let local = temp.path().join(".mai");
+        fs::create_dir(&local).unwrap();
+        let local = local.canonicalize().unwrap();
+        let listener = transport::Listener::bind(&local).unwrap();
+        let authority = NativePath::from_path(local.parent().unwrap()).unwrap();
+        let error = error.map(str::to_owned);
+        let server = thread::spawn(move || {
+            let deadline = Instant::now() + Duration::from_secs(3);
+            let mut stream = loop {
+                if let Some(stream) = listener.accept().unwrap() {
+                    break stream;
+                }
+                assert!(Instant::now() < deadline);
+                thread::sleep(POLL);
+            };
+            let request: Request = read_frame(&mut stream, deadline).unwrap();
+            assert!(matches!(request.action, Action::Integrate { .. }));
+            if !delay.is_zero() {
+                // A received request with no timely reply remains uncertain.
+                thread::sleep(delay);
+                return;
+            }
+            write_frame(
+                &mut stream,
+                &Reply {
+                    protocol_version: PROTOCOL_VERSION,
+                    authority,
+                    result: None,
+                    error,
+                },
+                deadline,
+            )
+            .unwrap();
+            if !close_after_reply {
+                let _ = read_frame::<Request>(&mut stream, deadline);
+            }
+        });
+        let result = integrate(
+            temp.path(),
+            GenerationId {
+                change_id: "change".into(),
+                generation: 1,
+            },
+            "textual".into(),
+            vec![],
+            1,
+        );
+        server.join().unwrap();
+        result
+    }
+
+    #[test]
+    fn integration_confirmed_remote_rejections_do_not_claim_transport_uncertainty() {
+        for message in [
+            "unknown submission generation",
+            "dependency blocked; integrate the submitted parent before retrying this change",
+        ] {
+            for close_after_reply in [false, true] {
+                let error =
+                    integration_reply_fixture(Some(message), Duration::ZERO, close_after_reply)
+                        .unwrap_err();
+                assert_eq!(format!("{error:#}"), message);
+            }
+        }
+    }
+
+    #[test]
+    fn integration_lost_response_preserves_query_before_retry_guidance() {
+        let error =
+            integration_reply_fixture(None, Duration::from_millis(1200), false).unwrap_err();
+        let message = format!("{error:#}");
+        assert!(message.contains("response unavailable"), "{message}");
+        assert!(message.contains("outcome may be uncertain"), "{message}");
+        assert!(
+            message.contains("query the same generation before retrying"),
+            "{message}"
+        );
+    }
+
+    #[test]
+    fn approval_routes_only_native_ownership_contention() {
+        assert!(ownership_contended(&fs2::lock_contended_error()));
+        assert!(ownership_contended(&io::Error::from(
+            io::ErrorKind::WouldBlock
+        )));
+        assert!(!ownership_contended(&io::Error::from(
+            io::ErrorKind::PermissionDenied
+        )));
+    }
+
     #[cfg(unix)]
     #[test]
     fn connect_deadline_survives_a_full_listener_backlog() {

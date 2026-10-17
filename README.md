@@ -17,29 +17,23 @@
 
 mai aims to shorten recovery when agents fail, conflict or lose their environment, while keeping a blocking gate at the shared trunk boundary. The proposed rewrite uses plain Git submissions and an integrated validation queue so agents spend less time on rebases and humans spend less time coordinating parallel changes.
 
-**MVP foundations under development.** Scoped design acceptance and native S3 functional verification permit replacement under [ADR 0010](docs/adr/0010-staged-mvp-qualification.md). The old worktree engine has been retired. The foundation now provides a versioned lifecycle model, SQLite persistence, safe authority initialization, a local single-writer engine, manual trusted-gate validation and independent agent workspaces. The authority commands are described in the [engine guide](docs/engine.md); see [manual validation](docs/manual-validator.md) and [workspaces](docs/workspaces.md) for the new explicit operations. The queue flow below is planned, not shipped. Built in Rust, backed by Git, open source under [Apache 2.0](LICENSE), and independent of core Maida.
+**MVP foundations under development.** Scoped design acceptance and native S3 functional verification permit replacement under [ADR 0010](docs/adr/0010-staged-mvp-qualification.md). The old worktree engine has been retired. The foundation now provides a versioned lifecycle model, SQLite persistence, safe authority initialization, a local single-writer engine, manual trusted-gate validation, independent agent workspaces, explicit durable receive and serial integration of named generations. The authority commands are described in the [engine guide](docs/engine.md); see [manual validation](docs/manual-validator.md) and [workspaces](docs/workspaces.md) for the new explicit operations. This scoped explicit workflow is available; the full automatic queue, drafts and safe sync remain unimplemented. Built in Rust, backed by Git, open source under [Apache 2.0](LICENSE), and independent of core Maida.
 
-## Two agents. One integration queue.
+## Receive, inspect, integrate
 
-Planned submission flow after creating Alice's and Bob's clones with the implemented `mai workspace` command:
+Create an authority with explicit trusted gate policy and independent workspaces, then enable receive with explicit limits. Each push registers one immutable generation; it never lands implicitly. An operator selects each generation for serial integration, parent before dependent child:
 
 ```sh
-# In Alice's clone:
-printf 'Hello UI\n' > ui.txt
-git add ui.txt
-git commit -m 'Add UI'
-git push mai HEAD:refs/for/main
-
-# In Bob's clone:
-printf 'Hello API\n' > api.txt
-git add api.txt
-git commit -m 'Add API'
-git push mai HEAD:refs/for/main
+# In an agent workspace, after committing:
+git push -o agent=alice mai HEAD:refs/for/main
+# At the authority, using the change ID returned by push:
+mai show PROJECT CHANGE --generation 1 --json
+mai integrate PROJECT CHANGE --mode textual --wait-seconds 60 --json
 ```
 
-Push success will acknowledge durable registration, not landing. Each agent waits for its change's typed outcome with `mai wait <change>` and runs `mai sync` after landing; the engine combines and checks candidates without requiring a pre-submission rebase. A conflict or failed check returns an actionable outcome and a fetchable candidate. Pipeline mode must validate each landed tree exactly as landed; optional batch mode must label its weaker intermediate-revision evidence explicitly.
+The [runnable walkthrough](docs/getting-started.md) builds an authority, submits a parent and child, integrates both through the trusted gate and verifies a fresh clone. [Receive and integration](docs/receive.md) documents exact retry identity, admission limits, leases and uncertain responses. File manifests come from actual diffs; landing requires the checked tree and matching parent/policy evidence. Textual integration currently rejects attributes/custom merge drivers. Safe sync is deferred: keep original workspaces and unpushed work; creating a fresh clone does not replay later local commits.
 
-The intended audience is one developer or team running 3–30 agents across harnesses. Humans keep their forge and review process; mai integrates agent changes into an export branch. Recovery times, human interventions, time to land and broken-trunk rate will measure whether this design earns its place. None of those improvements has been measured for the rewrite yet.
+The intended audience is one developer or team running 3–30 agents across harnesses. Humans keep their forge and review process; mai integrates agent changes into an export branch. Recovery times, human interventions, time to land and broken-trunk rate will measure whether this design earns its place. None of those improvements has been measured for the rewrite yet. See the [benchmark protocol](docs/benchmarking.md) for comparable workloads and recovery measurements. The longer-term ambition is hundreds or thousands of overlapping agents; that scale and distributed operation are outside the qualified local MVP.
 
 ## Build the MVP foundation
 
@@ -53,7 +47,7 @@ cargo test --all-targets --locked
 cargo run --locked -- --version
 ```
 
-See [getting started](docs/getting-started.md). Submission and publication are not enabled in this layer; manual validation requires explicit trusted policy and does not land changes; no legacy worktree commands or format migrations are provided. Performance targets and differentiated priority remain deferred until practical MVP observations.
+See [getting started](docs/getting-started.md). Submission requires explicit enablement and integration requires an explicit command; manual validation requires trusted policy and does not land changes; no legacy worktree commands or format migrations are provided. Performance targets and differentiated priority remain deferred until practical MVP observations.
 
 ## Where mai fits
 

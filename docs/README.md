@@ -1,10 +1,12 @@
 # mai documentation
 
-The current 0.0.1 code is the replacement MVP foundation. The old worktree engine is retired. Scoped M0 acceptance is complete under ADR 0010, but the full Git receive/validation/landing queue remains unimplemented; each enabled path requires its own correctness tests.
+The current 0.0.1 code is the replacement MVP foundation. The old worktree engine is retired. Scoped M0 acceptance is complete under ADR 0010, with explicit trusted-local receive and serial integration of a named generation now available. This is a scoped workflow, not the full automatic integration queue; each enabled path requires its own correctness tests.
 
 ## Evaluate the current binary
 
 - [Getting started](getting-started.md): disposable-repository installation and current commands.
+- [Benchmark protocol](benchmarking.md): reproducible comparisons, recovery metrics and evidence limits.
+- [Receive and integration](receive.md): durable receipt, named-generation integration, limits and recovery.
 - [CLI reference](cli.md): current command behavior, safety limitations and a separate proposed interface outline.
 - [Agent integration](agents.md): current precautions followed by clearly labeled planned harness instructions.
 

@@ -707,3 +707,69 @@ fn unsupported_non_utf8_authority_paths_reject_without_mutation() {
         .collect();
     assert_eq!(entries, vec![sentinel.file_name().unwrap().to_os_string()]);
 }
+
+#[test]
+fn leases_are_required_identity_bound_state_and_missing_state_is_not_recreated() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path().join("first");
+    let authority = Authority::init(&root, None).unwrap();
+    let mut leases = authority.lease_store().unwrap();
+    leases.acquire("file:a", "alice", 100, 100).unwrap();
+    drop(leases);
+    drop(authority);
+    let reopened = Authority::open(&root).unwrap();
+    assert_eq!(
+        reopened
+            .lease_store()
+            .unwrap()
+            .query("file:a", 101)
+            .unwrap()
+            .unwrap()
+            .owner,
+        "alice"
+    );
+    let path = root.join(".mai/leases.db");
+    fs::rename(&path, root.join(".mai/leases.saved")).unwrap();
+    assert!(reopened.lease_store().is_err());
+    assert!(Authority::open(&root).is_err());
+    assert!(Authority::init(&root, None).is_err());
+    assert!(!path.exists());
+    // Copying an otherwise valid database from another authority cannot clear ownership.
+    let other = Authority::init(&tmp.path().join("other"), None).unwrap();
+    fs::copy(other.root().join(".mai/leases.db"), &path).unwrap();
+    assert!(Authority::open(&root).is_err());
+    assert!(reopened.lease_store().is_err());
+}
+
+#[test]
+fn old_authority_format_and_corrupt_lease_store_are_rejected_without_repair() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path().join("project");
+    drop(Authority::init(&root, None).unwrap());
+    let config_path = root.join(".mai/config.toml");
+    let config = fs::read_to_string(&config_path).unwrap();
+    assert!(config.contains("format_version = 2"));
+    let legacy = config.replace("format_version = 2", "format_version = 1");
+    fs::write(&config_path, &legacy).unwrap();
+    assert!(Authority::open(&root).is_err());
+    assert_eq!(fs::read_to_string(&config_path).unwrap(), legacy);
+    fs::write(config_path, config).unwrap();
+    let lease_path = root.join(".mai/leases.db");
+    fs::write(&lease_path, b"corrupt lease state").unwrap();
+    assert!(Authority::open(&root).is_err());
+    assert_eq!(fs::read(lease_path).unwrap(), b"corrupt lease state");
+}
+
+#[cfg(unix)]
+#[test]
+fn symlinked_lease_database_is_rejected_without_following_it() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path().join("project");
+    let authority = Authority::init(&root, None).unwrap();
+    let path = root.join(".mai/leases.db");
+    let saved = root.join(".mai/leases.saved");
+    fs::rename(&path, &saved).unwrap();
+    std::os::unix::fs::symlink(&saved, &path).unwrap();
+    assert!(Authority::open(&root).is_err());
+    assert!(authority.lease_store().is_err());
+}

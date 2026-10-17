@@ -256,10 +256,34 @@ pub fn validate_source(path: &Path) -> Result<ValidatedSource> {
         args.push("HEAD");
     }
     let objects = output(&path, &args)?;
+    validate_objects(&path, &objects)?;
+    Ok(ValidatedSource { path, head })
+}
+
+/// Qualify the complete submitted tree before retaining a received commit.
+pub fn validate_commit(path: &Path, commit: &str) -> Result<()> {
+    ensure!(
+        commit.len() == 40 && commit.bytes().all(|b| b.is_ascii_hexdigit()),
+        "invalid commit identity"
+    );
+    let objects = output(
+        path,
+        &[
+            "rev-list",
+            "--objects",
+            "--no-object-names",
+            "--no-walk",
+            commit,
+        ],
+    )?;
+    validate_objects(path, &objects)
+}
+
+fn validate_objects(path: &Path, objects: &[u8]) -> Result<()> {
     let mut attrs = HashSet::new();
     // Two streaming passes avoid retaining blob contents or trusting traversal order.
     // This intentionally trades import time for complete historical qualification.
-    visit_objects(&path, &objects, |_oid, kind, data| {
+    visit_objects(path, objects, |_oid, kind, data| {
         if kind == "tree" {
             let mut tree = Vec::new();
             data.read_to_end(&mut tree)?;
@@ -280,19 +304,20 @@ pub fn validate_source(path: &Path) -> Result<ValidatedSource> {
                 );
                 ensure!(remainder.len() >= nul + 21, "malformed SHA-1 tree entry");
                 if &entry[space + 1..] == b".gitattributes" {
-                    attrs.insert(
-                        remainder[nul + 1..nul + 21]
-                            .iter()
-                            .map(|b| format!("{b:02x}"))
-                            .collect::<String>(),
-                    );
+                    const HEX: &[u8; 16] = b"0123456789abcdef";
+                    let mut oid = String::with_capacity(40);
+                    for byte in &remainder[nul + 1..nul + 21] {
+                        oid.push(HEX[(byte >> 4) as usize] as char);
+                        oid.push(HEX[(byte & 15) as usize] as char);
+                    }
+                    attrs.insert(oid);
                 }
                 remainder = &remainder[nul + 21..];
             }
         }
         Ok(())
     })?;
-    visit_objects(&path, &objects, |oid, kind, data| {
+    visit_objects(path, objects, |oid, kind, data| {
         if kind != "blob" {
             return Ok(());
         }
@@ -333,7 +358,7 @@ pub fn validate_source(path: &Path) -> Result<ValidatedSource> {
         }
         Ok(())
     })?;
-    Ok(ValidatedSource { path, head })
+    Ok(())
 }
 fn path_from_git(bytes: &[u8]) -> Result<PathBuf> {
     let bytes = bytes.strip_suffix(b"\n").unwrap_or(bytes);

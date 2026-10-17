@@ -1,0 +1,27 @@
+Initialized empty Git repository in /tmp/mai-demo.tvPZSR/source/.git/
+[main (root-commit) 6769b3c] Add explicit demo gate
+ 3 files changed, 13 insertions(+)
+ create mode 100644 gate.sh
+ create mode 100644 mai.toml
+ create mode 100644 message.txt
+{"authority":{"data":"L3RtcC9tYWktZGVtby50dlBaU1IvcHJvamVjdA==","encoding":"unix_bytes"},"initialized":true,"registration_available":false,"schema_version":1}
+{"authority":{"data":"L3RtcC9tYWktZGVtby50dlBaU1IvcHJvamVjdA==","encoding":"unix_bytes"},"pid":392799,"protocol_version":1,"registration_available":false,"state":"ready"}
+{"agent":"alice","base":"6769b3c3d1671870bbe216616d8b00f7ae6ff775","bootstrap":null,"bootstrap_skipped":false,"destination":{"data":"L3RtcC9tYWktZGVtby50dlBaU1IvYWxpY2U=","encoding":"unix_bytes"},"schema_version":1}
+{"agent":"bob","base":"6769b3c3d1671870bbe216616d8b00f7ae6ff775","bootstrap":null,"bootstrap_skipped":false,"destination":{"data":"L3RtcC9tYWktZGVtby50dlBaU1IvYm9i","encoding":"unix_bytes"},"schema_version":1}
+{"approval":null,"binding":{"authority":{"data":"L3RtcC9tYWktZGVtby50dlBaU1IvcHJvamVjdA==","encoding":"unix_bytes"},"base":"6769b3c3d1671870bbe216616d8b00f7ae6ff775","candidate":"6769b3c3d1671870bbe216616d8b00f7ae6ff775","policy":"6769b3c3d1671870bbe216616d8b00f7ae6ff775","schema_version":1,"submitted_identity":null,"tree":"3f72ec9c6498ff2f8dafd828bb112377088a1cf0"},"bootstrap":null,"bootstrap_reused":false,"diagnostic":null,"elapsed_ms":126,"outcome":"success","process":{"elapsed_ms":13,"exit_code":0,"outcome":"success","stderr_tail":"","stdout_tail":""},"protected_changes":[],"schema_version":1}
+{"automatic_integration":false,"max_changed_files":100,"max_file_bytes":1048576,"max_input_bytes":10485760,"registration_available":true,"schema_version":1}
+[detached HEAD a34ce68] Parent change
+ 1 file changed, 1 insertion(+)
+ create mode 100644 parent.txt
+[detached HEAD 07652b6] Dependent child change
+ 1 file changed, 1 insertion(+)
+ create mode 100644 child.txt
+{"agent":"alice","annotations":[],"approval_pending":false,"attempts":[],"commit":"a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f","dependencies":[],"id":{"change_id":"alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f","generation":1},"predecessor":null,"schema_version":1,"state":{"kind":"received"}}
+{"agent":"alice","annotations":[],"approval_pending":false,"attempts":[],"commit":"07652b6ad73244d41cc1f5abb5a69f8bc2187bf5","dependencies":[{"change_id":"alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f","generation":1}],"id":{"change_id":"alice-07652b6ad73244d41cc1f5abb5a69f8bc2187bf5","generation":1},"predecessor":null,"schema_version":1,"state":{"kind":"received"}}
+{"commit":"9077999b804567b6fc7a1486fb25c70fa5d0401f","generation":{"change_id":"alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f","generation":1},"kind":"landed","revision":1,"schema_version":1}
+{"commit":"0e8a1f97a98b626cc7a4f7015fa03cdfd2170423","generation":{"change_id":"alice-07652b6ad73244d41cc1f5abb5a69f8bc2187bf5","generation":1},"kind":"landed","revision":2,"schema_version":1}
+{"agent":"alice","annotations":[],"approval_pending":false,"attempts":[{"number":1,"status":"completed"}],"commit":"a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f","dependencies":[],"id":{"change_id":"alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f","generation":1},"predecessor":null,"schema_version":1,"state":{"kind":"terminal","outcome":{"commit":"9077999b804567b6fc7a1486fb25c70fa5d0401f","kind":"landed","revision":1}}}
+{"agent":"alice","annotations":[],"approval_pending":false,"attempts":[{"number":1,"status":"completed"}],"commit":"07652b6ad73244d41cc1f5abb5a69f8bc2187bf5","dependencies":[{"change_id":"alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f","generation":1}],"id":{"change_id":"alice-07652b6ad73244d41cc1f5abb5a69f8bc2187bf5","generation":1},"predecessor":null,"schema_version":1,"state":{"kind":"terminal","outcome":{"commit":"0e8a1f97a98b626cc7a4f7015fa03cdfd2170423","kind":"landed","revision":2}}}
+{"agent":"fresh","base":"0e8a1f97a98b626cc7a4f7015fa03cdfd2170423","bootstrap":null,"bootstrap_skipped":false,"destination":{"data":"L3RtcC9tYWktZGVtby50dlBaU1IvZnJlc2g=","encoding":"unix_bytes"},"schema_version":1}
+{"authority":{"data":"L3RtcC9tYWktZGVtby50dlBaU1IvcHJvamVjdA==","encoding":"unix_bytes"},"pid":392799,"protocol_version":1,"registration_available":true,"state":"stopping"}
+Disposable demo retained at /tmp/mai-demo.tvPZSR

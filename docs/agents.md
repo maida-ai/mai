@@ -2,11 +2,11 @@
 
 ## Current 0.0.1 foundation
 
-The old worktree engine and its submit/refresh commands are retired. The replacement foundation exposes versioned lifecycle types, while the binary currently supports help and version only. No agent submission, workspace or sync protocol is enabled at this layer. Continue using ordinary Git and existing review processes for real work. See the [current CLI reference](cli.md); the protocol below remains planned.
+The old worktree engine and its submit/refresh commands are retired. The replacement foundation supports authority administration, independent workspaces and manual trusted validation. `mai workspace PROJECT AGENT DESTINATION` creates a clone and runs configured bootstrap; it does not install a draft-push hook. Explicit Git submission and named-generation integration are available; automatic scheduling, draft hooks and safe sync remain unavailable. Follow the [runnable walkthrough](getting-started.md) and [receive contract](receive.md). Continue using ordinary Git and existing review processes for real work. See the [current CLI reference](cli.md); the protocol below remains planned.
 
 ## Planned protocol — not runnable yet
 
-M1 agents use ordinary Git clones. `mai workspace <name>` is an explicit convenience that creates a clone, sets `mai.agent`, installs a draft-push hook and bootstraps the environment. Container agents use their own clones over M1b smart HTTP. No agent receives write access to the authority filesystem as a substitute for the receive policy.
+M1 agents use ordinary Git clones. The implemented `mai workspace PROJECT AGENT DESTINATION` creates a clone, sets `mai.agent` and runs configured bootstrap. Installing a draft-push hook remains planned. Container agents use their own clones over M1b smart HTTP. No agent receives write access to the authority filesystem as a substitute for the receive policy.
 
 1. Make small coherent changes and commit normally. The planned post-commit hook asynchronously pushes the agent's own `refs/drafts/<agent>`; local commits alone do not prove remote recovery durability.
 2. Submit with `git push mai HEAD:refs/for/main`, or the proposed convenience `mai submit`. Only the wrapper may auto-commit dirty work, with explicit path selection and untracked-file disclosure.

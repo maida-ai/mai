@@ -36,7 +36,8 @@ pub struct ValidationResult {
     pub elapsed_ms: u64,
     pub diagnostic: Option<String>,
 }
-pub fn approve(
+/// Caller holds the authority engine ownership lock through the write.
+pub(crate) fn approve(
     project: &Path,
     candidate: &str,
     actor: &str,

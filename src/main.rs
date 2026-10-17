@@ -3,7 +3,7 @@ use clap::{Parser, Subcommand};
 use mai::{
     authority::Authority,
     engine,
-    lifecycle::{ExitCode, SCHEMA_VERSION},
+    lifecycle::{ExitCode, GenerationId, SCHEMA_VERSION},
     native_path::NativePath,
 };
 use serde_json::{Value, json};
@@ -23,7 +23,41 @@ struct Cli {
 }
 #[derive(Subcommand)]
 enum Action {
-    /// Initialize or safely reopen an authority; receive and landing are unavailable.
+    /// Validate and integrate one named generation through the serial engine.
+    Integrate {
+        project: PathBuf,
+        change: String,
+        #[arg(long, default_value_t = 1)]
+        generation: u64,
+        #[arg(long, value_parser=["textual"])]
+        mode: String,
+        #[arg(long="lease", value_parser=parse_claim)]
+        claims: Vec<mai::lease::LeaseClaim>,
+        #[arg(long, default_value_t = 600)]
+        wait_seconds: u64,
+    },
+    /// Acquire, renew, release or inspect ordinary file leases using engine time.
+    Lease {
+        #[command(subcommand)]
+        command: LeaseCommand,
+    },
+    /// Configure explicit limits and enable trusted-local Git admission.
+    Receive {
+        #[command(subcommand)]
+        command: ReceiveAction,
+    },
+    /// Show the durable state of a registered submission.
+    Show {
+        project: PathBuf,
+        change: String,
+        #[arg(long, default_value_t = 1)]
+        generation: u64,
+    },
+    #[command(hide = true)]
+    ReceiveHook { project: PathBuf },
+    #[command(hide = true)]
+    ReceivePreflight { project: PathBuf },
+    /// Initialize or safely reopen an authority; receive is explicitly enabled separately.
     Init {
         project: PathBuf,
         #[arg(long = "from")]
@@ -52,7 +86,7 @@ enum Action {
         skip_bootstrap: bool,
     },
 
-    /// Manually validate exact candidates; receive and landing remain unavailable.
+    /// Manually validate exact candidates without registering or landing them.
     Validator {
         #[command(subcommand)]
         command: ValidatorAction,
@@ -70,15 +104,174 @@ enum Action {
     },
 }
 #[derive(Subcommand)]
+enum LeaseCommand {
+    Acquire {
+        project: PathBuf,
+        unit: String,
+        #[arg(long)]
+        owner: String,
+        #[arg(long)]
+        duration_ms: i64,
+    },
+    Renew {
+        project: PathBuf,
+        unit: String,
+        #[arg(long)]
+        owner: String,
+        #[arg(long)]
+        generation: u64,
+        #[arg(long)]
+        duration_ms: i64,
+    },
+    Release {
+        project: PathBuf,
+        unit: String,
+        #[arg(long)]
+        owner: String,
+        #[arg(long)]
+        generation: u64,
+    },
+    Query {
+        project: PathBuf,
+        unit: String,
+    },
+}
+fn parse_claim(text: &str) -> std::result::Result<mai::lease::LeaseClaim, String> {
+    let (unit, generation) = text
+        .rsplit_once('=')
+        .ok_or("lease claim must be canonical file:UNIT=GENERATION")?;
+    mai::manifest::FileUnit::try_from(unit.to_owned()).map_err(|e| e.to_string())?;
+    let generation = generation.parse::<u64>().map_err(|e| e.to_string())?;
+    if generation == 0 {
+        return Err("lease generation must be positive".into());
+    }
+    Ok(mai::lease::LeaseClaim {
+        unit: unit.into(),
+        generation,
+    })
+}
+#[derive(Subcommand)]
+enum ReceiveAction {
+    /// Enable refs/for/main admission with an explicit maximum input pack size.
+    Enable {
+        project: PathBuf,
+        #[arg(long)]
+        max_input_bytes: u64,
+        #[arg(long)]
+        max_file_bytes: u64,
+        #[arg(long)]
+        max_changed_files: u64,
+    },
+}
+#[derive(Subcommand)]
 enum ValidatorAction {
     /// Run the trusted current-trunk gate on an exact candidate in an isolated slot.
     Run { project: PathBuf, candidate: String },
 }
 fn run(command: Action) -> Result<Value> {
     Ok(match command {
+        Action::Integrate {
+            project,
+            change,
+            generation,
+            mode,
+            claims,
+            wait_seconds,
+        } => engine::integrate(
+            &project,
+            GenerationId {
+                change_id: change,
+                generation,
+            },
+            mode,
+            claims,
+            wait_seconds,
+        )?,
+        Action::Lease { command } => {
+            let (project, operation) = match command {
+                LeaseCommand::Acquire {
+                    project,
+                    unit,
+                    owner,
+                    duration_ms,
+                } => (
+                    project,
+                    engine::LeaseAction::Acquire {
+                        unit,
+                        owner,
+                        duration_ms,
+                    },
+                ),
+                LeaseCommand::Renew {
+                    project,
+                    unit,
+                    owner,
+                    generation,
+                    duration_ms,
+                } => (
+                    project,
+                    engine::LeaseAction::Renew {
+                        owner,
+                        claim: mai::lease::LeaseClaim { unit, generation },
+                        duration_ms,
+                    },
+                ),
+                LeaseCommand::Release {
+                    project,
+                    unit,
+                    owner,
+                    generation,
+                } => (
+                    project,
+                    engine::LeaseAction::Release {
+                        owner,
+                        claim: mai::lease::LeaseClaim { unit, generation },
+                    },
+                ),
+                LeaseCommand::Query { project, unit } => {
+                    (project, engine::LeaseAction::Query { unit })
+                }
+            };
+            engine::lease(&project, operation)?
+        }
+        Action::Receive {
+            command:
+                ReceiveAction::Enable {
+                    project,
+                    max_input_bytes,
+                    max_file_bytes,
+                    max_changed_files,
+                },
+        } => {
+            engine::enable_receive(&project, max_input_bytes, max_file_bytes, max_changed_files)?;
+            json!({"schema_version": SCHEMA_VERSION, "registration_available": true, "max_input_bytes": max_input_bytes, "max_file_bytes": max_file_bytes, "max_changed_files": max_changed_files, "automatic_integration": false})
+        }
+        Action::Show {
+            project,
+            change,
+            generation,
+        } => {
+            let mut result = serde_json::to_value(engine::show(
+                &project,
+                GenerationId {
+                    change_id: change,
+                    generation,
+                },
+            )?)?;
+            result["schema_version"] = json!(SCHEMA_VERSION);
+            result
+        }
+        Action::ReceiveHook { project } => {
+            mai::receive::hook(&project, false)?;
+            Value::Null
+        }
+        Action::ReceivePreflight { project } => {
+            mai::receive::hook(&project, true)?;
+            Value::Null
+        }
         Action::Init { project, source } => {
             let authority = Authority::init(&project, source.as_deref())?;
-            json!({"schema_version": SCHEMA_VERSION, "authority": NativePath::from_path(authority.root())?, "initialized": true, "registration_available": false})
+            json!({"schema_version": SCHEMA_VERSION, "authority": NativePath::from_path(authority.root())?, "initialized": true, "registration_available": mai::receive::enabled(&authority)?})
         }
         Action::Serve { project, .. } => {
             engine::serve(&project)?;
@@ -109,7 +302,7 @@ fn run(command: Action) -> Result<Value> {
             actor,
             reason,
             deny,
-        } => serde_json::to_value(mai::validator::approve(
+        } => serde_json::to_value(engine::approve(
             &project, &candidate, &actor, &reason, deny,
         )?)?,
     })
@@ -145,6 +338,17 @@ fn main() {
 
 // Results retain their structured JSON even when the operation is unsuccessful.
 fn result_exit_code(value: &Value) -> i32 {
+    match value.get("kind").and_then(Value::as_str) {
+        Some("awaiting_approval") => return ExitCode::Pending as i32,
+        Some("rejected") => {
+            return if value.get("reason").and_then(Value::as_str) == Some("infrastructure") {
+                ExitCode::Infrastructure as i32
+            } else {
+                ExitCode::Rejected as i32
+            };
+        }
+        _ => {}
+    }
     let outcome = value
         .get("outcome")
         .or_else(|| value.get("bootstrap").and_then(|v| v.get("outcome")));
@@ -155,5 +359,35 @@ fn result_exit_code(value: &Value) -> i32 {
             ExitCode::Infrastructure as i32
         }
         _ => ExitCode::Success as i32,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn integration_exit_codes_preserve_lifecycle_failure_categories() {
+        use mai::lifecycle::{Diagnostics, Outcome, ReasonCode};
+        for reason in [
+            ReasonCode::InvalidSubmission,
+            ReasonCode::DependencyFailed,
+            ReasonCode::Conflict,
+            ReasonCode::CheckFailed,
+            ReasonCode::PolicyDenied,
+            ReasonCode::Infrastructure,
+        ] {
+            let outcome = Outcome::Rejected {
+                reason,
+                diagnostics: Diagnostics::default(),
+            };
+            assert_eq!(
+                result_exit_code(&json!({"kind":"rejected", "reason":reason})),
+                outcome.exit_code() as i32,
+                "reason={reason:?}"
+            );
+        }
+        assert_eq!(result_exit_code(&json!({"kind":"awaiting_approval"})), 6);
+        assert_eq!(result_exit_code(&json!({"kind":"landed"})), 0);
     }
 }
