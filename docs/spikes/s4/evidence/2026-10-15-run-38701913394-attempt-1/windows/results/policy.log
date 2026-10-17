@@ -1,0 +1,2 @@
+lease: notify=10 grace=30 holder-before=0 holder-at-40=1 revoked-sev-request-dropped=true stale-holder-landing=false expiry-landing=false
+resolver: lower-class=1 tie-later-lander=2 content-unchanged=true

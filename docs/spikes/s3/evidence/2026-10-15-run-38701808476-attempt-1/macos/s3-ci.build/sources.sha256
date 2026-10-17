@@ -1,0 +1,3 @@
+00f0ea0ef7b40cc7006ae3a0d48d6fa111898048c456b664a2121c109e68058c  experiments/s3/main.rs
+f074fb844ed9f57b588d49c10c52afaa84b4fbde81c0153220a28422399b10d5  experiments/s3/collect.sh
+b4e8eb5e1cc16277a12be8c4f4c7e57e7a35e39d30639a90e1715bc2c7dafb2f  experiments/s3/run.sh

@@ -15,9 +15,13 @@
   <a href="CONTRIBUTING.md">Contribute</a>
 </p>
 
-mai aims to let multiple coding agents contribute in parallel without managing shared branches or routine rebase and conflict chores. The proposed rewrite uses plain Git submissions and an integrated validation queue to coordinate overlapping work while keeping a blocking gate at the shared trunk boundary. Mean time to recovery is an underlying design principle supporting that collaboration when a change fails or genuinely conflicts; resolving conflicting intent still requires an explicit correction.
+mai is building a local Git integration queue for coding agents working in parallel. Each agent works in an independent clone and submits ordinary Git commits. The goal is less shared-branch management and routine rebase work, with a blocking validation gate protecting accepted history.
 
-**MVP foundations under development.** Scoped design acceptance and native S3 functional verification permit replacement under [ADR 0010](docs/adr/0010-staged-mvp-qualification.md). The old worktree engine has been retired. The foundation now provides a versioned lifecycle model, SQLite persistence, safe authority initialization, a local single-writer engine, manual trusted-gate validation, independent agent workspaces, explicit durable receive and serial integration of named generations. The authority commands are described in the [engine guide](docs/engine.md); see [manual validation](docs/manual-validator.md) and [workspaces](docs/workspaces.md) for the new explicit operations. This scoped explicit workflow is available; the full automatic queue, drafts and in-place sync/autostash remain unimplemented. Built in Rust, backed by Git, open source under [Apache 2.0](LICENSE), and independent of core Maida.
+**Available now: an explicit, trusted-local evaluation workflow.** Push a change, inspect its durable receipt, then select it for gated integration. Dependent changes map onto accepted squashes without requiring an agent rebase first. True conflicts still require a correction. Use disposable repositories: automatic scheduling, draft backup and in-place sync/autostash are unfinished.
+
+[Try the step-by-step walkthrough](docs/getting-started.md) to land a parent and child through a small gate, then [see a failed check and correction](docs/check-failure.md). [Current delivery and limits](docs/release-status.md) separates implemented behavior from the remaining MVP.
+
+Built in Rust, backed by Git, self-hostable and open source under [Apache 2.0](LICENSE). mai is independent of core Maida. The old worktree engine is retired; [ADR 0010](docs/adr/0010-staged-mvp-qualification.md) records the accepted replacement scope.
 
 ## Receive, inspect, integrate
 

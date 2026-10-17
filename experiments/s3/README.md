@@ -22,3 +22,7 @@ The manual-only [workflow](../../.github/workflows/experiment-s3.yml) reuses the
 ## Functional versus performance results
 
 Under [ADR 0010](../../docs/adr/0010-staged-mvp-qualification.md), the wrapper defaults to `S3_MODE=functional`. Explicit `S3_MODE=run` retains the original strict <15% performance exit criterion. `S3_MODE=functional bash experiments/s3/run.sh .throwaway/s3-functional` executes the same gates, samples, invalidation and isolation checks but reports performance separately. Both modes preserve `criterion_lt_0.15=false` for a missed target. Functional failures always exit nonzero; functional mode does not imply a performance GO. `summary.log` records mode, functional failures, performance completeness and failed performance ecosystems. Native Windows/macOS verification of the correction still requires fresh manual CI; no old artifact is rewritten.
+
+## Reviewed historical evidence
+
+The [2026-10-15 assessment](../../docs/spikes/s3/README.md) preserves the original failed native run. The [2026-10-16 functional review](../../docs/spikes/s3/functional-qualification.md) records the later corrected native paths accepted under ADR 0010; the original performance failures remain failures.

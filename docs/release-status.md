@@ -10,7 +10,7 @@ The product goal is parallel agent contribution with less branch and conflict co
 | Recover an interrupted validator | Opt-in Linux same-boot supervision with exact cleanup proof; missing proof and worker death refuse reuse |
 | Continue later local commits | Explicit landed identity and clean unregistered linear suffix replayed into a new workspace; original clone and failed destinations preserved |
 
-Start with [getting started](getting-started.md), then the [two-agent continuation/conflict/correction walkthrough](two-agent-workflow.md). The [recovery guide](validator-recovery.md) covers a separate interrupted-engine path. These commands do not automatically schedule integration, choose conflict content or accept work without its gate.
+Start with [getting started](getting-started.md), [observe a failed gate and correction](check-failure.md), then the [two-agent continuation/conflict/correction walkthrough](two-agent-workflow.md). The [recovery guide](validator-recovery.md) covers a separate interrupted-engine path. These commands do not automatically schedule integration, choose conflict content or accept work without its gate.
 
 ## Evidence and limits
 

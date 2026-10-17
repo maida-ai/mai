@@ -1,0 +1,14 @@
+{
+  "id": 38701808476,
+  "run_attempt": 1,
+  "name": "S3 evidence (all) by @z-a-f",
+  "event": "workflow_dispatch",
+  "head_sha": "aa8d701f51f7f60c8dda730b67ab550b542c46f8",
+  "head_branch": "main",
+  "status": "completed",
+  "conclusion": "failure",
+  "created_at": "2026-10-15T07:53:25Z",
+  "updated_at": "2026-10-15T07:57:15Z",
+  "html_url": "https://github.com/maida-ai/mai/actions/runs/38701808476",
+  "path": ".github/workflows/experiment-s3.yml"
+}
