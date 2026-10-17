@@ -4,7 +4,7 @@ A Linux run of the [offline comparison](../../../../experiments/product-validati
 
 ## Reproduce and identify
 
-The harness revision was `37b3ec98e342eeaaa030bacfb4ba6a1246b42318`; [provenance](provenance.json) records its hash, the supplied debug binary hash, Git 2.53.0, Python 3.14.4, mai 0.0.1 and Linux/platform/shell identities. The binary was supplied by the integration build; its SHA-256 is `08db3fad236a36562489a28441f30604614e023ad35fc4d8b2dbe1bce8096b92`. Do not infer its build revision from the harness checkout revision. Use a new output path when reproducing:
+The harness revision was `37b3ec98e342eeaaa030bacfb4ba6a1246b42318`; [provenance](provenance.json) records its hash, the supplied debug binary hash, Git 2.53.0, Python 3.14.4, mai 0.0.1 and Linux/platform/shell identities. The integration owner confirmed that the supplied debug binary was built from clean baseline commit `7ea1b5ffa66e02b45f20273d85aa3d3fab5e59b5`, with compilation completed before integration cherry-picks. This is confirmed build provenance, not inferred from the subsequently changed integration checkout; [supplemental build provenance](build-provenance.json) records that confirmation separately from the original run artifacts. Its SHA-256 is `08db3fad236a36562489a28441f30604614e023ad35fc4d8b2dbe1bce8096b92`. Do not infer its build revision from the harness checkout revision. Use a new output path when reproducing:
 
 ```sh
 TMPDIR=/var/tmp/mai-delivery-test python3 experiments/product-validation/synthetic.py /var/tmp/mai-delivery-test/synthetic-baseline --mai /absolute/path/to/built/mai --iterations 3
