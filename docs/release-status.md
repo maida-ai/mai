@@ -1,6 +1,6 @@
 # Current delivery and next decisions
 
-The product goal is parallel agent contribution with less branch and conflict coordination. Recovery supports that goal by preserving work and helping agents resume after failures. mai 0.0.1 is an evaluable trusted-local foundation, not a completed automatic integration queue. It now covers explicit creation, submission, inspection, gated landing, covered validator recovery and conservative continuation of later committed work. Use disposable repositories while the remaining MVP acceptance work is open.
+The product goal is parallel agent contribution with less branch and conflict coordination. MTTR is an underlying design principle: preserve work and help agents resume after failures so parallel contribution remains practical. mai 0.0.1 is an evaluable trusted-local foundation, not a completed automatic integration queue. It now covers explicit creation, submission, inspection, gated landing, covered validator recovery and conservative continuation of later committed work. Use disposable repositories while the remaining MVP acceptance work is open.
 
 | User action | Delivered boundary |
 | --- | --- |

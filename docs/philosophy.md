@@ -6,7 +6,7 @@ Status: rewrite direction; not implemented in 0.0.1. The mechanisms and cost mod
 
 mai's main goal is to let multiple coding agents contribute in parallel without worrying about shared branches or routine conflict coordination. The engine should handle integration bookkeeping so an agent acts when intent genuinely conflicts, validation fails or policy requires a decision. It cannot choose conflicting intent automatically.
 
-Cheap generated code also makes fixes cheaper, but more generated code and bugs can mean more fixes to coordinate. Fast detection, rejection, restoration and resumption support the parallel workflow; mean time to recovery (MTTR) is an important supporting measure, not the product's primary feature. Integration bandwidth, validation compute and human attention still constrain useful throughput.
+Cheap generated code also makes fixes cheaper, but more generated code and bugs can mean more fixes to coordinate. Parallel contribution is the user-facing promise; mean time to recovery (MTTR) is an underlying design principle. Fast detection, rejection, restoration and resumption let that workflow continue despite failures, without requiring every failure to be prevented in advance. Integration bandwidth, validation compute and human attention still constrain useful throughput.
 
 Trunk is shared by all agents, so a broken accepted base can multiply disruption. The blocking gate remains mandatory. Bounded automatic fix-forward and revert are proposed mechanisms below, not shipped behavior or permission to weaken that gate.
 
