@@ -167,6 +167,22 @@ enum ReceiveAction {
 enum ValidatorAction {
     /// Run the trusted current-trunk gate on an exact candidate in an isolated slot.
     Run { project: PathBuf, candidate: String },
+    /// Inspect one persistent validator slot and its recovery evidence.
+    Inspect {
+        project: PathBuf,
+        #[arg(long)]
+        slot: usize,
+    },
+    /// Explicitly recover one interrupted slot using its inspected claim ID.
+    Recover {
+        project: PathBuf,
+        #[arg(long)]
+        slot: usize,
+        #[arg(long)]
+        claim: String,
+    },
+    #[command(hide = true)]
+    Worker { project: PathBuf, candidate: String },
 }
 fn run(command: Action) -> Result<Value> {
     Ok(match command {
@@ -296,6 +312,22 @@ fn run(command: Action) -> Result<Value> {
         Action::Validator {
             command: ValidatorAction::Run { project, candidate },
         } => serde_json::to_value(mai::validator::run(&project, &candidate)?)?,
+        Action::Validator {
+            command: ValidatorAction::Inspect { project, slot },
+        } => serde_json::to_value(engine::validator_inspect(&project, slot)?)?,
+        Action::Validator {
+            command:
+                ValidatorAction::Recover {
+                    project,
+                    slot,
+                    claim,
+                },
+        } => {
+            json!({"schema_version":1,"slot":slot,"claim":claim,"quarantine":NativePath::from_path(&engine::validator_recover(&project, slot, &claim)?)?})
+        }
+        Action::Validator {
+            command: ValidatorAction::Worker { project, candidate },
+        } => serde_json::to_value(mai::validator::run_worker(&project, &candidate)?)?,
         Action::Approve {
             project,
             candidate,

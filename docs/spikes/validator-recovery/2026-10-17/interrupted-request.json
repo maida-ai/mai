@@ -1,0 +1,5 @@
+{
+  "exit": 5,
+  "stdout": "",
+  "stderr": "{\"error\":{\"message\":\"integration response unavailable; outcome may be uncertain; query the same generation before retrying: IPC peer closed before a complete frame\",\"reason\":\"infrastructure\"},\"schema_version\":1}\n"
+}

@@ -35,6 +35,10 @@ pub struct ValidatorPolicy {
     #[serde(default)]
     pub caches: Vec<PathBuf>,
     pub bootstrap: Option<CommandPolicy>,
+    /// Explicitly promises configured candidate/bootstrap tools obey the
+    /// supervised-local recovery contract documented in `mai.toml`.
+    #[serde(default)]
+    pub recovery: Option<String>,
 }
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -118,6 +122,14 @@ impl TrustedPolicy {
         ensure!(
             config.validators.slots > 0 && config.validators.ports_per_slot > 0,
             "validator slot and port settings must be positive"
+        );
+        ensure!(
+            config
+                .validators
+                .recovery
+                .as_deref()
+                .is_none_or(|value| value == "supervised-local-v1"),
+            "unsupported validator recovery contract"
         );
         let commands = std::iter::once(&config.check)
             .chain(config.validators.bootstrap.iter())

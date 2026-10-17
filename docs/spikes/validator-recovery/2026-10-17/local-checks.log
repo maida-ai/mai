@@ -1,0 +1,393 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s
+   Compiling mai v0.0.1 (/home/takeshi/Documents/Codex/2026-10-16/task-2/recovery)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.66s
+     Running unittests src/lib.rs (target/debug/deps/mai-c233e52b7d30de68)
+
+running 32 tests
+test engine::tests::approval_routes_only_native_ownership_contention ... ok
+test authority::tests::file_units_encode_raw_bytes_without_aliases ... ok
+test landing::crash_tests::crash_child ... ok
+test landing::crash_tests::diagnostic_tails_bound_unicode_and_replace_nuls ... ok
+test process::cleanup_tests::confirmed_quiescence_is_never_invalidated_by_an_unrelated_later_probe ... ok
+test authority::tests::exclusive_install_never_replaces_concurrent_destination ... ok
+test native_path::tests::native_path_round_trip_is_explicit_and_strict ... ok
+test native_path::tests::unix_bytes_preserve_invalid_utf8_without_replacement ... ok
+test process::unix::proc_tests::only_missing_process_errors_are_ignored ... ok
+test process::unix::tests::stat_fields_ignore_arbitrary_name_bytes_and_zombies ... ok
+test process::cleanup_tests::persistent_probe_errors_stay_fail_closed_and_diagnostics_are_bounded ... ok
+test process::windows_arguments::tests::cmd_script_keeps_embedded_quotes_metacharacters_and_native_units ... ok
+test process::windows_arguments::tests::cmd_rejects_ambiguous_argument_arrays ... ok
+test receive::tests::crash_worker ... ignored, separate-process receive interruption worker
+test process::windows_arguments::tests::empty_whitespace_quotes_and_backslashes_round_trip_quoting ... ok
+test process::windows_arguments::tests::plain_arguments_and_cmd_switches_remain_unquoted ... ok
+test repository_scope::tests::external_unix_paths_preserve_raw_bytes ... ok
+test slots::recovery_crash_tests::recovery_interruption_helper ... ignored, fixture subprocess helper; invoked by recovery transition tests
+test slots::tests::only_native_lock_contention_is_treated_as_an_occupied_slot ... ok
+test slots::tests::claim_ids_use_a_32_character_random_component ... ok
+test receive::tests::bounded_packets_and_namespace_are_fail_closed ... ok
+test repository_scope::tests::external_windows_paths_preserve_native_units ... ok
+test repository_scope::tests::minimum_version_and_vendor_suffixes ... ok
+test engine::tests::frames_reject_bad_versions_fields_truncation_and_oversize ... ok
+test slots::tests::release_unlocks_even_while_a_duplicate_descriptor_survives ... ok
+test state::tests::opening_observes_one_snapshot_during_concurrent_landing_commit ... ok
+test engine::tests::integration_confirmed_remote_rejections_do_not_claim_transport_uncertainty ... ok
+test engine::tests::connect_deadline_survives_a_full_listener_backlog ... ok
+
+running 1 test
+test slots::recovery_crash_tests::recovery_retries_after_separate_process_interruption_at_each_durable_boundary ... ok
+test receive::tests::killed_receive_at_each_durable_boundary_retries_exactly_once ... ok
+
+running 1 test
+test engine::tests::integration_lost_response_preserves_query_before_retry_guidance ... ok
+
+running 1 test
+
+running 1 test
+test landing::crash_tests::process_interruption_before_and_after_cas_reconciles_without_double_landing ... ok
+
+test result: ok. 30 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 3.30s
+
+     Running unittests src/main.rs (target/debug/deps/mai-469bad6bc3b8ff81)
+
+running 1 test
+test tests::integration_exit_codes_preserve_lifecycle_failure_categories ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/authority.rs (target/debug/deps/authority-26fe261392811060)
+
+running 24 tests
+test crash_worker ... ignored, separate-process crash worker
+test relative_init_worker ... ignored, subprocess fixture isolating the current directory
+test symlink_destinations_are_not_followed ... ok
+test unrelated_and_interrupted_destinations_are_preserved ... ok
+test relative_nonempty_destinations_reject_without_mutation ... ok
+test symlinked_lease_database_is_rejected_without_following_it ... ok
+test old_authority_format_and_corrupt_lease_store_are_rejected_without_repair ... ok
+test interrupted_validation_without_evidence_is_requeued ... ok
+test initialization_and_repeat_preserve_exact_baseline ... ok
+test repeated_init_refuses_live_lock_but_recovers_stale_metadata ... ok
+test copied_trailers_or_missing_retention_do_not_match_identity ... ok
+test retired_attempt_evidence_cannot_accept_a_late_candidate ... ok
+test exact_passing_candidate_restores_notes_index_and_terminal_once ... ok
+test received_record_on_same_object_survives_landed_note_rebuild ... ok
+test corruption_and_swapped_identity_refuse_open_without_repair ... ok
+test receive_is_disabled_until_durable_registration_exists ... ok
+test leases_are_required_identity_bound_state_and_missing_state_is_not_recreated ... ok
+test imported_baseline_is_not_rewritten_and_source_is_untouched ... ok
+test unicode_authority_paths_survive_init_import_and_reconcile ... ok
+test non_utf8_authority_paths_survive_init_import_and_reconcile ... ok
+test failed_or_wrong_manifest_evidence_never_invents_acceptance ... ok
+test relative_destination_aliases_initialize_and_retry_without_staging_inside ... ok
+test malformed_or_conflicting_existing_notes_are_preserved ... ok
+test process_kill_before_and_after_cas_and_notes_converges ... ok
+
+test result: ok. 22 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 1.19s
+
+     Running tests/delivery_cli.rs (target/debug/deps/delivery_cli-0b8f68521c4e1d93)
+
+running 6 tests
+test failed_gate_exposes_bounded_diagnostics_through_show ... ok
+test queued_denial_cannot_interleave_with_gate_and_publication ... ok
+test actual_cli_requires_live_owned_lease_generation_before_landing ... ok
+test actual_cli_lands_dependent_submissions_once_with_exact_trees ... ok
+test actual_cli_reports_gate_and_conflict_rejection_without_moving_trunk ... ok
+test timed_out_integration_keeps_running_and_exact_identity_recovers_result ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.76s
+
+     Running tests/engine.rs (target/debug/deps/engine-1be5d7408ccdc742)
+
+running 9 tests
+test corrupt_database_does_not_become_ready ... ok
+test unavailable_and_corrupt_authority_fail_actionably ... ok
+test autostart_closes_captured_output_before_engine_shutdown ... ok
+test non_utf8_authority_round_trips_through_init_status_and_stop ... ok
+test duplicate_start_cannot_steal_owner_and_stop_is_graceful ... ok
+test killed_engine_restarts_without_changing_git_refs ... ok
+test concurrent_autostart_converges_to_one_engine ... ok
+test unrelated_endpoint_or_diagnostic_symlinks_are_preserved ... ok
+test malformed_and_idle_clients_cannot_stop_or_hang_engine ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.35s
+
+     Running tests/landing.rs (target/debug/deps/landing-63542e481fa575a3)
+
+running 9 tests
+test candidate_attributes_and_custom_merge_drivers_are_not_implicitly_enabled ... ok
+test independent_delta_uses_explicit_parent_and_never_moves_trunk ... ok
+test conflicts_and_unregistered_parent_fail_closed ... ok
+test dependency_delta_does_not_replay_squashed_parent ... ok
+test successful_exit_with_modified_tracked_tree_is_rejected ... ok
+test failed_gate_and_foreign_lease_never_publish ... ok
+test true_conflict_has_one_terminal_outcome_and_rejects_dependents ... ok
+test protected_candidate_waits_for_exact_independent_approval ... ok
+test gate_evidence_exact_candidate_lands_once_and_dependency_lands_afterward ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.36s
+
+     Running tests/lease.rs (target/debug/deps/lease-990ead3218e2d458)
+
+running 10 tests
+
+running 1 test
+
+running 1 test
+test rejected_expired_claim_still_persists_clock_watermark ... ok
+test lease_identity_and_schema_version_are_required_without_migration ... ok
+test interrupted_uncommitted_transfer_preserves_previous_owner ... ok
+test rejects_noncanonical_units_invalid_owners_and_invalid_durations ... ok
+test landing_checks_real_units_owner_generation_and_every_claim ... ok
+test process_exit_retains_committed_acquisition ... ok
+test expiration_is_exact_and_clock_rollback_cannot_revive_a_lease ... ok
+test two_connections_do_not_both_acquire_and_released_generation_survives_restart ... ok
+test exclusive_creation_restart_and_generation_fencing ... ok
+test malformed_or_unsupported_database_is_not_repaired ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s
+
+     Running tests/lifecycle.rs (target/debug/deps/lifecycle-8f2218bac2d3be13)
+
+running 37 tests
+test awaiting_approval_is_separate_from_dependency_blocking ... ok
+test bounded_diagnostics_preserve_unicode_and_reject_oversize ... ok
+test active_attempt_survives_snapshot_for_explicit_reconciliation ... ok
+test all_pending_parents_must_land_before_child ... ok
+test cancellation_stops_active_attempt_and_stale_result_rejects ... ok
+test candidate_refs_cannot_inject_or_escape ... ok
+test cancellation_cascades_transitively_without_retargeting ... ok
+test duplicate_dependencies_reject ... ok
+test conflicting_retry_metadata_is_rejected_without_mutation ... ok
+test empty_or_oversized_annotations_reject ... ok
+test cyclic_snapshot_rejects ... ok
+test failed_parent_at_registration_immediately_rejects_child ... ok
+test fabricated_approval_rejects ... ok
+test interrupted_predecessor_still_blocks_latest_replacement ... ok
+test invalid_completion_does_not_consume_attempt ... ok
+test invalid_names_oids_and_dependencies_do_not_register ... ok
+test duplicate_generation_rejects ... ok
+test invalid_transitions_and_unknown_generation_reject ... ok
+test missing_generation_rejects ... ok
+test oversize_rejection_does_not_mutate_state ... ok
+test reason_and_exit_codes_are_stable ... ok
+test landing_without_attempt_rejects ... ok
+test orphan_running_attempt_rejects ... ok
+test queued_update_supersedes_and_invalidates_exact_descendants ... ok
+test retry_registration_and_restart_preserve_exact_generation ... ok
+test same_change_cannot_change_agent ... ok
+test replacement_may_be_rejected_or_cancelled_before_predecessor_finishes ... ok
+test restored_replacement_cannot_bypass_live_predecessor ... ok
+test terminal_outcomes_are_immutable_but_annotations_append ... ok
+test stale_attempt_cannot_finish_after_retry ... ok
+test self_dependency_rejects ... ok
+test unknown_fields_reject ... ok
+test validating_generation_finishes_before_latest_replacement ... ok
+test restored_landing_accepts_completed_predecessor_ordering ... ok
+test restored_landing_cannot_bypass_unfinished_older_generation ... ok
+test unknown_schema_rejects ... ok
+test cli_version_and_retired_commands ... ok
+
+test result: ok. 37 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/manifest.rs (target/debug/deps/manifest-0e604f2b479b0471)
+
+running 5 tests
+test canonical_units_round_trip_raw_bytes_and_reject_aliases ... ok
+test missing_objects_and_invalid_evidence_fail_closed ... ok
+test actual_trees_report_rename_mode_binary_type_and_submodule_changes ... ok
+test commits_resolve_to_exact_recursive_trees_without_checkout ... ok
+test raw_sorting_unusual_names_and_trailer_boundaries ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/platform.rs (target/debug/deps/platform-dc9f7ba058b64fbd)
+
+running 7 tests
+test relative_git_executable_helper ... ok
+test init_rejects_insufficient_git_before_creating_destination ... ok
+test old_and_broken_git_fail_actionably ... ok
+test fixture_retry_only_retries_text_busy_and_preserves_real_errors ... ok
+test authority_minimum_executable_and_explicit_base_merge ... ok
+test transport_push_options_proc_rejection_and_retained_incoming_fallback ... ok
+test capability_probe_preserves_explicit_and_path_relative_git_resolution ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+
+     Running tests/process.rs (target/debug/deps/process-521bcaf938288f30)
+
+running 11 tests
+test native_owner_helper ... ok
+test native_tree_helper ... ok
+test non_utf8_process_name_helper ... ok
+test separate_process_owner_helper ... ok
+
+running 1 test
+
+running 1 test
+
+running 1 test
+test floods_are_drained_with_bounded_tails ... ok
+test unrelated_non_utf8_process_name_does_not_break_cleanup ... ok
+test success_failure_missing_command_and_pre_cancel ... ok
+
+running 1 test
+test timeout_and_cancellation_stop_nested_processes ... ok
+test native_owner_death_closes_descendant_ownership ... ok
+test abrupt_owner_and_owner_group_death_still_kill_descendants ... ok
+test native_nested_timeout_and_cancellation_are_bounded ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.53s
+
+     Running tests/receive_qa.rs (target/debug/deps/receive_qa-feca5cb291546e2b)
+
+running 8 tests
+test incoming_pack_limit_rejects_before_engine_admission ... ok
+test changed_file_count_limit_rejects_before_retention ... ok
+test unavailable_owner_and_mixed_forbidden_push_do_not_admit ... ok
+test disconnected_registration_response_retries_same_durable_identity ... ok
+test acknowledged_submission_is_retained_and_survives_owner_death_once ... ok
+test orphan_retention_retry_and_missing_received_note_rebuild_converge ... ok
+test pending_submitted_parent_is_explicit_dependency_but_unknown_chain_rejects ... ok
+test rejected_scope_leaves_no_registered_or_retained_submission ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.73s
+
+     Running tests/recovery_active_gate.rs (target/debug/deps/recovery_active_gate-ec2e3e778d1f6f8e)
+
+running 1 test
+test engine_death_during_gate_preserves_work_and_refuses_interrupted_slot ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.88s
+
+     Running tests/repository_scope.rs (target/debug/deps/repository_scope-358412e18442011b)
+
+running 17 tests
+test environment_child ... ok
+test rejects_sha256_and_non_repository ... ok
+test accepts_empty_bare_repository ... ok
+test inherited_git_environment_cannot_redirect_validation ... ok
+test preserves_non_utf8_linux_worktree_paths ... ok
+test rejects_missing_reachable_object ... ok
+test accepts_linked_worktree ... ok
+test rejects_historical_lfs_pointer_even_after_deletion ... ok
+test accepts_bare_source ... ok
+test rejects_subdirectory_discovery_and_shallow_history ... ok
+test does_not_run_candidate_filters_or_touch_dirty_files ... ok
+test rejects_lfs_on_another_branch ... ok
+test rejects_grafts_and_partial_clone_configuration ... ok
+test accepts_unborn_and_committed_sha1_without_modifying_source ... ok
+test preserves_non_utf8_git_paths_without_materializing_them ... ok
+test rejects_nested_attributes_and_padded_pointer ... ok
+test rejects_lfs_attributes_and_historical_gitlink ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests/slots.rs (target/debug/deps/slots-a005fe1a0476a296)
+
+running 13 tests
+test empty_repository_marker_temp_helper ... ok
+test separate_process_slot_owner_helper ... ok
+test even_an_empty_git_marker_excludes_a_temporary_root ... ok
+
+running 1 test
+test interrupted_claim_and_failed_materialization_are_never_reused ... ok
+test separate_process_owner_death_preserves_claim_across_restart ... ok
+test tracked_cache_overlap_and_invalid_settings_fail_closed ... ok
+test tracked_whitespace_cache_name_is_rejected_before_checkout ... ok
+test replacing_clone_root_with_symlink_never_prunes_external_work ... ok
+test replacing_a_cache_directory_with_a_file_quarantines_the_slot ... ok
+test slot_run_injects_resources_and_private_temp ... ok
+test cache_globs_are_literal_and_symlinks_cannot_poison_reuse ... ok
+test candidate_symlink_cache_ancestor_cannot_redirect_restoration ... ok
+test independent_clones_resources_residue_and_poisoned_metadata ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.39s
+
+     Running tests/state.rs (target/debug/deps/state-42537b966379c97c)
+
+running 16 tests
+test crash_child ... ignored, subprocess fixture; invoked by WAL recovery test
+test lifecycle_rollback_cannot_erase_attempts_or_terminal_outcomes ... ok
+test evidence_rejects_bad_object_ids_policy_and_duplicate_units ... ok
+test creation_is_exclusive_and_open_never_creates ... ok
+test stale_snapshot_cannot_clear_pending_approval ... ok
+test metadata_is_validated_and_immutable ... ok
+test durable_evidence_is_exact_and_cannot_be_replaced_or_invented ... ok
+test dependencies_and_terminal_outcomes_survive_restart_without_retargeting ... ok
+test manifest_requires_canonical_bytes_and_raw_byte_order ... ok
+test killed_writer_recovers_committed_wal_and_discards_incomplete_transaction ... ok
+test failed_gate_and_stale_attempt_cannot_land ... ok
+test landing_cannot_be_rebound_to_interrupted_attempt_after_restart ... ok
+test successful_landing_terminal_and_index_are_idempotent ... ok
+test malformed_evidence_key_and_payload_refuse_startup ... ok
+test malformed_relational_records_refuse_startup ... ok
+test version_and_schema_failures_do_not_repair_database ... ok
+
+test result: ok. 15 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.25s
+
+     Running tests/trusted_policy.rs (target/debug/deps/trusted_policy-7cb0c77ac8f6e112)
+
+running 8 tests
+test lexical_policy_path_aliases_are_rejected_before_protection_matching ... ok
+test exact_git_tree_spelling_is_required_for_executable_policy ... ok
+test candidate_bootstrap_inputs_require_regular_git_modes ... ok
+test git_symlink_modes_reject_even_when_working_copy_is_a_regular_file ... ok
+test trusted_script_symlinks_and_renames_are_fail_closed ... ok
+test unsupported_trusted_policy_is_rejected_without_candidate_override ... ok
+test candidate_policy_narrowing_does_not_replace_trusted_controls_and_approval_is_exact ... ok
+test aliases_cannot_enter_any_trusted_path_configuration_field ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.71s
+
+     Running tests/validator_cli.rs (target/debug/deps/validator_cli-3f654752dfc57d84)
+
+running 5 tests
+test approval_administration_obeys_engine_ownership_with_and_without_daemon ... ok
+test declared_helper_executes_from_trusted_checkout_even_after_candidate_approval ... ok
+test manual_validator_preserves_json_and_shell_failure_categories ... ok
+test validator_never_records_original_tree_success_after_tracked_mutation ... ok
+test bootstrap_is_bounded_reused_and_invalidated_when_output_disappears ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.24s
+
+     Running tests/validator_recovery_adversarial.rs (target/debug/deps/validator_recovery_adversarial-2c272d677782b9ef)
+
+running 11 tests
+test receipt_requires_verified_cancellation_and_cannot_certify_an_unused_lease ... ok
+test enabling_current_policy_reopens_pool_without_retroactively_opting_in_a_claim ... ok
+test free_lock_without_receipt_preserves_the_interrupted_claim ... ok
+test a_later_failed_spawn_invalidates_the_previous_cancellation_proof ... ok
+test quarantine_directory_symlink_never_redirects_artifact_moves ... ok
+test journal_replay_revalidates_all_retained_proof_before_moving_artifacts ... ok
+test receipt_cannot_certify_a_modified_original_policy_binding ... ok
+test slot_directory_symlink_never_redirects_recovery ... ok
+test temporary_record_cannot_quarantine_another_claims_directory ... ok
+test interrupted_recovery_replays_durable_proof_after_receipt_was_removed ... ok
+test stale_request_refuses_then_exact_recovery_is_idempotent_and_keeps_lock_inode ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+     Running tests/validator_recovery_e2e.rs (target/debug/deps/validator_recovery_e2e-cd7fbe4e668a8836)
+
+running 4 tests
+test supervised_worker_preserves_valid_tails_that_expand_beyond_one_megabyte_in_json ... ok
+test actual_worker_death_never_creates_recovery_proof ... ok
+test actual_engine_death_receipt_allows_exact_recovery_and_fresh_gate_before_landing ... ok
+test actual_engine_death_during_bootstrap_recovers_without_claiming_a_gate_pass ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.58s
+
+     Running tests/workspace.rs (target/debug/deps/workspace-c4f4a48763739aab)
+
+running 7 tests
+test empty_existing_destination_and_symlink_are_never_reused ... ok
+test independent_workspace_has_agent_remote_and_preserves_existing_work ... ok
+test non_utf8_workspace_destination_round_trips_json ... ok
+test workspace_cli_reports_failed_bootstrap_without_losing_json_or_work ... ok
+test automatic_bootstrap_skip_failure_and_independent_environments ... ok
+test changed_tool_binary_with_same_version_invalidates_bootstrap ... ok
+test bootstrap_fingerprint_tracks_inputs_tools_and_trusted_control ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.03s
+
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.06s

@@ -28,4 +28,8 @@ Ordinary clones and explicit push receipt are implemented above; the wider autom
 
 Differentiated priority and automated incident recovery remain deferred under [ADR 0010](adr/0010-staged-mvp-qualification.md) and RFC #93. They are not represented as enabled features or speculative fields in the current schema. The initial MVP uses a single-class dependency-aware queue.
 
+## Explicit validator recovery
+
+`mai validator inspect PROJECT --slot N --json` reconciles metadata and reports an occupied claim while holding exclusive authority ownership. `mai validator recover PROJECT --slot N --claim CLAIM_ID --json` verifies cleanup proof and performs idempotent quarantine/reclaim. Stop the owner first. This is an opt-in Linux feature, requires the original trusted `supervised-local-v1` execution contract, and never approves or lands a candidate. See [validator recovery](validator-recovery.md) for the operator sequence, current-policy checks, refusal cases and external-effect limits.
+
 [Getting started →](getting-started.md) · [All docs →](README.md)
