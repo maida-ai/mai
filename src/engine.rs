@@ -413,6 +413,16 @@ use background::spawn_background;
 #[path = "engine/windows_process.rs"]
 mod background;
 
+/// An identity-checked engine reply, distinct from a missing transport response.
+#[derive(Debug)]
+struct EngineOperationError(String);
+impl std::fmt::Display for EngineOperationError {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str(&self.0)
+    }
+}
+impl std::error::Error for EngineOperationError {}
+
 fn operation(root: &Path, action: Action) -> Result<Option<serde_json::Value>> {
     operation_with_timeout(root, action, Duration::from_secs(10))
 }
@@ -438,16 +448,18 @@ fn operation_with_timeout(
             && response.authority.as_path() == local.parent().unwrap(),
         "engine IPC identity mismatch"
     );
-    write_frame(
+    // The response is already received and its identity verified. Failure to
+    // acknowledge it cannot turn that known result into a lost response.
+    let _ = write_frame(
         &mut stream,
         &Request {
             protocol_version: PROTOCOL_VERSION,
             action: Action::Ack,
         },
         deadline,
-    )?;
+    );
     if let Some(error) = response.error {
-        bail!("{error}");
+        return Err(EngineOperationError(error).into());
     }
     Ok(response.result)
 }
@@ -567,7 +579,13 @@ pub fn integrate(
         "wait-seconds must be between 1 and 3600"
     );
     operation_with_timeout(root, Action::Integrate { generation, mode, claims }, Duration::from_secs(wait_seconds))
-        .context("integration response unavailable; outcome may be uncertain; query the same generation before retrying")?.context("engine returned no integration result")
+        .map_err(|error| {
+            if error.is::<EngineOperationError>() {
+                error
+            } else {
+                error.context("integration response unavailable; outcome may be uncertain; query the same generation before retrying")
+            }
+        })?.context("engine returned no integration result")
 }
 pub fn lease(root: &Path, operation: LeaseAction) -> Result<serde_json::Value> {
     operation_with_timeout(root, Action::Lease { operation }, Duration::from_secs(10))?
@@ -1066,6 +1084,91 @@ mod transport {
 #[cfg(test)]
 mod tests {
     use super::*;
+    fn integration_reply_fixture(
+        error: Option<&str>,
+        delay: Duration,
+        close_after_reply: bool,
+    ) -> Result<serde_json::Value> {
+        let temp = tempfile::tempdir().unwrap();
+        let local = temp.path().join(".mai");
+        fs::create_dir(&local).unwrap();
+        let local = local.canonicalize().unwrap();
+        let listener = transport::Listener::bind(&local).unwrap();
+        let authority = NativePath::from_path(local.parent().unwrap()).unwrap();
+        let error = error.map(str::to_owned);
+        let server = thread::spawn(move || {
+            let deadline = Instant::now() + Duration::from_secs(3);
+            let mut stream = loop {
+                if let Some(stream) = listener.accept().unwrap() {
+                    break stream;
+                }
+                assert!(Instant::now() < deadline);
+                thread::sleep(POLL);
+            };
+            let request: Request = read_frame(&mut stream, deadline).unwrap();
+            assert!(matches!(request.action, Action::Integrate { .. }));
+            if !delay.is_zero() {
+                // A received request with no timely reply remains uncertain.
+                thread::sleep(delay);
+                return;
+            }
+            write_frame(
+                &mut stream,
+                &Reply {
+                    protocol_version: PROTOCOL_VERSION,
+                    authority,
+                    result: None,
+                    error,
+                },
+                deadline,
+            )
+            .unwrap();
+            if !close_after_reply {
+                let _ = read_frame::<Request>(&mut stream, deadline);
+            }
+        });
+        let result = integrate(
+            temp.path(),
+            GenerationId {
+                change_id: "change".into(),
+                generation: 1,
+            },
+            "textual".into(),
+            vec![],
+            1,
+        );
+        server.join().unwrap();
+        result
+    }
+
+    #[test]
+    fn integration_confirmed_remote_rejections_do_not_claim_transport_uncertainty() {
+        for message in [
+            "unknown submission generation",
+            "dependency blocked; integrate the submitted parent before retrying this change",
+        ] {
+            for close_after_reply in [false, true] {
+                let error =
+                    integration_reply_fixture(Some(message), Duration::ZERO, close_after_reply)
+                        .unwrap_err();
+                assert_eq!(format!("{error:#}"), message);
+            }
+        }
+    }
+
+    #[test]
+    fn integration_lost_response_preserves_query_before_retry_guidance() {
+        let error =
+            integration_reply_fixture(None, Duration::from_millis(1200), false).unwrap_err();
+        let message = format!("{error:#}");
+        assert!(message.contains("response unavailable"), "{message}");
+        assert!(message.contains("outcome may be uncertain"), "{message}");
+        assert!(
+            message.contains("query the same generation before retrying"),
+            "{message}"
+        );
+    }
+
     #[test]
     fn approval_routes_only_native_ownership_contention() {
         assert!(ownership_contended(&fs2::lock_contended_error()));
