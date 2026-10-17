@@ -1,18 +1,23 @@
-//! Independent Linux/macOS CLI delivery and concurrent administration qualification.
-#![cfg(unix)]
+//! Independent native CLI delivery and Unix concurrent administration qualification.
+#[cfg(unix)]
 use mai::{
     approval::{ApprovalStore, Decision},
     policy::Binding,
 };
-use serde_json::{Value, json};
+use serde_json::Value;
+#[cfg(unix)]
+use serde_json::json;
 use std::{
     fs,
-    io::{BufRead, BufReader, Read, Write},
-    os::unix::net::UnixStream,
     path::{Path, PathBuf},
     process::{Child, Command, Output, Stdio},
     thread,
     time::{Duration, Instant},
+};
+#[cfg(unix)]
+use std::{
+    io::{BufRead, BufReader, Read, Write},
+    os::unix::net::UnixStream,
 };
 
 fn succeeded(output: Output) -> String {
@@ -40,7 +45,10 @@ fn git(path: &Path, args: &[&str]) -> String {
             .arg(path)
             .args(args)
             .env("GIT_CONFIG_NOSYSTEM", "1")
-            .env("GIT_CONFIG_GLOBAL", "/dev/null")
+            .env(
+                "GIT_CONFIG_GLOBAL",
+                if cfg!(windows) { "NUL" } else { "/dev/null" },
+            )
             .env("GIT_AUTHOR_NAME", "QA")
             .env("GIT_AUTHOR_EMAIL", "qa@localhost")
             .env("GIT_COMMITTER_NAME", "QA")
@@ -62,6 +70,7 @@ struct Fixture {
     _temp: tempfile::TempDir,
     root: PathBuf,
     client: PathBuf,
+    #[cfg(unix)]
     control: PathBuf,
     owner: Process,
 }
@@ -100,7 +109,12 @@ impl Fixture {
         );
         succeeded(
             Command::new("git")
-                .arg("clone")
+                .args(["-c", "core.autocrlf=false", "clone"])
+                .env("GIT_CONFIG_NOSYSTEM", "1")
+                .env(
+                    "GIT_CONFIG_GLOBAL",
+                    if cfg!(windows) { "NUL" } else { "/dev/null" },
+                )
                 .arg(root.join("authority.git"))
                 .arg(&client)
                 .output()
@@ -119,6 +133,7 @@ impl Fixture {
             _temp: temp,
             root,
             client,
+            #[cfg(unix)]
             control,
             owner,
         };
@@ -283,6 +298,7 @@ fn actual_cli_reports_gate_and_conflict_rejection_without_moving_trunk() {
     assert_eq!(value(&f.integrate(&conflict)), value(&output));
 }
 
+#[cfg(unix)]
 #[test]
 fn queued_denial_cannot_interleave_with_gate_and_publication() {
     let f = Fixture::new();
