@@ -23,6 +23,24 @@ struct Cli {
 }
 #[derive(Subcommand)]
 enum Action {
+    /// Validate and integrate one named generation through the serial engine.
+    Integrate {
+        project: PathBuf,
+        change: String,
+        #[arg(long, default_value_t = 1)]
+        generation: u64,
+        #[arg(long, value_parser=["textual"])]
+        mode: String,
+        #[arg(long="lease", value_parser=parse_claim)]
+        claims: Vec<mai::lease::LeaseClaim>,
+        #[arg(long, default_value_t = 600)]
+        wait_seconds: u64,
+    },
+    /// Acquire, renew, release or inspect ordinary file leases using engine time.
+    Lease {
+        #[command(subcommand)]
+        command: LeaseCommand,
+    },
     /// Configure explicit limits and enable trusted-local Git admission.
     Receive {
         #[command(subcommand)]
@@ -86,6 +104,53 @@ enum Action {
     },
 }
 #[derive(Subcommand)]
+enum LeaseCommand {
+    Acquire {
+        project: PathBuf,
+        unit: String,
+        #[arg(long)]
+        owner: String,
+        #[arg(long)]
+        duration_ms: i64,
+    },
+    Renew {
+        project: PathBuf,
+        unit: String,
+        #[arg(long)]
+        owner: String,
+        #[arg(long)]
+        generation: u64,
+        #[arg(long)]
+        duration_ms: i64,
+    },
+    Release {
+        project: PathBuf,
+        unit: String,
+        #[arg(long)]
+        owner: String,
+        #[arg(long)]
+        generation: u64,
+    },
+    Query {
+        project: PathBuf,
+        unit: String,
+    },
+}
+fn parse_claim(text: &str) -> std::result::Result<mai::lease::LeaseClaim, String> {
+    let (unit, generation) = text
+        .rsplit_once('=')
+        .ok_or("lease claim must be canonical file:UNIT=GENERATION")?;
+    mai::manifest::FileUnit::try_from(unit.to_owned()).map_err(|e| e.to_string())?;
+    let generation = generation.parse::<u64>().map_err(|e| e.to_string())?;
+    if generation == 0 {
+        return Err("lease generation must be positive".into());
+    }
+    Ok(mai::lease::LeaseClaim {
+        unit: unit.into(),
+        generation,
+    })
+}
+#[derive(Subcommand)]
 enum ReceiveAction {
     /// Enable refs/for/main admission with an explicit maximum input pack size.
     Enable {
@@ -105,6 +170,70 @@ enum ValidatorAction {
 }
 fn run(command: Action) -> Result<Value> {
     Ok(match command {
+        Action::Integrate {
+            project,
+            change,
+            generation,
+            mode,
+            claims,
+            wait_seconds,
+        } => engine::integrate(
+            &project,
+            GenerationId {
+                change_id: change,
+                generation,
+            },
+            mode,
+            claims,
+            wait_seconds,
+        )?,
+        Action::Lease { command } => {
+            let (project, operation) = match command {
+                LeaseCommand::Acquire {
+                    project,
+                    unit,
+                    owner,
+                    duration_ms,
+                } => (
+                    project,
+                    engine::LeaseAction::Acquire {
+                        unit,
+                        owner,
+                        duration_ms,
+                    },
+                ),
+                LeaseCommand::Renew {
+                    project,
+                    unit,
+                    owner,
+                    generation,
+                    duration_ms,
+                } => (
+                    project,
+                    engine::LeaseAction::Renew {
+                        owner,
+                        claim: mai::lease::LeaseClaim { unit, generation },
+                        duration_ms,
+                    },
+                ),
+                LeaseCommand::Release {
+                    project,
+                    unit,
+                    owner,
+                    generation,
+                } => (
+                    project,
+                    engine::LeaseAction::Release {
+                        owner,
+                        claim: mai::lease::LeaseClaim { unit, generation },
+                    },
+                ),
+                LeaseCommand::Query { project, unit } => {
+                    (project, engine::LeaseAction::Query { unit })
+                }
+            };
+            engine::lease(&project, operation)?
+        }
         Action::Receive {
             command:
                 ReceiveAction::Enable {
@@ -115,7 +244,7 @@ fn run(command: Action) -> Result<Value> {
                 },
         } => {
             engine::enable_receive(&project, max_input_bytes, max_file_bytes, max_changed_files)?;
-            json!({"schema_version": SCHEMA_VERSION, "registration_available": true, "max_input_bytes": max_input_bytes, "max_file_bytes": max_file_bytes, "max_changed_files": max_changed_files, "landing_available": false})
+            json!({"schema_version": SCHEMA_VERSION, "registration_available": true, "max_input_bytes": max_input_bytes, "max_file_bytes": max_file_bytes, "max_changed_files": max_changed_files, "automatic_integration": false})
         }
         Action::Show {
             project,
@@ -209,6 +338,11 @@ fn main() {
 
 // Results retain their structured JSON even when the operation is unsuccessful.
 fn result_exit_code(value: &Value) -> i32 {
+    match value.get("kind").and_then(Value::as_str) {
+        Some("awaiting_approval") => return ExitCode::Pending as i32,
+        Some("rejected") => return ExitCode::Rejected as i32,
+        _ => {}
+    }
     let outcome = value
         .get("outcome")
         .or_else(|| value.get("bootstrap").and_then(|v| v.get("outcome")));

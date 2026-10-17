@@ -1,5 +1,5 @@
 //! One trusted-local engine owns an authority. The OS lock, never PID metadata,
-//! is the ownership decision. Receive admission is explicitly enabled; landing remains unavailable.
+//! is the ownership decision. Admission, explicit integration, leases and approvals serialize here.
 use crate::{
     authority::Authority,
     lifecycle::{GenerationId, Submission},
@@ -59,11 +59,40 @@ enum Action {
     Show {
         generation: GenerationId,
     },
+    Integrate {
+        generation: GenerationId,
+        mode: String,
+        claims: Vec<crate::lease::LeaseClaim>,
+    },
+    Lease {
+        operation: LeaseAction,
+    },
     Approve {
         candidate: String,
         actor: String,
         reason: String,
         denied: bool,
+    },
+}
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case", deny_unknown_fields)]
+pub enum LeaseAction {
+    Acquire {
+        unit: String,
+        owner: String,
+        duration_ms: i64,
+    },
+    Renew {
+        owner: String,
+        claim: crate::lease::LeaseClaim,
+        duration_ms: i64,
+    },
+    Release {
+        owner: String,
+        claim: crate::lease::LeaseClaim,
+    },
+    Query {
+        unit: String,
     },
 }
 #[derive(Serialize, Deserialize)]
@@ -166,6 +195,8 @@ pub fn serve(root: &Path) -> Result<()> {
                         | Action::Register { .. }
                         | Action::Show { .. }
                         | Action::Approve { .. }
+                        | Action::Integrate { .. }
+                        | Action::Lease { .. }
                 ) {
                     let result: Result<Option<serde_json::Value>> = match request.action {
                         Action::EnableReceive {
@@ -185,6 +216,12 @@ pub fn serve(root: &Path) -> Result<()> {
                         }
                         Action::Show { generation } => receive::query(&authority, &generation)
                             .and_then(|s| Ok(Some(serde_json::to_value(s)?))),
+                        Action::Integrate {
+                            generation,
+                            mode,
+                            claims,
+                        } => integrate_owned(&mut authority, &generation, &mode, &claims).map(Some),
+                        Action::Lease { operation } => lease_owned(&authority, operation).map(Some),
                         Action::Approve {
                             candidate,
                             actor,
@@ -377,8 +414,15 @@ use background::spawn_background;
 mod background;
 
 fn operation(root: &Path, action: Action) -> Result<Option<serde_json::Value>> {
+    operation_with_timeout(root, action, Duration::from_secs(10))
+}
+fn operation_with_timeout(
+    root: &Path,
+    action: Action,
+    timeout: Duration,
+) -> Result<Option<serde_json::Value>> {
     let local = local_dir(root)?;
-    let deadline = Instant::now() + Duration::from_secs(10);
+    let deadline = Instant::now() + timeout;
     let mut stream = transport::connect(&local, deadline)?;
     write_frame(
         &mut stream,
@@ -442,6 +486,101 @@ pub fn show(root: &Path, generation: GenerationId) -> Result<Submission> {
     )?)
 }
 
+fn lease_store(authority: &Authority) -> Result<crate::lease::LeaseStore> {
+    authority.lease_store()
+}
+
+fn lease_owned(authority: &Authority, action: LeaseAction) -> Result<serde_json::Value> {
+    let now: i64 = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)?
+        .as_millis()
+        .try_into()?;
+    let mut store = lease_store(authority)?;
+    let result = match action {
+        LeaseAction::Acquire {
+            unit,
+            owner,
+            duration_ms,
+        } => serde_json::to_value(store.acquire(&unit, &owner, now, duration_ms)?)?,
+        LeaseAction::Renew {
+            owner,
+            claim,
+            duration_ms,
+        } => serde_json::to_value(store.renew(&owner, &claim, now, duration_ms)?)?,
+        LeaseAction::Release { owner, claim } => {
+            store.release(&owner, &claim, now)?;
+            serde_json::json!({"released":true,"claim":claim})
+        }
+        LeaseAction::Query { unit } => serde_json::to_value(store.query(&unit, now)?)?,
+    };
+    Ok(serde_json::json!({"schema_version":1,"lease":result}))
+}
+fn integrate_owned(
+    authority: &mut Authority,
+    id: &GenerationId,
+    mode: &str,
+    claims: &[crate::lease::LeaseClaim],
+) -> Result<serde_json::Value> {
+    ensure!(
+        mode == "textual",
+        "only explicitly selected textual merge mode is available"
+    );
+    ensure!(claims.len() <= 256, "too many lease claims");
+    let mut store = crate::state::StateStore::open(authority.state_path())?;
+    let mut lifecycle = store.load_lifecycle()?;
+    let state = lifecycle
+        .get(id)
+        .context("unknown submission generation")?
+        .state();
+    if matches!(state, crate::lifecycle::State::Received) {
+        lifecycle.queue(id)?;
+        store.save_lifecycle(&mut lifecycle)?;
+    }
+    ensure!(
+        !matches!(
+            lifecycle.get(id).unwrap().state(),
+            crate::lifecycle::State::DependencyBlocked
+        ),
+        "dependency blocked; integrate the submitted parent before retrying this change"
+    );
+    let mut leases = lease_store(authority)?;
+    let mut result = serde_json::to_value(crate::landing::run_one(
+        authority,
+        id,
+        crate::landing::MergeMode::Textual,
+        &mut leases,
+        claims,
+    )?)?;
+    result["schema_version"] = serde_json::json!(1);
+    result["generation"] = serde_json::to_value(id)?;
+    Ok(result)
+}
+pub fn integrate(
+    root: &Path,
+    generation: GenerationId,
+    mode: String,
+    claims: Vec<crate::lease::LeaseClaim>,
+    wait_seconds: u64,
+) -> Result<serde_json::Value> {
+    ensure!(
+        (1..=3600).contains(&wait_seconds),
+        "wait-seconds must be between 1 and 3600"
+    );
+    operation_with_timeout(root, Action::Integrate { generation, mode, claims }, Duration::from_secs(wait_seconds))
+        .context("integration response unavailable; outcome may be uncertain; query the same generation before retrying")?.context("engine returned no integration result")
+}
+pub fn lease(root: &Path, operation: LeaseAction) -> Result<serde_json::Value> {
+    operation_with_timeout(root, Action::Lease { operation }, Duration::from_secs(10))?
+        .context("engine returned no lease result")
+}
+
+fn ownership_contended(error: &io::Error) -> bool {
+    error.kind() == io::ErrorKind::WouldBlock
+        || error
+            .raw_os_error()
+            .is_some_and(|code| Some(code) == fs2::lock_contended_error().raw_os_error())
+}
+
 /// Administration shares publication ownership, including when no daemon runs.
 /// A failed IPC response is uncertain and is never retried as an unlocked write.
 pub fn approve(
@@ -458,7 +597,7 @@ pub fn approve(
             let _ownership = Ownership(lock);
             crate::validator::approve(root, candidate, actor, reason, denied)
         }
-        Err(error) if error.kind() == io::ErrorKind::WouldBlock => Ok(serde_json::from_value(
+        Err(error) if ownership_contended(&error) => Ok(serde_json::from_value(
             operation(
                 root,
                 Action::Approve {
@@ -927,6 +1066,17 @@ mod transport {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn approval_routes_only_native_ownership_contention() {
+        assert!(ownership_contended(&fs2::lock_contended_error()));
+        assert!(ownership_contended(&io::Error::from(
+            io::ErrorKind::WouldBlock
+        )));
+        assert!(!ownership_contended(&io::Error::from(
+            io::ErrorKind::PermissionDenied
+        )));
+    }
+
     #[cfg(unix)]
     #[test]
     fn connect_deadline_survives_a_full_listener_backlog() {
