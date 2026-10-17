@@ -1,6 +1,6 @@
 # Manual trusted validator
 
-`mai validator run PROJECT CANDIDATE` validates an exact commit already present in `PROJECT/authority.git`. It does not receive, queue, merge or land changes. Current `refs/heads/trunk` selects the trusted configuration and executable policy checkout; the candidate selects test input. Trunk is never updated by validation or approval.
+`mai validator run PROJECT CANDIDATE` validates an exact commit already present in `PROJECT/authority.git`. This manual command does not receive, queue, merge or land changes; explicit `mai integrate` is a separate operation. Current `refs/heads/trunk` selects the trusted configuration and executable policy checkout; the candidate selects test input. Trunk is never updated by validation or approval.
 
 ```sh
 mai validator run /path/to/project COMMIT --json

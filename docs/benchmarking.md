@@ -20,7 +20,7 @@ Record the exact mai commit, build profile, lockfile, OS/filesystem, Git/Rust ve
 | Bootstrap/cache change | Cold/warm distinction, invalidated inputs and successful gate on the exact candidate |
 | Dirty agent workspace | Dirty/untracked contents before and after explicit sync; no hidden work loss |
 
-Only run scenarios supported by the tested implementation. The current manual validator can measure gate/bootstrap execution and slot behavior, but cannot establish receive-to-land latency or safe sync. Process-kill experiments establish process-interruption behavior, not power-loss durability. Protected policy changes must still require explicit approval, and uncertain checks must never be counted as passes. Keep unsupported cases in the report as unavailable rather than assigning zero time or success.
+Only run scenarios supported by the tested implementation. A manual-validator run measures gate/bootstrap execution and slot behavior; only a separate explicit receive/integration run can measure its corresponding workflow. Safe sync remains unavailable. Process-kill experiments establish process-interruption behavior, not power-loss durability. Protected policy changes must still require explicit approval, and uncertain checks must never be counted as passes. Keep unsupported cases in the report as unavailable rather than assigning zero time or success.
 
 ## Report outcomes, not just speed
 
@@ -39,3 +39,5 @@ Start with a small deterministic local smoke workload. Its purpose is to make co
 Run `python3 experiments/product-validation/synthetic.py /tmp/mai-synthetic-run --mai /absolute/path/to/mai --iterations 3` from the repository checkout. This accepts a supplied binary, creates fresh disposable fixtures and compares identical gate truth against plain Git without network access. The [harness guide](../experiments/product-validation/README.md#small-offline-comparison) defines exact timing scopes and the provenance, command, sample and summary JSON schemas. Collect reviewable evidence with `python3 experiments/product-validation/collect.py /tmp/mai-synthetic-run /tmp/mai-synthetic-evidence`. Neither command builds mai. Do not infer operational recovery or queue performance from this synthetic manual-validator experiment.
 
 The [initial Linux smoke evidence](spikes/product-validation/2026-10-17-synthetic/README.md) records three iterations and a successful foundation walkthrough, with exact timing scopes and limitations.
+
+The [explicit parent/child integration evidence](spikes/product-validation/2026-10-17-explicit-integration/README.md) records the later release workflow and a separate synthetic run; it does not relabel the earlier baseline or establish scale.
