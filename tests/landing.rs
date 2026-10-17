@@ -11,7 +11,7 @@ use std::{
 fn git(a: &Authority, args: &[&str], input: &str) -> String {
     let mut child = Command::new("git")
         .arg("--git-dir")
-        .arg(a.git_dir())
+        .arg(mai::repository_scope::external_git_path(&a.git_dir()))
         .args(args)
         .env("GIT_AUTHOR_NAME", "test")
         .env("GIT_AUTHOR_EMAIL", "test@localhost")
