@@ -39,3 +39,5 @@ Keep the original clone until you have independently verified the intended resul
 ## Qualification boundary
 
 This feature handles a clean, unregistered linear suffix after an exact landed boundary. It does not handle in-place synchronization, dirty work/autostash, replay of pending submissions, merge histories, automatic rejection repair, remote authorities or arbitrary source-repository configurations. Those remain separate work in [#27](https://github.com/maida-ai/mai/issues/27). Process-interruption tests establish preserved-state behavior for their tested boundaries, not power-loss durability or a universal recovery guarantee.
+
+The [frozen copy-continuation evidence](spikes/continuation/2026-10-17/README.md) records source preservation, overlap rejection, preserved replay failure and a gated correction to r4, plus literal execution of the documentation. Its single 0.255-second continuation observation is a tiny functional fixture, not performance qualification.

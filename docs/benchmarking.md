@@ -43,3 +43,5 @@ The [initial Linux smoke evidence](spikes/product-validation/2026-10-17-syntheti
 The [explicit parent/child integration evidence](spikes/product-validation/2026-10-17-explicit-integration/README.md) records the later release workflow and a separate synthetic run; it does not relabel the earlier baseline or establish scale.
 
 The [explicit validator recovery evidence](spikes/validator-recovery/2026-10-17/README.md) records a frozen-binary Linux engine-kill/reclaim/revalidation workflow from PR #112. Its 0.160-second reclaim and 0.615-second fresh landing are one tiny functional fixture, not a production MTTR distribution, comparative advantage or scale result. Missing proof and worker death remain unsupported recovery cases.
+
+The [frozen copy-continuation evidence](spikes/continuation/2026-10-17/README.md) records source preservation, overlap rejection, preserved replay failure and a gated correction to r4, plus literal execution of the documentation. Its single 0.255-second continuation observation is a tiny functional fixture, not performance qualification.

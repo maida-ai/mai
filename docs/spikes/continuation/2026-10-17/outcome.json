@@ -1,0 +1,54 @@
+{
+  "accepted_submission": "7cd2e131c28b178632f21982dc5dee9dc529e1f2",
+  "original_suffix": "1941259dcd08d291433e2079042bf5ba3ed417cf",
+  "continuation": {
+    "agent": "alice",
+    "base_trunk": "901291d892fe1b3af10c4d759403bfea2a36b3b4",
+    "bootstrap": null,
+    "bootstrap_skipped": true,
+    "change": "alice-7cd2e131c28b178632f21982dc5dee9dc529e1f2",
+    "destination": {
+      "data": "L3Zhci90bXAvbWFpLWRlbGl2ZXJ5LXRlc3QvbWFpLWNvbnQteTgyd2lfM2svY29udGludWVk",
+      "encoding": "unix_bytes"
+    },
+    "generation": 1,
+    "landed_commit": "21515989be99d55c666092082ab4c4ae1fc6e9b9",
+    "next_step": "review the replayed commits, then submit each one as a new submission; the original generation remains immutable",
+    "replay_committer": "Mai Continuation <continuation@mai.invalid>",
+    "replayed": [
+      {
+        "destination_commit": "fb46a5e089b0c80e23102ed0bc0909efb5dc23e8",
+        "source_commit": "1941259dcd08d291433e2079042bf5ba3ed417cf"
+      }
+    ],
+    "schema_version": 1,
+    "submitted_commit": "7cd2e131c28b178632f21982dc5dee9dc529e1f2"
+  },
+  "continuation_seconds": 0.25510150399713893,
+  "repeated_invocation": "",
+  "integration_rejection": {
+    "generation": {
+      "change_id": "alice-fb46a5e089b0c80e23102ed0bc0909efb5dc23e8",
+      "generation": 1
+    },
+    "kind": "rejected",
+    "reason": "conflict",
+    "schema_version": 1
+  },
+  "replay_failure": "",
+  "final_landing": {
+    "commit": "11af42e660f030eccb0cb0b082d9abab583f6540",
+    "generation": {
+      "change_id": "alice-9080da74c976a33d311f2e191d76f25853216265",
+      "generation": 1
+    },
+    "kind": "landed",
+    "revision": 4,
+    "schema_version": 1
+  },
+  "source_all_bytes_modes_preserved": true,
+  "accepted_parent_excluded": true,
+  "additional_trunk_edits_preserved": true,
+  "failed_destination_preserved": true,
+  "ignored_source_preserved_not_copied": true
+}

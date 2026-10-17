@@ -14,7 +14,7 @@ Start with [getting started](getting-started.md), then the [two-agent continuati
 
 ## Evidence and limits
 
-[PR #111](https://github.com/maida-ai/mai/pull/111) delivered explicit receive/integration and its supporting invariants. [PR #112](https://github.com/maida-ai/mai/pull/112) delivered proof-backed validator recovery. Each delivered correctness path has its own failure/interruption tests and native CI evidence; the [benchmark index](benchmarking.md) distinguishes functional fixtures from performance qualification.
+[PR #111](https://github.com/maida-ai/mai/pull/111) delivered explicit receive/integration and its supporting invariants. [PR #112](https://github.com/maida-ai/mai/pull/112) delivered proof-backed validator recovery. [PR #113](https://github.com/maida-ai/mai/pull/113) adds copy-based continuation with an independently executed [two-agent evidence bundle](spikes/continuation/2026-10-17/README.md). Each delivered correctness path has its own failure/interruption tests and native CI evidence; the [benchmark index](benchmarking.md) distinguishes functional fixtures from performance qualification.
 
 The published recovery fixture observed 0.160 seconds to reclaim and 0.615 seconds to a fresh validated landing. The earlier tiny Git/mai smoke comparison had unequal operational scope and establishes no advantage. Neither experiment supplies production MTTR, representative throughput, a warm-overhead guarantee or evidence for hundreds/thousands of agents. Process-kill tests do not establish power-loss durability. The intended local audience remains 3–30 agents; even that workload has not been performance-qualified.
 
