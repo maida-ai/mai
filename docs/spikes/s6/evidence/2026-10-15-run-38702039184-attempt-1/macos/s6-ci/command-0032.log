@@ -1,0 +1,11 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/cargo
+command=git ["merge", "--no-edit", "beta-manifest"]
+timeout_ms=120000
+Auto-merging Cargo.toml
+Merge made by the 'ort' strategy.
+ Cargo.toml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+status=exit status: 0
+timeout=false
+elapsed_ms=69

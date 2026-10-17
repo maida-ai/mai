@@ -1,0 +1,9 @@
+
+running 5 tests
+test tests::conflict_requires_explicit_single_line_owner ... ok
+test tests::invalid_content_fails_even_when_expected ... ok
+test tests::native_windows_git_paths ... ok
+test tests::revision_trailers_reject_missing_duplicate_and_malformed ... ok
+test tests::exact_gate_accepts_only_complete_expected_tree ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

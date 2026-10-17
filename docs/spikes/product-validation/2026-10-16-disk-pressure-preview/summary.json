@@ -1,0 +1,9 @@
+{
+  "failures": [
+    {
+      "fixture": "typescript",
+      "error": "typescript-cold: expected success, got failure"
+    }
+  ],
+  "complete": false
+}

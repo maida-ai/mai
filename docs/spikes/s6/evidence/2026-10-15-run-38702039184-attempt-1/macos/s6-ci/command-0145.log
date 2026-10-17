@@ -1,0 +1,10 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/uv
+command=uv ["lock", "--offline"]
+timeout_ms=120000
+Using CPython 3.14.7 interpreter at: /opt/homebrew/opt/python@3.14/bin/python3.14
+Resolved 2 packages in 7ms
+Added beta v1.0.0
+
+status=exit status: 0
+timeout=false
+elapsed_ms=26

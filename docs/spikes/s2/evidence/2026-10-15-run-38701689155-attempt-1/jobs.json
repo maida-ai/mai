@@ -1,0 +1,263 @@
+[
+  {
+    "id": 116311154350,
+    "name": "s2 / s2 (windows-latest)",
+    "status": "completed",
+    "conclusion": "success",
+    "started_at": "2026-10-15T07:52:27Z",
+    "completed_at": "2026-10-15T07:53:26Z",
+    "html_url": "https://github.com/maida-ai/mai/actions/runs/38701689155/job/116311154350",
+    "runner_name": "GitHub Actions 1000004665",
+    "labels": [
+      "windows-latest"
+    ],
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 1,
+        "started_at": "2026-10-15T07:52:28Z",
+        "completed_at": "2026-10-15T07:52:30Z"
+      },
+      {
+        "name": "Validate experiment inputs",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 2,
+        "started_at": "2026-10-15T07:52:30Z",
+        "completed_at": "2026-10-15T07:52:30Z"
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 3,
+        "started_at": "2026-10-15T07:52:30Z",
+        "completed_at": "2026-10-15T07:52:37Z"
+      },
+      {
+        "name": "Run dtolnay/rust-toolchain@stable",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 4,
+        "started_at": "2026-10-15T07:52:37Z",
+        "completed_at": "2026-10-15T07:53:02Z"
+      },
+      {
+        "name": "Run experiment",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 5,
+        "started_at": "2026-10-15T07:53:02Z",
+        "completed_at": "2026-10-15T07:53:19Z"
+      },
+      {
+        "name": "Collect available evidence, including failures",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 6,
+        "started_at": "2026-10-15T07:53:19Z",
+        "completed_at": "2026-10-15T07:53:20Z"
+      },
+      {
+        "name": "Upload evidence",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 7,
+        "started_at": "2026-10-15T07:53:20Z",
+        "completed_at": "2026-10-15T07:53:21Z"
+      },
+      {
+        "name": "Post Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 14,
+        "started_at": "2026-10-15T07:53:21Z",
+        "completed_at": "2026-10-15T07:53:23Z"
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 15,
+        "started_at": "2026-10-15T07:53:23Z",
+        "completed_at": "2026-10-15T07:53:23Z"
+      }
+    ]
+  },
+  {
+    "id": 116311154611,
+    "name": "s2 / s2 (ubuntu-latest)",
+    "status": "completed",
+    "conclusion": "success",
+    "started_at": "2026-10-15T07:52:26Z",
+    "completed_at": "2026-10-15T07:52:34Z",
+    "html_url": "https://github.com/maida-ai/mai/actions/runs/38701689155/job/116311154611",
+    "runner_name": "GitHub Actions 1000004666",
+    "labels": [
+      "ubuntu-latest"
+    ],
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 1,
+        "started_at": "2026-10-15T07:52:27Z",
+        "completed_at": "2026-10-15T07:52:28Z"
+      },
+      {
+        "name": "Validate experiment inputs",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 2,
+        "started_at": "2026-10-15T07:52:28Z",
+        "completed_at": "2026-10-15T07:52:28Z"
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 3,
+        "started_at": "2026-10-15T07:52:28Z",
+        "completed_at": "2026-10-15T07:52:28Z"
+      },
+      {
+        "name": "Run dtolnay/rust-toolchain@stable",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 4,
+        "started_at": "2026-10-15T07:52:28Z",
+        "completed_at": "2026-10-15T07:52:29Z"
+      },
+      {
+        "name": "Run experiment",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 5,
+        "started_at": "2026-10-15T07:52:29Z",
+        "completed_at": "2026-10-15T07:52:32Z"
+      },
+      {
+        "name": "Collect available evidence, including failures",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 6,
+        "started_at": "2026-10-15T07:52:32Z",
+        "completed_at": "2026-10-15T07:52:32Z"
+      },
+      {
+        "name": "Upload evidence",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 7,
+        "started_at": "2026-10-15T07:52:32Z",
+        "completed_at": "2026-10-15T07:52:33Z"
+      },
+      {
+        "name": "Post Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 14,
+        "started_at": "2026-10-15T07:52:33Z",
+        "completed_at": "2026-10-15T07:52:33Z"
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 15,
+        "started_at": "2026-10-15T07:52:33Z",
+        "completed_at": "2026-10-15T07:52:33Z"
+      }
+    ]
+  },
+  {
+    "id": 116311154687,
+    "name": "s2 / s2 (macos-latest)",
+    "status": "completed",
+    "conclusion": "success",
+    "started_at": "2026-10-15T07:52:34Z",
+    "completed_at": "2026-10-15T07:52:57Z",
+    "html_url": "https://github.com/maida-ai/mai/actions/runs/38701689155/job/116311154687",
+    "runner_name": "GitHub Actions 1000004667",
+    "labels": [
+      "macos-latest"
+    ],
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 1,
+        "started_at": "2026-10-15T07:52:35Z",
+        "completed_at": "2026-10-15T07:52:36Z"
+      },
+      {
+        "name": "Validate experiment inputs",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 2,
+        "started_at": "2026-10-15T07:52:36Z",
+        "completed_at": "2026-10-15T07:52:36Z"
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 3,
+        "started_at": "2026-10-15T07:52:36Z",
+        "completed_at": "2026-10-15T07:52:38Z"
+      },
+      {
+        "name": "Run dtolnay/rust-toolchain@stable",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 4,
+        "started_at": "2026-10-15T07:52:38Z",
+        "completed_at": "2026-10-15T07:52:40Z"
+      },
+      {
+        "name": "Run experiment",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 5,
+        "started_at": "2026-10-15T07:52:40Z",
+        "completed_at": "2026-10-15T07:52:53Z"
+      },
+      {
+        "name": "Collect available evidence, including failures",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 6,
+        "started_at": "2026-10-15T07:52:53Z",
+        "completed_at": "2026-10-15T07:52:53Z"
+      },
+      {
+        "name": "Upload evidence",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 7,
+        "started_at": "2026-10-15T07:52:53Z",
+        "completed_at": "2026-10-15T07:52:55Z"
+      },
+      {
+        "name": "Post Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 14,
+        "started_at": "2026-10-15T07:52:55Z",
+        "completed_at": "2026-10-15T07:52:55Z"
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 15,
+        "started_at": "2026-10-15T07:52:55Z",
+        "completed_at": "2026-10-15T07:52:56Z"
+      }
+    ]
+  }
+]

@@ -1,10 +1,11 @@
 # Agent instructions for contributing to mai
 
-mai is a standalone Apache-2.0 Rust project targeting 3–30 coding agents on one repository. [ADR 0003](docs/adr/0003-git-native-integration-queue.md) defines the rewrite; [architecture](docs/architecture.md) summarizes it and [philosophy](docs/philosophy.md) explains why. Current 0.0.1 still uses the old worktree engine. Never describe the rewrite as shipped.
+mai is a standalone Apache-2.0 Rust project targeting 3–30 coding agents on one repository. [ADR 0003](docs/adr/0003-git-native-integration-queue.md) defines the rewrite; [architecture](docs/architecture.md) summarizes it and [philosophy](docs/philosophy.md) explains why. Current 0.0.1 contains the replacement MVP foundation; the old worktree engine is retired. Never describe the full integration queue as shipped.
 
 ## Work and design gates
 
-* Product code starts only after M0: S1–S7 pass their go criteria or an ADR accepts a redesign, and ADRs 0003 and 0004 are accepted. Do not perform the planned source/test/benchmark/example replacement before that gate. Preserve uncommitted user changes.
+* Follow [ADR 0010](docs/adr/0010-staged-mvp-qualification.md) for staged MVP qualification: the fresh native S3 functional evidence and MVP scope of ADRs 0003/0004 are reviewed and accepted; the maintainer-approved implementation plan may begin product replacement. S4 realistic performance and future S7 mechanisms are not blanket blockers; each implemented correctness path needs crash/failure tests before enablement. Preserve uncommitted user changes.
+* Discourage premature optimization: require a measured practical problem before adding tuning or complexity. Defer realistic performance claims, the 15% warm-overhead target and differentiated priority policy until MVP observations and the priority RFC. Start with a simple single-class dependency-aware queue; unqualified priority/recovery features stay unavailable.
 * Keep decided direction, spike-pending mechanisms and open maintainer decisions distinct. Do not select pending tagline, merge/mode/slot/failure defaults, ecosystem examples or M1b/user-gate ordering on the maintainer's behalf.
 * Use Rust and the existing toolchain. Read source, Cargo.toml, Cargo.lock, nearby tests and relevant docs before code changes. Add no production dependency without a concrete need and authorization. Prefer Git CLI merges/ref updates; in-process readers require profiling evidence.
 * No backward compatibility is required for repository formats, metadata, CLI or JSON schemas. Reject unsupported versions; add no migrations, aliases or legacy readers. Keep MVP versioning at 0.0.x, then 0.1.0 after MVP and 1.0.0 at stability.
@@ -13,6 +14,8 @@ mai is a standalone Apache-2.0 Rust project targeting 3–30 coding agents on on
 * M2 and later wait for the external-user gate unless the maintainer explicitly overrides it. When in doubt, prefer the option that shortens recovery without weakening the trunk gate.
 
 ## Rewrite invariants (not current implementation claims)
+
+ADR 0010 controls staging: the priority and automated recovery clauses below constrain future enabled features; they do not require those features in the initial MVP. Core durability, validation, ownership and work-preservation rules remain mandatory.
 
 1. Trunk's first-parent chain is the acceptance ledger; each accepted first-parent commit is a change or upstream sync. r0 is the import baseline. Store rN in a trailer; do not recompute it by history traversal.
 2. Only the engine landing step writes trunk, using CAS. Receive policy permits submission refs and the pusher's own drafts; local filesystem access and declared file-transport identity are not security boundaries.

@@ -1,0 +1,8 @@
+cwd=/home/runner/work/mai/mai/.throwaway/s6-ci
+command=uv ["--version"]
+timeout_ms=120000
+uv 0.12.18 (x86_64-unknown-linux-gnu)
+
+status=exit status: 0
+timeout=false
+elapsed_ms=10

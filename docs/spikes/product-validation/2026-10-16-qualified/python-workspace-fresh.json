@@ -1,0 +1,17 @@
+{
+  "agent": "experiment-agent",
+  "base": "8f712a47dbfad117e1f1497015a5d8b3520f0074",
+  "bootstrap": {
+    "elapsed_ms": 147,
+    "exit_code": 0,
+    "outcome": "success",
+    "stderr_tail": "Using CPython 3.12.3 interpreter at: /usr/bin/python3.12\nCreating virtual environment at: .venv\nActivate with: source .venv/bin/activate\nResolved 8 packages in 0.85ms\nInstalled 8 packages in 3ms\n + flit-core==3.9.0\n + freezegun==1.4.0\n + iniconfig==2.0.0\n + packaging==24.0\n + pluggy==1.4.0\n + pytest==8.1.1\n + python-dateutil==2.9.0.post0\n + six==1.16.0\nResolved 1 package in 0.63ms\n   Building itsdangerous @ file:///home/zatoichi/Desktop/Git/Maida.AI/maida-mai/.throwaway/next-batch/qualified-run/python-workspace\n      Built itsdangerous @ file:///home/zatoichi/Desktop/Git/Maida.AI/maida-mai/.throwaway/next-batch/qualified-run/python-workspace\nPrepared 1 package in 49ms\nInstalled 1 package in 0.34ms\n + itsdangerous==2.2.0 (from file:///home/zatoichi/Desktop/Git/Maida.AI/maida-mai/.throwaway/next-batch/qualified-run/python-workspace)\n",
+    "stdout_tail": ""
+  },
+  "bootstrap_skipped": false,
+  "destination": {
+    "data": "L2hvbWUvemF0b2ljaGkvRGVza3RvcC9HaXQvTWFpZGEuQUkvbWFpZGEtbWFpLy50aHJvd2F3YXkvbmV4dC1iYXRjaC9xdWFsaWZpZWQtcnVuL3B5dGhvbi13b3Jrc3BhY2U=",
+    "encoding": "unix_bytes"
+  },
+  "schema_version": 1
+}

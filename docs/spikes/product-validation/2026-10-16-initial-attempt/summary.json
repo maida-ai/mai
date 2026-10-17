@@ -1,0 +1,17 @@
+{
+  "failures": [
+    {
+      "fixture": "rust",
+      "error": "rust: cold run did not record fresh bootstrap"
+    },
+    {
+      "fixture": "python",
+      "error": "python-init: expected 0, got 5; see /tmp/mai-product-validation-20261016-a/python-init.log"
+    },
+    {
+      "fixture": "typescript",
+      "error": "typescript: cold run did not record fresh bootstrap"
+    }
+  ],
+  "complete": false
+}

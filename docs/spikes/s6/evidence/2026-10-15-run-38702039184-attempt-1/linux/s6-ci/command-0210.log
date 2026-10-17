@@ -1,0 +1,14 @@
+cwd=/home/runner/work/mai/mai/.throwaway/s6-ci/uv
+command=uv ["sync", "--locked", "--offline"]
+timeout_ms=120000
+Resolved 3 packages in 0.67ms
+   Building beta @ file:///home/runner/work/mai/mai/.throwaway/s6-ci/uv/vendor/beta
+      Built beta @ file:///home/runner/work/mai/mai/.throwaway/s6-ci/uv/vendor/beta
+Prepared 1 package in 61ms
+Uninstalled 1 package in 0.39ms
+Installed 1 package in 0.30ms
+ ~ beta==1.0.0 (from file:///home/runner/work/mai/mai/.throwaway/s6-ci/uv/vendor/beta)
+
+status=exit status: 0
+timeout=false
+elapsed_ms=70

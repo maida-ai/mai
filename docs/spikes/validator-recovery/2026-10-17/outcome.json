@@ -1,0 +1,94 @@
+{
+  "inspection": {
+    "candidate": "07f6647794016a457cff7c420673139ad4fda3cc",
+    "claim_id": "mai-claim-vHFmh1bgWjVq8k9yIO8vmK3Eh1V86aqc",
+    "cleanup_receipt": true,
+    "occupied": true,
+    "schema_version": 1,
+    "slot": 0
+  },
+  "recovery": {
+    "claim": "mai-claim-vHFmh1bgWjVq8k9yIO8vmK3Eh1V86aqc",
+    "quarantine": {
+      "data": "L3Zhci90bXAvbWFpLWRlbGl2ZXJ5LXRlc3QvbWFpLW9wLTludXV5bXlmL2F1dGhvcml0eS8ubWFpL3ZhbGlkYXRvcnMvc2xvdC0wL3F1YXJhbnRpbmUtbWFpLWNsYWltLXZIRm1oMWJnV2pWcThrOXlJTzh2bUszRWgxVjg2YXFj",
+      "encoding": "unix_bytes"
+    },
+    "schema_version": 1,
+    "slot": 0
+  },
+  "repeated_recovery_identical": true,
+  "interrupted_state": {
+    "agent": "operator",
+    "annotations": [],
+    "approval_pending": false,
+    "attempts": [
+      {
+        "number": 1,
+        "status": "interrupted"
+      }
+    ],
+    "commit": "83c7634e73f8970c1f7c796cd810abd3bccba06b",
+    "dependencies": [],
+    "id": {
+      "change_id": "operator-83c7634e73f8970c1f7c796cd810abd3bccba06b",
+      "generation": 1
+    },
+    "predecessor": null,
+    "schema_version": 1,
+    "state": {
+      "kind": "queued"
+    }
+  },
+  "landed": {
+    "commit": "6d6c6383ce29a32cf30e6870e874b157f7d2eb1b",
+    "generation": {
+      "change_id": "operator-83c7634e73f8970c1f7c796cd810abd3bccba06b",
+      "generation": 1
+    },
+    "kind": "landed",
+    "revision": 1,
+    "schema_version": 1
+  },
+  "final_state": {
+    "agent": "operator",
+    "annotations": [],
+    "approval_pending": false,
+    "attempts": [
+      {
+        "number": 1,
+        "status": "interrupted"
+      },
+      {
+        "number": 2,
+        "status": "completed"
+      }
+    ],
+    "commit": "83c7634e73f8970c1f7c796cd810abd3bccba06b",
+    "dependencies": [],
+    "id": {
+      "change_id": "operator-83c7634e73f8970c1f7c796cd810abd3bccba06b",
+      "generation": 1
+    },
+    "predecessor": null,
+    "schema_version": 1,
+    "state": {
+      "kind": "terminal",
+      "outcome": {
+        "commit": "6d6c6383ce29a32cf30e6870e874b157f7d2eb1b",
+        "kind": "landed",
+        "revision": 1
+      }
+    }
+  },
+  "baseline": "170ccb3256958fe3a64e8c87451e0f91c8d08477",
+  "final_trunk": "6d6c6383ce29a32cf30e6870e874b157f7d2eb1b",
+  "gate_invocations": 2,
+  "agent_work_preserved": true,
+  "elapsed_milestones": {
+    "engine_kill_seconds": 0.0,
+    "receipt_observed_seconds": 0.02146161100245081,
+    "recovery_completed_seconds": 0.16038809600286186,
+    "successful_landing_seconds": 0.614621631000773
+  },
+  "measurement_scope": "One small disposable functional fixture; not a production MTTR or scale benchmark."
+}

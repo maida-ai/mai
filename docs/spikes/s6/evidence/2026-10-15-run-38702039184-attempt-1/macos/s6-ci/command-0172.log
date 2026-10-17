@@ -1,0 +1,8 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/uv
+command=git ["hash-object", "--", "trusted-policy"]
+timeout_ms=120000
+088115eac4c7a6b4bb3d3832081074a221961179
+
+status=exit status: 0
+timeout=false
+elapsed_ms=17

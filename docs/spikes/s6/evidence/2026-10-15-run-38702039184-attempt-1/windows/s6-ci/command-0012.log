@@ -1,0 +1,18 @@
+cwd=D:/a/mai/mai/.throwaway/s6-ci\cargo
+command=git ["commit", "-m", "baseline fixture"]
+timeout_ms=120000
+[main (root-commit) 5208233] baseline fixture
+ 9 files changed, 48 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 Cargo.lock
+ create mode 100644 Cargo.toml
+ create mode 100644 src/main.rs
+ create mode 100644 trusted-policy
+ create mode 100644 vendor/alpha/Cargo.toml
+ create mode 100644 vendor/alpha/src/lib.rs
+ create mode 100644 vendor/beta/Cargo.toml
+ create mode 100644 vendor/beta/src/lib.rs
+
+status=exit code: 0
+timeout=false
+elapsed_ms=73

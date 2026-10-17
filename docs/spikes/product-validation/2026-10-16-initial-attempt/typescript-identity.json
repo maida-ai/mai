@@ -1,0 +1,7 @@
+{
+  "url": "https://github.com/colinhacks/zod.git",
+  "revision": "e30870369d5b8f31ff4d0130d4439fd997deb523",
+  "locks": {
+    "yarn.lock": "84f5076e65d8a5ee731f27973dcc8bdc9de05ef7b3369b9ab42f5c5807f22cc7"
+  }
+}

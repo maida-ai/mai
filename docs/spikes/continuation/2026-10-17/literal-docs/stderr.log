@@ -1,0 +1,102 @@
++ set -eu
++ MAI_BIN=/home/takeshi/Documents/Codex/2026-10-16/task-2/continuation/target/debug/mai
++ mktemp -d /var/tmp/mai-two.XXXXXX
++ DEMO=/var/tmp/mai-two.JYs3ru
++ mkdir /var/tmp/mai-two.JYs3ru/seed
++ git -C /var/tmp/mai-two.JYs3ru/seed init -b main
++ git -C /var/tmp/mai-two.JYs3ru/seed config user.name Demo maintainer
++ git -C /var/tmp/mai-two.JYs3ru/seed config user.email demo@example.invalid
++ printf base\n
++ printf baseline\n
++ cat
++ cat
++ git -C /var/tmp/mai-two.JYs3ru/seed add .
++ git -C /var/tmp/mai-two.JYs3ru/seed commit -m Seed disposable collaboration
++ /home/takeshi/Documents/Codex/2026-10-16/task-2/continuation/target/debug/mai init /var/tmp/mai-two.JYs3ru/project --from /var/tmp/mai-two.JYs3ru/seed --json
++ /home/takeshi/Documents/Codex/2026-10-16/task-2/continuation/target/debug/mai status /var/tmp/mai-two.JYs3ru/project --json
++ /home/takeshi/Documents/Codex/2026-10-16/task-2/continuation/target/debug/mai receive enable /var/tmp/mai-two.JYs3ru/project --max-input-bytes 1048576 --max-file-bytes 65536 --max-changed-files 32 --json
++ /home/takeshi/Documents/Codex/2026-10-16/task-2/continuation/target/debug/mai workspace /var/tmp/mai-two.JYs3ru/project alice /var/tmp/mai-two.JYs3ru/alice --json
++ git -C /var/tmp/mai-two.JYs3ru/alice config user.name Alice
++ git -C /var/tmp/mai-two.JYs3ru/alice config user.email alice@example.invalid
++ printf accepted Alice parent\n
++ git -C /var/tmp/mai-two.JYs3ru/alice add parent.txt
++ git -C /var/tmp/mai-two.JYs3ru/alice commit -m Alice parent
++ git -C /var/tmp/mai-two.JYs3ru/alice rev-parse HEAD
++ A=43652ad45832fcf4d09f9822f5faa06512a87b0b
++ git -C /var/tmp/mai-two.JYs3ru/alice push -o agent=alice mai HEAD:refs/for/main
+remote: mai received alice-43652ad45832fcf4d09f9822f5faa06512a87b0b generation 1; not landed        
+To /var/tmp/mai-two.JYs3ru/project/authority.git
+ * [new reference]   HEAD -> refs/mai/changes/alice-43652ad45832fcf4d09f9822f5faa06512a87b0b/1
++ /home/takeshi/Documents/Codex/2026-10-16/task-2/continuation/target/debug/mai integrate /var/tmp/mai-two.JYs3ru/project alice-43652ad45832fcf4d09f9822f5faa06512a87b0b --generation 1 --mode textual --json
++ printf Alice intent\n
++ git -C /var/tmp/mai-two.JYs3ru/alice add shared.txt
++ git -C /var/tmp/mai-two.JYs3ru/alice commit -m Alice later local work
++ git -C /var/tmp/mai-two.JYs3ru/alice rev-parse HEAD
++ LOCAL=8d8d572b2d5cf52f06a58c31e3606af838c3a056
++ /home/takeshi/Documents/Codex/2026-10-16/task-2/continuation/target/debug/mai workspace /var/tmp/mai-two.JYs3ru/project bob /var/tmp/mai-two.JYs3ru/bob --json
++ git -C /var/tmp/mai-two.JYs3ru/bob config user.name Bob
++ git -C /var/tmp/mai-two.JYs3ru/bob config user.email bob@example.invalid
++ printf Bob updated accepted parent\n
++ printf Bob additional work\n
++ git -C /var/tmp/mai-two.JYs3ru/bob add .
++ git -C /var/tmp/mai-two.JYs3ru/bob commit -m Bob additional accepted work
++ git -C /var/tmp/mai-two.JYs3ru/bob rev-parse HEAD
++ B=5030987c9585a98a27c109c09119350647e5d4c7
++ git -C /var/tmp/mai-two.JYs3ru/bob push -o agent=bob mai HEAD:refs/for/main
+remote: mai received bob-5030987c9585a98a27c109c09119350647e5d4c7 generation 1; not landed        
+To /var/tmp/mai-two.JYs3ru/project/authority.git
+ * [new reference]   HEAD -> refs/mai/changes/bob-5030987c9585a98a27c109c09119350647e5d4c7/1
++ /home/takeshi/Documents/Codex/2026-10-16/task-2/continuation/target/debug/mai integrate /var/tmp/mai-two.JYs3ru/project bob-5030987c9585a98a27c109c09119350647e5d4c7 --generation 1 --mode textual --json
++ /home/takeshi/Documents/Codex/2026-10-16/task-2/continuation/target/debug/mai continue /var/tmp/mai-two.JYs3ru/project /var/tmp/mai-two.JYs3ru/alice /var/tmp/mai-two.JYs3ru/continued --change alice-43652ad45832fcf4d09f9822f5faa06512a87b0b --generation 1 --json
++ cat /var/tmp/mai-two.JYs3ru/continued/parent.txt
++ test Bob updated accepted parent = Bob updated accepted parent
++ cat /var/tmp/mai-two.JYs3ru/continued/shared.txt
++ test Alice intent = Alice intent
++ test -f /var/tmp/mai-two.JYs3ru/continued/bob.txt
++ git -C /var/tmp/mai-two.JYs3ru/alice rev-parse HEAD
++ test 8d8d572b2d5cf52f06a58c31e3606af838c3a056 = 8d8d572b2d5cf52f06a58c31e3606af838c3a056
++ printf Bob overlapping intent\n
++ git -C /var/tmp/mai-two.JYs3ru/bob add shared.txt
++ git -C /var/tmp/mai-two.JYs3ru/bob commit -m Bob overlapping edit
++ git -C /var/tmp/mai-two.JYs3ru/bob rev-parse HEAD
++ B2=2e10468aab757f0ed556b5caac13a519e483bc9a
++ git -C /var/tmp/mai-two.JYs3ru/bob push -o agent=bob mai HEAD:refs/for/main
+remote: mai received bob-2e10468aab757f0ed556b5caac13a519e483bc9a generation 1; not landed        
+To /var/tmp/mai-two.JYs3ru/project/authority.git
+ * [new reference]   HEAD -> refs/mai/changes/bob-2e10468aab757f0ed556b5caac13a519e483bc9a/1
++ /home/takeshi/Documents/Codex/2026-10-16/task-2/continuation/target/debug/mai integrate /var/tmp/mai-two.JYs3ru/project bob-2e10468aab757f0ed556b5caac13a519e483bc9a --generation 1 --mode textual --json
++ git -C /var/tmp/mai-two.JYs3ru/continued rev-parse HEAD
++ C=43d41019189df9957dadd0e21801e47327d7d335
++ git -C /var/tmp/mai-two.JYs3ru/continued push -o agent=alice mai HEAD:refs/for/main
+remote: mai received alice-43d41019189df9957dadd0e21801e47327d7d335 generation 1; not landed        
+To /var/tmp/mai-two.JYs3ru/project/authority.git
+ * [new reference]   HEAD -> refs/mai/changes/alice-43d41019189df9957dadd0e21801e47327d7d335/1
++ RESULT=0
++ /home/takeshi/Documents/Codex/2026-10-16/task-2/continuation/target/debug/mai integrate /var/tmp/mai-two.JYs3ru/project alice-43d41019189df9957dadd0e21801e47327d7d335 --generation 1 --mode textual --json
++ RESULT=3
++ test 3 -eq 3
++ /home/takeshi/Documents/Codex/2026-10-16/task-2/continuation/target/debug/mai show /var/tmp/mai-two.JYs3ru/project alice-43d41019189df9957dadd0e21801e47327d7d335 --generation 1 --json
++ RESULT=0
++ /home/takeshi/Documents/Codex/2026-10-16/task-2/continuation/target/debug/mai continue /var/tmp/mai-two.JYs3ru/project /var/tmp/mai-two.JYs3ru/alice /var/tmp/mai-two.JYs3ru/conflicted --change alice-43652ad45832fcf4d09f9822f5faa06512a87b0b --generation 1 --json
+{"error":{"message":"continuation replay conflicted at 8d8d572b2d5cf52f06a58c31e3606af838c3a056; inspect `git -C /var/tmp/mai-two.JYs3ru/conflicted status`. The incomplete destination is preserved for diagnostics; after addressing the cause, retry with a new destination. Source remains untouched. Git: error: could not apply 8d8d572... Alice later local work\nhint: After resolving the conflicts, mark them with\nhint: \"git add/rm <pathspec>\", then run\nhint: \"git cherry-pick --continue\".\nhint: You can instead skip this commit with \"git cherry-pick --skip\".\nhint: To abort and get back to the state before \"git cherry-pick\",\nhint: run \"git cherry-pick --abort\".\nhint: Disable this message with \"git config set advice.mergeConflict false\"\n","reason":"infrastructure"},"schema_version":1}
++ RESULT=5
++ test 5 -eq 5
++ test -f /var/tmp/mai-two.JYs3ru/conflicted/.mai-continuation-incomplete
++ /home/takeshi/Documents/Codex/2026-10-16/task-2/continuation/target/debug/mai workspace /var/tmp/mai-two.JYs3ru/project alice /var/tmp/mai-two.JYs3ru/correction --json
++ git -C /var/tmp/mai-two.JYs3ru/correction config user.name Alice
++ git -C /var/tmp/mai-two.JYs3ru/correction config user.email alice@example.invalid
++ printf Bob overlapping intent + Alice intent\n
++ git -C /var/tmp/mai-two.JYs3ru/correction add shared.txt
++ git -C /var/tmp/mai-two.JYs3ru/correction commit -m Reconcile both intended edits
++ git -C /var/tmp/mai-two.JYs3ru/correction rev-parse HEAD
++ FIX=fa30cd77b56365f53cb598017fed59e9eb2b74fc
++ git -C /var/tmp/mai-two.JYs3ru/correction push -o agent=alice mai HEAD:refs/for/main
+remote: mai received alice-fa30cd77b56365f53cb598017fed59e9eb2b74fc generation 1; not landed        
+To /var/tmp/mai-two.JYs3ru/project/authority.git
+ * [new reference]   HEAD -> refs/mai/changes/alice-fa30cd77b56365f53cb598017fed59e9eb2b74fc/1
++ /home/takeshi/Documents/Codex/2026-10-16/task-2/continuation/target/debug/mai integrate /var/tmp/mai-two.JYs3ru/project alice-fa30cd77b56365f53cb598017fed59e9eb2b74fc --generation 1 --mode textual --json
++ /home/takeshi/Documents/Codex/2026-10-16/task-2/continuation/target/debug/mai stop /var/tmp/mai-two.JYs3ru/project --json
++ printf Disposable work and evidence retained at %s\n /var/tmp/mai-two.JYs3ru
++ printf \nMAI_DOC_FIXTURE=%s\n /var/tmp/mai-two.JYs3ru
++ printf MAI_DOC_LOCAL=%s\n 8d8d572b2d5cf52f06a58c31e3606af838c3a056
++ printf MAI_DOC_FINAL=%s\n fa30cd77b56365f53cb598017fed59e9eb2b74fc

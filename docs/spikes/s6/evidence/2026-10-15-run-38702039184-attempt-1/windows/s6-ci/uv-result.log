@@ -1,0 +1,12 @@
+PASS ecosystem=uv
+base=80c95d77351537c71c52fa3d1800fda931d24836
+alpha_manifest=d0b22968376894e716300e7ec768a9b00bf774e0
+pre_regeneration_tree=104c11ee3698a9b5ddb1dde4bd82c21ce91c4873
+final_tree=d5d7458f6f389a2962f5c1a18fec42a06b63e1b7
+checked_tree=d5d7458f6f389a2962f5c1a18fec42a06b63e1b7
+parent=a3e76c4e890c7951b72ccfd914b1dc636f5149a9
+policy_blob=088115eac4c7a6b4bb3d3832081074a221961179
+attempt=1
+landed=1fadb93d5c6739622ebcb3334a68164bc205a416
+checks=independent-manifest-merge,trunk-lock-reset,offline-regeneration,byte-reproducibility,gate-tree-unchanged,both-imports,stale-tree-parent-attempt-rejection,policy-replacement,script-replacement,gate-failure,dependency-failure-offline,timeout,exact-landed-tree
+limitations=local-source-version-pinned-fixtures;no-registry-or-production-qualification;timeout-probe-not-real-resolver-hang

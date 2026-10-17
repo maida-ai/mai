@@ -1,0 +1,18 @@
+
+running 14 tests
+test manifest::tests::conservative_errors ... ok
+test manifest::tests::containment_boundaries ... ok
+test manifest::tests::generated_widening_and_deletion_keep_fallback ... ok
+test manifest::tests::mode_only_change_is_not_an_empty_manifest ... ok
+test manifest::tests::replacement_preserves_removed_unit_and_excludes_unchanged ... ok
+test manifest::tests::uncertain_before_or_after_requires_file_fallback ... ok
+test manifest::tests::units ... ok
+test manifest::tests::unmodeled_content_change_keeps_file_fallback ... ok
+test tests::timing_threshold ... ok
+test tests::unique_base ... ok
+test tests::windows_drive_paths ... ok
+test tests::extended_unc_rejected - should panic ... ok
+test tests::empty_samples_fail - should panic ... ok
+test tests::unc_rejected - should panic ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s

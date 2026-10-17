@@ -1,12 +1,12 @@
 # Agent integration
 
-## Current 0.0.1 precautions
+## Current 0.0.1 foundation
 
-The existing binary uses linked worktrees, not the proposed clone/push protocol. Give each agent a unique workspace, inspect `git status --short --untracked-files=all` before `mai diff` or `mai submit`, and quiesce editing during submit/refresh. Both commands stage all nonignored files. Do not commit, amend, rebase or switch branches: HEAD is the submit base and shared main can bypass policy. A recovered receipt can describe older work while new changes remain pending; inspect accepted content before claiming success. Preserve complete drafts outside the workspace before any destructive recovery. See the [current CLI reference](cli.md).
+The old worktree engine and its submit/refresh commands are retired. The replacement foundation supports authority administration, independent workspaces and manual trusted validation. `mai workspace PROJECT AGENT DESTINATION` creates a clone and runs configured bootstrap; it does not install a draft-push hook. Explicit Git submission and named-generation integration are available; automatic scheduling, draft hooks and in-place sync/autostash remain unavailable. [Copy-based continuation](continuation.md) handles a clean unregistered suffix in a new workspace after an explicitly verified landed submission. Follow the [runnable walkthrough](getting-started.md) and [receive contract](receive.md). Continue using ordinary Git and existing review processes for real work. See the [current CLI reference](cli.md); the protocol below remains planned.
 
 ## Planned protocol — not runnable yet
 
-M1 agents use ordinary Git clones. `mai workspace <name>` is an explicit convenience that creates a clone, sets `mai.agent`, installs a draft-push hook and bootstraps the environment. Container agents use their own clones over M1b smart HTTP. No agent receives write access to the authority filesystem as a substitute for the receive policy.
+M1 agents use ordinary Git clones. The implemented `mai workspace PROJECT AGENT DESTINATION` creates a clone, sets `mai.agent` and runs configured bootstrap. Installing a draft-push hook remains planned. Container agents use their own clones over M1b smart HTTP. No agent receives write access to the authority filesystem as a substitute for the receive policy.
 
 1. Make small coherent changes and commit normally. The planned post-commit hook asynchronously pushes the agent's own `refs/drafts/<agent>`; local commits alone do not prove remote recovery durability.
 2. Submit with `git push mai HEAD:refs/for/main`, or the proposed convenience `mai submit`. Only the wrapper may auto-commit dirty work, with explicit path selection and untracked-file disclosure.
@@ -57,6 +57,8 @@ Harnesses own agent scheduling and context preparation. mai does not run agents,
 
 ## Objects, priority and recovery — proposed amendment
 
+[ADR 0010](adr/0010-staged-mvp-qualification.md) keeps file-unit manifests in MVP scope but defers differentiated priority and automated recovery to RFC #93. The priority/fix/grant/preemption behavior below is future proposal material, not initial MVP behavior or permission to enable it.
+
 M1 represents every changed file as an explicit file unit and computes manifests itself at receive and landing; agents never supply the authoritative affected-object list. M2 adds symbol IDs such as `src/api.rs::Router::add_route`, config keys such as `Cargo.toml::dependencies.serde`, and module scope `src/api.rs::<module>`. Unsupported inputs fall back to file units with a reason. Class leases cover methods; file leases cover every contained object. Module scope is not leasable by default, and moves initially appear as delete-plus-add. Line ranges are never units.
 
 Planned push options augment the normal submission:
@@ -65,6 +67,6 @@ Planned push options augment the normal submission:
 - `-o mai.priority=<class>` requests `sev`, `high`, `normal` or `low`. Normal and low are self-assigned; severe and high require audited, expiring grants. Who may issue those grants remains a maintainer decision.
 - `-o mai.fixes=<change>` links a bounded fix-forward attempt to its confirmed culprit and temporary severe grant. The engine verifies an active incident and its scoped grant; this option alone does not authorize a priority upgrade or bypass validation.
 
-These rules apply to the Claude Code, Codex and Aider snippets above. Respond to lease-preemption notice by preserving work, not discarding it; after grace the new owner is enforced at landing. Higher class takes queue/conflict precedence and the lower side resolves, with later lander resolving ties. Priority never silently overwrites either draft or approves a merge. Dependencies inherit class and waiting work ages up to high as engine-derived effective-priority exceptions, not self-granted requested classes; only severe work may preempt lower-class speculative slots.
+When the future features are accepted and enabled, these rules apply to the Claude Code, Codex and Aider snippets above. Respond to lease-preemption notice by preserving work, not discarding it; after grace the new owner is enforced at landing. Higher class takes queue/conflict precedence and the lower side resolves, with later lander resolving ties. Priority never silently overwrites either draft or approves a merge. Dependencies inherit class and waiting work ages up to high as engine-derived effective-priority exceptions, not self-granted requested classes; only severe work may preempt lower-class speculative slots.
 
 Use `mai log --object <unit>` to inspect indexed object history once implemented. Grant administration is proposed as `mai priority grant <agent|change> <class> --reason ... --ttl ...` and `mai priority revoke`; do not invent permissions or revoke flags. A severe fix must pass the normal gate and full confirmation within its recovery bound. If it cannot, preserve work for relanding after the validated revert backstop. A narrower severe gate is only an open proposal, not permission to skip checks.

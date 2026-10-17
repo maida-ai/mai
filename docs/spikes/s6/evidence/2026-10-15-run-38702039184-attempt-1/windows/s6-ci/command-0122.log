@@ -1,0 +1,10 @@
+cwd=D:/a/mai/mai/.throwaway/s6-ci\npm
+command=npm ["install", "--package-lock-only", "--offline", "--ignore-scripts", "--no-audit", "--no-fund"]
+timeout_ms=120000
+npm error code ENOTCACHED
+npm error request to https://registry.npmjs.org/alpha failed: cache mode is 'only-if-cached' but no cached response is available.
+npm error A complete log of this run can be found in: D:\a\mai\mai\.throwaway\s6-ci\npm-cache\_logs\2026-10-15T07_56_32_693Z-debug-0.log
+
+status=exit code: 1
+timeout=false
+elapsed_ms=660

@@ -1,0 +1,17 @@
+{
+  "agent": "experiment-agent",
+  "base": "adf6a7c1ac20160d4126cac3508fece0da46f5ee",
+  "bootstrap": {
+    "elapsed_ms": 47,
+    "exit_code": 0,
+    "outcome": "success",
+    "stderr_tail": "",
+    "stdout_tail": ""
+  },
+  "bootstrap_skipped": false,
+  "destination": {
+    "data": "L3Zhci90bXAvbWFpLXByb2R1Y3QtdmFsaWRhdGlvbi0yMDI2MTAxNi1iL3J1c3Qtd29ya3NwYWNl",
+    "encoding": "unix_bytes"
+  },
+  "schema_version": 1
+}

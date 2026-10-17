@@ -1,0 +1,10 @@
+{
+  "url": "https://github.com/BurntSushi/ripgrep.git",
+  "revision": "4649aa9700619f94cf9c66876e9549d83420e16c",
+  "locks": {
+    "Cargo.lock": "1a99f2f04d96411238379485e36623a19b0158d9446796e6d85d58746023f441"
+  },
+  "tree": "d7a1d4d108598ad6e23d82a180c71541b221d32c",
+  "import_mode": "pinned_tree_snapshot_without_upstream_history",
+  "archive_sha256": "29bfa231f395c3f1aaeec71f132de746adefdfeca45fbfc0c5c5b705ecf0d560"
+}

@@ -1,0 +1,10 @@
+mode=run
+functional_pass=true
+functional_failures=[]
+performance_pass=false
+performance_failures=[
+    "rust",
+    "typescript",
+]
+performance_complete=true
+platform=windows

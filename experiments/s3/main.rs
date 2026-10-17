@@ -23,7 +23,7 @@ const FIXTURES: [Fixture; 3] = [
         url: "https://github.com/BurntSushi/ripgrep.git",
         rev: "4649aa9700619f94cf9c66876e9549d83420e16c",
         input: "Cargo.toml",
-        poison: "src/main.rs",
+        poison: "crates/core/main.rs",
     },
     Fixture {
         name: "python",
@@ -93,11 +93,87 @@ fn command(slot: &Path, program: &str, args: &[&str]) -> Command {
         .env("GIT_TERMINAL_PROMPT", "0");
     c
 }
+// ripgrep tests discover ancestor .git entries themselves, so a Git ceiling
+// environment variable cannot isolate their temporary directories.
+struct ExternalTemp(PathBuf);
+impl ExternalTemp {
+    fn new() -> Result<Self> {
+        Self::under(
+            &env::var_os("S3_TEMP_PARENT")
+                .map(PathBuf::from)
+                .unwrap_or_else(env::temp_dir),
+        )
+    }
+    fn cleanup(&self) -> Result<()> {
+        fs::remove_dir_all(&self.0)?;
+        Ok(())
+    }
+    fn under(parent: &Path) -> Result<Self> {
+        let parent = external_root(fs::canonicalize(parent)?, cfg!(windows))?;
+        if parent
+            .ancestors()
+            .any(|p| p.join(".git").symlink_metadata().is_ok())
+        {
+            return Err("Rust gate requires a temporary directory outside Git ancestry; set S3_TEMP_PARENT to an existing non-repository directory".into());
+        }
+        let nonce = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)?
+            .as_nanos();
+        let path = parent.join(format!("mai-s3-{}-{nonce}", std::process::id()));
+        let builder = fs::DirBuilder::new();
+        #[cfg(unix)]
+        let builder = {
+            use std::os::unix::fs::DirBuilderExt;
+            let mut builder = builder;
+            builder.mode(0o700);
+            builder
+        };
+        builder.create(&path)?;
+        Ok(Self(path))
+    }
+}
+impl Drop for ExternalTemp {
+    fn drop(&mut self) {
+        if let Err(error) = fs::remove_dir_all(&self.0) {
+            if error.kind() != std::io::ErrorKind::NotFound {
+                eprintln!(
+                    "temporary-directory cleanup failed: {}: {error}",
+                    self.0.display()
+                );
+            }
+        }
+    }
+}
+fn temp_command(slot: &Path, program: &str, args: &[&str], temp: Option<&Path>) -> Command {
+    let mut cmd = command(slot, program, args);
+    if let Some(path) = temp {
+        for key in ["TMPDIR", "TMP", "TEMP"] {
+            cmd.env(key, path);
+        }
+    }
+    cmd
+}
 fn run(slot: &Path, log: &Path, program: &str, args: &[&str]) -> Result<(bool, f64)> {
+    run_with_temp(slot, log, program, args, None)
+}
+fn run_with_temp(
+    slot: &Path,
+    log: &Path,
+    program: &str,
+    args: &[&str],
+    temp: Option<&Path>,
+) -> Result<(bool, f64)> {
     let mut file = fs::OpenOptions::new().create(true).append(true).open(log)?;
     writeln!(file, "cwd={} command={program} {args:?}", slot.display())?;
     let start = Instant::now();
-    let mut cmd = command(slot, program, args);
+    let mut cmd = temp_command(slot, program, args, temp);
+    if let Some(path) = temp {
+        writeln!(
+            file,
+            "private_external_temp={} reason=ripgrep-no-git-ancestor",
+            path.display()
+        )?;
+    }
     cmd.stdout(Stdio::from(file.try_clone()?))
         .stderr(Stdio::from(file.try_clone()?));
     #[cfg(unix)]
@@ -199,9 +275,21 @@ fn bootstrap(f: Fixture, slot: &Path, root: &Path, log: &Path) -> Result<f64> {
     };
     Ok(start.elapsed().as_secs_f64())
 }
-fn gate(f: Fixture, slot: &Path, root: &Path, log: &Path) -> Result<(bool, f64)> {
+fn gate(
+    f: Fixture,
+    slot: &Path,
+    root: &Path,
+    log: &Path,
+    temp: Option<&Path>,
+) -> Result<(bool, f64)> {
     match f.name {
-        "rust" => run(slot, log, "cargo", &["test", "--locked", "--workspace"]),
+        "rust" => run_with_temp(
+            slot,
+            log,
+            "cargo",
+            &["test", "--locked", "--workspace"],
+            temp,
+        ),
         "python" => run(slot, log, &python(slot), &["-m", "pytest"]),
         _ => run(
             slot,
@@ -256,20 +344,33 @@ fn prepare(f: Fixture, root: &Path, n: usize) -> Result<PathBuf> {
     )?;
     must(&slot, &log, "git", &["checkout", "--detach", "FETCH_HEAD"])?;
     must(&slot, &log, "git", &["rev-parse", "HEAD", "HEAD^{tree}"])?;
+    // Catch stale fixture paths before any timing or deliberately broken gate.
+    must(
+        &slot,
+        &log,
+        "git",
+        &["ls-files", "--error-unmatch", f.input, f.poison],
+    )?;
     Ok(slot)
 }
 fn reset(slot: &Path, log: &Path) -> Result<()> {
     must(slot, log, "git", &["reset", "--hard", "HEAD"])?;
     Ok(())
 }
-fn ecosystem(f: Fixture, root: &Path) -> Result<()> {
+fn ecosystem(f: Fixture, root: &Path) -> Result<bool> {
+    let private_temp = if f.name == "rust" {
+        Some(ExternalTemp::new()?)
+    } else {
+        None
+    };
+    let temp = private_temp.as_ref().map(|t| t.0.as_path());
     let log = root.join(format!("{}.log", f.name));
     let slot = prepare(f, root, 0)?;
     let cold = bootstrap(f, &slot, root, &log)?;
     let mut samples = fs::File::create(root.join(format!("{}-samples.tsv", f.name)))?;
     writeln!(samples, "kind\tsample\tseconds\tpass")?;
     writeln!(samples, "bootstrap\t0\t{cold}\ttrue")?;
-    let (ok, secs) = gate(f, &slot, root, &log)?;
+    let (ok, secs) = gate(f, &slot, root, &log, temp)?;
     writeln!(samples, "cold-gate\t0\t{secs}\t{ok}")?;
     if !ok {
         return Err("cold gate failed".into());
@@ -277,7 +378,7 @@ fn ecosystem(f: Fixture, root: &Path) -> Result<()> {
     let mut raw = vec![];
     let mut warm = vec![];
     for i in 0..5 {
-        let (ok, t) = gate(f, &slot, root, &log)?;
+        let (ok, t) = gate(f, &slot, root, &log, temp)?;
         writeln!(samples, "raw\t{i}\t{t}\t{ok}")?;
         if !ok {
             return Err("raw gate failed".into());
@@ -298,7 +399,7 @@ fn ecosystem(f: Fixture, root: &Path) -> Result<()> {
             if f.name == "python" { "#" } else { "//" }
         ));
         fs::write(source, text)?;
-        let (ok, _) = gate(f, &slot, root, &log)?;
+        let (ok, _) = gate(f, &slot, root, &log, temp)?;
         let t = start.elapsed().as_secs_f64();
         writeln!(samples, "warm\t{i}\t{t}\t{ok}")?;
         if !ok {
@@ -338,7 +439,7 @@ fn ecosystem(f: Fixture, root: &Path) -> Result<()> {
         slot.join(f.poison),
         "THIS IS DELIBERATELY INVALID SOURCE !!!\n",
     )?;
-    let (bad, _) = gate(f, &slot, root, &log)?;
+    let (bad, _) = gate(f, &slot, root, &log, temp)?;
     writeln!(result, "stale_cache_rejects_broken_source={}", !bad)?;
     if bad {
         return Err("stale cache masked broken source".into());
@@ -366,14 +467,38 @@ fn ecosystem(f: Fixture, root: &Path) -> Result<()> {
     let root2 = root.to_path_buf();
     let s2 = second.clone();
     let log2 = root.join(format!("{}-concurrent-1.log", f.name));
-    let handle = thread::spawn(move || gate(f, &s2, &root2, &log2));
+    let second_temp = if f.name == "rust" {
+        Some(ExternalTemp::new()?)
+    } else {
+        None
+    };
+    let handle = thread::spawn(move || {
+        let outcome = gate(
+            f,
+            &s2,
+            &root2,
+            &log2,
+            second_temp.as_ref().map(|t| t.0.as_path()),
+        );
+        if let Some(temp) = &second_temp {
+            temp.cleanup()?;
+        }
+        outcome
+    });
     let first = gate(
         f,
         &slot,
         root,
         &root.join(format!("{}-concurrent-0.log", f.name)),
-    )?;
-    let second_result = handle.join().map_err(|_| "slot thread panicked")??;
+        temp,
+    );
+    // Join even when the first spawn/gate fails; do not leave a second slot running.
+    let second_result = handle.join().map_err(|_| "slot thread panicked")?;
+    let first = first?;
+    let second_result = second_result?;
+    if let Some(temp) = &private_temp {
+        temp.cleanup()?;
+    }
     writeln!(
         result,
         "concurrent_slot_0={} concurrent_slot_1={} private_temp_and_build_paths=true",
@@ -382,15 +507,23 @@ fn ecosystem(f: Fixture, root: &Path) -> Result<()> {
     if !first.0 || !second_result.0 {
         return Err("concurrent gate failed".into());
     }
-    if ratio >= 0.15 {
-        return Err(format!(
-            "{} warm overhead {ratio:.3} fails unchanged <15% criterion",
-            f.name
-        )
-        .into());
+    writeln!(
+        result,
+        "functional_pass=true performance_pass={}",
+        ratio < 0.15
+    )?;
+    Ok(ratio < 0.15)
+}
+fn check_outcome(functional: bool, performance: bool, enforce_performance: bool) -> Result<()> {
+    if !functional {
+        return Err("S3 functional checks failed".into());
+    }
+    if enforce_performance && !performance {
+        return Err("S3 unchanged <15% performance criterion failed".into());
     }
     Ok(())
 }
+
 fn isolation(root: &Path) -> Result<()> {
     let mut log = fs::File::create(root.join("isolation.log"))?;
     let first = TcpListener::bind("127.0.0.1:0")?;
@@ -568,7 +701,11 @@ fn main() -> Result<()> {
             thread::sleep(Duration::from_millis(20));
         }
     }
-    let root = PathBuf::from(args.get(2).ok_or("usage: s3 run NEW_ROOT")?);
+    let mode = args.get(1).map(String::as_str).unwrap_or("");
+    if !matches!(mode, "run" | "functional" | "isolation") {
+        return Err("usage: s3 run|functional|isolation NEW_ROOT".into());
+    }
+    let root = PathBuf::from(args.get(2).ok_or("new root required")?);
     if root.exists() {
         return Err("root already exists".into());
     }
@@ -601,24 +738,32 @@ fn main() -> Result<()> {
     )
     .is_ok();
     let mut failures = vec![];
+    let mut performance_failures = vec![];
     for f in FIXTURES {
         if f.name == "typescript" && !yarn_ready {
             failures.push("typescript: pinned yarn setup failed".into());
             continue;
         }
-        if let Err(e) = ecosystem(f, &root) {
-            let message = format!("{}: {e}", f.name);
-            fs::write(root.join(format!("{}-failure.log", f.name)), &message)?;
-            failures.push(message);
+        match ecosystem(f, &root) {
+            Ok(false) => performance_failures.push(f.name),
+            Ok(true) => {}
+            Err(e) => {
+                let message = format!("{}: {e}", f.name);
+                fs::write(root.join(format!("{}-failure.log", f.name)), &message)?;
+                failures.push(message);
+            }
         }
     }
+    let functional_pass = failures.is_empty();
+    let performance_pass = functional_pass && performance_failures.is_empty();
     fs::write(
         root.join("summary.log"),
-        format!("failures={failures:#?}\nplatform={}\n", env::consts::OS),
+        format!(
+            "mode={mode}\nfunctional_pass={functional_pass}\nfunctional_failures={failures:#?}\nperformance_pass={performance_pass}\nperformance_failures={performance_failures:#?}\nperformance_complete={functional_pass}\nplatform={}\n",
+            env::consts::OS
+        ),
     )?;
-    if !failures.is_empty() {
-        return Err(format!("S3 remains NO-GO: {failures:?}").into());
-    }
+    check_outcome(functional_pass, performance_pass, mode == "run")?;
     Ok(())
 }
 #[cfg(test)]
@@ -703,10 +848,45 @@ mod tests {
     }
     #[test]
     fn private_slot_paths() {
-        let c = command(Path::new("fixtures/slot-1/repo"), "cargo", &["test"]);
-        let vars: Vec<_> = c.get_envs().collect();
-        assert!(vars.iter().any(
-            |(k, v)| *k == "CARGO_TARGET_DIR" && v.unwrap() == "fixtures/slot-1/repo/../target"
-        ));
+        for n in 0..2 {
+            let slot = PathBuf::from(format!("fixtures/slot-{n}/repo"));
+            let c = command(&slot, "cargo", &["test"]);
+            for (key, relative) in [
+                ("CARGO_TARGET_DIR", "../target"),
+                ("TMPDIR", "../tmp"),
+                ("TMP", "../tmp"),
+                ("TEMP", "../tmp"),
+            ] {
+                let value = c.get_envs().find(|(k, _)| *k == key).unwrap().1.unwrap();
+                assert_eq!(Path::new(value), slot.join(relative));
+            }
+        }
+    }
+    #[test]
+    fn external_temp_rejects_git_ancestors_and_cleans_up() {
+        let root = PathBuf::from(format!(".throwaway/s3-temp-unit-{}", std::process::id()));
+        fs::create_dir_all(root.join("nested")).unwrap();
+        fs::write(root.join(".git"), "gitdir: elsewhere").unwrap();
+        assert!(ExternalTemp::under(&root.join("nested")).is_err());
+        let temp = ExternalTemp::new().unwrap();
+        let path = temp.0.clone();
+        assert!(!path.ancestors().any(|p| p.join(".git").exists()));
+        let c = temp_command(Path::new("fixtures/slot/repo"), "cargo", &[], Some(&path));
+        for key in ["TMPDIR", "TMP", "TEMP"] {
+            assert_eq!(
+                Path::new(c.get_envs().find(|(k, _)| *k == key).unwrap().1.unwrap()),
+                path
+            );
+        }
+        drop(temp);
+        assert!(!path.exists());
+    }
+    #[test]
+    fn performance_policy_never_masks_functional_failure() {
+        assert!(check_outcome(false, false, false).is_err());
+        assert!(check_outcome(false, true, false).is_err());
+        assert!(check_outcome(true, false, true).is_err());
+        assert!(check_outcome(true, false, false).is_ok());
+        assert!(check_outcome(true, true, true).is_ok());
     }
 }

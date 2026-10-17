@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "binary_source_revision": "7ea1b5ffa66e02b45f20273d85aa3d3fab5e59b5",
+  "source_worktree_clean": true,
+  "build_profile": "debug",
+  "binary_sha256": "08db3fad236a36562489a28441f30604614e023ad35fc4d8b2dbe1bce8096b92",
+  "evidence": "Integration owner confirmed baseline compilation completed before integration cherry-picks; not inferred from current worktree HEAD."
+}

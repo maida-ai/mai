@@ -1,0 +1,8 @@
+cwd=D:/a/mai/mai/.throwaway/s6-ci\cargo
+command=git ["checkout", "-b", "beta-manifest", "5208233cc46f9e6a0e74b2584d39891ebe9c9d37"]
+timeout_ms=120000
+Switched to a new branch 'beta-manifest'
+
+status=exit code: 0
+timeout=false
+elapsed_ms=32

@@ -1,0 +1,5 @@
+{
+  "body": "Concurrent dependency additions must survive integration without textual lockfile merging.\n\n- [ ] For Cargo, npm and uv fixtures, merge independent manifest additions, start from trunk lockfile, regenerate in a validator and pass the ecosystem gate.\n- [ ] Confirm both dependencies survive; record available cache/offline assumptions, deterministic output, failure and timeout behavior.\n- [ ] Bind successful evidence to the final regenerated tree, not the pre-regeneration candidate. Trusted trunk rule/command cannot be replaced by candidate config.\n- [ ] Commit scripts and short go/no-go report. Qualification covers these ecosystems; shipping example defaults remain a maintainer decision.\n",
+  "state": "OPEN",
+  "title": "S6: Qualify lockfile regeneration for Cargo, npm and uv"
+}

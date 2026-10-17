@@ -1,0 +1,5 @@
+{
+  "body": "Prove the forge loop instead of assuming content equality makes every sync clean.\n\n- [ ] Run three cycles of agent landing, export, forge squash merge and concurrent human upstream changes followed by validated sync; also cover rebase-merge behavior.\n- [ ] Assert zero spurious conflicts and expected content/diffs, first-parent revision numbering and sync second-parent provenance.\n- [ ] Include a genuine upstream conflict: record configured owner and keep non-conflicting local work possible on the old upstream base; no force-push or automatic human-main mutation.\n- [ ] Use a disposable forge fixture or a faithful local topology model with its limits stated; record any missing real-forge qualification as pending.\n- [ ] Commit reproducible throwaway script/report. Redesign ADR before M1 if go criteria fail.\n",
+  "state": "OPEN",
+  "title": "S5: Qualify repeated upstream export and sync cycles"
+}

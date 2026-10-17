@@ -1,6 +1,8 @@
 # Configuration — proposed rewrite
 
-**Not implemented.** The 0.0.1 binary does not read this configuration. The following is the complete proposed repository configuration surface; values are examples and recommendations, not accepted defaults. M0 and the [maintainer decisions](project.md#open-maintainer-decisions) must settle policy before M1.
+[ADR 0010](adr/0010-staged-mvp-qualification.md) controls MVP scope. Priority, speculative/batch tuning and automated fix-forward examples below remain deferred proposals, not required or enabled initial MVP behavior. The initial queue is single-class and dependency-aware; core validation, ownership and recovery correctness remain mandatory. Priority RFC #93 and feature-specific tests precede future enablement.
+
+**Mostly proposed.** Manual validation reads the strict version-1 subset documented in the [manual validator guide](manual-validator.md). The complete proposed configuration surface below includes unsupported fields and cannot be used directly as an enabled policy; values are examples and recommendations, not accepted defaults. Scoped M0 settles only policy needed for enabled MVP behavior; later settings await their own design acceptance.
 
 ```toml
 version = 1
@@ -12,7 +14,7 @@ timeout = "15m"
 retries = 1
 mode = "pipeline"
 on_full_failure = "fix-forward"
-fix_window = "15m" # Example only; S4 selects the default
+fix_window = "15m" # Deferred example; later evidence and maintainer decision required
 fix_attempts = 2
 affected = ""
 

@@ -1,0 +1,43 @@
+{
+  "approval": null,
+  "binding": {
+    "authority": {
+      "data": "L3Zhci90bXAvbWFpLXByb2R1Y3QtdmFsaWRhdGlvbi0yMDI2MTAxNi1jL3B5dGhvbi1hdXRob3JpdHk=",
+      "encoding": "unix_bytes"
+    },
+    "base": "7777e9820281cf140a8c6ed51ffb08d807068f7e",
+    "candidate": "7777e9820281cf140a8c6ed51ffb08d807068f7e",
+    "policy": "7777e9820281cf140a8c6ed51ffb08d807068f7e",
+    "schema_version": 1,
+    "submitted_identity": null,
+    "tree": "2fd6c6369e0edb70b83050194a3b23ce682644cf"
+  },
+  "bootstrap": {
+    "elapsed_ms": 370,
+    "exit_code": 0,
+    "outcome": "success",
+    "stderr_tail": "Using CPython 3.12.3 interpreter at: /usr/bin/python3.12\nCreating virtual environment at: .venv\nActivate with: source .venv/bin/activate\nResolved 8 packages in 163ms\nPrepared 8 packages in 50ms\nInstalled 8 packages in 3ms\n + flit-core==3.9.0\n + freezegun==1.4.0\n + iniconfig==2.0.0\n + packaging==24.0\n + pluggy==1.4.0\n + pytest==8.1.1\n + python-dateutil==2.9.0.post0\n + six==1.16.0\nResolved 1 package in 0.73ms\n   Building itsdangerous @ file:///var/tmp/mai-product-validation-20261016-c/python-authority/.mai/validators/slot-0/candidate\n      Built itsdangerous @ file:///var/tmp/mai-product-validation-20261016-c/python-authority/.mai/validators/slot-0/candidate\nPrepared 1 package in 50ms\nInstalled 1 package in 0.39ms\n + itsdangerous==2.2.0 (from file:///var/tmp/mai-product-validation-20261016-c/python-authority/.mai/validators/slot-0/candidate)\n",
+    "stdout_tail": ""
+  },
+  "bootstrap_reused": false,
+  "diagnostic": null,
+  "elapsed_ms": 1175,
+  "outcome": "success",
+  "process": {
+    "elapsed_ms": 557,
+    "exit_code": 0,
+    "outcome": "success",
+    "stderr_tail": "",
+    "stdout_tail": "============================= test session starts ==============================\nplatform linux -- Python 3.12.3, pytest-8.1.1, pluggy-1.4.0\nrootdir: /var/tmp/mai-product-validation-20261016-c/python-authority/.mai/validators/slot-0/candidate\nconfigfile: pyproject.toml\ntestpaths: tests\ncollected 297 items\n\ntests/test_itsdangerous/test_encoding.py ........                        [  2%]\ntests/test_itsdangerous/test_serializer.py ............................. [ 12%]\n............                                                             [ 16%]\ntests/test_itsdangerous/test_signer.py .................                 [ 22%]\ntests/test_itsdangerous/test_timed.py .................................. [ 33%]\n...................................................................      [ 56%]\ntests/test_itsdangerous/test_url_safe.py ............................... [ 66%]\n........................................................................ [ 90%]\n...........................                                              [100%]\n\n============================= 297 passed in 0.35s ==============================\n"
+  },
+  "protected_changes": [],
+  "schema_version": 1,
+  "experiment_bootstrap_before": [],
+  "experiment_bootstrap_after": [
+    {
+      "name": ".mai/validator-bootstrap-0.json",
+      "mtime_ns": 1792189257705387292,
+      "content": "{\"fingerprint\":\"04b4ae599fcfa28ff32d5ab477f36598cfb6d0a7\",\"version\":1}"
+    }
+  ]
+}

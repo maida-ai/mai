@@ -1,76 +1,39 @@
 # CLI reference
 
-**Current 0.0.1 behavior.** These commands describe the existing engine retained during M0. They are not the proposed clone/receive/queue interface.
+**MVP foundation layer.** The previous worktree engine has been retired. The version is `0.0.1`; unsupported commands exit 2. The binary supports `init PROJECT [--from SOURCE]`, `serve PROJECT --foreground`, `status PROJECT [--no-autostart]` and `stop PROJECT`, plus help and version. It also supports `workspace PROJECT AGENT DESTINATION [--skip-bootstrap]`, `validator run PROJECT CANDIDATE`, and `approve PROJECT CANDIDATE --actor ACTOR --reason REASON [--deny]`. See [workspaces](workspaces.md) and [manual validation](manual-validator.md) for their contracts. `--json` is a global option. Status autostarts a local engine by default; stop never autostarts. See the [engine guide](engine.md) and [authority startup contract](authority-startup.md) for outputs, readiness bounds and failure handling. Explicit trusted-local receive and named-generation integration are available as described below; automatic queue scheduling is not enabled.
 
-Every repository command takes an authority directory (`PROJECT`). An agent works in `PROJECT/workspaces/AGENT`; it does not manage Git branches. Use `mai --help` or `mai COMMAND --help` for argument help.
+## Explicit receive and integration
 
-## Commands
+`mai receive enable PROJECT --max-input-bytes N --max-file-bytes N --max-changed-files N` enables bounded admission. Push one commit with `git push -o agent=AGENT mai HEAD:refs/for/main`; success means received, not landed. `mai show PROJECT CHANGE [--generation 1]` returns its typed state; query exit 0 is not acceptance.
 
-- `init PROJECT [--from GIT_REPO]`: create an empty authority or import Git HEAD as r0. The target must be empty.
-- `workspace PROJECT AGENT`: create an agent's detached full Git worktree. Agent names are 1–64 ASCII letters/digits/underscore/hyphen, starting with a letter or digit.
-- `refresh PROJECT AGENT [--discard]`: update a clean workspace. Explicit `--discard` destroys local edits and nonignored untracked files.
-- `lease PROJECT AGENT PATH... [--ttl SEC]`: reserve file/directory paths, default 900 seconds, allowed range 1–86400. A trailing slash is normalized; foreign overlapping leases reject.
-- `release PROJECT AGENT [PATH...]`: release exact reservations or all owned leases. Releasing an ancestor does not release descendants.
-- `status PROJECT`: inspect head, revision, registered workspaces, and active leases.
-- `diff PROJECT AGENT`: stage all changes and print a unified diff.
-- `submit PROJECT AGENT -m TEXT [--check CMD]`: prepare changes, reject overlap/foreign leases, publish one revision.
-- `history PROJECT [-n COUNT]`: newest revisions, including at most the import snapshot r0. The default is 10.
-- `show PROJECT rN PATH`: print exact file bytes; `HEAD` is also supported.
-- `github-link PROJECT URL`: configure a Git-compatible downstream remote named `github`.
-- `github-sync PROJECT`: explicitly push a snapshot of accepted main, without force. Remote divergence rejects safely.
-- `--json`: structured success/error responses. Place before the command for consistency across clients.
-- `--version`: print `mai 0.0.1`.
+`mai integrate PROJECT CHANGE --mode textual [--generation 1] [--lease file:PATH=GENERATION] [--wait-seconds 600]` selects one generation through the engine. Repeat `--lease` for multiple exact claims. The mode must be selected explicitly. Results have `schema_version`, `generation` and `kind`: `landed` adds `revision`/`commit` (exit 0), `awaiting_approval` adds `candidate`/`reference` (exit 6), and `rejected` adds `reason` (exit 3). Infrastructure or uncertain transport errors use exit 5. Client timeout does not cancel integration; see [engine timing](engine.md).
 
-## Checks and leases
+Ordinary lease commands are `mai lease acquire PROJECT UNIT --owner AGENT --duration-ms N`, `renew PROJECT UNIT --owner AGENT --generation N --duration-ms N`, `release PROJECT UNIT --owner AGENT --generation N`, and `query PROJECT UNIT`. Units use canonical `file:` encoding. An active lease requires an exact current generation claim even for its owner; reacquisition after release creates a new generation. These commands require a running engine and do not autostart it. Release/expiry never rewrites work. There is no priority or preemption policy. See the [receive contract](receive.md) for restrictions and recovery.
 
-`--check` executes an explicitly supplied, trusted shell command in the workspace before preparation. Output is captured so JSON responses remain parseable. A failed check preserves the draft and rejects publication. It checks the agent's base workspace, not the eventual integrated trunk. Shell syntax is platform-specific: Unix uses `sh -c`; Windows uses `cmd.exe /D /S /C`.
+## Copy-based continuation
 
-```sh
-mai submit demo alice -m 'Add greeting' --check 'test -f hello.txt'
-mai lease demo alice src/ --ttl 600
-mai release demo alice src/
-```
+`mai continue PROJECT SOURCE DESTINATION --change CHANGE --generation N [--skip-bootstrap]` verifies an exact landed generation and replays only its clean, unregistered linear local suffix into a new workspace based on a pinned accepted trunk. The source is preserved. An existing destination, stale boundary, dirty/untracked source, registered suffix or unsupported ancestry is refused. Interrupted and conflicting destinations remain available for inspection; retry uses a new path. This does not implement in-place sync or autostash. See [continuation](continuation.md) for prerequisites, bootstrap behavior and subsequent submission.
 
-Windows check example:
+## Versioned lifecycle contract
 
-```powershell
-mai submit demo alice -m 'Add greeting' --check 'if not exist hello.txt exit /b 1'
-```
+The Rust `lifecycle` module defines schema version 1. A submission is identified by an immutable Change-Id and positive generation number, with immutable agent identity, lowercase nonzero SHA-1 commit and exact parent-generation dependencies. Change/agent identifiers contain 1–128 ASCII letters, digits, underscores or hyphens. Identical commit retries with identical metadata return the existing generation, including after snapshot restoration; conflicting metadata rejects.
 
-Leases expire by wall-clock time and are checked at publication validation. Own leases can be renewed with another lease command. They remain held until release/expiration, including after submission. Editing is advisory; enforcement is through supported submit operations. No automatic renewal or distributed fencing token exists.
+States are received, queued, dependency-blocked, awaiting-approval, validating and terminal. A queued update can be superseded; a validating generation finishes before a replacement proceeds. Dependencies never silently retarget. A failed, superseded or cancelled dependency rejects descendants; all parents must land before a dependent attempt begins. Approval and dependency blocking are distinct conditions.
 
-## JSON responses
+Each validation attempt has its own increasing number. Interrupting an attempt requeues the same generation without assigning a terminal outcome. Completion must identify the currently running attempt, so stale workers cannot complete a later attempt. Each generation has one immutable terminal outcome: landed, rejected, superseded or cancelled. Later validation, revert or recovery annotations append without rewriting that outcome.
 
-Successful commands return `{"ok":true,"result":...}`; failures return `{"ok":false,"error":"..."}` and exit 2. For example, a no-changes rejection is:
+Rejected outcomes carry stable reasons: `invalid_submission`, `dependency_failed`, `conflict`, `check_failed`, `policy_denied` or `infrastructure`. Optional conflict, check, log-tail, candidate-ref and next-action diagnostics are each bounded to 4096 UTF-8 bytes. Oversized values reject rather than silently truncate. Candidate refs must be under `refs/mai/candidates/` and use safe ASCII components. Unknown schema versions, unknown fields and inconsistent snapshots refuse decoding; there are no migrations or compatibility readers.
 
-```json
-{"ok":false,"error":"There are no changes to submit"}
-```
+Stable process categories for upcoming commands are success 0, invalid input 2, terminal rejection/supersession/cancellation 3, unavailable transport 4, infrastructure failure 5 and pending 6. Current commands use infrastructure exit 5 for infrastructure failures; manual validation also uses rejection exit 3 for failed checks/denied policy and pending exit 6 for required approval. Timeout, cancellation, cleanup failure and changed policy use exit 5. Structured operation results remain available on these nonzero exits. Versioned JSON is available for current commands, but submit/wait is not exposed yet. Initialization and engine status/stop encode `authority` as the platform-tagged base64 native-path object documented in the [engine guide](engine.md), preserving non-UTF-8 Unix paths and Windows UTF-16 units in both JSON and default output. Pure model transitions do not certify validation evidence, durable acknowledgment or Git CAS publication. Persistence and authority layers must enforce those separately.
 
-`show` encodes arbitrary file bytes in `content_base64`, alongside the requested revision/path. `diff` returns a string. Status/history return structured objects/arrays. Object identifiers and timing fields are actual operation results, not fixed values.
+## Planned interface — unavailable
 
-## Submission results and recovery
+Ordinary clones and explicit push receipt are implemented above; the wider automatic workflow remains planned. Additional planned commands include `submit`, `wait`, `sync` and `queue`; current `status` reports engine readiness only. Exact flags and response schemas must be implemented and tested before use. Explicit sync must preserve unsubmitted local work after squash landing. See [agent protocol](agents.md), [configuration](configuration.md) and [operations](operations.md).
 
-Success includes `revision`, `commit`, `agent`, `files`, `rebased`, `recovered`, `workspace_updated`, `retries`, `lock_wait_ms`, and `lock_hold_ms`. `rebased:true` means disjoint candidate paths were transplanted onto newer main, not that same-file text was merged.
+Differentiated priority and automated incident recovery remain deferred under [ADR 0010](adr/0010-staged-mvp-qualification.md) and RFC #93. They are not represented as enabled features or speculative fields in the current schema. The initial MVP uses a single-class dependency-aware queue.
 
-Check both acceptance and workspace state. `recovered:true` returns an already accepted revision after interrupted checkout; it does not create another revision and does not prove current edits were submitted. The current recovery path can return `ok:true` before examining new edits. Do not report that old receipt as acceptance of new work. `workspace_updated:false` means the working directory needs reconciliation before continued work. Copy drafts/later edits outside the workspace, inspect accepted history/content, before deciding how to reconcile the workspace. Verify intended files with `mai show PROJECT rN PATH`; do not refresh with `--discard` until all pending work has been preserved. Never interpret a recovered receipt as permission to reset files.
+## Explicit validator recovery
 
-Contention-budget errors explicitly mean that attempt did not publish. Retry the same submission after backoff. Foreign lease errors require release/expiration. Overlapping changes require preserving the draft and manually reconciling from a fresh base. Other infrastructure failures may need inspecting authoritative history before retrying.
-
-## Current workspace precautions
-
-Do not commit, amend, rebase or switch branches inside mai workspaces yet: submit derives its base from HEAD, and linked worktrees share authority refs. In particular, committing on main bypasses mai publication checks. Both `diff` and `submit` stage all nonignored files; inspect untracked files before invoking them. There is no `--paths` option or non-destructive dirty `update` command yet. Refresh and post-submit reset can overwrite ignored files when accepted paths collide; preserve valuable local files separately.
-
-## Conflict rules
-
-The same changed file, or an ancestor/descendant path, conflicts with net upstream changes since the workspace base. `src` overlaps `src/file`, but not `src-utils`. Renames use deletion/addition semantics; binary files are not automatically merged. Different edits within one file reject conservatively. Successful independent submissions retain earlier accepted content.
-
-## Proposed rewrite interface — not implemented
-
-M1 replaces the workspace-era protocol with ordinary clones and `git push mai HEAD:refs/for/main`. Planned commands are `init`, `serve`, `workspace`, `submit`, `wait`, `sync`, `status`, `queue`, `lease`, `approve`, `priority` and object-history `log`; exact flags and output schemas must be implemented and tested before use. `submit` is optional auto-commit/push convenience, `wait` distinguishes registration from landing, and explicit `sync` replays post-submission work after squash landing. M3 adds `intent`/`activity`; M4 adds `checkpoint`/`resume`/`why`. See [agent protocol](agents.md), [configuration](configuration.md) and [operations](operations.md).
-
-The typed lifecycle is received → queued → validating → landed, with dependency blocking, protected-path approval and exactly one terminal outcome including rejection, supersession or cancellation. A versioned schema and reason codes are implementation requirements; the current string-error JSON above is not that schema. No legacy aliases or migration layer are planned.
-
-The amendment proposes `mai priority grant <agent|change> <class> --reason ... --ttl ...`, `mai priority revoke` and `mai log --object <unit>`. Push options `mai.fixes`, `mai.priority` and `mai.touches` declare a fix relationship, requested class and intended units respectively; none supplies trusted manifests or bypasses checks. See [agent protocol](agents.md#objects-priority-and-recovery--proposed-amendment) for grant, scope-drift and preemption semantics. All are unimplemented; current path leases above are not the proposed priority/object policy.
+`mai validator inspect PROJECT --slot N --json` reconciles metadata and reports an occupied claim while holding exclusive authority ownership. `mai validator recover PROJECT --slot N --claim CLAIM_ID --json` verifies cleanup proof and performs idempotent quarantine/reclaim. Stop the owner first. This is an opt-in Linux feature, requires the original trusted `supervised-local-v1` execution contract, and never approves or lands a candidate. See [validator recovery](validator-recovery.md) for the operator sequence, current-policy checks, refusal cases and external-effect limits.
 
 [Getting started →](getting-started.md) · [All docs →](README.md)

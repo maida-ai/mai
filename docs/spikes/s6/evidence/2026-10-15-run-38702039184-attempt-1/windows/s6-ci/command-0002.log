@@ -1,0 +1,8 @@
+cwd=D:/a/mai/mai/.throwaway/s6-ci
+command=cargo ["--version"]
+timeout_ms=120000
+cargo 1.99.0 (5f94df478 2026-08-27)
+
+status=exit code: 0
+timeout=false
+elapsed_ms=901

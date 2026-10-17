@@ -1,0 +1,162 @@
+{
+  "source_sha": "3228eeb221581e4bd583bc8973cc03d24470d374",
+  "source_hashes_verified": true,
+  "platforms": {
+    "linux": {
+      "unit_result": "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "ecosystems": {
+        "cargo": {
+          "PASS ecosystem": "cargo",
+          "base": "f2d60631c117a23dca4fcbe1d80e3a246f88adbb",
+          "alpha_manifest": "986275941c12358854436fcaed54b1c220c5693b",
+          "pre_regeneration_tree": "e3bbddac1caa9663c3945d37804e4fbdd3d5d218",
+          "final_tree": "d58f2043b1da5fffb8b7d7f7c32ebf68d10b45be",
+          "checked_tree": "d58f2043b1da5fffb8b7d7f7c32ebf68d10b45be",
+          "parent": "0a937674c34ad453f0271cb08e0ff2d501a3cda4",
+          "policy_blob": "088115eac4c7a6b4bb3d3832081074a221961179",
+          "attempt": "1",
+          "landed": "66602f2c7a2ada777c6cddadcbe5ac540201b5d0",
+          "checks": "independent-manifest-merge,trunk-lock-reset,offline-regeneration,byte-reproducibility,gate-tree-unchanged,both-imports,stale-tree-parent-attempt-rejection,policy-replacement,script-replacement,gate-failure,dependency-failure-offline,timeout,exact-landed-tree",
+          "limitations": "local-source-version-pinned-fixtures;no-registry-or-production-qualification;timeout-probe-not-real-resolver-hang"
+        },
+        "npm": {
+          "PASS ecosystem": "npm",
+          "base": "21b5c2a70aff944f76cbc6779b89f037f7f619e3",
+          "alpha_manifest": "b382030f48a4d8deb9f29720b06a84a92951c733",
+          "pre_regeneration_tree": "df6869b33d865ac38966b85dd4a8665a54bda18a",
+          "final_tree": "95e44763f781e1ecfbc26c3e47a037bf5c5a7431",
+          "checked_tree": "95e44763f781e1ecfbc26c3e47a037bf5c5a7431",
+          "parent": "e1a166335782b0148f0f3811301f5282ebee0a7d",
+          "policy_blob": "088115eac4c7a6b4bb3d3832081074a221961179",
+          "attempt": "1",
+          "landed": "f3d0bfd590302b343ff36f6bcadac1105bb15603",
+          "checks": "independent-manifest-merge,trunk-lock-reset,offline-regeneration,byte-reproducibility,gate-tree-unchanged,both-imports,stale-tree-parent-attempt-rejection,policy-replacement,script-replacement,gate-failure,dependency-failure-offline,timeout,exact-landed-tree",
+          "limitations": "local-source-version-pinned-fixtures;no-registry-or-production-qualification;timeout-probe-not-real-resolver-hang"
+        },
+        "uv": {
+          "PASS ecosystem": "uv",
+          "base": "275b31f05dca66387197c467a0b4153de7cc4033",
+          "alpha_manifest": "680e0ab896403bc77fc1d177849efa78ff7b24c4",
+          "pre_regeneration_tree": "104c11ee3698a9b5ddb1dde4bd82c21ce91c4873",
+          "final_tree": "d5d7458f6f389a2962f5c1a18fec42a06b63e1b7",
+          "checked_tree": "d5d7458f6f389a2962f5c1a18fec42a06b63e1b7",
+          "parent": "1b538f1a6d28e795296845da1a3942a30e814d6a",
+          "policy_blob": "088115eac4c7a6b4bb3d3832081074a221961179",
+          "attempt": "1",
+          "landed": "3cbbfeee232b52cdb551b9b460e15151391eb049",
+          "checks": "independent-manifest-merge,trunk-lock-reset,offline-regeneration,byte-reproducibility,gate-tree-unchanged,both-imports,stale-tree-parent-attempt-rejection,policy-replacement,script-replacement,gate-failure,dependency-failure-offline,timeout,exact-landed-tree",
+          "limitations": "local-source-version-pinned-fixtures;no-registry-or-production-qualification;timeout-probe-not-real-resolver-hang"
+        }
+      },
+      "timeout_logs": [
+        "command-0212.log",
+        "command-0125.log",
+        "command-0060.log"
+      ]
+    },
+    "windows": {
+      "unit_result": "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s",
+      "ecosystems": {
+        "cargo": {
+          "PASS ecosystem": "cargo",
+          "base": "5208233cc46f9e6a0e74b2584d39891ebe9c9d37",
+          "alpha_manifest": "f5b1fca0d219acfcb065d75ac771747e366a7393",
+          "pre_regeneration_tree": "e3bbddac1caa9663c3945d37804e4fbdd3d5d218",
+          "final_tree": "d58f2043b1da5fffb8b7d7f7c32ebf68d10b45be",
+          "checked_tree": "d58f2043b1da5fffb8b7d7f7c32ebf68d10b45be",
+          "parent": "969f4550c928bf4f403accd4e7514b3aab071770",
+          "policy_blob": "088115eac4c7a6b4bb3d3832081074a221961179",
+          "attempt": "1",
+          "landed": "1c2636246ee732fa95bdaff8b189d8a6ec58bc10",
+          "checks": "independent-manifest-merge,trunk-lock-reset,offline-regeneration,byte-reproducibility,gate-tree-unchanged,both-imports,stale-tree-parent-attempt-rejection,policy-replacement,script-replacement,gate-failure,dependency-failure-offline,timeout,exact-landed-tree",
+          "limitations": "local-source-version-pinned-fixtures;no-registry-or-production-qualification;timeout-probe-not-real-resolver-hang"
+        },
+        "npm": {
+          "PASS ecosystem": "npm",
+          "base": "8b2fea1c51e39f167d364577419e7edf12d4dc9c",
+          "alpha_manifest": "d2ebbaffe2b9be4627ea74b5387fb30b907be481",
+          "pre_regeneration_tree": "df6869b33d865ac38966b85dd4a8665a54bda18a",
+          "final_tree": "95e44763f781e1ecfbc26c3e47a037bf5c5a7431",
+          "checked_tree": "95e44763f781e1ecfbc26c3e47a037bf5c5a7431",
+          "parent": "2c0ca61f41ffb717070639912235587ce695e016",
+          "policy_blob": "088115eac4c7a6b4bb3d3832081074a221961179",
+          "attempt": "1",
+          "landed": "5f868233e6c49d1e536c0760197e2d8ecab9a876",
+          "checks": "independent-manifest-merge,trunk-lock-reset,offline-regeneration,byte-reproducibility,gate-tree-unchanged,both-imports,stale-tree-parent-attempt-rejection,policy-replacement,script-replacement,gate-failure,dependency-failure-offline,timeout,exact-landed-tree",
+          "limitations": "local-source-version-pinned-fixtures;no-registry-or-production-qualification;timeout-probe-not-real-resolver-hang"
+        },
+        "uv": {
+          "PASS ecosystem": "uv",
+          "base": "80c95d77351537c71c52fa3d1800fda931d24836",
+          "alpha_manifest": "d0b22968376894e716300e7ec768a9b00bf774e0",
+          "pre_regeneration_tree": "104c11ee3698a9b5ddb1dde4bd82c21ce91c4873",
+          "final_tree": "d5d7458f6f389a2962f5c1a18fec42a06b63e1b7",
+          "checked_tree": "d5d7458f6f389a2962f5c1a18fec42a06b63e1b7",
+          "parent": "a3e76c4e890c7951b72ccfd914b1dc636f5149a9",
+          "policy_blob": "088115eac4c7a6b4bb3d3832081074a221961179",
+          "attempt": "1",
+          "landed": "1fadb93d5c6739622ebcb3334a68164bc205a416",
+          "checks": "independent-manifest-merge,trunk-lock-reset,offline-regeneration,byte-reproducibility,gate-tree-unchanged,both-imports,stale-tree-parent-attempt-rejection,policy-replacement,script-replacement,gate-failure,dependency-failure-offline,timeout,exact-landed-tree",
+          "limitations": "local-source-version-pinned-fixtures;no-registry-or-production-qualification;timeout-probe-not-real-resolver-hang"
+        }
+      },
+      "timeout_logs": [
+        "command-0212.log",
+        "command-0125.log",
+        "command-0060.log"
+      ]
+    },
+    "macos": {
+      "unit_result": "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "ecosystems": {
+        "cargo": {
+          "PASS ecosystem": "cargo",
+          "base": "c94d98a4306fc829be30898f7ab8f236a6c356b4",
+          "alpha_manifest": "a7f21764d640a5f6cb664835a5c6c9222dcb7493",
+          "pre_regeneration_tree": "e3bbddac1caa9663c3945d37804e4fbdd3d5d218",
+          "final_tree": "d58f2043b1da5fffb8b7d7f7c32ebf68d10b45be",
+          "checked_tree": "d58f2043b1da5fffb8b7d7f7c32ebf68d10b45be",
+          "parent": "da4b026befb9992fa0fd1861fe83d1da47aa3434",
+          "policy_blob": "088115eac4c7a6b4bb3d3832081074a221961179",
+          "attempt": "1",
+          "landed": "cbf7a9ab9b9ec984c4ae203c6ee17dedbcd60b40",
+          "checks": "independent-manifest-merge,trunk-lock-reset,offline-regeneration,byte-reproducibility,gate-tree-unchanged,both-imports,stale-tree-parent-attempt-rejection,policy-replacement,script-replacement,gate-failure,dependency-failure-offline,timeout,exact-landed-tree",
+          "limitations": "local-source-version-pinned-fixtures;no-registry-or-production-qualification;timeout-probe-not-real-resolver-hang"
+        },
+        "npm": {
+          "PASS ecosystem": "npm",
+          "base": "66c11531c0df5c99714ee4e0e4ad12e6706fdda8",
+          "alpha_manifest": "dfb743493cd79d47fdfc89e1999f04ef2269ac21",
+          "pre_regeneration_tree": "df6869b33d865ac38966b85dd4a8665a54bda18a",
+          "final_tree": "95e44763f781e1ecfbc26c3e47a037bf5c5a7431",
+          "checked_tree": "95e44763f781e1ecfbc26c3e47a037bf5c5a7431",
+          "parent": "b6962cc40fcedf84c08abd5903d1063f0a89830a",
+          "policy_blob": "088115eac4c7a6b4bb3d3832081074a221961179",
+          "attempt": "1",
+          "landed": "577797c3d7c7f08cf046f90bd3c49f1f8e42e998",
+          "checks": "independent-manifest-merge,trunk-lock-reset,offline-regeneration,byte-reproducibility,gate-tree-unchanged,both-imports,stale-tree-parent-attempt-rejection,policy-replacement,script-replacement,gate-failure,dependency-failure-offline,timeout,exact-landed-tree",
+          "limitations": "local-source-version-pinned-fixtures;no-registry-or-production-qualification;timeout-probe-not-real-resolver-hang"
+        },
+        "uv": {
+          "PASS ecosystem": "uv",
+          "base": "957a82b35ba0639d59a07356f1df2a7146b37c4a",
+          "alpha_manifest": "c7bf5ca5186d5b5e2f20190b28f0b1472aacf518",
+          "pre_regeneration_tree": "104c11ee3698a9b5ddb1dde4bd82c21ce91c4873",
+          "final_tree": "d5d7458f6f389a2962f5c1a18fec42a06b63e1b7",
+          "checked_tree": "d5d7458f6f389a2962f5c1a18fec42a06b63e1b7",
+          "parent": "2602b75e8c8a9c2105ac6e04169c662e71a66385",
+          "policy_blob": "088115eac4c7a6b4bb3d3832081074a221961179",
+          "attempt": "1",
+          "landed": "375b2a790f1c6c06c2d92e7bc5351ddfbaca7e77",
+          "checks": "independent-manifest-merge,trunk-lock-reset,offline-regeneration,byte-reproducibility,gate-tree-unchanged,both-imports,stale-tree-parent-attempt-rejection,policy-replacement,script-replacement,gate-failure,dependency-failure-offline,timeout,exact-landed-tree",
+          "limitations": "local-source-version-pinned-fixtures;no-registry-or-production-qualification;timeout-probe-not-real-resolver-hang"
+        }
+      },
+      "timeout_logs": [
+        "command-0212.log",
+        "command-0125.log",
+        "command-0060.log"
+      ]
+    }
+  }
+}
