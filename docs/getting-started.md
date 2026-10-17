@@ -15,7 +15,7 @@ cargo run --locked -- --help
 cargo run --locked -- --version
 ```
 
-The version remains `mai 0.0.1`; authority and ordinary lease formats are now 2, with no migration from older disposable state. The current binary exposes initialization, engine administration, workspaces and manual validation; see the [engine guide](engine.md) for `init`, `serve`, `status` and `stop`. Retired commands such as `refresh`, `submit` and `github-sync` reject; there are no legacy aliases or data migrations. Old demos and benchmarks have been removed with the old engine, while experiment harnesses and reviewed evidence remain available.
+The version remains `mai 0.0.1`; authority and ordinary lease formats are now 2, with no migration from older disposable state. The current binary exposes initialization, engine administration, workspaces, manual validation, explicit receive/integration, submission inspection and ordinary leases; see the [CLI reference](cli.md) for the available commands. Retired commands such as `refresh`, `submit` and `github-sync` reject; there are no legacy aliases or data migrations. Old demos and benchmarks have been removed with the old engine, while experiment harnesses and reviewed evidence remain available.
 
 ## Try the current workflow
 

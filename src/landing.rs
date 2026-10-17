@@ -476,7 +476,7 @@ fn run_one_inner(
     )?;
     checkpoint(Checkpoint::TrunkPublished)?;
     drop(store);
-    authority.reconcile()?;
+    authority.reconcile().context("trunk publication succeeded but metadata reconciliation failed; preserve state, restart the engine, and query this generation before retrying")?;
     Ok(RunResult::Landed {
         revision,
         commit: candidate,
