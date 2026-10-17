@@ -6,8 +6,10 @@ pub mod engine;
 pub mod repository_scope;
 pub mod state;
 
+pub mod approval;
+pub mod bootstrap;
 pub mod native_path;
-
+pub mod policy;
 pub mod process;
-
 pub mod slots;
+pub mod validator;
