@@ -1,0 +1,33 @@
+{
+  "source_commit": "34d85b1228a81e4abd145b6f60e2df7410a2fe3a",
+  "binary_sha256": "8476b8aeb6228ac86c74cf54681e706eeccca624b523c202ee63f1ea9adf3b0b",
+  "frozen_cwd": "/tmp/mai-qa-frozen-34d85b1",
+  "utc": "2026-10-17T06:55:26.427240+00:00",
+  "rustc": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+  "git": "git version 2.53.0",
+  "tmpdir": "/var/tmp/mai-delivery-test",
+  "documented_script_sha256": "318b06d4ab8718ace6efe293d7ce0a3a5c9107d1e9ec82dd8c1228aaa530bfb6",
+  "test_entrypoint_counts": {
+    "passed": 212,
+    "ignored_helpers": 4
+  },
+  "passed_per_target": {
+    "lib": 25,
+    "authority": 22,
+    "delivery_cli": 4,
+    "engine": 9,
+    "landing": 9,
+    "lease": 10,
+    "lifecycle": 37,
+    "manifest": 5,
+    "platform": 7,
+    "process": 11,
+    "receive_qa": 8,
+    "repository_scope": 17,
+    "slots": 13,
+    "state": 15,
+    "trusted_policy": 8,
+    "validator_cli": 5,
+    "workspace": 7
+  }
+}
