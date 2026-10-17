@@ -1,0 +1,27 @@
+
+running 9 tests
+test tests::bootstrap_inputs_are_declared ... ok
+test tests::invalid_measurements_rejected ... ok
+test tests::median_resists_outlier ... ok
+test tests::threshold_is_strict ... ok
+test tests::unix_roots_preserve_literal_backslashes ... ok
+test tests::windows_local_roots_drop_extended_prefix ... ok
+test tests::windows_unc_and_device_roots_are_rejected ... ok
+test tests::private_slot_paths ... FAILED
+test tests::command_failures_are_not_passes ... ok
+
+failures:
+
+---- tests::private_slot_paths stdout ----
+
+thread 'tests::private_slot_paths' (4628) panicked at experiments/s3/main.rs:708:9:
+assertion failed: vars.iter().any(|(k, v)|
+        *k == "CARGO_TARGET_DIR" &&
+            v.unwrap() == "fixtures/slot-1/repo/../target")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::private_slot_paths
+
+test result: FAILED. 8 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s

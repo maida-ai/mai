@@ -1,0 +1,22 @@
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci command=git ["--version"]
+git version 2.55.0
+exit=exit status: 0 elapsed_s=0.005625828
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci command=cargo ["--version"]
+cargo 1.99.0 (5f94df478 2026-08-27)
+exit=exit status: 0 elapsed_s=0.040854283
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci command=rustc ["--version"]
+rustc 1.99.0 (b940084d7 2026-09-28)
+exit=exit status: 0 elapsed_s=0.015459354
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci command=uv ["--version"]
+uv 0.6.17
+exit=exit status: 0 elapsed_s=0.005314894
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci command=node ["--version"]
+v22.23.3
+exit=exit status: 0 elapsed_s=0.092061684
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci command=npm ["--version"]
+10.9.9
+exit=exit status: 0 elapsed_s=0.249264797
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci/tools command=npm ["install", "--prefix", "/home/runner/work/mai/mai/.throwaway/s3-ci/tools", "--ignore-scripts", "--no-audit", "--no-fund", "yarn@1.22.22"]
+
+added 1 package in 720ms
+exit=exit status: 0 elapsed_s=0.821953965

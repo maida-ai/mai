@@ -1,0 +1,614 @@
+[
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/cancellation.log",
+    "original_bytes": 53,
+    "original_sha256": "8879abd44baa771e5a9c90a031c72654e5cdbb37911b3b8ce7470b7122180273",
+    "retained_path": "linux/s3-ci/cancellation.log",
+    "retained_sha256": "8879abd44baa771e5a9c90a031c72654e5cdbb37911b3b8ce7470b7122180273",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/isolation.log",
+    "original_bytes": 242,
+    "original_sha256": "92258da04b7baf29b1bf8eb31477f8a3337503e490217008258bdfb529acb9e2",
+    "retained_path": "linux/s3-ci/isolation.log",
+    "retained_sha256": "92258da04b7baf29b1bf8eb31477f8a3337503e490217008258bdfb529acb9e2",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/port-slot-0.log",
+    "original_bytes": 28,
+    "original_sha256": "5bbbffa043b84d076273e76cf884cff266dcaa7fb422f4d87b75e6fba8489b3a",
+    "retained_path": "linux/s3-ci/port-slot-0.log",
+    "retained_sha256": "5bbbffa043b84d076273e76cf884cff266dcaa7fb422f4d87b75e6fba8489b3a",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/port-slot-1.log",
+    "original_bytes": 28,
+    "original_sha256": "9dbaa60cf5900884d84f453b781337421a29ad95a3c7a3f503149f3f7d33c9b3",
+    "retained_path": "linux/s3-ci/port-slot-1.log",
+    "retained_sha256": "9dbaa60cf5900884d84f453b781337421a29ad95a3c7a3f503149f3f7d33c9b3",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/python-concurrent-0.log",
+    "original_bytes": 1276,
+    "original_sha256": "719129212a08e65f5871684827d9d610d6b50eb239c0e185d6c5acbf24a0ba8c",
+    "retained_path": "linux/s3-ci/python-concurrent-0.log",
+    "retained_sha256": "719129212a08e65f5871684827d9d610d6b50eb239c0e185d6c5acbf24a0ba8c",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/python-concurrent-1.log",
+    "original_bytes": 1276,
+    "original_sha256": "d03496adc72c7528995b20c1a3c834e1a46f45d38e52c9d4b0923703e4f8ebdf",
+    "retained_path": "linux/s3-ci/python-concurrent-1.log",
+    "retained_sha256": "d03496adc72c7528995b20c1a3c834e1a46f45d38e52c9d4b0923703e4f8ebdf",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/python-result.log",
+    "original_bytes": 313,
+    "original_sha256": "d918a9ab25a022776048ebd12ce60944808b27deeaf08dc0bafb0afc310d1282",
+    "retained_path": "linux/s3-ci/python-result.log",
+    "retained_sha256": "d918a9ab25a022776048ebd12ce60944808b27deeaf08dc0bafb0afc310d1282",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/python-samples.tsv",
+    "original_bytes": 355,
+    "original_sha256": "e8b1227b95c02697036c4be7b49bb9663e564f7cc09434c9f7fde46e9be6412f",
+    "retained_path": "linux/s3-ci/python-samples.tsv",
+    "retained_sha256": "e8b1227b95c02697036c4be7b49bb9663e564f7cc09434c9f7fde46e9be6412f",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/python-setup.log",
+    "original_bytes": 3496,
+    "original_sha256": "aa7e586050c2d974a388c7f2465c17fc97300ef892497723bac3525eae949e88",
+    "retained_path": "linux/s3-ci/python-setup.log",
+    "retained_sha256": "aa7e586050c2d974a388c7f2465c17fc97300ef892497723bac3525eae949e88",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/python.log",
+    "original_bytes": 26106,
+    "original_sha256": "5c7e9233164b26b11f5993b5b1473ec89e9e1911bd9ddb2a0ff6261ce2b821e2",
+    "retained_path": "linux/s3-ci/python.log",
+    "retained_sha256": "5c7e9233164b26b11f5993b5b1473ec89e9e1911bd9ddb2a0ff6261ce2b821e2",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/rust-failure.log",
+    "original_bytes": 22,
+    "original_sha256": "ad58accab7cfaa616d75819321f8806e8992b3cf7dc97bed352cb89d8ec0b1ea",
+    "retained_path": "linux/s3-ci/rust-failure.log",
+    "retained_sha256": "c0d79cdc1727ccb47849fa27825b78036c9aec9710e2b58f2b1ae0693d24fc65",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/rust-samples.tsv",
+    "original_bytes": 85,
+    "original_sha256": "60ac59b9e054d7bb5e759bd0bbad31de4e8b647d25d133e5915e3645bc0c9134",
+    "retained_path": "linux/s3-ci/rust-samples.tsv",
+    "retained_sha256": "60ac59b9e054d7bb5e759bd0bbad31de4e8b647d25d133e5915e3645bc0c9134",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/rust-setup.log",
+    "original_bytes": 1717,
+    "original_sha256": "5016dc6d3988671508b8c157e425bbd0d161120db59eb51abcffed9818872796",
+    "retained_path": "linux/s3-ci/rust-setup.log",
+    "retained_sha256": "5016dc6d3988671508b8c157e425bbd0d161120db59eb51abcffed9818872796",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/rust.log",
+    "original_bytes": 52627,
+    "original_sha256": "efc041d67138d3d4a4a92fdb958e4e4154dc74082cd649417c585bb8c215929c",
+    "retained_path": "linux/s3-ci/rust.log",
+    "retained_sha256": "efc041d67138d3d4a4a92fdb958e4e4154dc74082cd649417c585bb8c215929c",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/summary.log",
+    "original_bytes": 139,
+    "original_sha256": "4c1a932247972b30c12ad5f18fa4959fe43fc9a745ef2afd238eaad7998a5bd0",
+    "retained_path": "linux/s3-ci/summary.log",
+    "retained_sha256": "4c1a932247972b30c12ad5f18fa4959fe43fc9a745ef2afd238eaad7998a5bd0",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/tools.log",
+    "original_bytes": 1083,
+    "original_sha256": "60af09b742e5191c632f0840584b9544eac328cd37217da9061f59c1a3a1e88c",
+    "retained_path": "linux/s3-ci/tools.log",
+    "retained_sha256": "60af09b742e5191c632f0840584b9544eac328cd37217da9061f59c1a3a1e88c",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/typescript-concurrent-0.log",
+    "original_bytes": 2586,
+    "original_sha256": "301d97dac9c7a0d69de90bf3c72432593aef3178ef8284cc6c997bd2b382c34c",
+    "retained_path": "linux/s3-ci/typescript-concurrent-0.log",
+    "retained_sha256": "301d97dac9c7a0d69de90bf3c72432593aef3178ef8284cc6c997bd2b382c34c",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/typescript-concurrent-1.log",
+    "original_bytes": 2596,
+    "original_sha256": "7be4dfd42771c95cf985adf585a513d9cb5a7103b055d8c9ba5f41a0f26764cc",
+    "retained_path": "linux/s3-ci/typescript-concurrent-1.log",
+    "retained_sha256": "7be4dfd42771c95cf985adf585a513d9cb5a7103b055d8c9ba5f41a0f26764cc",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/typescript-failure.log",
+    "original_bytes": 73,
+    "original_sha256": "500fc09f60a1a463db410eaa87d6d9f8fdc978f32dd2dced6444e3f25bbb0eca",
+    "retained_path": "linux/s3-ci/typescript-failure.log",
+    "retained_sha256": "0feb985e4662d740ba50509ad40a3177efc9f463c82bf2932371e98d782baf6e",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/typescript-result.log",
+    "original_bytes": 313,
+    "original_sha256": "e990c6b7c7b22113e7cad57a318a240f84a8bb5cddae0e00707fc721fc1e8f5b",
+    "retained_path": "linux/s3-ci/typescript-result.log",
+    "retained_sha256": "e990c6b7c7b22113e7cad57a318a240f84a8bb5cddae0e00707fc721fc1e8f5b",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/typescript-samples.tsv",
+    "original_bytes": 361,
+    "original_sha256": "9f56556fca718ba6efa05056ffd3f4581f37d1526d6885b6506247d92b6512b5",
+    "retained_path": "linux/s3-ci/typescript-samples.tsv",
+    "retained_sha256": "9f56556fca718ba6efa05056ffd3f4581f37d1526d6885b6506247d92b6512b5",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/typescript-setup.log",
+    "original_bytes": 3492,
+    "original_sha256": "aea3fd87e153704e7fdf7f5c57dfb440bfb7e6d5b28fa9f789c8d39d6a4b6c4d",
+    "retained_path": "linux/s3-ci/typescript-setup.log",
+    "retained_sha256": "aea3fd87e153704e7fdf7f5c57dfb440bfb7e6d5b28fa9f789c8d39d6a4b6c4d",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci/typescript.log",
+    "original_bytes": 243494,
+    "original_sha256": "88416f8270f1da13ba3651454bfe81a123aac90fe115e839ed4ab9e69353f1f4",
+    "retained_path": "linux/s3-ci/typescript.log",
+    "retained_sha256": "88416f8270f1da13ba3651454bfe81a123aac90fe115e839ed4ab9e69353f1f4",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci.build/compile-unit.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/s3-ci.build/compile-unit.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci.build/compile.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/s3-ci.build/compile.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci.build/format.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/s3-ci.build/format.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci.build/provenance.log",
+    "original_bytes": 420,
+    "original_sha256": "684fb64c1a6235ca7cc7b81cd5c19f0562c7575c71d72e227b3a87c233e941e7",
+    "retained_path": "linux/s3-ci.build/provenance.log",
+    "retained_sha256": "684fb64c1a6235ca7cc7b81cd5c19f0562c7575c71d72e227b3a87c233e941e7",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci.build/run.log",
+    "original_bytes": 135,
+    "original_sha256": "6f19c940b557e09ffb5d84f40fbadb33b4febb075c2c767c4ac9c4707150243e",
+    "retained_path": "linux/s3-ci.build/run.log",
+    "retained_sha256": "6f19c940b557e09ffb5d84f40fbadb33b4febb075c2c767c4ac9c4707150243e",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci.build/setup-uv.log",
+    "original_bytes": 434,
+    "original_sha256": "45fe67f7930d61203d9fbc4c4514cf41a5f2974ceae4ee8f154dbae1b6255807",
+    "retained_path": "linux/s3-ci.build/setup-uv.log",
+    "retained_sha256": "45fe67f7930d61203d9fbc4c4514cf41a5f2974ceae4ee8f154dbae1b6255807",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci.build/sources.sha256",
+    "original_bytes": 269,
+    "original_sha256": "328594dd86c91a50aa6e62ba1012e590cc911235e3a7059fa900d3cd307a8539",
+    "retained_path": "linux/s3-ci.build/sources.sha256",
+    "retained_sha256": "328594dd86c91a50aa6e62ba1012e590cc911235e3a7059fa900d3cd307a8539",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Linux-X64-38701808476-1",
+    "original_path": "s3-ci.build/unit.log",
+    "original_bytes": 561,
+    "original_sha256": "4aa281e5ac5afbed92e7b0b3b2ca20fcdcf3dfc8b958b260dc8f607eb0c13d5d",
+    "retained_path": "linux/s3-ci.build/unit.log",
+    "retained_sha256": "a745b191427fdb1136989b5d6e3a943d9e71a24fbb364e931ed9eee464bcdf30",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Windows-X64-38701808476-1",
+    "original_path": "s3-ci.build/compile-unit.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/s3-ci.build/compile-unit.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Windows-X64-38701808476-1",
+    "original_path": "s3-ci.build/format.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/s3-ci.build/format.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Windows-X64-38701808476-1",
+    "original_path": "s3-ci.build/provenance.log",
+    "original_bytes": 455,
+    "original_sha256": "2b1c5b4243cf5351b59033396b01506a5ed5c98b1cdd7cf33ff71d29751be919",
+    "retained_path": "windows/s3-ci.build/provenance.log",
+    "retained_sha256": "2b1c5b4243cf5351b59033396b01506a5ed5c98b1cdd7cf33ff71d29751be919",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Windows-X64-38701808476-1",
+    "original_path": "s3-ci.build/setup-uv.log",
+    "original_bytes": 290,
+    "original_sha256": "7bfeeb5b83d5706c0531afc6dd7d6659c3e444c33312ead93871cee9ac9f0e97",
+    "retained_path": "windows/s3-ci.build/setup-uv.log",
+    "retained_sha256": "3f92515867231bc0c665691ad40e2608ab3a9f225678b3bde3e9715096323d60",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Windows-X64-38701808476-1",
+    "original_path": "s3-ci.build/sources.sha256",
+    "original_bytes": 269,
+    "original_sha256": "3cb40538425cb83fc95b9ac6885b8e1c00e1edc5ecfb87aa97ac3a1668484b4b",
+    "retained_path": "windows/s3-ci.build/sources.sha256",
+    "retained_sha256": "3cb40538425cb83fc95b9ac6885b8e1c00e1edc5ecfb87aa97ac3a1668484b4b",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-Windows-X64-38701808476-1",
+    "original_path": "s3-ci.build/unit.log",
+    "original_bytes": 968,
+    "original_sha256": "3a6787cccc85623cf39449314443182bd33f621a504d9fa9e40d2ecf62f7b90c",
+    "retained_path": "windows/s3-ci.build/unit.log",
+    "retained_sha256": "f083c678b3dab39dea3f108d3197a1376ce0d3f47638b9914dbf42ef251c0052",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/cancellation.log",
+    "original_bytes": 53,
+    "original_sha256": "8879abd44baa771e5a9c90a031c72654e5cdbb37911b3b8ce7470b7122180273",
+    "retained_path": "macos/s3-ci/cancellation.log",
+    "retained_sha256": "8879abd44baa771e5a9c90a031c72654e5cdbb37911b3b8ce7470b7122180273",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/isolation.log",
+    "original_bytes": 241,
+    "original_sha256": "d95217d710d12ccc0c4684d4c9c98a947ac172812d36dc4462b35b91a5328119",
+    "retained_path": "macos/s3-ci/isolation.log",
+    "retained_sha256": "d95217d710d12ccc0c4684d4c9c98a947ac172812d36dc4462b35b91a5328119",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/port-slot-0.log",
+    "original_bytes": 28,
+    "original_sha256": "db0374d7e0d1f237cad19af8c0144653bbdd34c2ae093e5cf88743009452a184",
+    "retained_path": "macos/s3-ci/port-slot-0.log",
+    "retained_sha256": "db0374d7e0d1f237cad19af8c0144653bbdd34c2ae093e5cf88743009452a184",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/port-slot-1.log",
+    "original_bytes": 28,
+    "original_sha256": "b6e2c93d7d7b51de9b44a2e994ade21ed417db32e2676c112d945568be0e3a83",
+    "retained_path": "macos/s3-ci/port-slot-1.log",
+    "retained_sha256": "b6e2c93d7d7b51de9b44a2e994ade21ed417db32e2676c112d945568be0e3a83",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/python-concurrent-0.log",
+    "original_bytes": 1281,
+    "original_sha256": "c9f0357318e0feab6b958c578e053b43f205048ef78c87cb05ac5606af7facf4",
+    "retained_path": "macos/s3-ci/python-concurrent-0.log",
+    "retained_sha256": "c9f0357318e0feab6b958c578e053b43f205048ef78c87cb05ac5606af7facf4",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/python-concurrent-1.log",
+    "original_bytes": 1281,
+    "original_sha256": "e603cfa54eda74e4c196bfa0b188628facfddc81daa1446739b5bd036f6a95d6",
+    "retained_path": "macos/s3-ci/python-concurrent-1.log",
+    "retained_sha256": "e603cfa54eda74e4c196bfa0b188628facfddc81daa1446739b5bd036f6a95d6",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/python-result.log",
+    "original_bytes": 314,
+    "original_sha256": "eef33c607a39cf5f1edc2290b29b19ef48540671188b7d3809c2f6fd684b2b24",
+    "retained_path": "macos/s3-ci/python-result.log",
+    "retained_sha256": "eef33c607a39cf5f1edc2290b29b19ef48540671188b7d3809c2f6fd684b2b24",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/python-samples.tsv",
+    "original_bytes": 358,
+    "original_sha256": "7ba496efd13227e2f91584e494c4255f5a0088f0ea8a3a4e174fd43e9240292c",
+    "retained_path": "macos/s3-ci/python-samples.tsv",
+    "retained_sha256": "7ba496efd13227e2f91584e494c4255f5a0088f0ea8a3a4e174fd43e9240292c",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/python-setup.log",
+    "original_bytes": 3508,
+    "original_sha256": "c4774e7562d4117060c2b183962bf7121b8448401ee5c169c6894342c224d294",
+    "retained_path": "macos/s3-ci/python-setup.log",
+    "retained_sha256": "c4774e7562d4117060c2b183962bf7121b8448401ee5c169c6894342c224d294",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/python.log",
+    "original_bytes": 26445,
+    "original_sha256": "5e310c6161008ff7435baa0b8954c345a6527f1f3093dab6414b381bdfecb0db",
+    "retained_path": "macos/s3-ci/python.log",
+    "retained_sha256": "5e310c6161008ff7435baa0b8954c345a6527f1f3093dab6414b381bdfecb0db",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/rust-failure.log",
+    "original_bytes": 22,
+    "original_sha256": "ad58accab7cfaa616d75819321f8806e8992b3cf7dc97bed352cb89d8ec0b1ea",
+    "retained_path": "macos/s3-ci/rust-failure.log",
+    "retained_sha256": "c0d79cdc1727ccb47849fa27825b78036c9aec9710e2b58f2b1ae0693d24fc65",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/rust-samples.tsv",
+    "original_bytes": 85,
+    "original_sha256": "99fa9d784594f95addccada1211eac4357eb1373724fbd178bd1bd3456371f37",
+    "retained_path": "macos/s3-ci/rust-samples.tsv",
+    "retained_sha256": "99fa9d784594f95addccada1211eac4357eb1373724fbd178bd1bd3456371f37",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/rust-setup.log",
+    "original_bytes": 1723,
+    "original_sha256": "7d9bc20baec25c583e93cd511cab2fc9f1edcc4db38c65d5e36aaeedb2f5eb57",
+    "retained_path": "macos/s3-ci/rust-setup.log",
+    "retained_sha256": "7d9bc20baec25c583e93cd511cab2fc9f1edcc4db38c65d5e36aaeedb2f5eb57",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/rust.log",
+    "original_bytes": 52523,
+    "original_sha256": "94f1932d785cd285d0c1b6d065a72c287ad5ba24b6c5075f5fc490ada94a171e",
+    "retained_path": "macos/s3-ci/rust.log",
+    "retained_sha256": "94f1932d785cd285d0c1b6d065a72c287ad5ba24b6c5075f5fc490ada94a171e",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/summary.log",
+    "original_bytes": 139,
+    "original_sha256": "cd7a7bc516fad436da7eba55c1bbbac811bbe68c66e270c6c5b4903c923ef3eb",
+    "retained_path": "macos/s3-ci/summary.log",
+    "retained_sha256": "cd7a7bc516fad436da7eba55c1bbbac811bbe68c66e270c6c5b4903c923ef3eb",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/tools.log",
+    "original_bytes": 1115,
+    "original_sha256": "efc6da5905c437da21cbabcedac6b00453cfeb02318331351734440c86d7aa0e",
+    "retained_path": "macos/s3-ci/tools.log",
+    "retained_sha256": "efc6da5905c437da21cbabcedac6b00453cfeb02318331351734440c86d7aa0e",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/typescript-concurrent-0.log",
+    "original_bytes": 3513,
+    "original_sha256": "c48a71cbe98cd4359348721587a6bbe1de25e09199a91087d88e4d1faf8e7408",
+    "retained_path": "macos/s3-ci/typescript-concurrent-0.log",
+    "retained_sha256": "c48a71cbe98cd4359348721587a6bbe1de25e09199a91087d88e4d1faf8e7408",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/typescript-concurrent-1.log",
+    "original_bytes": 3513,
+    "original_sha256": "556c70797dcab26578e1148c8ebd029bf9688938438f2d483d7ca548f4063966",
+    "retained_path": "macos/s3-ci/typescript-concurrent-1.log",
+    "retained_sha256": "556c70797dcab26578e1148c8ebd029bf9688938438f2d483d7ca548f4063966",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/typescript-failure.log",
+    "original_bytes": 73,
+    "original_sha256": "393e4a472538541b71c90e1aa9fccd4084558d2962e7558831da885315632530",
+    "retained_path": "macos/s3-ci/typescript-failure.log",
+    "retained_sha256": "2148299735bef9cb591381e6bfb30db9d0e2c1129a6d95c2c783fbc4bf2d7187",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/typescript-result.log",
+    "original_bytes": 310,
+    "original_sha256": "1b4b00e77325078280df676055cdf35b10f7d43d20254f00f81b796e95435d58",
+    "retained_path": "macos/s3-ci/typescript-result.log",
+    "retained_sha256": "1b4b00e77325078280df676055cdf35b10f7d43d20254f00f81b796e95435d58",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/typescript-samples.tsv",
+    "original_bytes": 378,
+    "original_sha256": "a121e9eec9d60d2c0c9e61046a76eb369b7329aa001ef2f4fb2003a7b87b780f",
+    "retained_path": "macos/s3-ci/typescript-samples.tsv",
+    "retained_sha256": "a121e9eec9d60d2c0c9e61046a76eb369b7329aa001ef2f4fb2003a7b87b780f",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/typescript-setup.log",
+    "original_bytes": 3504,
+    "original_sha256": "d047dea2516a2843e2fdf4cc9412a821d82f8899bdd0376ca65d4a3a5b0b5bd7",
+    "retained_path": "macos/s3-ci/typescript-setup.log",
+    "retained_sha256": "d047dea2516a2843e2fdf4cc9412a821d82f8899bdd0376ca65d4a3a5b0b5bd7",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci/typescript.log",
+    "original_bytes": 254784,
+    "original_sha256": "e5a554b2a4778222e181a7c0534dd7b58ad395d168ca4691bea695a4e0efc35b",
+    "retained_path": "macos/s3-ci/typescript.log",
+    "retained_sha256": "e5a554b2a4778222e181a7c0534dd7b58ad395d168ca4691bea695a4e0efc35b",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci.build/compile-unit.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/s3-ci.build/compile-unit.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci.build/compile.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/s3-ci.build/compile.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci.build/format.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/s3-ci.build/format.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci.build/provenance.log",
+    "original_bytes": 407,
+    "original_sha256": "e09ba7f6e89510b863f7e4fd8672ae7072c2d18ebac292c5e5dcb984e79d0e4b",
+    "retained_path": "macos/s3-ci.build/provenance.log",
+    "retained_sha256": "e09ba7f6e89510b863f7e4fd8672ae7072c2d18ebac292c5e5dcb984e79d0e4b",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci.build/run.log",
+    "original_bytes": 135,
+    "original_sha256": "e2ec96795482dae4607473f927068b405bd2fdf6aee7b76ff171c45ac8797387",
+    "retained_path": "macos/s3-ci.build/run.log",
+    "retained_sha256": "e2ec96795482dae4607473f927068b405bd2fdf6aee7b76ff171c45ac8797387",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci.build/setup-uv.log",
+    "original_bytes": 381,
+    "original_sha256": "23ca8930738a2c9cecff190d9bc29b96b929ab72e5ecf30a79d0edb35d94bc53",
+    "retained_path": "macos/s3-ci.build/setup-uv.log",
+    "retained_sha256": "23ca8930738a2c9cecff190d9bc29b96b929ab72e5ecf30a79d0edb35d94bc53",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci.build/sources.sha256",
+    "original_bytes": 269,
+    "original_sha256": "328594dd86c91a50aa6e62ba1012e590cc911235e3a7059fa900d3cd307a8539",
+    "retained_path": "macos/s3-ci.build/sources.sha256",
+    "retained_sha256": "328594dd86c91a50aa6e62ba1012e590cc911235e3a7059fa900d3cd307a8539",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s3-macOS-ARM64-38701808476-1",
+    "original_path": "s3-ci.build/unit.log",
+    "original_bytes": 561,
+    "original_sha256": "10d0c8f958bf351472775d7fade202225024a1936f6ae31430fc1340de2dd9cc",
+    "retained_path": "macos/s3-ci.build/unit.log",
+    "retained_sha256": "bc063dd92aa657597d23cd333cd6a0d3a08cf0a38b4396b70d651415129f0986",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  }
+]

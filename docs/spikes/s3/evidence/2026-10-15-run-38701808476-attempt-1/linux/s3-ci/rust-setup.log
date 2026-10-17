@@ -1,0 +1,29 @@
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci/rust-0/repo command=git ["init"]
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: will change to "main" in Git 3.0. To configure the initial branch name
+hint: to use in all of your new repositories, which will suppress this warning,
+hint: call:
+hint:
+hint: 	git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint: 	git branch -m <name>
+hint:
+hint: Disable this message with "git config set advice.defaultBranchName false"
+Initialized empty Git repository in /home/runner/work/mai/mai/.throwaway/s3-ci/rust-0/repo/.git/
+exit=exit status: 0 elapsed_s=0.005407850
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci/rust-0/repo command=git ["remote", "add", "origin", "https://github.com/BurntSushi/ripgrep.git"]
+exit=exit status: 0 elapsed_s=0.005375578
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci/rust-0/repo command=git ["fetch", "--depth", "1", "origin", "4649aa9700619f94cf9c66876e9549d83420e16c"]
+From https://github.com/BurntSushi/ripgrep
+ * branch            4649aa9700619f94cf9c66876e9549d83420e16c -> FETCH_HEAD
+exit=exit status: 0 elapsed_s=0.320001189
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci/rust-0/repo command=git ["checkout", "--detach", "FETCH_HEAD"]
+HEAD is now at 4649aa9 14.1.1
+exit=exit status: 0 elapsed_s=0.025595708
+cwd=/home/runner/work/mai/mai/.throwaway/s3-ci/rust-0/repo command=git ["rev-parse", "HEAD", "HEAD^{tree}"]
+4649aa9700619f94cf9c66876e9549d83420e16c
+d7a1d4d108598ad6e23d82a180c71541b221d32c
+exit=exit status: 0 elapsed_s=0.005371701

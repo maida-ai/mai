@@ -1,0 +1,5 @@
+{
+  "body": "Measure actual dependency setup and test execution rather than checkout-only fanout.\n\n- [ ] Use three real repositories: Rust, Python and TypeScript, with pinned revisions and reproducible commands.\n- [ ] Measure fresh bootstrap, raw gate, warm incremental switching and bootstrap-input invalidation. Warm overhead must be below 15% of raw gate time.\n- [ ] Run two concurrent slots with MAI_SLOT, MAI_PORT_BASE and private temp dirs; demonstrate collision resolution or document a failed criterion. Environment variables are cooperation, not sandboxing.\n- [ ] Test cache reuse without stale outputs masking failures, ignored/untracked residue, cancellation and process-group cleanup. Record copy-on-write template availability and safe copy fallback.\n- [ ] Commit throwaway scripts and report under docs/spikes/; defer overlay/lazy work unless measurements justify it.\n",
+  "state": "OPEN",
+  "title": "S3: Measure warm validator costs and two-slot isolation"
+}
