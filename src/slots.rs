@@ -1117,6 +1117,14 @@ impl Drop for SlotLease {
         {
             let _ = self.publish_verified_cleanup(format!("worker-{}", std::process::id()));
         }
+        if !self.claim_released {
+            // A forked child can temporarily retain this open file description
+            // even though the worker has relinquished the lease. Unlock
+            // explicitly so that such duplicates do not spuriously block
+            // inspection; the retained claim and verified receipt still govern
+            // whether recovery or reuse is allowed.
+            let _ = FileExt::unlock(&self._lock);
+        }
     }
 }
 
@@ -1182,6 +1190,40 @@ mod tests {
             "successful release must unlock inherited/duplicated file descriptions immediately",
         );
         next.release().unwrap();
+        drop(duplicate);
+    }
+    #[cfg(unix)]
+    #[test]
+    fn dropping_lease_unlocks_even_while_a_duplicate_descriptor_survives() {
+        let directory = tempfile::tempdir().unwrap();
+        let source = directory.path().join("source");
+        fs::create_dir(&source).unwrap();
+        let pool = SlotPool::open(
+            &directory.path().join("pool"),
+            &source,
+            SlotSettings {
+                count: 1,
+                port_base: 24000,
+                ports_per_slot: 1,
+                caches: vec![],
+                supervised_recovery: false,
+            },
+        )
+        .unwrap();
+        let lease = pool.acquire().unwrap();
+        let duplicate = lease._lock.try_clone().unwrap();
+        let claim = lease.claim_id.clone();
+        drop(lease);
+
+        let error = match pool.acquire() {
+            Ok(_) => panic!("retained claim must prevent slot reuse"),
+            Err(error) => error,
+        };
+        assert!(
+            error.to_string().contains("occupied claim retained"),
+            "drop should release only the native lock and preserve the claim {claim}: {error:#}"
+        );
+        assert!(duplicate.metadata().is_ok());
         drop(duplicate);
     }
     #[test]
