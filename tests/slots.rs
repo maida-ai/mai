@@ -39,6 +39,7 @@ fn settings(caches: Vec<PathBuf>) -> SlotSettings {
         port_base: 23000,
         ports_per_slot: 10,
         caches,
+        supervised_recovery: false,
     }
 }
 #[test]

@@ -631,6 +631,60 @@ pub fn approve(
     }
 }
 
+/// Inspect one validator claim while holding publication ownership.
+pub fn validator_inspect(root: &Path, slot: usize) -> Result<crate::slots::SlotInspection> {
+    let local = local_dir(root)?;
+    let lock = lock_file(&local)?;
+    lock.try_lock_exclusive()
+        .context("authority is active; stop it before inspecting validator state")?;
+    let _ownership = Ownership(lock);
+    let mut authority = Authority::open(root)?;
+    authority.reconcile()?;
+    let policy = crate::policy::TrustedPolicy::load(&authority, "refs/heads/trunk")?;
+    let settings = &policy.config.validators;
+    let pool = crate::slots::SlotPool::open(
+        &authority.root().join(".mai/validators"),
+        &authority.git_dir(),
+        crate::slots::SlotSettings {
+            count: settings.slots,
+            port_base: settings.port_base,
+            ports_per_slot: settings.ports_per_slot,
+            caches: settings.caches.clone(),
+            supervised_recovery: settings.recovery.as_deref() == Some("supervised-local-v1"),
+        },
+    )?;
+    pool.inspect(slot)
+}
+
+/// Explicit cleanup-only recovery; validation and landing require a fresh attempt.
+pub fn validator_recover(root: &Path, slot: usize, claim_id: &str) -> Result<std::path::PathBuf> {
+    let local = local_dir(root)?;
+    let lock = lock_file(&local)?;
+    lock.try_lock_exclusive()
+        .context("authority is active; stop it before validator recovery")?;
+    let _ownership = Ownership(lock);
+    let mut authority = Authority::open(root)?;
+    authority.reconcile()?;
+    let policy = crate::policy::TrustedPolicy::load(&authority, "refs/heads/trunk")?;
+    let settings = &policy.config.validators;
+    anyhow::ensure!(
+        settings.recovery.as_deref() == Some("supervised-local-v1"),
+        "current trusted trunk policy does not enable supervised-local recovery"
+    );
+    let pool = crate::slots::SlotPool::open(
+        &authority.root().join(".mai/validators"),
+        &authority.git_dir(),
+        crate::slots::SlotSettings {
+            count: settings.slots,
+            port_base: settings.port_base,
+            ports_per_slot: settings.ports_per_slot,
+            caches: settings.caches.clone(),
+            supervised_recovery: true,
+        },
+    )?;
+    pool.recover(slot, claim_id)
+}
+
 pub fn stop(root: &Path) -> Result<Status> {
     exchange(&local_dir(root)?, Action::Stop, IO_TIMEOUT)
         .context("engine unavailable; stop never autostarts an engine")
