@@ -110,7 +110,10 @@ fn boot_id() -> Result<String> {
 }
 
 fn new_claim_id() -> Result<String> {
-    let nonce = tempfile::Builder::new().prefix("mai-claim-").tempfile()?;
+    let nonce = tempfile::Builder::new()
+        .prefix("mai-claim-")
+        .rand_bytes(32)
+        .tempfile()?;
     let name = nonce
         .path()
         .file_name()
@@ -1110,6 +1113,18 @@ fn prune(root: &Path, relative: &Path, caches: &[PathBuf]) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn claim_ids_use_a_32_character_random_component() {
+        let mut observed = std::collections::HashSet::new();
+        for _ in 0..16 {
+            let id = new_claim_id().unwrap();
+            let suffix = id.strip_prefix("mai-claim-").unwrap();
+            assert_eq!(suffix.len(), 32);
+            assert!(suffix.bytes().all(|byte| byte.is_ascii_alphanumeric()));
+            assert!(observed.insert(id));
+        }
+    }
+
     #[cfg(unix)]
     #[test]
     fn release_unlocks_even_while_a_duplicate_descriptor_survives() {
