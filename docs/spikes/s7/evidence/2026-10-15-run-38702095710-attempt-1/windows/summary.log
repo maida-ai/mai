@@ -1,0 +1,35 @@
+S7 native process-kill experiment; platform=windows; checkpoints=26
+PASS checkpoint=registration_in_tx duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1134
+PASS checkpoint=registration duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1051
+PASS checkpoint=change_ref duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1042
+PASS checkpoint=queue_in_tx duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1051
+PASS checkpoint=queue duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1005
+PASS checkpoint=ack duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=915
+PASS checkpoint=candidate duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=988
+PASS checkpoint=evidence duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=979
+PASS checkpoint=before_cas duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1077
+PASS checkpoint=after_cas duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1085
+PASS checkpoint=manifest_note duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1127
+PASS checkpoint=manifest_index duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1077
+PASS checkpoint=terminal duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1028
+PASS checkpoint=grant duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1021
+PASS checkpoint=revoke duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1066
+PASS checkpoint=expiry duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1088
+PASS checkpoint=grace_notice duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1095
+PASS checkpoint=grace_transfer duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1106
+PASS checkpoint=attempt_preemption duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1110
+PASS checkpoint=fix_window duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1157
+PASS checkpoint=full_confirmation duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1147
+PASS checkpoint=before_revert duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1198
+PASS checkpoint=after_revert duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1163
+PASS checkpoint=recovery_terminal duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1188
+PASS checkpoint=dependent_rejection duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1087
+PASS checkpoint=dependent_requeue duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1074
+PASS missing note/index rebuilt from Git diff
+PASS stale evidence refuses publication
+PASS inspector rejects identity
+PASS inspector rejects evidence
+PASS inspector rejects manifest
+PASS inspector rejects fix_deadline
+PASS inspector rejects compensation
+PASS inspector rejects lost acknowledgment ref

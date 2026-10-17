@@ -1,0 +1,134 @@
+git ["init", "--quiet"]: status=exit code: 0 stdout= stderr=
+git ["add", "file.txt"]: status=exit code: 0 stdout= stderr=
+git ["commit", "-qm", "baseline\n\nMai-Revision: r0"]: status=exit code: 0 stdout= stderr=
+git ["rev-parse", "HEAD"]: status=exit code: 0 stdout=4c36038e36c2baec2047cd78da99f2cc61eb6da4 stderr=
+git ["update-ref", "refs/changes/same/1", "4c36038e36c2baec2047cd78da99f2cc61eb6da4"]: status=exit code: 0 stdout= stderr=
+git ["commit", "--amend", "-qm", "baseline\n\nChange-Id: same\nSubmission: same:1:4c36038e36c2baec2047cd78da99f2cc61eb6da4\nMai-Revision: r0"]: status=exit code: 0 stdout= stderr=
+git ["rev-parse", "HEAD"]: status=exit code: 0 stdout=08dfeb5bbd3c308844a83eb73554051073bb9765 stderr=
+git ["update-ref", "refs/heads/trunk", "08dfeb5bbd3c308844a83eb73554051073bb9765"]: status=exit code: 0 stdout= stderr=
+git ["add", "file.txt"]: status=exit code: 0 stdout= stderr=
+git ["commit", "-qm", "submitted\n\nChange-Id: same"]: status=exit code: 0 stdout= stderr=
+git ["rev-parse", "HEAD"]: status=exit code: 0 stdout=061c54e1ba615e37c6c8298a21d6a228dbff66ed stderr=
+git ["update-ref", "refs/drafts/alice", "061c54e1ba615e37c6c8298a21d6a228dbff66ed"]: status=exit code: 0 stdout= stderr=
+git ["rev-parse", "061c54e1ba615e37c6c8298a21d6a228dbff66ed^{tree}"]: status=exit code: 0 stdout=cbecd6fcdf69d7c5bc5d4911c85eab064376c72f stderr=
+git ["commit-tree", "cbecd6fcdf69d7c5bc5d4911c85eab064376c72f", "-p", "08dfeb5bbd3c308844a83eb73554051073bb9765", "-m", "decoy\n\nChange-Id: same\nSubmission: same:2:061c54e1ba615e37c6c8298a21d6a228dbff66ed\nGeneration: 2"]: status=exit code: 0 stdout=daf5f2fca4bb787a20370d9779b8d28fb53c49e0 stderr=
+git ["update-ref", "refs/heads/decoy", "daf5f2fca4bb787a20370d9779b8d28fb53c49e0"]: status=exit code: 0 stdout= stderr=
+git ["update-ref", "refs/changes/same/2", "061c54e1ba615e37c6c8298a21d6a228dbff66ed"]: status=exit code: 0 stdout= stderr=
+git ["rev-parse", "061c54e1ba615e37c6c8298a21d6a228dbff66ed^{tree}"]: status=exit code: 0 stdout=cbecd6fcdf69d7c5bc5d4911c85eab064376c72f stderr=
+git ["commit-tree", "cbecd6fcdf69d7c5bc5d4911c85eab064376c72f", "-p", "08dfeb5bbd3c308844a83eb73554051073bb9765", "-m", "land\n\nSubmission: same:2:061c54e1ba615e37c6c8298a21d6a228dbff66ed\nMai-Revision: r1"]: status=exit code: 0 stdout=658e4f712ff9341b8fb9b5cd494cdc00e7d46486 stderr=
+git ["update-ref", "refs/candidates/same/2", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486"]: status=exit code: 0 stdout= stderr=
+git ["show", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486:file.txt"]: status=exit code: 0 stdout=submission stderr=
+git ["rev-parse", "08dfeb5bbd3c308844a83eb73554051073bb9765^{tree}"]: status=exit code: 0 stdout=8c4ffe892285ef891a9b9152b5e5a0ad645f6c3e stderr=
+git ["rev-list", "--first-parent", "refs/heads/trunk"]: status=exit code: 0 stdout=08dfeb5bbd3c308844a83eb73554051073bb9765 stderr=
+git ["show", "-s", "--format=%B", "08dfeb5bbd3c308844a83eb73554051073bb9765"]: status=exit code: 0 stdout=baseline
+
+Change-Id: same
+Submission: same:1:4c36038e36c2baec2047cd78da99f2cc61eb6da4
+Mai-Revision: r0 stderr=
+git ["update-ref", "refs/heads/trunk", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486", "08dfeb5bbd3c308844a83eb73554051073bb9765"]: status=exit code: 0 stdout= stderr=
+git ["diff-tree", "--no-commit-id", "--name-status", "-r", "08dfeb5bbd3c308844a83eb73554051073bb9765", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486"]: status=exit code: 0 stdout=M	file.txt stderr=
+git ["notes", "--ref=manifests", "add", "-f", "-m", "file-fallback:no-parser\nM\tfile.txt", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486"]: status=exit code: 0 stdout= stderr=
+git ["show", "08dfeb5bbd3c308844a83eb73554051073bb9765:file.txt"]: status=exit code: 0 stdout=baseline stderr=
+git ["rev-parse", "08dfeb5bbd3c308844a83eb73554051073bb9765^{tree}"]: status=exit code: 0 stdout=8c4ffe892285ef891a9b9152b5e5a0ad645f6c3e stderr=
+git ["commit-tree", "8c4ffe892285ef891a9b9152b5e5a0ad645f6c3e", "-p", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486", "-m", "compensate\n\nCompensates: same:2:061c54e1ba615e37c6c8298a21d6a228dbff66ed\nMai-Revision: r2"]: status=exit code: 0 stdout=ec9e792100ebe7873d3208c9db6ee63d8853ce8d stderr=
+git ["show", "ec9e792100ebe7873d3208c9db6ee63d8853ce8d:file.txt"]: status=exit code: 0 stdout=baseline stderr=
+git ["rev-parse", "refs/heads/trunk"]: status=exit code: 0 stdout=658e4f712ff9341b8fb9b5cd494cdc00e7d46486 stderr=
+git ["update-ref", "refs/heads/trunk", "ec9e792100ebe7873d3208c9db6ee63d8853ce8d", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486"]: status=exit code: 0 stdout= stderr=
+git ["rev-parse", "refs/changes/same/2"]: status=exit code: 0 stdout=061c54e1ba615e37c6c8298a21d6a228dbff66ed stderr=
+git ["rev-parse", "refs/drafts/alice"]: status=exit code: 0 stdout=061c54e1ba615e37c6c8298a21d6a228dbff66ed stderr=
+git ["cat-file", "-e", "061c54e1ba615e37c6c8298a21d6a228dbff66ed"]: status=exit code: 0 stdout= stderr=
+git ["rev-list", "--first-parent", "--reverse", "refs/heads/trunk"]: status=exit code: 0 stdout=08dfeb5bbd3c308844a83eb73554051073bb9765
+658e4f712ff9341b8fb9b5cd494cdc00e7d46486
+ec9e792100ebe7873d3208c9db6ee63d8853ce8d stderr=
+git ["show", "-s", "--format=%B", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486"]: status=exit code: 0 stdout=land
+
+Submission: same:2:061c54e1ba615e37c6c8298a21d6a228dbff66ed
+Mai-Revision: r1 stderr=
+git ["rev-parse", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486^"]: status=exit code: 0 stdout=08dfeb5bbd3c308844a83eb73554051073bb9765 stderr=
+git ["rev-parse", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486^{tree}"]: status=exit code: 0 stdout=cbecd6fcdf69d7c5bc5d4911c85eab064376c72f stderr=
+git ["rev-parse", "08dfeb5bbd3c308844a83eb73554051073bb9765^{tree}"]: status=exit code: 0 stdout=8c4ffe892285ef891a9b9152b5e5a0ad645f6c3e stderr=
+git ["show", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486:file.txt"]: status=exit code: 0 stdout=submission stderr=
+git ["diff-tree", "--no-commit-id", "--name-status", "-r", "08dfeb5bbd3c308844a83eb73554051073bb9765", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486"]: status=exit code: 0 stdout=M	file.txt stderr=
+git ["notes", "--ref=manifests", "show", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486"]: status=exit code: 0 stdout=file-fallback:no-parser
+M	file.txt stderr=
+git ["rev-parse", "ec9e792100ebe7873d3208c9db6ee63d8853ce8d^{tree}"]: status=exit code: 0 stdout=8c4ffe892285ef891a9b9152b5e5a0ad645f6c3e stderr=
+git ["show", "-s", "--format=%B", "ec9e792100ebe7873d3208c9db6ee63d8853ce8d"]: status=exit code: 0 stdout=compensate
+
+Compensates: same:2:061c54e1ba615e37c6c8298a21d6a228dbff66ed
+Mai-Revision: r2 stderr=
+git ["rev-parse", "refs/changes/same/2"]: status=exit code: 0 stdout=061c54e1ba615e37c6c8298a21d6a228dbff66ed stderr=
+git ["rev-parse", "refs/drafts/alice"]: status=exit code: 0 stdout=061c54e1ba615e37c6c8298a21d6a228dbff66ed stderr=
+git ["cat-file", "-e", "061c54e1ba615e37c6c8298a21d6a228dbff66ed"]: status=exit code: 0 stdout= stderr=
+git ["rev-list", "--first-parent", "--reverse", "refs/heads/trunk"]: status=exit code: 0 stdout=08dfeb5bbd3c308844a83eb73554051073bb9765
+658e4f712ff9341b8fb9b5cd494cdc00e7d46486
+ec9e792100ebe7873d3208c9db6ee63d8853ce8d stderr=
+git ["show", "-s", "--format=%B", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486"]: status=exit code: 0 stdout=land
+
+Submission: same:2:061c54e1ba615e37c6c8298a21d6a228dbff66ed
+Mai-Revision: r1 stderr=
+git ["rev-parse", "refs/changes/same/2"]: status=exit code: 0 stdout=061c54e1ba615e37c6c8298a21d6a228dbff66ed stderr=
+git ["rev-parse", "refs/drafts/alice"]: status=exit code: 0 stdout=061c54e1ba615e37c6c8298a21d6a228dbff66ed stderr=
+git ["cat-file", "-e", "061c54e1ba615e37c6c8298a21d6a228dbff66ed"]: status=exit code: 0 stdout= stderr=
+git ["rev-list", "--first-parent", "--reverse", "refs/heads/trunk"]: status=exit code: 0 stdout=08dfeb5bbd3c308844a83eb73554051073bb9765
+658e4f712ff9341b8fb9b5cd494cdc00e7d46486
+ec9e792100ebe7873d3208c9db6ee63d8853ce8d stderr=
+git ["show", "-s", "--format=%B", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486"]: status=exit code: 0 stdout=land
+
+Submission: same:2:061c54e1ba615e37c6c8298a21d6a228dbff66ed
+Mai-Revision: r1 stderr=
+git ["rev-parse", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486^"]: status=exit code: 0 stdout=08dfeb5bbd3c308844a83eb73554051073bb9765 stderr=
+git ["rev-parse", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486^{tree}"]: status=exit code: 0 stdout=cbecd6fcdf69d7c5bc5d4911c85eab064376c72f stderr=
+git ["rev-parse", "08dfeb5bbd3c308844a83eb73554051073bb9765^{tree}"]: status=exit code: 0 stdout=8c4ffe892285ef891a9b9152b5e5a0ad645f6c3e stderr=
+git ["rev-parse", "refs/changes/same/2"]: status=exit code: 0 stdout=061c54e1ba615e37c6c8298a21d6a228dbff66ed stderr=
+git ["rev-parse", "refs/drafts/alice"]: status=exit code: 0 stdout=061c54e1ba615e37c6c8298a21d6a228dbff66ed stderr=
+git ["cat-file", "-e", "061c54e1ba615e37c6c8298a21d6a228dbff66ed"]: status=exit code: 0 stdout= stderr=
+git ["rev-list", "--first-parent", "--reverse", "refs/heads/trunk"]: status=exit code: 0 stdout=08dfeb5bbd3c308844a83eb73554051073bb9765
+658e4f712ff9341b8fb9b5cd494cdc00e7d46486
+ec9e792100ebe7873d3208c9db6ee63d8853ce8d stderr=
+git ["show", "-s", "--format=%B", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486"]: status=exit code: 0 stdout=land
+
+Submission: same:2:061c54e1ba615e37c6c8298a21d6a228dbff66ed
+Mai-Revision: r1 stderr=
+git ["rev-parse", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486^"]: status=exit code: 0 stdout=08dfeb5bbd3c308844a83eb73554051073bb9765 stderr=
+git ["rev-parse", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486^{tree}"]: status=exit code: 0 stdout=cbecd6fcdf69d7c5bc5d4911c85eab064376c72f stderr=
+git ["rev-parse", "08dfeb5bbd3c308844a83eb73554051073bb9765^{tree}"]: status=exit code: 0 stdout=8c4ffe892285ef891a9b9152b5e5a0ad645f6c3e stderr=
+git ["show", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486:file.txt"]: status=exit code: 0 stdout=submission stderr=
+git ["diff-tree", "--no-commit-id", "--name-status", "-r", "08dfeb5bbd3c308844a83eb73554051073bb9765", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486"]: status=exit code: 0 stdout=M	file.txt stderr=
+git ["rev-parse", "refs/changes/same/2"]: status=exit code: 0 stdout=061c54e1ba615e37c6c8298a21d6a228dbff66ed stderr=
+git ["rev-parse", "refs/drafts/alice"]: status=exit code: 0 stdout=061c54e1ba615e37c6c8298a21d6a228dbff66ed stderr=
+git ["cat-file", "-e", "061c54e1ba615e37c6c8298a21d6a228dbff66ed"]: status=exit code: 0 stdout= stderr=
+git ["rev-list", "--first-parent", "--reverse", "refs/heads/trunk"]: status=exit code: 0 stdout=08dfeb5bbd3c308844a83eb73554051073bb9765
+658e4f712ff9341b8fb9b5cd494cdc00e7d46486
+ec9e792100ebe7873d3208c9db6ee63d8853ce8d stderr=
+git ["show", "-s", "--format=%B", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486"]: status=exit code: 0 stdout=land
+
+Submission: same:2:061c54e1ba615e37c6c8298a21d6a228dbff66ed
+Mai-Revision: r1 stderr=
+git ["rev-parse", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486^"]: status=exit code: 0 stdout=08dfeb5bbd3c308844a83eb73554051073bb9765 stderr=
+git ["rev-parse", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486^{tree}"]: status=exit code: 0 stdout=cbecd6fcdf69d7c5bc5d4911c85eab064376c72f stderr=
+git ["rev-parse", "08dfeb5bbd3c308844a83eb73554051073bb9765^{tree}"]: status=exit code: 0 stdout=8c4ffe892285ef891a9b9152b5e5a0ad645f6c3e stderr=
+git ["show", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486:file.txt"]: status=exit code: 0 stdout=submission stderr=
+git ["diff-tree", "--no-commit-id", "--name-status", "-r", "08dfeb5bbd3c308844a83eb73554051073bb9765", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486"]: status=exit code: 0 stdout=M	file.txt stderr=
+git ["notes", "--ref=manifests", "show", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486"]: status=exit code: 0 stdout=file-fallback:no-parser
+M	file.txt stderr=
+git ["rev-parse", "refs/changes/same/2"]: status=exit code: 0 stdout=061c54e1ba615e37c6c8298a21d6a228dbff66ed stderr=
+git ["rev-parse", "refs/drafts/alice"]: status=exit code: 0 stdout=061c54e1ba615e37c6c8298a21d6a228dbff66ed stderr=
+git ["cat-file", "-e", "061c54e1ba615e37c6c8298a21d6a228dbff66ed"]: status=exit code: 0 stdout= stderr=
+git ["rev-list", "--first-parent", "--reverse", "refs/heads/trunk"]: status=exit code: 0 stdout=08dfeb5bbd3c308844a83eb73554051073bb9765
+658e4f712ff9341b8fb9b5cd494cdc00e7d46486
+ec9e792100ebe7873d3208c9db6ee63d8853ce8d stderr=
+git ["show", "-s", "--format=%B", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486"]: status=exit code: 0 stdout=land
+
+Submission: same:2:061c54e1ba615e37c6c8298a21d6a228dbff66ed
+Mai-Revision: r1 stderr=
+git ["rev-parse", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486^"]: status=exit code: 0 stdout=08dfeb5bbd3c308844a83eb73554051073bb9765 stderr=
+git ["rev-parse", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486^{tree}"]: status=exit code: 0 stdout=cbecd6fcdf69d7c5bc5d4911c85eab064376c72f stderr=
+git ["rev-parse", "08dfeb5bbd3c308844a83eb73554051073bb9765^{tree}"]: status=exit code: 0 stdout=8c4ffe892285ef891a9b9152b5e5a0ad645f6c3e stderr=
+git ["show", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486:file.txt"]: status=exit code: 0 stdout=submission stderr=
+git ["diff-tree", "--no-commit-id", "--name-status", "-r", "08dfeb5bbd3c308844a83eb73554051073bb9765", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486"]: status=exit code: 0 stdout=M	file.txt stderr=
+git ["notes", "--ref=manifests", "show", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486"]: status=exit code: 0 stdout=file-fallback:no-parser
+M	file.txt stderr=
+git ["update-ref", "-d", "refs/changes/same/2"]: status=exit code: 0 stdout= stderr=
+git ["rev-parse", "refs/changes/same/2"]: status=exit code: 128 stdout=refs/changes/same/2 stderr=fatal: ambiguous argument 'refs/changes/same/2': unknown revision or path not in the working tree.
+Use '--' to separate paths from revisions, like this:
+'git <command> [<revision>...] -- [<file>...]'

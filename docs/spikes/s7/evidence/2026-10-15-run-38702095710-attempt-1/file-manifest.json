@@ -1,0 +1,2486 @@
+[
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "ack/commands.log",
+    "original_bytes": 9575,
+    "original_sha256": "a5f855a45f1ca5affc3058d7a3d9de4f7c22c937fbe623239a6eeaea038cf5d4",
+    "retained_path": "linux/ack/commands.log",
+    "retained_sha256": "a5f855a45f1ca5affc3058d7a3d9de4f7c22c937fbe623239a6eeaea038cf5d4",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "ack/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/ack/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "ack/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/ack/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "after_cas/commands.log",
+    "original_bytes": 10776,
+    "original_sha256": "ddc1cc32943c5b3c397837b198d140e692d648e2ac39c7e5ea13ee281ea8a60f",
+    "retained_path": "linux/after_cas/commands.log",
+    "retained_sha256": "ddc1cc32943c5b3c397837b198d140e692d648e2ac39c7e5ea13ee281ea8a60f",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "after_cas/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/after_cas/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "after_cas/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/after_cas/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "after_revert/commands.log",
+    "original_bytes": 12258,
+    "original_sha256": "900313c9b7dfb3af0b7607b6ddbf86c4f1dc8bee06a676abb11dfa50e5fc8387",
+    "retained_path": "linux/after_revert/commands.log",
+    "retained_sha256": "900313c9b7dfb3af0b7607b6ddbf86c4f1dc8bee06a676abb11dfa50e5fc8387",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "after_revert/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/after_revert/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "after_revert/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/after_revert/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "attempt_preemption/commands.log",
+    "original_bytes": 11225,
+    "original_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "retained_path": "linux/attempt_preemption/commands.log",
+    "retained_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "attempt_preemption/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/attempt_preemption/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "attempt_preemption/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/attempt_preemption/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "before_cas/commands.log",
+    "original_bytes": 10755,
+    "original_sha256": "79872ca6eafa7af8653a062d10f7dbf3c274f50e9f58fd0446c06b66d4f5a6cc",
+    "retained_path": "linux/before_cas/commands.log",
+    "retained_sha256": "79872ca6eafa7af8653a062d10f7dbf3c274f50e9f58fd0446c06b66d4f5a6cc",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "before_cas/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/before_cas/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "before_cas/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/before_cas/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "before_revert/commands.log",
+    "original_bytes": 12011,
+    "original_sha256": "19b03c249142bc5f5121692c6691a753657edeb19514e5dc246cbc42f7874af9",
+    "retained_path": "linux/before_revert/commands.log",
+    "retained_sha256": "19b03c249142bc5f5121692c6691a753657edeb19514e5dc246cbc42f7874af9",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "before_revert/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/before_revert/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "before_revert/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/before_revert/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "candidate/commands.log",
+    "original_bytes": 10139,
+    "original_sha256": "9ad580c18a0362b26a479f58856499c4924f79860c2c1bab4dcc8284597835e5",
+    "retained_path": "linux/candidate/commands.log",
+    "retained_sha256": "9ad580c18a0362b26a479f58856499c4924f79860c2c1bab4dcc8284597835e5",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "candidate/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/candidate/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "candidate/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/candidate/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "change_ref/commands.log",
+    "original_bytes": 9575,
+    "original_sha256": "a5f855a45f1ca5affc3058d7a3d9de4f7c22c937fbe623239a6eeaea038cf5d4",
+    "retained_path": "linux/change_ref/commands.log",
+    "retained_sha256": "a5f855a45f1ca5affc3058d7a3d9de4f7c22c937fbe623239a6eeaea038cf5d4",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "change_ref/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/change_ref/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "change_ref/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/change_ref/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "clippy.log",
+    "original_bytes": 719,
+    "original_sha256": "e0863d7fecd0d55e3b98e168af30cffd21f1075d3208388e680506cb87a957d4",
+    "retained_path": "linux/clippy.log",
+    "retained_sha256": "e0863d7fecd0d55e3b98e168af30cffd21f1075d3208388e680506cb87a957d4",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "compile.log",
+    "original_bytes": 181,
+    "original_sha256": "abe9578b05030d1864e96cc058f096044d7d22a8b8061512a60286b9f6abf186",
+    "retained_path": "linux/compile.log",
+    "retained_sha256": "abe9578b05030d1864e96cc058f096044d7d22a8b8061512a60286b9f6abf186",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "dependent_rejection/commands.log",
+    "original_bytes": 12258,
+    "original_sha256": "900313c9b7dfb3af0b7607b6ddbf86c4f1dc8bee06a676abb11dfa50e5fc8387",
+    "retained_path": "linux/dependent_rejection/commands.log",
+    "retained_sha256": "900313c9b7dfb3af0b7607b6ddbf86c4f1dc8bee06a676abb11dfa50e5fc8387",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "dependent_rejection/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/dependent_rejection/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "dependent_rejection/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/dependent_rejection/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "dependent_requeue/commands.log",
+    "original_bytes": 12258,
+    "original_sha256": "900313c9b7dfb3af0b7607b6ddbf86c4f1dc8bee06a676abb11dfa50e5fc8387",
+    "retained_path": "linux/dependent_requeue/commands.log",
+    "retained_sha256": "900313c9b7dfb3af0b7607b6ddbf86c4f1dc8bee06a676abb11dfa50e5fc8387",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "dependent_requeue/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/dependent_requeue/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "dependent_requeue/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/dependent_requeue/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "evidence/commands.log",
+    "original_bytes": 10402,
+    "original_sha256": "56c7f127f71816575d94a8579cbd3c11edc8f74e64c9a7e85698baf66571207c",
+    "retained_path": "linux/evidence/commands.log",
+    "retained_sha256": "56c7f127f71816575d94a8579cbd3c11edc8f74e64c9a7e85698baf66571207c",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "evidence/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/evidence/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "evidence/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/evidence/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "expiry/commands.log",
+    "original_bytes": 11225,
+    "original_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "retained_path": "linux/expiry/commands.log",
+    "retained_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "expiry/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/expiry/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "expiry/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/expiry/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "fix_window/commands.log",
+    "original_bytes": 11338,
+    "original_sha256": "07b805414a843bf562b9b9146354d7b0de31877dfd118b92d2cbef6852a2e3ab",
+    "retained_path": "linux/fix_window/commands.log",
+    "retained_sha256": "07b805414a843bf562b9b9146354d7b0de31877dfd118b92d2cbef6852a2e3ab",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "fix_window/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/fix_window/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "fix_window/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/fix_window/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "format.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/format.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "full_confirmation/commands.log",
+    "original_bytes": 11338,
+    "original_sha256": "07b805414a843bf562b9b9146354d7b0de31877dfd118b92d2cbef6852a2e3ab",
+    "retained_path": "linux/full_confirmation/commands.log",
+    "retained_sha256": "07b805414a843bf562b9b9146354d7b0de31877dfd118b92d2cbef6852a2e3ab",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "full_confirmation/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/full_confirmation/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "full_confirmation/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/full_confirmation/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "grace_notice/commands.log",
+    "original_bytes": 11225,
+    "original_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "retained_path": "linux/grace_notice/commands.log",
+    "retained_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "grace_notice/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/grace_notice/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "grace_notice/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/grace_notice/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "grace_transfer/commands.log",
+    "original_bytes": 11225,
+    "original_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "retained_path": "linux/grace_transfer/commands.log",
+    "retained_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "grace_transfer/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/grace_transfer/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "grace_transfer/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/grace_transfer/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "grant/commands.log",
+    "original_bytes": 11225,
+    "original_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "retained_path": "linux/grant/commands.log",
+    "retained_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "grant/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/grant/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "grant/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/grant/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "inspector-negatives/commands.log",
+    "original_bytes": 13890,
+    "original_sha256": "1a6dc728368164b1ebbafde09746d6964381b4e31d1f4ffe3319857c388a8f2d",
+    "retained_path": "linux/inspector-negatives/commands.log",
+    "retained_sha256": "1a6dc728368164b1ebbafde09746d6964381b4e31d1f4ffe3319857c388a8f2d",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "inspector-negatives/worker.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/inspector-negatives/worker.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "manifest_index/commands.log",
+    "original_bytes": 11225,
+    "original_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "retained_path": "linux/manifest_index/commands.log",
+    "retained_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "manifest_index/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/manifest_index/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "manifest_index/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/manifest_index/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "manifest_note/commands.log",
+    "original_bytes": 11225,
+    "original_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "retained_path": "linux/manifest_note/commands.log",
+    "retained_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "manifest_note/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/manifest_note/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "manifest_note/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/manifest_note/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "missing-note-index/commands.log",
+    "original_bytes": 9563,
+    "original_sha256": "a8968859c2cb7c2ce4c39dcb02c706a65713151e86f4a2dbb81e24644adf9028",
+    "retained_path": "linux/missing-note-index/commands.log",
+    "retained_sha256": "a8968859c2cb7c2ce4c39dcb02c706a65713151e86f4a2dbb81e24644adf9028",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "missing-note-index/worker.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/missing-note-index/worker.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "provenance.log",
+    "original_bytes": 420,
+    "original_sha256": "6b0bcc2889d3ea819834502308363a84d20ae979d8fa0984b6aa5eacfbbc55c3",
+    "retained_path": "linux/provenance.log",
+    "retained_sha256": "6b0bcc2889d3ea819834502308363a84d20ae979d8fa0984b6aa5eacfbbc55c3",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "queue/commands.log",
+    "original_bytes": 9575,
+    "original_sha256": "a5f855a45f1ca5affc3058d7a3d9de4f7c22c937fbe623239a6eeaea038cf5d4",
+    "retained_path": "linux/queue/commands.log",
+    "retained_sha256": "a5f855a45f1ca5affc3058d7a3d9de4f7c22c937fbe623239a6eeaea038cf5d4",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "queue/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/queue/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "queue/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/queue/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "queue_in_tx/commands.log",
+    "original_bytes": 9575,
+    "original_sha256": "a5f855a45f1ca5affc3058d7a3d9de4f7c22c937fbe623239a6eeaea038cf5d4",
+    "retained_path": "linux/queue_in_tx/commands.log",
+    "retained_sha256": "a5f855a45f1ca5affc3058d7a3d9de4f7c22c937fbe623239a6eeaea038cf5d4",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "queue_in_tx/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/queue_in_tx/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "queue_in_tx/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/queue_in_tx/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "recovery_terminal/commands.log",
+    "original_bytes": 12258,
+    "original_sha256": "900313c9b7dfb3af0b7607b6ddbf86c4f1dc8bee06a676abb11dfa50e5fc8387",
+    "retained_path": "linux/recovery_terminal/commands.log",
+    "retained_sha256": "900313c9b7dfb3af0b7607b6ddbf86c4f1dc8bee06a676abb11dfa50e5fc8387",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "recovery_terminal/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/recovery_terminal/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "recovery_terminal/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/recovery_terminal/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "registration/commands.log",
+    "original_bytes": 9450,
+    "original_sha256": "7771405267b942f87bdddf6a49a9e0c2ee8debc9dd1535901849f05a01b16438",
+    "retained_path": "linux/registration/commands.log",
+    "retained_sha256": "7771405267b942f87bdddf6a49a9e0c2ee8debc9dd1535901849f05a01b16438",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "registration/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/registration/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "registration/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/registration/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "registration_in_tx/commands.log",
+    "original_bytes": 9450,
+    "original_sha256": "7771405267b942f87bdddf6a49a9e0c2ee8debc9dd1535901849f05a01b16438",
+    "retained_path": "linux/registration_in_tx/commands.log",
+    "retained_sha256": "7771405267b942f87bdddf6a49a9e0c2ee8debc9dd1535901849f05a01b16438",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "registration_in_tx/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/registration_in_tx/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "registration_in_tx/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/registration_in_tx/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "revoke/commands.log",
+    "original_bytes": 11225,
+    "original_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "retained_path": "linux/revoke/commands.log",
+    "retained_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "revoke/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/revoke/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "revoke/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/revoke/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "run.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/run.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "sources.sha256",
+    "original_bytes": 457,
+    "original_sha256": "3152bd5827380c4261b1057224c7b481af419c85d7da05746083a81f4a42e87c",
+    "retained_path": "linux/sources.sha256",
+    "retained_sha256": "3152bd5827380c4261b1057224c7b481af419c85d7da05746083a81f4a42e87c",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "stale-pass/commands.log",
+    "original_bytes": 2884,
+    "original_sha256": "dde74620a998ec0ca957e0fa112ae3bfd08817b7318721b86e96781154b9e4bc",
+    "retained_path": "linux/stale-pass/commands.log",
+    "retained_sha256": "dde74620a998ec0ca957e0fa112ae3bfd08817b7318721b86e96781154b9e4bc",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "stale-pass/worker.log",
+    "original_bytes": 22,
+    "original_sha256": "33ffea1324d79a48d393555d49bce6a95abda2187677244790bdfccdfaa24303",
+    "retained_path": "linux/stale-pass/worker.log",
+    "retained_sha256": "33ffea1324d79a48d393555d49bce6a95abda2187677244790bdfccdfaa24303",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "summary.log",
+    "original_bytes": 2900,
+    "original_sha256": "c6926a31d13c5877bd0ec298986deae23898914b926e531454f62afd0bf11af0",
+    "retained_path": "linux/summary.log",
+    "retained_sha256": "c6926a31d13c5877bd0ec298986deae23898914b926e531454f62afd0bf11af0",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "terminal/commands.log",
+    "original_bytes": 11225,
+    "original_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "retained_path": "linux/terminal/commands.log",
+    "retained_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "terminal/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "linux/terminal/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "terminal/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "retained_path": "linux/terminal/worker.log",
+    "retained_sha256": "4703cb373f5ddc84da6bf3a68a3b23fe18723ac15a71f0e7e1bdb00474b4e863",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Linux-X64-38702095710-1",
+    "original_path": "unit.log",
+    "original_bytes": 2135,
+    "original_sha256": "507fb17d1e98eeffef5def2b6d3394a557f417377928f0039b5e1de2da0ca3a3",
+    "retained_path": "linux/unit.log",
+    "retained_sha256": "0f2c63f11f89c2d99ea965f9cab3878fa96c11b67d3b6769236596e1ef6961b8",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "ack/commands.log",
+    "original_bytes": 9451,
+    "original_sha256": "0bd77b8a009ca0d5a030e3b451737fda9c284aed2d7d6196406d712da38ace85",
+    "retained_path": "windows/ack/commands.log",
+    "retained_sha256": "0bd77b8a009ca0d5a030e3b451737fda9c284aed2d7d6196406d712da38ace85",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "ack/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/ack/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "ack/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/ack/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "after_cas/commands.log",
+    "original_bytes": 10638,
+    "original_sha256": "e16dc686ffa97e3d0c6822fbca45f860659422d5304c1a330d6a1c89838cf2e1",
+    "retained_path": "windows/after_cas/commands.log",
+    "retained_sha256": "e16dc686ffa97e3d0c6822fbca45f860659422d5304c1a330d6a1c89838cf2e1",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "after_cas/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/after_cas/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "after_cas/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/after_cas/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "after_revert/commands.log",
+    "original_bytes": 12104,
+    "original_sha256": "769bd0fb665f758342465131b7d2cf61edfafcfcf0c19e3bbad8d31fdf6fc3a4",
+    "retained_path": "windows/after_revert/commands.log",
+    "retained_sha256": "769bd0fb665f758342465131b7d2cf61edfafcfcf0c19e3bbad8d31fdf6fc3a4",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "after_revert/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/after_revert/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "after_revert/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/after_revert/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "attempt_preemption/commands.log",
+    "original_bytes": 11083,
+    "original_sha256": "687fed7184d1ec08bb9bf4ca8729ddce784f56947ba58ee2f004e410b6c317d8",
+    "retained_path": "windows/attempt_preemption/commands.log",
+    "retained_sha256": "687fed7184d1ec08bb9bf4ca8729ddce784f56947ba58ee2f004e410b6c317d8",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "attempt_preemption/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/attempt_preemption/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "attempt_preemption/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/attempt_preemption/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "before_cas/commands.log",
+    "original_bytes": 10617,
+    "original_sha256": "6d3db26d0a5b433da71e25c79b854036a4d3810f4d40ae328de10686aadea135",
+    "retained_path": "windows/before_cas/commands.log",
+    "retained_sha256": "6d3db26d0a5b433da71e25c79b854036a4d3810f4d40ae328de10686aadea135",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "before_cas/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/before_cas/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "before_cas/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/before_cas/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "before_revert/commands.log",
+    "original_bytes": 11859,
+    "original_sha256": "915f8b28ba4b4c71ae970c0af9f678bb30cba23e4e3091f8042157b88dbc6e36",
+    "retained_path": "windows/before_revert/commands.log",
+    "retained_sha256": "915f8b28ba4b4c71ae970c0af9f678bb30cba23e4e3091f8042157b88dbc6e36",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "before_revert/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/before_revert/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "before_revert/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/before_revert/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "candidate/commands.log",
+    "original_bytes": 10009,
+    "original_sha256": "7573e7a4af9d875a2f36037a08731f652d20f9fc3482042a804b130c62f17c34",
+    "retained_path": "windows/candidate/commands.log",
+    "retained_sha256": "7573e7a4af9d875a2f36037a08731f652d20f9fc3482042a804b130c62f17c34",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "candidate/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/candidate/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "candidate/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/candidate/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "change_ref/commands.log",
+    "original_bytes": 9451,
+    "original_sha256": "0bd77b8a009ca0d5a030e3b451737fda9c284aed2d7d6196406d712da38ace85",
+    "retained_path": "windows/change_ref/commands.log",
+    "retained_sha256": "0bd77b8a009ca0d5a030e3b451737fda9c284aed2d7d6196406d712da38ace85",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "change_ref/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/change_ref/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "change_ref/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/change_ref/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "clippy.log",
+    "original_bytes": 706,
+    "original_sha256": "6d34ecc1857cb67fdb84c2988e14d2179f49da3df5f45f6559a5c2276f0d0b13",
+    "retained_path": "windows/clippy.log",
+    "retained_sha256": "6d34ecc1857cb67fdb84c2988e14d2179f49da3df5f45f6559a5c2276f0d0b13",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "compile.log",
+    "original_bytes": 168,
+    "original_sha256": "f50cb6cb2141c7444c2ff402fc221d32dfdc49c5c187b7cdea7c9c3bfe01637a",
+    "retained_path": "windows/compile.log",
+    "retained_sha256": "f50cb6cb2141c7444c2ff402fc221d32dfdc49c5c187b7cdea7c9c3bfe01637a",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "dependent_rejection/commands.log",
+    "original_bytes": 12104,
+    "original_sha256": "769bd0fb665f758342465131b7d2cf61edfafcfcf0c19e3bbad8d31fdf6fc3a4",
+    "retained_path": "windows/dependent_rejection/commands.log",
+    "retained_sha256": "769bd0fb665f758342465131b7d2cf61edfafcfcf0c19e3bbad8d31fdf6fc3a4",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "dependent_rejection/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/dependent_rejection/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "dependent_rejection/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/dependent_rejection/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "dependent_requeue/commands.log",
+    "original_bytes": 12104,
+    "original_sha256": "769bd0fb665f758342465131b7d2cf61edfafcfcf0c19e3bbad8d31fdf6fc3a4",
+    "retained_path": "windows/dependent_requeue/commands.log",
+    "retained_sha256": "769bd0fb665f758342465131b7d2cf61edfafcfcf0c19e3bbad8d31fdf6fc3a4",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "dependent_requeue/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/dependent_requeue/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "dependent_requeue/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/dependent_requeue/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "evidence/commands.log",
+    "original_bytes": 10268,
+    "original_sha256": "425ea274a9d5a62aef9ba112dfe64b962059cc1829542fbc9504e83aa986d1c2",
+    "retained_path": "windows/evidence/commands.log",
+    "retained_sha256": "425ea274a9d5a62aef9ba112dfe64b962059cc1829542fbc9504e83aa986d1c2",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "evidence/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/evidence/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "evidence/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/evidence/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "expiry/commands.log",
+    "original_bytes": 11083,
+    "original_sha256": "687fed7184d1ec08bb9bf4ca8729ddce784f56947ba58ee2f004e410b6c317d8",
+    "retained_path": "windows/expiry/commands.log",
+    "retained_sha256": "687fed7184d1ec08bb9bf4ca8729ddce784f56947ba58ee2f004e410b6c317d8",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "expiry/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/expiry/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "expiry/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/expiry/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "fix_window/commands.log",
+    "original_bytes": 11194,
+    "original_sha256": "02da75ed1d6c0ae1bf0d65cf71ddfb18b3ba11e0dece1c1c7697d38fcb991d27",
+    "retained_path": "windows/fix_window/commands.log",
+    "retained_sha256": "02da75ed1d6c0ae1bf0d65cf71ddfb18b3ba11e0dece1c1c7697d38fcb991d27",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "fix_window/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/fix_window/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "fix_window/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/fix_window/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "format.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/format.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "full_confirmation/commands.log",
+    "original_bytes": 11194,
+    "original_sha256": "02da75ed1d6c0ae1bf0d65cf71ddfb18b3ba11e0dece1c1c7697d38fcb991d27",
+    "retained_path": "windows/full_confirmation/commands.log",
+    "retained_sha256": "02da75ed1d6c0ae1bf0d65cf71ddfb18b3ba11e0dece1c1c7697d38fcb991d27",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "full_confirmation/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/full_confirmation/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "full_confirmation/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/full_confirmation/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "grace_notice/commands.log",
+    "original_bytes": 11083,
+    "original_sha256": "687fed7184d1ec08bb9bf4ca8729ddce784f56947ba58ee2f004e410b6c317d8",
+    "retained_path": "windows/grace_notice/commands.log",
+    "retained_sha256": "687fed7184d1ec08bb9bf4ca8729ddce784f56947ba58ee2f004e410b6c317d8",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "grace_notice/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/grace_notice/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "grace_notice/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/grace_notice/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "grace_transfer/commands.log",
+    "original_bytes": 11083,
+    "original_sha256": "687fed7184d1ec08bb9bf4ca8729ddce784f56947ba58ee2f004e410b6c317d8",
+    "retained_path": "windows/grace_transfer/commands.log",
+    "retained_sha256": "687fed7184d1ec08bb9bf4ca8729ddce784f56947ba58ee2f004e410b6c317d8",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "grace_transfer/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/grace_transfer/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "grace_transfer/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/grace_transfer/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "grant/commands.log",
+    "original_bytes": 11083,
+    "original_sha256": "687fed7184d1ec08bb9bf4ca8729ddce784f56947ba58ee2f004e410b6c317d8",
+    "retained_path": "windows/grant/commands.log",
+    "retained_sha256": "687fed7184d1ec08bb9bf4ca8729ddce784f56947ba58ee2f004e410b6c317d8",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "grant/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/grant/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "grant/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/grant/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "inspector-negatives/commands.log",
+    "original_bytes": 13706,
+    "original_sha256": "b609532870915222b753d57abf955bb43c0d1da2f2881388384a4200d2bffc9c",
+    "retained_path": "windows/inspector-negatives/commands.log",
+    "retained_sha256": "b609532870915222b753d57abf955bb43c0d1da2f2881388384a4200d2bffc9c",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "inspector-negatives/worker.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/inspector-negatives/worker.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "manifest_index/commands.log",
+    "original_bytes": 11083,
+    "original_sha256": "687fed7184d1ec08bb9bf4ca8729ddce784f56947ba58ee2f004e410b6c317d8",
+    "retained_path": "windows/manifest_index/commands.log",
+    "retained_sha256": "687fed7184d1ec08bb9bf4ca8729ddce784f56947ba58ee2f004e410b6c317d8",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "manifest_index/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/manifest_index/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "manifest_index/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/manifest_index/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "manifest_note/commands.log",
+    "original_bytes": 11083,
+    "original_sha256": "687fed7184d1ec08bb9bf4ca8729ddce784f56947ba58ee2f004e410b6c317d8",
+    "retained_path": "windows/manifest_note/commands.log",
+    "retained_sha256": "687fed7184d1ec08bb9bf4ca8729ddce784f56947ba58ee2f004e410b6c317d8",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "manifest_note/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/manifest_note/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "manifest_note/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/manifest_note/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "missing-note-index/commands.log",
+    "original_bytes": 9439,
+    "original_sha256": "e6a388f7f1bedf8b4977ef7ac4fe1cdf55e70b4a9771ba4f76ef4512d578c6bb",
+    "retained_path": "windows/missing-note-index/commands.log",
+    "retained_sha256": "e6a388f7f1bedf8b4977ef7ac4fe1cdf55e70b4a9771ba4f76ef4512d578c6bb",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "missing-note-index/worker.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/missing-note-index/worker.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "provenance.log",
+    "original_bytes": 455,
+    "original_sha256": "bf7b2638726099b54e50b924ae040bc2baaf7b68a4b4a8391cf75ba93dcc096d",
+    "retained_path": "windows/provenance.log",
+    "retained_sha256": "bf7b2638726099b54e50b924ae040bc2baaf7b68a4b4a8391cf75ba93dcc096d",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "queue/commands.log",
+    "original_bytes": 9451,
+    "original_sha256": "0bd77b8a009ca0d5a030e3b451737fda9c284aed2d7d6196406d712da38ace85",
+    "retained_path": "windows/queue/commands.log",
+    "retained_sha256": "0bd77b8a009ca0d5a030e3b451737fda9c284aed2d7d6196406d712da38ace85",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "queue/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/queue/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "queue/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/queue/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "queue_in_tx/commands.log",
+    "original_bytes": 9451,
+    "original_sha256": "0bd77b8a009ca0d5a030e3b451737fda9c284aed2d7d6196406d712da38ace85",
+    "retained_path": "windows/queue_in_tx/commands.log",
+    "retained_sha256": "0bd77b8a009ca0d5a030e3b451737fda9c284aed2d7d6196406d712da38ace85",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "queue_in_tx/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/queue_in_tx/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "queue_in_tx/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/queue_in_tx/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "recovery_terminal/commands.log",
+    "original_bytes": 12104,
+    "original_sha256": "769bd0fb665f758342465131b7d2cf61edfafcfcf0c19e3bbad8d31fdf6fc3a4",
+    "retained_path": "windows/recovery_terminal/commands.log",
+    "retained_sha256": "769bd0fb665f758342465131b7d2cf61edfafcfcf0c19e3bbad8d31fdf6fc3a4",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "recovery_terminal/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/recovery_terminal/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "recovery_terminal/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/recovery_terminal/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "registration/commands.log",
+    "original_bytes": 9328,
+    "original_sha256": "ba4c6953ff37bf8d09b3d0d56fba1b05e97f4795a08a540e7f34f2c23e445290",
+    "retained_path": "windows/registration/commands.log",
+    "retained_sha256": "ba4c6953ff37bf8d09b3d0d56fba1b05e97f4795a08a540e7f34f2c23e445290",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "registration/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/registration/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "registration/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/registration/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "registration_in_tx/commands.log",
+    "original_bytes": 9328,
+    "original_sha256": "ba4c6953ff37bf8d09b3d0d56fba1b05e97f4795a08a540e7f34f2c23e445290",
+    "retained_path": "windows/registration_in_tx/commands.log",
+    "retained_sha256": "ba4c6953ff37bf8d09b3d0d56fba1b05e97f4795a08a540e7f34f2c23e445290",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "registration_in_tx/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/registration_in_tx/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "registration_in_tx/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/registration_in_tx/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "revoke/commands.log",
+    "original_bytes": 11083,
+    "original_sha256": "687fed7184d1ec08bb9bf4ca8729ddce784f56947ba58ee2f004e410b6c317d8",
+    "retained_path": "windows/revoke/commands.log",
+    "retained_sha256": "687fed7184d1ec08bb9bf4ca8729ddce784f56947ba58ee2f004e410b6c317d8",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "revoke/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/revoke/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "revoke/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/revoke/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "run.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/run.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "sources.sha256",
+    "original_bytes": 457,
+    "original_sha256": "d8f97d27c903ed52c0bbfe07a13d46119fe778ef0f5faff2808b561f088a86f3",
+    "retained_path": "windows/sources.sha256",
+    "retained_sha256": "d8f97d27c903ed52c0bbfe07a13d46119fe778ef0f5faff2808b561f088a86f3",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "stale-pass/commands.log",
+    "original_bytes": 2840,
+    "original_sha256": "ec0c059cbbe75d85d1938f1332a74c0069347b3dd61c4fdc1e053885dd063dbe",
+    "retained_path": "windows/stale-pass/commands.log",
+    "retained_sha256": "ec0c059cbbe75d85d1938f1332a74c0069347b3dd61c4fdc1e053885dd063dbe",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "stale-pass/worker.log",
+    "original_bytes": 22,
+    "original_sha256": "33ffea1324d79a48d393555d49bce6a95abda2187677244790bdfccdfaa24303",
+    "retained_path": "windows/stale-pass/worker.log",
+    "retained_sha256": "33ffea1324d79a48d393555d49bce6a95abda2187677244790bdfccdfaa24303",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "summary.log",
+    "original_bytes": 2924,
+    "original_sha256": "e7b94fa6ee4fac9f8aa5fd04084f2961900c52de5f29bcad911d106716fd538d",
+    "retained_path": "windows/summary.log",
+    "retained_sha256": "e7b94fa6ee4fac9f8aa5fd04084f2961900c52de5f29bcad911d106716fd538d",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "terminal/commands.log",
+    "original_bytes": 11083,
+    "original_sha256": "687fed7184d1ec08bb9bf4ca8729ddce784f56947ba58ee2f004e410b6c317d8",
+    "retained_path": "windows/terminal/commands.log",
+    "retained_sha256": "687fed7184d1ec08bb9bf4ca8729ddce784f56947ba58ee2f004e410b6c317d8",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "terminal/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "windows/terminal/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "terminal/worker.log",
+    "original_bytes": 147,
+    "original_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "retained_path": "windows/terminal/worker.log",
+    "retained_sha256": "09dc60e68af7e8a52d54914c7032edc8bc2494addbc303b5d887eb257b927481",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-Windows-X64-38702095710-1",
+    "original_path": "unit.log",
+    "original_bytes": 2126,
+    "original_sha256": "45acb030430874c9c68db29f11adcd39de450e48183575f357a5dd000aa043a1",
+    "retained_path": "windows/unit.log",
+    "retained_sha256": "9772281d9a8fbd147b0d673389b7f2b5d06e0e1d4e027461d1e7b79bd5f384e9",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "ack/commands.log",
+    "original_bytes": 9575,
+    "original_sha256": "a5f855a45f1ca5affc3058d7a3d9de4f7c22c937fbe623239a6eeaea038cf5d4",
+    "retained_path": "macos/ack/commands.log",
+    "retained_sha256": "a5f855a45f1ca5affc3058d7a3d9de4f7c22c937fbe623239a6eeaea038cf5d4",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "ack/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/ack/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "ack/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/ack/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "after_cas/commands.log",
+    "original_bytes": 10776,
+    "original_sha256": "ddc1cc32943c5b3c397837b198d140e692d648e2ac39c7e5ea13ee281ea8a60f",
+    "retained_path": "macos/after_cas/commands.log",
+    "retained_sha256": "ddc1cc32943c5b3c397837b198d140e692d648e2ac39c7e5ea13ee281ea8a60f",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "after_cas/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/after_cas/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "after_cas/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/after_cas/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "after_revert/commands.log",
+    "original_bytes": 12258,
+    "original_sha256": "900313c9b7dfb3af0b7607b6ddbf86c4f1dc8bee06a676abb11dfa50e5fc8387",
+    "retained_path": "macos/after_revert/commands.log",
+    "retained_sha256": "900313c9b7dfb3af0b7607b6ddbf86c4f1dc8bee06a676abb11dfa50e5fc8387",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "after_revert/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/after_revert/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "after_revert/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/after_revert/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "attempt_preemption/commands.log",
+    "original_bytes": 11225,
+    "original_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "retained_path": "macos/attempt_preemption/commands.log",
+    "retained_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "attempt_preemption/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/attempt_preemption/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "attempt_preemption/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/attempt_preemption/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "before_cas/commands.log",
+    "original_bytes": 10755,
+    "original_sha256": "79872ca6eafa7af8653a062d10f7dbf3c274f50e9f58fd0446c06b66d4f5a6cc",
+    "retained_path": "macos/before_cas/commands.log",
+    "retained_sha256": "79872ca6eafa7af8653a062d10f7dbf3c274f50e9f58fd0446c06b66d4f5a6cc",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "before_cas/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/before_cas/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "before_cas/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/before_cas/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "before_revert/commands.log",
+    "original_bytes": 12011,
+    "original_sha256": "19b03c249142bc5f5121692c6691a753657edeb19514e5dc246cbc42f7874af9",
+    "retained_path": "macos/before_revert/commands.log",
+    "retained_sha256": "19b03c249142bc5f5121692c6691a753657edeb19514e5dc246cbc42f7874af9",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "before_revert/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/before_revert/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "before_revert/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/before_revert/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "candidate/commands.log",
+    "original_bytes": 10139,
+    "original_sha256": "9ad580c18a0362b26a479f58856499c4924f79860c2c1bab4dcc8284597835e5",
+    "retained_path": "macos/candidate/commands.log",
+    "retained_sha256": "9ad580c18a0362b26a479f58856499c4924f79860c2c1bab4dcc8284597835e5",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "candidate/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/candidate/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "candidate/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/candidate/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "change_ref/commands.log",
+    "original_bytes": 9575,
+    "original_sha256": "a5f855a45f1ca5affc3058d7a3d9de4f7c22c937fbe623239a6eeaea038cf5d4",
+    "retained_path": "macos/change_ref/commands.log",
+    "retained_sha256": "a5f855a45f1ca5affc3058d7a3d9de4f7c22c937fbe623239a6eeaea038cf5d4",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "change_ref/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/change_ref/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "change_ref/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/change_ref/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "clippy.log",
+    "original_bytes": 720,
+    "original_sha256": "5385323bc76c7743da7f383ba193c34f5b6e5d0dcac4bb672694e97cf9725395",
+    "retained_path": "macos/clippy.log",
+    "retained_sha256": "5385323bc76c7743da7f383ba193c34f5b6e5d0dcac4bb672694e97cf9725395",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "compile.log",
+    "original_bytes": 182,
+    "original_sha256": "696b3c13eec9c3525784d987cca41c4fae92d8e3240beb013313c61b66f4ad0e",
+    "retained_path": "macos/compile.log",
+    "retained_sha256": "696b3c13eec9c3525784d987cca41c4fae92d8e3240beb013313c61b66f4ad0e",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "dependent_rejection/commands.log",
+    "original_bytes": 12258,
+    "original_sha256": "900313c9b7dfb3af0b7607b6ddbf86c4f1dc8bee06a676abb11dfa50e5fc8387",
+    "retained_path": "macos/dependent_rejection/commands.log",
+    "retained_sha256": "900313c9b7dfb3af0b7607b6ddbf86c4f1dc8bee06a676abb11dfa50e5fc8387",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "dependent_rejection/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/dependent_rejection/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "dependent_rejection/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/dependent_rejection/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "dependent_requeue/commands.log",
+    "original_bytes": 12258,
+    "original_sha256": "900313c9b7dfb3af0b7607b6ddbf86c4f1dc8bee06a676abb11dfa50e5fc8387",
+    "retained_path": "macos/dependent_requeue/commands.log",
+    "retained_sha256": "900313c9b7dfb3af0b7607b6ddbf86c4f1dc8bee06a676abb11dfa50e5fc8387",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "dependent_requeue/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/dependent_requeue/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "dependent_requeue/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/dependent_requeue/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "evidence/commands.log",
+    "original_bytes": 10402,
+    "original_sha256": "56c7f127f71816575d94a8579cbd3c11edc8f74e64c9a7e85698baf66571207c",
+    "retained_path": "macos/evidence/commands.log",
+    "retained_sha256": "56c7f127f71816575d94a8579cbd3c11edc8f74e64c9a7e85698baf66571207c",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "evidence/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/evidence/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "evidence/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/evidence/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "expiry/commands.log",
+    "original_bytes": 11225,
+    "original_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "retained_path": "macos/expiry/commands.log",
+    "retained_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "expiry/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/expiry/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "expiry/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/expiry/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "fix_window/commands.log",
+    "original_bytes": 11338,
+    "original_sha256": "07b805414a843bf562b9b9146354d7b0de31877dfd118b92d2cbef6852a2e3ab",
+    "retained_path": "macos/fix_window/commands.log",
+    "retained_sha256": "07b805414a843bf562b9b9146354d7b0de31877dfd118b92d2cbef6852a2e3ab",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "fix_window/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/fix_window/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "fix_window/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/fix_window/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "format.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/format.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "full_confirmation/commands.log",
+    "original_bytes": 11338,
+    "original_sha256": "07b805414a843bf562b9b9146354d7b0de31877dfd118b92d2cbef6852a2e3ab",
+    "retained_path": "macos/full_confirmation/commands.log",
+    "retained_sha256": "07b805414a843bf562b9b9146354d7b0de31877dfd118b92d2cbef6852a2e3ab",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "full_confirmation/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/full_confirmation/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "full_confirmation/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/full_confirmation/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "grace_notice/commands.log",
+    "original_bytes": 11225,
+    "original_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "retained_path": "macos/grace_notice/commands.log",
+    "retained_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "grace_notice/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/grace_notice/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "grace_notice/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/grace_notice/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "grace_transfer/commands.log",
+    "original_bytes": 11225,
+    "original_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "retained_path": "macos/grace_transfer/commands.log",
+    "retained_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "grace_transfer/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/grace_transfer/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "grace_transfer/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/grace_transfer/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "grant/commands.log",
+    "original_bytes": 11225,
+    "original_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "retained_path": "macos/grant/commands.log",
+    "retained_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "grant/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/grant/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "grant/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/grant/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "inspector-negatives/commands.log",
+    "original_bytes": 13890,
+    "original_sha256": "1a6dc728368164b1ebbafde09746d6964381b4e31d1f4ffe3319857c388a8f2d",
+    "retained_path": "macos/inspector-negatives/commands.log",
+    "retained_sha256": "1a6dc728368164b1ebbafde09746d6964381b4e31d1f4ffe3319857c388a8f2d",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "inspector-negatives/worker.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/inspector-negatives/worker.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "manifest_index/commands.log",
+    "original_bytes": 11225,
+    "original_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "retained_path": "macos/manifest_index/commands.log",
+    "retained_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "manifest_index/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/manifest_index/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "manifest_index/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/manifest_index/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "manifest_note/commands.log",
+    "original_bytes": 11225,
+    "original_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "retained_path": "macos/manifest_note/commands.log",
+    "retained_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "manifest_note/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/manifest_note/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "manifest_note/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/manifest_note/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "missing-note-index/commands.log",
+    "original_bytes": 9563,
+    "original_sha256": "a8968859c2cb7c2ce4c39dcb02c706a65713151e86f4a2dbb81e24644adf9028",
+    "retained_path": "macos/missing-note-index/commands.log",
+    "retained_sha256": "a8968859c2cb7c2ce4c39dcb02c706a65713151e86f4a2dbb81e24644adf9028",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "missing-note-index/worker.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/missing-note-index/worker.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "provenance.log",
+    "original_bytes": 407,
+    "original_sha256": "1842049943f6fe347d70b6966fa17ccd2b0c29806bbe47e2109a717e2be5baef",
+    "retained_path": "macos/provenance.log",
+    "retained_sha256": "1842049943f6fe347d70b6966fa17ccd2b0c29806bbe47e2109a717e2be5baef",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "queue/commands.log",
+    "original_bytes": 9575,
+    "original_sha256": "a5f855a45f1ca5affc3058d7a3d9de4f7c22c937fbe623239a6eeaea038cf5d4",
+    "retained_path": "macos/queue/commands.log",
+    "retained_sha256": "a5f855a45f1ca5affc3058d7a3d9de4f7c22c937fbe623239a6eeaea038cf5d4",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "queue/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/queue/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "queue/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/queue/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "queue_in_tx/commands.log",
+    "original_bytes": 9575,
+    "original_sha256": "a5f855a45f1ca5affc3058d7a3d9de4f7c22c937fbe623239a6eeaea038cf5d4",
+    "retained_path": "macos/queue_in_tx/commands.log",
+    "retained_sha256": "a5f855a45f1ca5affc3058d7a3d9de4f7c22c937fbe623239a6eeaea038cf5d4",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "queue_in_tx/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/queue_in_tx/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "queue_in_tx/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/queue_in_tx/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "recovery_terminal/commands.log",
+    "original_bytes": 12258,
+    "original_sha256": "900313c9b7dfb3af0b7607b6ddbf86c4f1dc8bee06a676abb11dfa50e5fc8387",
+    "retained_path": "macos/recovery_terminal/commands.log",
+    "retained_sha256": "900313c9b7dfb3af0b7607b6ddbf86c4f1dc8bee06a676abb11dfa50e5fc8387",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "recovery_terminal/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/recovery_terminal/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "recovery_terminal/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/recovery_terminal/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "registration/commands.log",
+    "original_bytes": 9450,
+    "original_sha256": "7771405267b942f87bdddf6a49a9e0c2ee8debc9dd1535901849f05a01b16438",
+    "retained_path": "macos/registration/commands.log",
+    "retained_sha256": "7771405267b942f87bdddf6a49a9e0c2ee8debc9dd1535901849f05a01b16438",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "registration/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/registration/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "registration/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/registration/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "registration_in_tx/commands.log",
+    "original_bytes": 9450,
+    "original_sha256": "7771405267b942f87bdddf6a49a9e0c2ee8debc9dd1535901849f05a01b16438",
+    "retained_path": "macos/registration_in_tx/commands.log",
+    "retained_sha256": "7771405267b942f87bdddf6a49a9e0c2ee8debc9dd1535901849f05a01b16438",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "registration_in_tx/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/registration_in_tx/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "registration_in_tx/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/registration_in_tx/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "revoke/commands.log",
+    "original_bytes": 11225,
+    "original_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "retained_path": "macos/revoke/commands.log",
+    "retained_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "revoke/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/revoke/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "revoke/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/revoke/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "run.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/run.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "sources.sha256",
+    "original_bytes": 457,
+    "original_sha256": "3152bd5827380c4261b1057224c7b481af419c85d7da05746083a81f4a42e87c",
+    "retained_path": "macos/sources.sha256",
+    "retained_sha256": "3152bd5827380c4261b1057224c7b481af419c85d7da05746083a81f4a42e87c",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "stale-pass/commands.log",
+    "original_bytes": 2884,
+    "original_sha256": "dde74620a998ec0ca957e0fa112ae3bfd08817b7318721b86e96781154b9e4bc",
+    "retained_path": "macos/stale-pass/commands.log",
+    "retained_sha256": "dde74620a998ec0ca957e0fa112ae3bfd08817b7318721b86e96781154b9e4bc",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "stale-pass/worker.log",
+    "original_bytes": 22,
+    "original_sha256": "33ffea1324d79a48d393555d49bce6a95abda2187677244790bdfccdfaa24303",
+    "retained_path": "macos/stale-pass/worker.log",
+    "retained_sha256": "33ffea1324d79a48d393555d49bce6a95abda2187677244790bdfccdfaa24303",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "summary.log",
+    "original_bytes": 2900,
+    "original_sha256": "e4f64a8e319dbcbc396e0ad52d84ddabe8f189afe6dfe460f3d76547a40a5f4c",
+    "retained_path": "macos/summary.log",
+    "retained_sha256": "e4f64a8e319dbcbc396e0ad52d84ddabe8f189afe6dfe460f3d76547a40a5f4c",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "terminal/commands.log",
+    "original_bytes": 11225,
+    "original_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "retained_path": "macos/terminal/commands.log",
+    "retained_sha256": "d1a999554572eabcadd2ea48535516945f5205d5dee1b2e5c2c9b34a7a5a63ca",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "terminal/retry.log",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retained_path": "macos/terminal/retry.log",
+    "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "terminal/worker.log",
+    "original_bytes": 87,
+    "original_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "retained_path": "macos/terminal/worker.log",
+    "retained_sha256": "f48f65b221f8bf593e3c6d12f28f864c05857c5858592529f6e7968da00a7909",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  },
+  {
+    "artifact": "s7-macOS-ARM64-38702095710-1",
+    "original_path": "unit.log",
+    "original_bytes": 2136,
+    "original_sha256": "b98dde2816e570f26a6bb5958a1c6cebda2d436e0e081b4219135150f39484db",
+    "retained_path": "macos/unit.log",
+    "retained_sha256": "23d6b5fb3ba60efeb08fcabe08a8308e61a86d77557a7e2068f2411c17c2b8b4",
+    "transformation": "UTF-8 LF, trailing-whitespace and trailing-blank-line normalization"
+  }
+]

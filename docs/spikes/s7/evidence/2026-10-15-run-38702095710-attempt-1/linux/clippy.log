@@ -1,0 +1,14 @@
+[1m[92m    Checking[0m foldhash v0.2.0
+[1m[92m    Checking[0m libsqlite3-sys v0.38.2
+[1m[92m    Checking[0m libc v0.2.190
+[1m[92m    Checking[0m smallvec v1.16.3
+[1m[92m    Checking[0m hashbrown v0.17.1
+[1m[92m    Checking[0m fallible-streaming-iterator v0.1.9
+[1m[92m    Checking[0m fallible-iterator v0.3.0
+[1m[92m    Checking[0m bitflags v2.13.2
+[1m[92m    Checking[0m anyhow v1.0.104
+[1m[92m    Checking[0m hashlink v0.12.2
+[1m[92m    Checking[0m rusqlite v0.40.2
+[1m[92m    Checking[0m fs2 v0.4.3
+[1m[92m    Checking[0m s7-crash-experiment v0.0.0 (/home/runner/work/mai/mai/experiments/s7)
+[1m[92m    Finished[0m `dev` profile [unoptimized + debuginfo] target(s) in 2.29s

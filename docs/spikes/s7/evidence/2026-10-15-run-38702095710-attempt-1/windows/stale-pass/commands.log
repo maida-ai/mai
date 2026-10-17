@@ -1,0 +1,22 @@
+git ["init", "--quiet"]: status=exit code: 0 stdout= stderr=
+git ["add", "file.txt"]: status=exit code: 0 stdout= stderr=
+git ["commit", "-qm", "baseline\n\nMai-Revision: r0"]: status=exit code: 0 stdout= stderr=
+git ["rev-parse", "HEAD"]: status=exit code: 0 stdout=4c36038e36c2baec2047cd78da99f2cc61eb6da4 stderr=
+git ["update-ref", "refs/changes/same/1", "4c36038e36c2baec2047cd78da99f2cc61eb6da4"]: status=exit code: 0 stdout= stderr=
+git ["commit", "--amend", "-qm", "baseline\n\nChange-Id: same\nSubmission: same:1:4c36038e36c2baec2047cd78da99f2cc61eb6da4\nMai-Revision: r0"]: status=exit code: 0 stdout= stderr=
+git ["rev-parse", "HEAD"]: status=exit code: 0 stdout=08dfeb5bbd3c308844a83eb73554051073bb9765 stderr=
+git ["update-ref", "refs/heads/trunk", "08dfeb5bbd3c308844a83eb73554051073bb9765"]: status=exit code: 0 stdout= stderr=
+git ["add", "file.txt"]: status=exit code: 0 stdout= stderr=
+git ["commit", "-qm", "submitted\n\nChange-Id: same"]: status=exit code: 0 stdout= stderr=
+git ["rev-parse", "HEAD"]: status=exit code: 0 stdout=061c54e1ba615e37c6c8298a21d6a228dbff66ed stderr=
+git ["update-ref", "refs/drafts/alice", "061c54e1ba615e37c6c8298a21d6a228dbff66ed"]: status=exit code: 0 stdout= stderr=
+git ["rev-parse", "061c54e1ba615e37c6c8298a21d6a228dbff66ed^{tree}"]: status=exit code: 0 stdout=cbecd6fcdf69d7c5bc5d4911c85eab064376c72f stderr=
+git ["commit-tree", "cbecd6fcdf69d7c5bc5d4911c85eab064376c72f", "-p", "08dfeb5bbd3c308844a83eb73554051073bb9765", "-m", "decoy\n\nChange-Id: same\nSubmission: same:2:061c54e1ba615e37c6c8298a21d6a228dbff66ed\nGeneration: 2"]: status=exit code: 0 stdout=daf5f2fca4bb787a20370d9779b8d28fb53c49e0 stderr=
+git ["update-ref", "refs/heads/decoy", "daf5f2fca4bb787a20370d9779b8d28fb53c49e0"]: status=exit code: 0 stdout= stderr=
+git ["update-ref", "refs/changes/same/2", "061c54e1ba615e37c6c8298a21d6a228dbff66ed"]: status=exit code: 0 stdout= stderr=
+git ["rev-parse", "061c54e1ba615e37c6c8298a21d6a228dbff66ed^{tree}"]: status=exit code: 0 stdout=cbecd6fcdf69d7c5bc5d4911c85eab064376c72f stderr=
+git ["commit-tree", "cbecd6fcdf69d7c5bc5d4911c85eab064376c72f", "-p", "08dfeb5bbd3c308844a83eb73554051073bb9765", "-m", "land\n\nSubmission: same:2:061c54e1ba615e37c6c8298a21d6a228dbff66ed\nMai-Revision: r1"]: status=exit code: 0 stdout=658e4f712ff9341b8fb9b5cd494cdc00e7d46486 stderr=
+git ["update-ref", "refs/candidates/same/2", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486"]: status=exit code: 0 stdout= stderr=
+git ["show", "658e4f712ff9341b8fb9b5cd494cdc00e7d46486:file.txt"]: status=exit code: 0 stdout=submission stderr=
+git ["rev-parse", "08dfeb5bbd3c308844a83eb73554051073bb9765^{tree}"]: status=exit code: 0 stdout=8c4ffe892285ef891a9b9152b5e5a0ad645f6c3e stderr=
+git ["rev-parse", "refs/heads/trunk"]: status=exit code: 0 stdout=08dfeb5bbd3c308844a83eb73554051073bb9765 stderr=

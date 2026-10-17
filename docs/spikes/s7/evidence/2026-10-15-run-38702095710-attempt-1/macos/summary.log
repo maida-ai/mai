@@ -1,0 +1,35 @@
+S7 native process-kill experiment; platform=macos; checkpoints=26
+PASS checkpoint=registration_in_tx duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=956
+PASS checkpoint=registration duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=906
+PASS checkpoint=change_ref duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=731
+PASS checkpoint=queue_in_tx duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=675
+PASS checkpoint=queue duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=590
+PASS checkpoint=ack duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=617
+PASS checkpoint=candidate duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=644
+PASS checkpoint=evidence duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=584
+PASS checkpoint=before_cas duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=581
+PASS checkpoint=after_cas duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=668
+PASS checkpoint=manifest_note duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=671
+PASS checkpoint=manifest_index duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=713
+PASS checkpoint=terminal duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=792
+PASS checkpoint=grant duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=809
+PASS checkpoint=revoke duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=678
+PASS checkpoint=expiry duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=780
+PASS checkpoint=grace_notice duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=828
+PASS checkpoint=grace_transfer duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=865
+PASS checkpoint=attempt_preemption duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=862
+PASS checkpoint=fix_window duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=935
+PASS checkpoint=full_confirmation duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=848
+PASS checkpoint=before_revert duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=1141
+PASS checkpoint=after_revert duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=880
+PASS checkpoint=recovery_terminal duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=948
+PASS checkpoint=dependent_rejection duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=936
+PASS checkpoint=dependent_requeue duplicate-lock=refused stale-lock=recovered retries=2 elapsed_ms=954
+PASS missing note/index rebuilt from Git diff
+PASS stale evidence refuses publication
+PASS inspector rejects identity
+PASS inspector rejects evidence
+PASS inspector rejects manifest
+PASS inspector rejects fix_deadline
+PASS inspector rejects compensation
+PASS inspector rejects lost acknowledgment ref

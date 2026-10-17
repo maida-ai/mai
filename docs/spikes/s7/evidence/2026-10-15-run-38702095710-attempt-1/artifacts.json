@@ -1,0 +1,65 @@
+{
+  "total_count": 3,
+  "artifacts": [
+    {
+      "id": 11957340064,
+      "node_id": "MDg6QXJ0aWZhY3QxMTk1NzM0MDA2NA==",
+      "name": "s7-macOS-ARM64-38702095710-1",
+      "size_in_bytes": 45736,
+      "url": "https://api.github.com/repos/maida-ai/mai/actions/artifacts/11957340064",
+      "archive_download_url": "https://api.github.com/repos/maida-ai/mai/actions/artifacts/11957340064/zip",
+      "expired": false,
+      "digest": "sha256:74b93942a822b180772521b7338948e4bbac2a09227b66fbe9bfe74517f2029f",
+      "created_at": "2026-10-15T07:57:29Z",
+      "updated_at": "2026-10-15T07:57:29Z",
+      "expires_at": "2026-11-14T07:57:27Z",
+      "workflow_run": {
+        "id": 38702095710,
+        "repository_id": 1419848793,
+        "head_repository_id": 1419848793,
+        "head_branch": "main",
+        "head_sha": "6d3859020a1658f267adb9f9e623a598d78e046f"
+      }
+    },
+    {
+      "id": 11956228779,
+      "node_id": "MDg6QXJ0aWZhY3QxMTk1NjIyODc3OQ==",
+      "name": "s7-Windows-X64-38702095710-1",
+      "size_in_bytes": 46476,
+      "url": "https://api.github.com/repos/maida-ai/mai/actions/artifacts/11956228779",
+      "archive_download_url": "https://api.github.com/repos/maida-ai/mai/actions/artifacts/11956228779/zip",
+      "expired": false,
+      "digest": "sha256:0bfd0dbe7e6a611e70e750c3319b7d2cebd4d9ae4c0a1167404149b53a10b7fe",
+      "created_at": "2026-10-15T07:57:23Z",
+      "updated_at": "2026-10-15T07:57:23Z",
+      "expires_at": "2026-11-14T07:57:22Z",
+      "workflow_run": {
+        "id": 38702095710,
+        "repository_id": 1419848793,
+        "head_repository_id": 1419848793,
+        "head_branch": "main",
+        "head_sha": "6d3859020a1658f267adb9f9e623a598d78e046f"
+      }
+    },
+    {
+      "id": 11956198528,
+      "node_id": "MDg6QXJ0aWZhY3QxMTk1NjE5ODUyOA==",
+      "name": "s7-Linux-X64-38702095710-1",
+      "size_in_bytes": 45706,
+      "url": "https://api.github.com/repos/maida-ai/mai/actions/artifacts/11956198528",
+      "archive_download_url": "https://api.github.com/repos/maida-ai/mai/actions/artifacts/11956198528/zip",
+      "expired": false,
+      "digest": "sha256:d37d7468a33f31678063d63eea32050480d967017c8bbfde4c96ee052f3af260",
+      "created_at": "2026-10-15T07:56:37Z",
+      "updated_at": "2026-10-15T07:56:37Z",
+      "expires_at": "2026-11-14T07:56:36Z",
+      "workflow_run": {
+        "id": 38702095710,
+        "repository_id": 1419848793,
+        "head_repository_id": 1419848793,
+        "head_branch": "main",
+        "head_sha": "6d3859020a1658f267adb9f9e623a598d78e046f"
+      }
+    }
+  ]
+}
