@@ -16,3 +16,4 @@ pub mod validator;
 pub mod workspace;
 
 pub mod landing;
+pub mod manifest;
