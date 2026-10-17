@@ -55,6 +55,34 @@ pub struct SlotLease {
     healthy: bool,
 }
 
+struct RecoveryLock {
+    file: File,
+    locked: bool,
+}
+
+impl RecoveryLock {
+    fn new(file: File) -> Self {
+        Self { file, locked: true }
+    }
+
+    fn unlock(&mut self) -> Result<()> {
+        if self.locked {
+            FileExt::unlock(&self.file).context("unlock recovered validator slot")?;
+            self.locked = false;
+        }
+        Ok(())
+    }
+}
+
+impl Drop for RecoveryLock {
+    fn drop(&mut self) {
+        if self.locked {
+            let _ = FileExt::unlock(&self.file);
+            self.locked = false;
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, PartialEq, Eq)]
 #[serde(deny_unknown_fields)]
 struct SlotClaim {
@@ -445,19 +473,22 @@ impl SlotPool {
                 );
             }
         }
-        let lock = OpenOptions::new()
+        let lock_file = OpenOptions::new()
             .read(true)
             .write(true)
             .open(directory.join("lock"))?;
-        match lock.try_lock_exclusive() {
+        match lock_file.try_lock_exclusive() {
             Ok(()) => {}
             Err(error) if lock_is_contended(&error) => {
                 bail!("validator slot {index} is still owned by a worker")
             }
             Err(error) => return Err(error).context("lock validator slot for recovery"),
         }
+        let mut lock = RecoveryLock::new(lock_file);
         let occupied = directory.join("occupied");
         if !occupied.exists() {
+            #[cfg(all(test, target_os = "linux"))]
+            recovery_crash_tests::duplicate_completed_lock(&lock.file);
             let quarantine = directory.join(format!("quarantine-{expected_claim_id}"));
             ensure!(
                 !fs::symlink_metadata(&quarantine)?.file_type().is_symlink(),
@@ -479,6 +510,7 @@ impl SlotPool {
                 !directory.join("cleanup-receipt.json").exists(),
                 "completed recovery still has a cleanup receipt"
             );
+            lock.unlock()?;
             return Ok(quarantine);
         }
         let claim: SlotClaim = serde_json::from_slice(&fs::read(&occupied)?)
@@ -686,7 +718,7 @@ impl SlotPool {
             fs::rename(&journal_path, &archived_journal)?;
         }
         fs::remove_file(directory.join("occupied"))?;
-        FileExt::unlock(&lock)?;
+        lock.unlock()?;
         sync_directory(&directory)?;
         #[cfg(all(test, target_os = "linux"))]
         recovery_crash_tests::checkpoint("claim-cleared");

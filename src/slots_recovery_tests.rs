@@ -6,6 +6,21 @@ use std::process::Command;
 
 const HELPER: &str = "slots::recovery_crash_tests::recovery_interruption_helper";
 
+thread_local! {
+    static CAPTURE_COMPLETED_LOCK: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
+    static COMPLETED_LOCK_DUPLICATE: std::cell::RefCell<Option<File>> = const { std::cell::RefCell::new(None) };
+}
+
+/// Hold the same open file description across completed recovery's return,
+/// deterministically modeling a concurrent fork that inherited its flock.
+pub(super) fn duplicate_completed_lock(lock: &File) {
+    if CAPTURE_COMPLETED_LOCK.get() {
+        COMPLETED_LOCK_DUPLICATE.with(|duplicate| {
+            *duplicate.borrow_mut() = Some(lock.try_clone().unwrap());
+        });
+    }
+}
+
 /// This module and every call to this hook exist only in a cfg(test) build.
 /// The helper exits immediately, skipping Rust destructors like an interrupted
 /// process, and the parent reopens the same durable claim to finish recovery.
@@ -106,7 +121,10 @@ fn recovery_retries_after_separate_process_interruption_at_each_durable_boundary
             "stage={stage}"
         );
         assert!(!slot.join("occupied").exists());
+        CAPTURE_COMPLETED_LOCK.set(true);
         assert_eq!(pool.recover(0, &claim.claim_id).unwrap(), recovered);
+        CAPTURE_COMPLETED_LOCK.set(false);
+        COMPLETED_LOCK_DUPLICATE.with(|duplicate| assert!(duplicate.borrow().is_some()));
         {
             use std::os::unix::fs::MetadataExt;
             assert_eq!(fs::metadata(slot.join("lock")).unwrap().ino(), lock_inode);
@@ -115,5 +133,6 @@ fn recovery_retries_after_separate_process_interruption_at_each_durable_boundary
             .unwrap()
             .release()
             .unwrap();
+        COMPLETED_LOCK_DUPLICATE.with(|duplicate| drop(duplicate.borrow_mut().take()));
     }
 }
