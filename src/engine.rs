@@ -59,6 +59,10 @@ enum Action {
     Show {
         generation: GenerationId,
     },
+    ContinuationSnapshot {
+        generation: GenerationId,
+        suffix: Vec<String>,
+    },
     Integrate {
         generation: GenerationId,
         mode: String,
@@ -194,6 +198,7 @@ pub fn serve(root: &Path) -> Result<()> {
                     Action::EnableReceive { .. }
                         | Action::Register { .. }
                         | Action::Show { .. }
+                        | Action::ContinuationSnapshot { .. }
                         | Action::Approve { .. }
                         | Action::Integrate { .. }
                         | Action::Lease { .. }
@@ -215,6 +220,12 @@ pub fn serve(root: &Path) -> Result<()> {
                                 .and_then(|s| Ok(Some(serde_json::to_value(s)?)))
                         }
                         Action::Show { generation } => receive::query(&authority, &generation)
+                            .and_then(|s| Ok(Some(serde_json::to_value(s)?))),
+                        Action::ContinuationSnapshot { generation, suffix } => authority
+                            .reconcile()
+                            .and_then(|()| {
+                                continuation_snapshot_owned(&authority, &generation, &suffix)
+                            })
                             .and_then(|s| Ok(Some(serde_json::to_value(s)?))),
                         Action::Integrate {
                             generation,
@@ -495,6 +506,109 @@ pub fn register(root: &Path, agent: &str, commit: &str) -> Result<Submission> {
 pub fn show(root: &Path, generation: GenerationId) -> Result<Submission> {
     Ok(serde_json::from_value(
         operation(root, Action::Show { generation })?.context("engine returned no submission")?,
+    )?)
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ContinuationSnapshot {
+    pub schema_version: u32,
+    pub generation: GenerationId,
+    pub agent: String,
+    pub submitted_commit: String,
+    pub landed_commit: String,
+    pub revision: u64,
+    pub base_trunk: String,
+}
+
+fn continuation_snapshot_owned(
+    authority: &Authority,
+    generation: &GenerationId,
+    suffix: &[String],
+) -> Result<ContinuationSnapshot> {
+    ensure!(
+        suffix.len() <= 256,
+        "continuation suffix exceeds 256 commits"
+    );
+    for commit in suffix {
+        ensure!(
+            commit.len() == 40 && commit.bytes().all(|b| b.is_ascii_hexdigit()),
+            "invalid suffix commit id"
+        );
+    }
+    ensure!(
+        suffix
+            .iter()
+            .collect::<std::collections::BTreeSet<_>>()
+            .len()
+            == suffix.len(),
+        "duplicate suffix commit"
+    );
+    let store = crate::state::StateStore::open(authority.state_path())?;
+    let lifecycle = store.load_lifecycle()?;
+    let submission = lifecycle
+        .get(generation)
+        .context("unknown continuation generation")?;
+    let (revision, landed_commit) = match submission.state() {
+        crate::lifecycle::State::Terminal {
+            outcome: crate::lifecycle::Outcome::Landed { revision, commit },
+        } => (*revision, commit.clone()),
+        _ => anyhow::bail!("selected generation is not landed"),
+    };
+    let landing = store
+        .landings()?
+        .into_iter()
+        .find(|landing| &landing.generation == generation)
+        .context("landed generation has no immutable landing record")?;
+    ensure!(
+        landing.revision == revision && landing.commit == landed_commit,
+        "landing record disagrees with terminal outcome"
+    );
+    let base_trunk = authority
+        .git(&["rev-parse", "refs/heads/trunk^{commit}"], None)?
+        .trim()
+        .to_owned();
+    ensure!(
+        authority
+            .git(&["rev-list", "--first-parent", &base_trunk], None)?
+            .lines()
+            .any(|line| line == landed_commit),
+        "recorded landed commit is not on trunk's first-parent chain"
+    );
+    let registered: std::collections::BTreeSet<_> = lifecycle
+        .submissions()
+        .map(|item| item.commit().to_owned())
+        .collect();
+    for commit in suffix {
+        ensure!(
+            !registered.contains(commit),
+            "suffix contains registered generation {commit}; select a clean unregistered suffix"
+        );
+    }
+    Ok(ContinuationSnapshot {
+        schema_version: 1,
+        generation: generation.clone(),
+        agent: submission.agent().to_owned(),
+        submitted_commit: submission.commit().to_owned(),
+        landed_commit,
+        revision,
+        base_trunk,
+    })
+}
+
+pub fn continuation_snapshot(
+    root: &Path,
+    generation: GenerationId,
+    suffix: Vec<String>,
+) -> Result<ContinuationSnapshot> {
+    ensure!(
+        suffix.len() <= 256,
+        "continuation suffix exceeds 256 commits"
+    );
+    status(root, true)?;
+    Ok(serde_json::from_value(
+        operation(root, Action::ContinuationSnapshot { generation, suffix })?
+            .context("engine returned no continuation snapshot")?,
     )?)
 }
 
