@@ -8,7 +8,7 @@
   "tmpdir": "/var/tmp/mai-delivery-test",
   "documented_script_sha256": "318b06d4ab8718ace6efe293d7ce0a3a5c9107d1e9ec82dd8c1228aaa530bfb6",
   "test_entrypoint_counts": {
-    "passed": 212,
+    "passed": 213,
     "ignored_helpers": 4
   },
   "passed_per_target": {
@@ -28,6 +28,8 @@
     "state": 15,
     "trusted_policy": 8,
     "validator_cli": 5,
-    "workspace": 7
-  }
+    "workspace": 7,
+    "main": 1
+  },
+  "accounting_correction": "2026-10-17: original total 212 omitted the main binary unit test; existing /tmp/mai-final-tests.log sums to 213. This corrects accounting, not a new run."
 }

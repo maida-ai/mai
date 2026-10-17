@@ -23,7 +23,7 @@ The documented shell block was extracted unchanged, prefixed with `set -eu`, and
 | Durable counts after retries | 2 submission generations, 2 evidence records, 2 landings; exactly 1 completed attempt per generation |
 | Shutdown | Explicit stop requested for both walkthrough and retry engine runs |
 
-The local required-check run contains **212 passed test entrypoints and 4 ignored helper entrypoints**, independently summed by target in the metadata. Ignored crash helpers are invoked explicitly by their parent tests; this count is not a count of independent scenarios or crash boundaries. Formatting and all-target Clippy with warnings denied also passed. Hosted native results must be checked separately at the exact CI head.
+The local required-check run contains **213 passed test entrypoints and 4 ignored helper entrypoints**, independently summed by target in the metadata. Ignored crash helpers are invoked explicitly by their parent tests; this count is not a count of independent scenarios or crash boundaries. Formatting and all-target Clippy with warnings denied also passed. Hosted native results must be checked separately at the exact CI head.
 
 ## Interruption coverage audit at this source snapshot
 
@@ -49,3 +49,5 @@ Killing the engine while its validator is actively running is distinct from the 
 The serial engine services other requests after the current integration finishes. A status, show or approval request can therefore time out while a long gate runs; timeout is not cancellation. An explicit busy/in-progress response or independently readable progress snapshot would improve diagnosis. At this snapshot there is no actual CLI integration-response timeout regression; the receive disconnect test must not be described as covering that different operation.
 
 There is no safe post-squash sync, automatic scheduler, or superseding receive generation in this increment. The documentation accurately directs new work to a fresh workspace while preserving old clones and subsequent work. The opening build-guide sentence listing commands understates the later demonstrated receive/integrate/lease capabilities, but the runnable workflow itself succeeded without correction.
+
+Accounting correction on 2026-10-17: the original 212 total omitted the main binary unit test. The existing run log sums to 213; this is not a rerun. See the [follow-up evidence](FOLLOW-UP.md) for later source changes and their separate results.
