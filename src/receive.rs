@@ -154,6 +154,20 @@ fn valid_oid(oid: &str) -> bool {
 }
 
 pub fn register(authority: &Authority, agent: &str, commit: &str) -> Result<Submission> {
+    register_with_checkpoints(authority, agent, commit, |_| {})
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum Checkpoint {
+    Retained,
+    Noted,
+    Stored,
+}
+fn register_with_checkpoints(
+    authority: &Authority,
+    agent: &str,
+    commit: &str,
+    checkpoint: impl Fn(Checkpoint),
+) -> Result<Submission> {
     let limits = configuration(authority)?.context("receive admission is disabled")?;
     ensure!(
         valid_agent(agent),
@@ -224,12 +238,15 @@ pub fn register(authority: &Authority, agent: &str, commit: &str) -> Result<Subm
             "immutable submission reference collision"
         );
     }
+    checkpoint(Checkpoint::Retained);
     authority.restore_received_note(
         lifecycle
             .get(&id)
             .context("registered submission missing")?,
     )?;
+    checkpoint(Checkpoint::Noted);
     store.save_lifecycle(&mut lifecycle)?;
+    checkpoint(Checkpoint::Stored);
     Ok(lifecycle
         .get(&id)
         .context("registered submission missing")?
@@ -463,6 +480,124 @@ mod tests {
         }
         for agent in ["", "../alice", "alice/bob", "a b", "a\n", &"x".repeat(65)] {
             assert!(!valid_agent(agent));
+        }
+    }
+    #[test]
+    #[ignore = "separate-process receive interruption worker"]
+    fn crash_worker() {
+        use fs2::FileExt;
+        let root = std::path::PathBuf::from(std::env::var_os("MAI_TEST_RECEIVE_ROOT").unwrap());
+        let lock = fs::OpenOptions::new()
+            .create(true)
+            .truncate(false)
+            .read(true)
+            .write(true)
+            .open(root.join(".mai/engine.lock"))
+            .unwrap();
+        lock.try_lock_exclusive().unwrap();
+        let authority = Authority::open(&root).unwrap();
+        let commit = std::env::var("MAI_TEST_RECEIVE_COMMIT").unwrap();
+        let stage = std::env::var("MAI_TEST_RECEIVE_STAGE").unwrap();
+        register_with_checkpoints(&authority, "alice", &commit, |point| {
+            if format!("{point:?}") == stage {
+                fs::write(root.join(".mai/receive-test-ready"), "ready").unwrap();
+                std::thread::sleep(Duration::from_secs(30));
+                panic!("parent failed to kill checkpoint worker");
+            }
+        })
+        .unwrap();
+    }
+
+    #[test]
+    fn killed_receive_at_each_durable_boundary_retries_exactly_once() {
+        use fs2::FileExt;
+        use std::{
+            process::{Command, Stdio},
+            time::Instant,
+        };
+        for stage in ["Retained", "Noted", "Stored"] {
+            let temp = tempfile::tempdir().unwrap();
+            let mut authority = Authority::init(&temp.path().join("authority"), None).unwrap();
+            enable(&authority, 1_000_000, 100_000, 10).unwrap();
+            let base = authority.git(&["rev-parse", "trunk"], None).unwrap();
+            let tree = authority.git(&["rev-parse", "trunk^{tree}"], None).unwrap();
+            let commit = authority
+                .git(
+                    &[
+                        "commit-tree",
+                        tree.trim(),
+                        "-p",
+                        base.trim(),
+                        "-m",
+                        "submitted",
+                    ],
+                    None,
+                )
+                .unwrap()
+                .trim()
+                .to_owned();
+            let mut child = Command::new(std::env::current_exe().unwrap())
+                .args([
+                    "--exact",
+                    "receive::tests::crash_worker",
+                    "--ignored",
+                    "--nocapture",
+                ])
+                .env("MAI_TEST_RECEIVE_ROOT", authority.root())
+                .env("MAI_TEST_RECEIVE_COMMIT", &commit)
+                .env("MAI_TEST_RECEIVE_STAGE", stage)
+                .stdout(Stdio::null())
+                .stderr(Stdio::inherit())
+                .spawn()
+                .unwrap();
+            let deadline = Instant::now() + Duration::from_secs(10);
+            while !authority.root().join(".mai/receive-test-ready").exists() {
+                assert!(
+                    child.try_wait().unwrap().is_none(),
+                    "worker exited before {stage}"
+                );
+                if Instant::now() >= deadline {
+                    let _ = child.kill();
+                    let _ = child.wait();
+                    panic!("worker timed out at {stage}");
+                }
+                std::thread::sleep(Duration::from_millis(10));
+            }
+            child.kill().unwrap();
+            child.wait().unwrap();
+            let lock = fs::OpenOptions::new()
+                .read(true)
+                .write(true)
+                .open(authority.root().join(".mai/engine.lock"))
+                .unwrap();
+            lock.try_lock_exclusive().unwrap();
+            let count = StateStore::open(authority.state_path())
+                .unwrap()
+                .load_lifecycle()
+                .unwrap()
+                .submissions()
+                .count();
+            assert_eq!(count, usize::from(stage == "Stored"), "{stage}");
+            authority.reconcile().unwrap();
+            let first = register(&authority, "alice", &commit).unwrap();
+            let retry = register(&authority, "alice", &commit).unwrap();
+            assert_eq!(first, retry);
+            assert_eq!(
+                StateStore::open(authority.state_path())
+                    .unwrap()
+                    .load_lifecycle()
+                    .unwrap()
+                    .submissions()
+                    .count(),
+                1
+            );
+            let note = authority
+                .git(&["notes", "--ref", "mai-objects", "show", &commit], None)
+                .unwrap();
+            let note: serde_json::Value = serde_json::from_str(&note).unwrap();
+            assert_eq!(note["records"].as_array().unwrap().len(), 1);
+            assert_eq!(authority.git(&["rev-parse", "trunk"], None).unwrap(), base);
+            FileExt::unlock(&lock).unwrap();
         }
     }
 }
