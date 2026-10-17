@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "pool": {
+    "encoding": "unix_bytes",
+    "data": "L3Zhci90bXAvbWFpLWRlbGl2ZXJ5LXRlc3QvbWFpLW9wLTludXV5bXlmL2F1dGhvcml0eS8ubWFpL3ZhbGlkYXRvcnM="
+  },
+  "slot": 0,
+  "claim_id": "mai-claim-vHFmh1bgWjVq8k9yIO8vmK3Eh1V86aqc",
+  "worker_id": "worker-551900",
+  "boot_id": "d1075856-9e05-4fd4-bfe1-9e9715138e33",
+  "quiescence": "native-processes-quiescent-v1",
+  "recovery_contract": "supervised-local-v1",
+  "binding": {
+    "schema_version": 1,
+    "authority": {
+      "encoding": "unix_bytes",
+      "data": "L3Zhci90bXAvbWFpLWRlbGl2ZXJ5LXRlc3QvbWFpLW9wLTludXV5bXlmL2F1dGhvcml0eQ=="
+    },
+    "candidate": "07f6647794016a457cff7c420673139ad4fda3cc",
+    "tree": "1dcc245088260bda02e88b7308e2eb9e212acf60",
+    "base": "170ccb3256958fe3a64e8c87451e0f91c8d08477",
+    "policy": "170ccb3256958fe3a64e8c87451e0f91c8d08477",
+    "submitted_identity": null
+  },
+  "temporary": {
+    "encoding": "unix_bytes",
+    "data": "L3Zhci90bXAvbWFpLWRlbGl2ZXJ5LXRlc3QvbWFpLXZhbGlkYXRvci1qYlBUYmw="
+  }
+}

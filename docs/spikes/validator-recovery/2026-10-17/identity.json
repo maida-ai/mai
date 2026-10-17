@@ -1,0 +1,20 @@
+{
+  "binary": "/home/takeshi/Documents/Codex/2026-10-16/task-2/operator-recovery-final-ec0f697/mai",
+  "source_binary": "/home/takeshi/Documents/Codex/2026-10-16/task-2/recovery/target/debug/mai",
+  "binary_sha256": "d709c504abda4c8c683173fc50c4726d349c197d5327182d1f13b6a03f870f04",
+  "source_head": "ec0f6972a93bd64311733b0643c4b81e0c4e120d",
+  "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "platform": [
+    "Linux",
+    "takeshi",
+    "7.0.0-39-generic",
+    "#39-Ubuntu SMP PREEMPT_DYNAMIC Thu Sep 24 11:18:19 UTC 2026",
+    "x86_64"
+  ],
+  "temporary_root": "/var/tmp/mai-delivery-test",
+  "fixture_root": "/var/tmp/mai-delivery-test/mai-op-9nuuymyf",
+  "branch": "delivery/validator-recovery",
+  "git_version": "git version 2.53.0",
+  "mai_version": "mai 0.0.1",
+  "rustc_version": "rustc 1.85.0 (4d91de4e4 2025-02-17)"
+}
