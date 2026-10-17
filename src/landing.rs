@@ -481,15 +481,29 @@ fn now_ms() -> Result<i64> {
         .try_into()?)
 }
 
-#[cfg(all(test, unix))]
+#[cfg(test)]
 mod crash_tests {
     use super::*;
     use std::{fs, path::Path};
+    // Git for Windows supplies sh, which is already required by the local receive hook.
+    // Keep the trusted policy execution path identical across all native CI platforms.
     const POLICY: &str = "version = 1\n[check]\nprogram = \"sh\"\nscript = \"gate.sh\"\ntimeout_ms = 5000\noutput_tail_bytes = 1024\n[validators]\nslots = 1\nport_base = 33000\nports_per_slot = 10\n";
-    fn source_git(root: &Path, args: &[&str]) -> String {
-        let out = Command::new("git")
+    fn source_git<S: AsRef<std::ffi::OsStr>>(root: &Path, args: &[S]) -> String {
+        let mut command = Command::new("git");
+        for (key, _) in std::env::vars_os() {
+            if key.to_string_lossy().starts_with("GIT_") {
+                command.env_remove(key);
+            }
+        }
+        let out = command
             .arg("-C")
-            .arg(root)
+            .arg(external_git_path(root))
+            .args(["-c", "core.autocrlf=false"])
+            .env("GIT_CONFIG_NOSYSTEM", "1")
+            .env(
+                "GIT_CONFIG_GLOBAL",
+                if cfg!(windows) { "NUL" } else { "/dev/null" },
+            )
             .args(args)
             .env("GIT_AUTHOR_NAME", "fixture")
             .env("GIT_AUTHOR_EMAIL", "fixture@localhost")
@@ -506,7 +520,7 @@ mod crash_tests {
     }
     #[test]
     fn crash_child() {
-        let Ok(root) = std::env::var("MAI_TEST_LANDING_ROOT") else {
+        let Some(root) = std::env::var_os("MAI_TEST_LANDING_ROOT") else {
             return;
         };
         let stage = std::env::var("MAI_TEST_LANDING_STAGE").unwrap();
@@ -562,7 +576,14 @@ mod crash_tests {
             source_git(&source, &["add", "."]);
             source_git(&source, &["commit", "-m", "change"]);
             let submitted = source_git(&source, &["rev-parse", "HEAD"]);
-            source_git(&a.git_dir(), &["fetch", source.to_str().unwrap(), "HEAD"]);
+            source_git(
+                &a.git_dir(),
+                &[
+                    std::ffi::OsString::from("fetch"),
+                    external_git_path(&source),
+                    std::ffi::OsString::from("HEAD"),
+                ],
+            );
             let mut store = StateStore::open(a.state_path()).unwrap();
             let mut life = store.load_lifecycle().unwrap();
             let id = life
