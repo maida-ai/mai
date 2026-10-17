@@ -66,7 +66,8 @@ pub fn enable(
     );
     let executable = std::env::current_exe()?;
     let quote = |path: &Path| -> Result<String> {
-        let text = path
+        let external = crate::repository_scope::external_git_path(path);
+        let text = external
             .to_str()
             .context("hook executable and authority paths must be UTF-8")?;
         ensure!(
