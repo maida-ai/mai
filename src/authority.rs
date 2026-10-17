@@ -47,6 +47,11 @@ impl Drop for InitLock {
 }
 
 impl Authority {
+    /// Open required identity-bound durable leases. Missing state is never recreated.
+    pub fn lease_store(&self) -> Result<crate::lease::LeaseStore> {
+        crate::lease::LeaseStore::open(self.root.join(".mai/leases.db"), &self.config.authority_id)
+    }
+
     /// Build in a private staging directory, then install into an absent or
     /// empty destination. An interrupted installation remains visibly incomplete.
     pub fn init(path: &Path, source: Option<&Path>) -> Result<Self> {
@@ -164,7 +169,7 @@ impl Authority {
         let local = stage.path().join(".mai");
         fs::create_dir(&local)?;
         let config = Config {
-            format_version: 1,
+            format_version: 2,
             authority_id: stage
                 .path()
                 .file_name()
@@ -179,6 +184,10 @@ impl Authority {
             state.set_authority_id(&config.authority_id)?;
             state.set_baseline(&config.baseline)?;
         }
+        drop(crate::lease::LeaseStore::create(
+            local.join("leases.db"),
+            &config.authority_id,
+        )?);
         fs::write(local.join("config.toml"), toml::to_string(&config)?)?;
         if !path.exists() {
             fs::create_dir(path)?;
@@ -209,6 +218,7 @@ impl Authority {
             path.join(".mai"),
             path.join(".mai/config.toml"),
             path.join(".mai/state.db"),
+            path.join(".mai/leases.db"),
         ] {
             reject_symlink(&component)?;
         }
@@ -221,7 +231,7 @@ impl Authority {
                 .context("missing authority configuration; initialize a new destination")?,
         )?;
         ensure!(
-            config.format_version == 1,
+            config.format_version == 2,
             "unsupported authority format; no conversion is supported"
         );
         let root = path.canonicalize()?;
@@ -235,6 +245,7 @@ impl Authority {
             "import baseline does not match database"
         );
         let authority = Self { root, config };
+        authority.lease_store()?;
         ensure!(
             authority
                 .git(&["rev-parse", "--is-bare-repository"], None)?

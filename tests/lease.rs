@@ -11,10 +11,10 @@ fn claim(lease: &Lease) -> LeaseClaim {
 fn exclusive_creation_restart_and_generation_fencing() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("leases.db");
-    assert!(LeaseStore::open(&path).is_err());
+    assert!(LeaseStore::open(&path, "test-authority").is_err());
     assert!(!path.exists());
-    let mut store = LeaseStore::create(&path).unwrap();
-    assert!(LeaseStore::create(&path).is_err());
+    let mut store = LeaseStore::create(&path, "test-authority").unwrap();
+    assert!(LeaseStore::create(&path, "test-authority").is_err());
     let first = store.acquire("file:src/a.rs", "alice", 100, 20).unwrap();
     assert_eq!(first.generation, 1);
     assert!(store.acquire(&first.unit, "bob", 101, 20).is_err());
@@ -24,7 +24,7 @@ fn exclusive_creation_restart_and_generation_fencing() {
     let renewed = store.renew("alice", &claim(&first), 110, 30).unwrap();
     assert_eq!(renewed.expires_ms, 140);
     drop(store);
-    let mut store = LeaseStore::open(&path).unwrap();
+    let mut store = LeaseStore::open(&path, "test-authority").unwrap();
     assert_eq!(store.query(&first.unit, 110).unwrap(), Some(renewed));
     store.release("alice", &claim(&first), 111).unwrap();
     assert!(store.query(&first.unit, 111).unwrap().is_none());
@@ -39,13 +39,13 @@ fn exclusive_creation_restart_and_generation_fencing() {
 fn expiration_is_exact_and_clock_rollback_cannot_revive_a_lease() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("leases.db");
-    let mut store = LeaseStore::create(&path).unwrap();
+    let mut store = LeaseStore::create(&path, "test-authority").unwrap();
     let first = store.acquire("file:a", "alice", 100, 20).unwrap();
     assert!(store.query(&first.unit, 119).unwrap().is_some());
     assert!(store.query(&first.unit, 120).unwrap().is_none());
     assert!(store.renew("alice", &claim(&first), 120, 100).is_err());
     drop(store);
-    let mut store = LeaseStore::open(&path).unwrap();
+    let mut store = LeaseStore::open(&path, "test-authority").unwrap();
     assert!(store.query(&first.unit, 119).is_err());
     let second = store.acquire(&first.unit, "bob", 120, 20).unwrap();
     assert_eq!(second.generation, 2);
@@ -55,7 +55,7 @@ fn expiration_is_exact_and_clock_rollback_cannot_revive_a_lease() {
 #[test]
 fn landing_checks_real_units_owner_generation_and_every_claim() {
     let temp = tempfile::tempdir().unwrap();
-    let mut store = LeaseStore::create(temp.path().join("leases.db")).unwrap();
+    let mut store = LeaseStore::create(temp.path().join("leases.db"), "test-authority").unwrap();
     let lease = store.acquire("file:a", "alice", 100, 20).unwrap();
     let units = vec!["file:a".into(), "file:b".into()];
     assert!(store.check_manifest("alice", &units, &[], 101).is_err());
@@ -101,7 +101,7 @@ fn landing_checks_real_units_owner_generation_and_every_claim() {
 #[test]
 fn rejects_noncanonical_units_invalid_owners_and_invalid_durations() {
     let temp = tempfile::tempdir().unwrap();
-    let mut store = LeaseStore::create(temp.path().join("leases.db")).unwrap();
+    let mut store = LeaseStore::create(temp.path().join("leases.db"), "test-authority").unwrap();
     for unit in [
         "file:",
         "file:/a",
@@ -142,34 +142,34 @@ fn malformed_or_unsupported_database_is_not_repaired() {
     ] {
         let temp = tempfile::tempdir().unwrap();
         let path = temp.path().join("leases.db");
-        let mut store = LeaseStore::create(&path).unwrap();
+        let mut store = LeaseStore::create(&path, "test-authority").unwrap();
         store.acquire("file:a", "alice", 100, 20).unwrap();
         drop(store);
         let connection = rusqlite::Connection::open(&path).unwrap();
         connection.execute_batch(sql).unwrap();
         drop(connection);
         let before = std::fs::read(&path).unwrap();
-        assert!(LeaseStore::open(&path).is_err(), "{sql}");
+        assert!(LeaseStore::open(&path, "test-authority").is_err(), "{sql}");
         assert_eq!(std::fs::read(&path).unwrap(), before);
     }
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("bad.db");
     std::fs::write(&path, b"not sqlite").unwrap();
-    assert!(LeaseStore::open(path).is_err());
+    assert!(LeaseStore::open(path, "test-authority").is_err());
 }
 
 #[test]
 fn two_connections_do_not_both_acquire_and_released_generation_survives_restart() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("leases.db");
-    let mut first = LeaseStore::create(&path).unwrap();
-    let mut second = LeaseStore::open(&path).unwrap();
+    let mut first = LeaseStore::create(&path, "test-authority").unwrap();
+    let mut second = LeaseStore::open(&path, "test-authority").unwrap();
     let lease = first.acquire("file:a", "alice", 1, 10).unwrap();
     assert!(second.acquire("file:a", "bob", 1, 10).is_err());
     second.release("alice", &claim(&lease), 2).unwrap();
     drop(first);
     drop(second);
-    let mut store = LeaseStore::open(&path).unwrap();
+    let mut store = LeaseStore::open(&path, "test-authority").unwrap();
     assert_eq!(store.acquire("file:a", "bob", 3, 10).unwrap().generation, 2);
 }
 
@@ -177,14 +177,14 @@ fn two_connections_do_not_both_acquire_and_released_generation_survives_restart(
 fn process_exit_retains_committed_acquisition() {
     const CHILD: &str = "MAI_LEASE_TEST_CHILD_DB";
     if let Some(path) = std::env::var_os(CHILD) {
-        let mut store = LeaseStore::open(path).unwrap();
+        let mut store = LeaseStore::open(path, "test-authority").unwrap();
         store.acquire("file:a", "alice", 100, 20).unwrap();
         // No destructor/checkpoint: exercise WAL recovery after an abrupt exit.
         std::process::exit(0);
     }
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("leases.db");
-    drop(LeaseStore::create(&path).unwrap());
+    drop(LeaseStore::create(&path, "test-authority").unwrap());
     let status = std::process::Command::new(std::env::current_exe().unwrap())
         .args([
             "--exact",
@@ -195,7 +195,7 @@ fn process_exit_retains_committed_acquisition() {
         .status()
         .unwrap();
     assert!(status.success());
-    let mut store = LeaseStore::open(&path).unwrap();
+    let mut store = LeaseStore::open(&path, "test-authority").unwrap();
     let lease = store.query("file:a", 101).unwrap().unwrap();
     assert_eq!(lease.owner, "alice");
     assert_eq!(lease.generation, 1);
@@ -206,7 +206,7 @@ fn process_exit_retains_committed_acquisition() {
 fn rejected_expired_claim_still_persists_clock_watermark() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("leases.db");
-    let mut store = LeaseStore::create(&path).unwrap();
+    let mut store = LeaseStore::create(&path, "test-authority").unwrap();
     let lease = store.acquire("file:a", "alice", 100, 20).unwrap();
     assert!(
         store
@@ -214,7 +214,7 @@ fn rejected_expired_claim_still_persists_clock_watermark() {
             .is_err()
     );
     drop(store);
-    let mut store = LeaseStore::open(path).unwrap();
+    let mut store = LeaseStore::open(path, "test-authority").unwrap();
     assert!(store.renew("alice", &claim(&lease), 119, 100).is_err());
 }
 
@@ -230,7 +230,7 @@ fn interrupted_uncommitted_transfer_preserves_previous_owner() {
     }
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("leases.db");
-    let mut store = LeaseStore::create(&path).unwrap();
+    let mut store = LeaseStore::create(&path, "test-authority").unwrap();
     let lease = store.acquire("file:a", "alice", 100, 20).unwrap();
     drop(store);
     let status = std::process::Command::new(std::env::current_exe().unwrap())
@@ -243,11 +243,11 @@ fn interrupted_uncommitted_transfer_preserves_previous_owner() {
         .status()
         .unwrap();
     assert!(status.success());
-    let mut store = LeaseStore::open(&path).unwrap();
+    let mut store = LeaseStore::open(&path, "test-authority").unwrap();
     assert_eq!(store.query("file:a", 101).unwrap(), Some(lease));
     drop(store);
     assert_eq!(
-        LeaseStore::open(&path)
+        LeaseStore::open(&path, "test-authority")
             .unwrap()
             .query("file:a", 101)
             .unwrap()
@@ -255,4 +255,20 @@ fn interrupted_uncommitted_transfer_preserves_previous_owner() {
             .owner,
         "alice"
     );
+}
+
+#[test]
+fn lease_identity_and_schema_version_are_required_without_migration() {
+    let temp = tempfile::tempdir().unwrap();
+    let path = temp.path().join("leases.db");
+    drop(LeaseStore::create(&path, "first").unwrap());
+    assert!(LeaseStore::open(&path, "second").is_err());
+    let connection = rusqlite::Connection::open(&path).unwrap();
+    connection
+        .execute("UPDATE lease_meta SET version=1", [])
+        .unwrap();
+    drop(connection);
+    let before = std::fs::read(&path).unwrap();
+    assert!(LeaseStore::open(&path, "first").is_err());
+    assert_eq!(std::fs::read(path).unwrap(), before);
 }

@@ -511,7 +511,7 @@ mod crash_tests {
         };
         let stage = std::env::var("MAI_TEST_LANDING_STAGE").unwrap();
         let mut a = Authority::open(Path::new(&root)).unwrap();
-        let mut leases = LeaseStore::open(a.root().join(".mai/leases.db")).unwrap();
+        let mut leases = a.lease_store().unwrap();
         let id = GenerationId {
             change_id: "change".into(),
             generation: 1,
@@ -525,7 +525,7 @@ mod crash_tests {
             }
             if matches!(point, Checkpoint::EvidenceDurable) {
                 if stage == "late-lease" {
-                    LeaseStore::open(Path::new(&root).join(".mai/leases.db"))?.acquire(
+                    Authority::open(Path::new(&root))?.lease_store()?.acquire(
                         "file:change",
                         "other",
                         now_ms()?,
@@ -572,7 +572,7 @@ mod crash_tests {
             life.queue(&id).unwrap();
             store.save_lifecycle(&mut life).unwrap();
             drop(store);
-            let mut leases = LeaseStore::create(a.root().join(".mai/leases.db")).unwrap();
+            let mut leases = a.lease_store().unwrap();
             let status = Command::new(std::env::current_exe().unwrap())
                 .args([
                     "--exact",

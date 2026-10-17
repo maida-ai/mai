@@ -13,9 +13,9 @@ use rusqlite::{
 use serde::{Deserialize, Serialize};
 use std::{collections::BTreeMap, fs::OpenOptions, path::Path, time::Duration};
 
-pub const SCHEMA_VERSION: u32 = 1;
+pub const SCHEMA_VERSION: u32 = 2;
 const SCHEMA: &str = "
-CREATE TABLE lease_meta (singleton INTEGER PRIMARY KEY CHECK(singleton=1), version INTEGER NOT NULL, clock_ms INTEGER NOT NULL CHECK(clock_ms>=0));
+CREATE TABLE lease_meta (singleton INTEGER PRIMARY KEY CHECK(singleton=1), version INTEGER NOT NULL, authority_id TEXT NOT NULL, clock_ms INTEGER NOT NULL CHECK(clock_ms>=0));
 CREATE TABLE leases (unit TEXT PRIMARY KEY, owner TEXT NOT NULL, generation INTEGER NOT NULL CHECK(generation>0), expires_ms INTEGER NOT NULL CHECK(expires_ms>=0), released INTEGER NOT NULL CHECK(released IN (0,1)));
 ";
 
@@ -41,7 +41,8 @@ pub struct LeaseStore {
 
 impl LeaseStore {
     /// Exclusive creation; incomplete databases are never silently repaired.
-    pub fn create(path: impl AsRef<Path>) -> Result<Self> {
+    pub fn create(path: impl AsRef<Path>, authority_id: &str) -> Result<Self> {
+        validate_owner(authority_id).context("invalid lease authority identity")?;
         OpenOptions::new()
             .write(true)
             .create_new(true)
@@ -51,12 +52,17 @@ impl LeaseStore {
         connection.pragma_update(None, "synchronous", "FULL")?;
         let tx = connection.transaction_with_behavior(TransactionBehavior::Immediate)?;
         tx.execute_batch(SCHEMA)?;
-        tx.execute("INSERT INTO lease_meta VALUES(1,?1,0)", [SCHEMA_VERSION])?;
+        tx.execute(
+            "INSERT INTO lease_meta VALUES(1,?1,?2,0)",
+            params![SCHEMA_VERSION, authority_id],
+        )?;
         tx.commit()?;
         Ok(Self { connection })
     }
 
-    pub fn open(path: impl AsRef<Path>) -> Result<Self> {
+    pub fn open(path: impl AsRef<Path>, expected_authority_id: &str) -> Result<Self> {
+        validate_owner(expected_authority_id)
+            .context("invalid expected lease authority identity")?;
         let connection = connect(path.as_ref())?;
         let tx = connection.unchecked_transaction()?;
         let expected = Connection::open_in_memory()?;
@@ -65,14 +71,18 @@ impl LeaseStore {
             schema(&connection)? == schema(&expected)?,
             "unsupported lease schema; no migrations available"
         );
-        let (version, clock): (u32, i64) = connection.query_row(
-            "SELECT version,clock_ms FROM lease_meta WHERE singleton=1",
+        let (version, clock, authority_id): (u32, i64, String) = connection.query_row(
+            "SELECT version,clock_ms,authority_id FROM lease_meta WHERE singleton=1",
             [],
-            |r| Ok((r.get(0)?, r.get(1)?)),
+            |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),
         )?;
         ensure!(
             version == SCHEMA_VERSION && clock >= 0,
             "unsupported or malformed lease metadata"
+        );
+        ensure!(
+            authority_id == expected_authority_id,
+            "lease authority identity mismatch"
         );
         let integrity: String = connection.query_row("PRAGMA quick_check", [], |r| r.get(0))?;
         ensure!(integrity == "ok", "malformed lease database: {integrity}");
@@ -317,6 +327,10 @@ fn row(tx: &Transaction<'_>, unit: &str) -> Result<Option<(Lease, bool)>> {
         .optional()?)
 }
 fn connect(path: &Path) -> Result<Connection> {
+    ensure!(
+        std::fs::symlink_metadata(path)?.file_type().is_file(),
+        "lease database must be an existing regular file, not a symlink"
+    );
     let connection = Connection::open_with_flags(
         path,
         OpenFlags::SQLITE_OPEN_READ_WRITE | OpenFlags::SQLITE_OPEN_NO_MUTEX,

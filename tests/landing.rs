@@ -146,7 +146,7 @@ fn publication_fixture_with_gate(
     let baseline = commit(&seed, &base, &[("gate.sh", gate), ("mai.toml", POLICY)]);
     git(&seed, &["update-ref", "refs/heads/trunk", &baseline], "");
     let a = Authority::init(&tmp.path().join("project"), Some(&seed.git_dir())).unwrap();
-    let leases = mai::lease::LeaseStore::create(a.root().join(".mai/leases.db")).unwrap();
+    let leases = a.lease_store().unwrap();
     (tmp, a, leases, baseline)
 }
 #[cfg(unix)]
@@ -273,9 +273,9 @@ fn protected_candidate_waits_for_exact_independent_approval() {
         store.load_lifecycle().unwrap().get(&id).unwrap().state(),
         mai::lifecycle::State::AwaitingApproval
     ));
-    mai::validator::approve(a.root(), &candidate, "agent", "self", false).unwrap();
+    mai::engine::approve(a.root(), &candidate, "agent", "self", false).unwrap();
     assert!(run_one(&mut a, &id, MergeMode::Textual, &mut leases, &[]).is_err());
-    mai::validator::approve(
+    mai::engine::approve(
         a.root(),
         &candidate,
         "maintainer",
