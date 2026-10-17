@@ -229,7 +229,7 @@ fn gate_evidence_exact_candidate_lands_once_and_dependency_lands_afterward() {
 #[cfg(unix)]
 #[test]
 fn failed_gate_and_foreign_lease_never_publish() {
-    use mai::landing::{RunResult, run_one};
+    use mai::landing::{LeaseBlockPhase, RunResult, run_one};
     let (_tmp, mut a, mut leases, base) = publication_fixture();
     let blocked = submission(&a, &base, &[("a", "blocked")]);
     let id = register(&a, "blocked", &blocked, vec![]);
@@ -238,7 +238,13 @@ fn failed_gate_and_foreign_lease_never_publish() {
         .unwrap()
         .as_millis() as i64;
     leases.acquire("file:a", "other", now, 60_000).unwrap();
-    assert!(run_one(&mut a, &id, MergeMode::Textual, &mut leases, &[]).is_err());
+    assert!(matches!(
+        run_one(&mut a, &id, MergeMode::Textual, &mut leases, &[]).unwrap(),
+        RunResult::LeaseBlocked {
+            phase: LeaseBlockPhase::Preflight,
+            ..
+        }
+    ));
     let failed = submission(&a, &base, &[("fail", "yes")]);
     let id = register(&a, "failed", &failed, vec![]);
     assert!(matches!(

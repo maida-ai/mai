@@ -99,6 +99,59 @@ fn landing_checks_real_units_owner_generation_and_every_claim() {
 }
 
 #[test]
+fn manifest_reports_only_ownership_predicates_as_typed_lease_blocks() {
+    use mai::lease::{LeaseBlockReason, LeaseBlocked};
+
+    let temp = tempfile::tempdir().unwrap();
+    let path = temp.path().join("leases.db");
+    let mut store = LeaseStore::create(&path, "test-authority").unwrap();
+    let lease = store.acquire("file:a", "alice", 100, 20).unwrap();
+    let stale = LeaseClaim {
+        unit: lease.unit.clone(),
+        generation: lease.generation + 1,
+    };
+    let blocked = store
+        .check_manifest("alice", &["file:a".into()], &[stale], 101)
+        .unwrap_err();
+    assert_eq!(
+        blocked.downcast_ref::<LeaseBlocked>().unwrap().reason,
+        LeaseBlockReason::ClaimIdentityMismatch
+    );
+
+    let invalid_owner = store
+        .check_manifest("bad owner", &["file:a".into()], &[], 101)
+        .unwrap_err();
+    assert!(invalid_owner.downcast_ref::<LeaseBlocked>().is_none());
+
+    let invalid_unit = store
+        .check_manifest(
+            "alice",
+            &[],
+            &[LeaseClaim {
+                unit: "file:a/../b".into(),
+                generation: 1,
+            }],
+            101,
+        )
+        .unwrap_err();
+    assert!(invalid_unit.downcast_ref::<LeaseBlocked>().is_none());
+
+    let clock_rollback = store
+        .check_manifest("alice", &["file:a".into()], &[claim(&lease)], 99)
+        .unwrap_err();
+    assert!(clock_rollback.downcast_ref::<LeaseBlocked>().is_none());
+
+    rusqlite::Connection::open(&path)
+        .unwrap()
+        .execute_batch("DROP TABLE leases")
+        .unwrap();
+    let database_error = store
+        .check_manifest("alice", &[], &[claim(&lease)], 101)
+        .unwrap_err();
+    assert!(database_error.downcast_ref::<LeaseBlocked>().is_none());
+}
+
+#[test]
 fn rejects_noncanonical_units_invalid_owners_and_invalid_durations() {
     let temp = tempfile::tempdir().unwrap();
     let mut store = LeaseStore::create(temp.path().join("leases.db"), "test-authority").unwrap();

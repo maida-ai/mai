@@ -27,6 +27,8 @@ Run `mai integrate PROJECT CHANGE --mode textual --generation 1 --wait-seconds 6
 
 An active ordinary lease requires an exact `--lease file:PATH=GENERATION` claim even for its owner. Another owner's active lease blocks integration; lease generations fence stale claims. Lease operations require the live engine and use engine time. Client timeouts are not cancellations: the engine serializes integration with other requests, so inspect the submission after the operation ends rather than assuming a timed-out request had no effect.
 
+A stale or mismatched lease claim returns pending `lease_blocked`. A preflight denial leaves the generation queued without starting an attempt. If a lease expires after a successful gate but before publication, mai durably marks that exact attempt interrupted and returns the generation to queued; an explicit later integration with a current claim starts a new attempt and reruns the gate. Evidence from the blocked attempt is retained for diagnosis but cannot authorize landing.
+
 ## Diagnose before retrying
 
 A failed or timed-out command and a rejected submission are different. If receipt or integration has an uncertain response, preserve the command output and query the same immutable identity once the engine can answer. A query may itself time out while the serial gate runs; that does not prove owner death. If the owner exited during publication, restart/reconcile before deciding whether to integrate again. A terminal rejection will not be cleared by retries: inspect its reason and available diagnostics, then submit corrected work as a new change. Replacement generations are not implemented.

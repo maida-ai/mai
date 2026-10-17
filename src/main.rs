@@ -467,7 +467,7 @@ fn main() {
 // Results retain their structured JSON even when the operation is unsuccessful.
 fn result_exit_code(value: &Value) -> i32 {
     match value.get("kind").and_then(Value::as_str) {
-        Some("pending") => return ExitCode::Pending as i32,
+        Some("pending" | "lease_blocked") => return ExitCode::Pending as i32,
         Some("awaiting_approval") => return ExitCode::Pending as i32,
         Some("rejected") => {
             return if value.get("reason").and_then(Value::as_str) == Some("infrastructure") {
@@ -517,6 +517,7 @@ mod tests {
             );
         }
         assert_eq!(result_exit_code(&json!({"kind":"awaiting_approval"})), 6);
+        assert_eq!(result_exit_code(&json!({"kind":"lease_blocked"})), 6);
         assert_eq!(result_exit_code(&json!({"kind":"landed"})), 0);
     }
 }

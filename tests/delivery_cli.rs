@@ -187,6 +187,15 @@ impl Fixture {
         command.arg("--json").arg("queue").arg(&self.root);
         command
     }
+    fn acquire_lease(&self, unit: &str, owner: &str, duration_ms: &str) -> Output {
+        Command::new(env!("CARGO_BIN_EXE_mai"))
+            .args(["--json", "lease", "acquire"])
+            .arg(&self.root)
+            .arg(unit)
+            .args(["--owner", owner, "--duration-ms", duration_ms])
+            .output()
+            .unwrap()
+    }
     fn submit(&self, files: &[(&str, &str)]) -> String {
         for (name, contents) in files {
             fs::write(self.client.join(name), contents).unwrap();
@@ -609,6 +618,123 @@ fn wait_preserves_superseded_cancelled_and_infrastructure_outcomes() {
         value(&infrastructure_output)["state"]["outcome"]["reason"],
         "infrastructure"
     );
+}
+
+#[test]
+fn stale_preflight_lease_claim_is_pending_without_consuming_attempt() {
+    let f = Fixture::new();
+    let id = f.submit(&[("work.txt", "work\n")]);
+    let lease = f.acquire_lease("file:work.txt", "qa", "30000");
+    assert!(lease.status.success());
+    let output = f
+        .command("integrate", &id)
+        .args([
+            "--mode",
+            "textual",
+            "--lease",
+            "file:work.txt=99",
+            "--wait-seconds",
+            "15",
+        ])
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(6));
+    assert_eq!(value(&output)["kind"], "lease_blocked");
+    assert_eq!(value(&output)["phase"], "preflight");
+    let state = f.show(&id);
+    assert_eq!(state["state"]["kind"], "queued");
+    assert_eq!(state["attempts"].as_array().unwrap().len(), 0);
+}
+
+#[cfg(unix)]
+#[test]
+fn lease_expiry_after_passed_gate_requeues_then_explicit_fresh_retry_lands() {
+    let f = Fixture::with_gate(Some("printf x >> \"$1/gate-runs\"\nsleep 2\n"));
+    let baseline = f.trunk();
+    let parent = f.submit(&[("work.txt", "work\n")]);
+    let child = f.submit(&[("child.txt", "dependent\n")]);
+    assert!(!f.integrate(&child).status.success());
+    assert_eq!(f.show(&child)["state"]["kind"], "dependency_blocked");
+    let first_lease = f.acquire_lease("file:work.txt", "qa", "1000");
+    assert!(first_lease.status.success());
+    assert_eq!(value(&first_lease)["lease"]["generation"], 1);
+
+    let expired = f
+        .command("integrate", &parent)
+        .args([
+            "--mode",
+            "textual",
+            "--lease",
+            "file:work.txt=1",
+            "--wait-seconds",
+            "15",
+        ])
+        .output()
+        .unwrap();
+    assert_eq!(expired.status.code(), Some(6));
+    let expired = value(&expired);
+    assert_eq!(expired["kind"], "lease_blocked");
+    assert_eq!(expired["phase"], "post_validation");
+    assert_eq!(expired["reason"], "lease_expired_or_released");
+    assert_eq!(f.trunk(), baseline);
+
+    let parent_state = f.show(&parent);
+    assert_eq!(parent_state["state"]["kind"], "queued");
+    assert_eq!(parent_state["attempts"][0]["number"], 1);
+    assert_eq!(parent_state["attempts"][0]["status"], "interrupted");
+    let child_state = f.show(&child);
+    assert_eq!(child_state["state"]["kind"], "dependency_blocked");
+    assert_eq!(
+        fs::read_to_string(f.control.join("gate-runs")).unwrap(),
+        "x"
+    );
+    let evidence = mai::state::StateStore::open(f.root.join(".mai/state.db"))
+        .unwrap()
+        .evidence_all()
+        .unwrap();
+    assert_eq!(evidence.len(), 1);
+    assert!(evidence[0].passed);
+    assert_eq!(evidence[0].attempt, 1);
+
+    let second_lease = f.acquire_lease("file:work.txt", "qa", "30000");
+    assert!(second_lease.status.success());
+    assert_eq!(value(&second_lease)["lease"]["generation"], 2);
+    let retry = f
+        .command("integrate", &parent)
+        .args([
+            "--mode",
+            "textual",
+            "--lease",
+            "file:work.txt=2",
+            "--wait-seconds",
+            "15",
+        ])
+        .output()
+        .unwrap();
+    assert!(
+        retry.status.success(),
+        "{}",
+        String::from_utf8_lossy(&retry.stderr)
+    );
+    assert_eq!(value(&retry)["kind"], "landed");
+    assert_ne!(f.trunk(), baseline);
+    assert_eq!(
+        fs::read_to_string(f.control.join("gate-runs")).unwrap(),
+        "xx"
+    );
+    let parent_state = f.show(&parent);
+    assert_eq!(parent_state["state"]["outcome"]["kind"], "landed");
+    assert_eq!(parent_state["attempts"].as_array().unwrap().len(), 2);
+    assert_eq!(parent_state["attempts"][1]["number"], 2);
+    let evidence = mai::state::StateStore::open(f.root.join(".mai/state.db"))
+        .unwrap()
+        .evidence_all()
+        .unwrap();
+    assert_eq!(evidence.len(), 2);
+    assert!(evidence.iter().all(|item| item.passed));
+    assert_eq!(evidence[1].attempt, 2);
+    assert_ne!(evidence[0].candidate_commit, evidence[1].candidate_commit);
+    assert_ne!(f.show(&child)["state"]["kind"], "dependency_blocked");
 }
 
 #[cfg(unix)]
