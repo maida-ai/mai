@@ -22,6 +22,9 @@ pub fn success(output: Output) -> String {
 
 pub fn git_output(root: &Path, args: &[&str]) -> Output {
     Command::new("git")
+        // The source must be idle when its exact preservation snapshot starts.
+        // Fixture commits must not leave detached maintenance writers behind.
+        .args(["-c", "maintenance.auto=false", "-c", "gc.auto=0"])
         .arg("-C")
         .arg(mai::repository_scope::external_git_path(root))
         .args(args)
@@ -171,7 +174,15 @@ impl Fixture {
         ]));
         success(
             Command::new("git")
-                .args(["-c", "core.autocrlf=false", "clone"])
+                .args([
+                    "-c",
+                    "core.autocrlf=false",
+                    "-c",
+                    "maintenance.auto=false",
+                    "-c",
+                    "gc.auto=0",
+                    "clone",
+                ])
                 .arg(project.join("authority.git"))
                 .arg(&source)
                 .output()
@@ -227,7 +238,15 @@ impl Fixture {
         let bob = fixture.temp.path().join("bob");
         success(
             Command::new("git")
-                .args(["-c", "core.autocrlf=false", "clone"])
+                .args([
+                    "-c",
+                    "core.autocrlf=false",
+                    "-c",
+                    "maintenance.auto=false",
+                    "-c",
+                    "gc.auto=0",
+                    "clone",
+                ])
                 .arg(fixture.project.join("authority.git"))
                 .arg(&bob)
                 .output()
