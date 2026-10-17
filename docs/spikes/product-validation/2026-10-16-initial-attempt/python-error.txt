@@ -1,0 +1,1 @@
+python-init: expected 0, got 5; see /tmp/mai-product-validation-20261016-a/python-init.log

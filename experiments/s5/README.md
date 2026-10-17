@@ -4,7 +4,7 @@ This standalone, dependency-free Rust experiment qualifies a specific local Git 
 
 ## Reproduce
 
-Requirements: Git >=2.40, Rust with rustfmt, and Bash; on native Windows use Git for Windows/Git Bash with a native Windows Rust compiler and a local drive. The implementation uses Rust filesystem/process APIs, normalizes Windows Git path arguments, and invokes no Unix process utilities from Rust. Linux has been exercised; macOS and native Windows remain pending.
+Requirements: Git >=2.40, Rust with rustfmt, and Bash; on native Windows use Git for Windows/Git Bash with a native Windows Rust compiler and a local drive. The implementation uses Rust filesystem/process APIs, normalizes Windows Git path arguments, and invokes no Unix process utilities from Rust. Reviewed 2026-10-15 native CI passes on Linux, macOS and Windows; the report recommends GO for the scoped local-topology issue.
 
 Run from the repository root, using new paths under `.throwaway/`:
 

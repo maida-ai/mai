@@ -1,0 +1,58 @@
+{
+  "environment": {
+    "TMPDIR": "/var/tmp",
+    "TEMP": null,
+    "TMP": null,
+    "UV_CACHE_DIR": "/var/tmp/mai-product-validation-20261016-d/uv-download-cache",
+    "YARN_CACHE_FOLDER": "/var/tmp/mai-product-validation-20261016-d/yarn-download-cache",
+    "npm_config_cache": "/var/tmp/mai-product-validation-20261016-d/npm-download-cache",
+    "CARGO_HOME": null,
+    "CARGO_TARGET_DIR": null
+  },
+  "utc": "2026-10-16T22:22:04Z",
+  "platform": "Linux-7.0.0-34-generic-x86_64-with-glibc2.39",
+  "binary_sha256": "343cbe9d5d72170e20fb8730d22fbcf299b69fc8114f26c2940b37700379be4c",
+  "harness_sha256": "a43760198c0c1fa11a89e0304f2c628d95df66478d003eee120821e82928c647",
+  "fixtures": {
+    "rust": [
+      "https://github.com/BurntSushi/ripgrep.git",
+      "4649aa9700619f94cf9c66876e9549d83420e16c",
+      "Cargo.toml",
+      "crates/core/main.rs"
+    ],
+    "python": [
+      "https://github.com/pallets/itsdangerous.git",
+      "096c8d42545d3b68ea21a4f890fb2b2d8979c0bd",
+      "pyproject.toml",
+      "src/itsdangerous/__init__.py"
+    ],
+    "typescript": [
+      "https://github.com/colinhacks/zod.git",
+      "e30870369d5b8f31ff4d0130d4439fd997deb523",
+      "package.json",
+      "src/index.ts"
+    ]
+  },
+  "product_source_sha256": {
+    "Cargo.toml": "299fac6f8051469163dc218fbd3d3a53eca31e7b3b15eae5999474773cce0f3e",
+    "Cargo.lock": "ec3d2d7c4b17dc7632d6fe20d69b5b08082abc62109ffbd918c04157978fb581",
+    "src/approval.rs": "5bb8a5ba5e3d2742f0f4e03bdc1e5283b76b4d226cbe676fa41fab64f197206f",
+    "src/authority.rs": "e698ef60a1d2aa7db527871a76aa75409b24bff52920911038a0431b48410a0e",
+    "src/bootstrap.rs": "5f47b21a0ff335bdaf21c841083affe2de9094a4d6281ffb786face7e86891c4",
+    "src/engine/windows_process.rs": "4a0b94649bddf77a8c876423931322cb8796c8a97df13af53085b45cfc0982c6",
+    "src/engine.rs": "c7b7c7f613811fa25ab54960222565f6c2020b60cfdab7497dff89a4b4f25504",
+    "src/lib.rs": "adecfc1ed9e60236e13fbdb70af6a7c14ac6a26e73d56bd9360c5cb7d240e34e",
+    "src/lifecycle.rs": "40960fe0f5e9f822095f7c89a128271d21d69d76bc9af077df65d5d419b51d8f",
+    "src/main.rs": "49e63873cf2a99c975fc0794568299dbb7ba844aac4e92a7bb8782c66faaf18d",
+    "src/native_path.rs": "3c9f8ce55a4540798392e2cc0b6b6c80514c553e3ef91c4e496a50313912f612",
+    "src/policy.rs": "03569436c6cb430494849e19ffe9b55a2b728bb12018e92144680b4c81a41a00",
+    "src/process/unix.rs": "76dee8bb9a3ad4151762387118b3c7df3e3e580e85b7fea9cc1ce518a2589c0d",
+    "src/process/windows.rs": "c63d5fddd0bb568783d075ea8d695bf8b03d59c9487fdbff6332a139a9dc2734",
+    "src/process.rs": "038699f4c1ce5eebbb16e51adc154baab7e1d2ceca807d305c9044717626c52a",
+    "src/repository_scope.rs": "2df15ad09ef2a416a87e8863feeb7d0f5917193227babc8db703a22a5f17d5bc",
+    "src/slots.rs": "5e95625434f0060394523d7bf82e973804aba42ab7930ce82e6ee521249c0b8e",
+    "src/state.rs": "ba5375d952c46e33be0467ed1bd83b64a704219c636972f163a0085949789995",
+    "src/validator.rs": "bcfdcf8e7dae7a684fe630a296dcccf9868c4b2a31cc16a732d27669d83b9571",
+    "src/workspace.rs": "83da2ef3927fac7ee7024120365ed05b1b0101e15465817fbccce30eba07a4d8"
+  }
+}

@@ -1,0 +1,9 @@
+cwd=/home/runner/work/mai/mai/.throwaway/s6-ci/npm
+command=git ["commit", "-m", "alpha manifest"]
+timeout_ms=120000
+[candidate b382030] alpha manifest
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+status=exit status: 0
+timeout=false
+elapsed_ms=80

@@ -1,6 +1,6 @@
 # mai architecture
 
-Status: decided rewrite direction, unimplemented. The existing 0.0.1 binary still uses linked worktrees, workspace-only checks and a SQLite publication gate; see [current CLI precautions](cli.md). M0 qualification and ADR acceptance precede any product-code replacement. [Philosophy](philosophy.md) motivates recovery speed with a strong trunk gate; [ADR 0003](adr/0003-git-native-integration-queue.md) defines the design and open decisions.
+Status: accepted MVP design, implementation in progress. The old worktree engine is retired; the replacement implements lifecycle persistence, authority initialization/reconciliation, a local single-writer engine, manual trusted validation, independent workspaces, explicit receive and serial named-generation integration with file manifests and ordinary leases. See the [current CLI surface](cli.md) for implemented behavior. The diagram and mechanisms below describe the target architecture, not a shipped queue. Scoped M0 and MVP ADR acceptance are recorded in ADRs 0003/0004; [ADR 0010](adr/0010-staged-mvp-qualification.md) defers performance qualification and priority policy while retaining feature-specific correctness gates. [Philosophy](philosophy.md) puts parallel contribution first, supported by recoverability and a strong trunk gate; [ADR 0003](adr/0003-git-native-integration-queue.md) defines the design and open decisions.
 
 ```mermaid
 flowchart LR
@@ -21,7 +21,9 @@ Agents use ordinary independent Git clones; mai never shares their mutable branc
 
 Git's first-parent trunk is the acceptance ledger, with r0 as import baseline. Landed changes are squash commits; validated upstream syncs alone introduce merge commits with trunk as first parent. Mai-Revision trailers assign rN. SQLite WAL stores queue, dependencies, validations, leases and intents; unsupported schema versions refuse startup. Git and SQLite are not one transaction.
 
-## Pipeline
+## Candidate validation
+
+Start with the serial reference path. Speculative pipelines and batches below describe optional future extensions, not MVP prerequisites.
 
 1. Enforce receive limits, identity/namespace policy and idempotency; retain submitted objects before acknowledging registration. Success means received, not landed. Typed states include queued, blocked, awaiting_approval, validating and exactly one terminal outcome per submission version.
 2. Resolve dependencies from pushed ancestry. Build candidates using Git merge-base and merge-tree with an explicit base. Map a pending parent's submitted commit to its landed squash; rejection/supersession invalidates descendant candidates. Merge policy defaults await qualification/maintainer confirmation: textual needs a gate, otherwise use path rejection.
@@ -32,12 +34,14 @@ Git's first-parent trunk is the acceptance ledger, with r0 as import baseline. L
 
 An exclusive authority lock prevents duplicate engines. Startup reconciles interrupted landing against accepted history, reconstructs evidence and requeues unlanded work without duplicates. Hooks reject if the engine cannot register durably. Retained submission/draft/candidate refs support reproduction and recovery; unpushed work is not backed up.
 
-Slots have bounded logs, process-group timeout cleanup, private temporary directories and resource-allocation variables; they are not sandboxes. Full-tier recovery confirms a reproducible culprit, opens a conflict with its manifest and temporary sev fix grant, then allows bounded fix-forward. The fix passes the normal gate and full confirmation; failed/timed-out confirmation cannot claim green or extend the bound. Expiry or exhausted attempts invokes a gated revert; failed/conflicting reverts freeze and notify. Flaky/uncertain attribution cannot authorize revert. Policy/window defaults remain pending.
+Slots have bounded logs, process-group timeout cleanup, private temporary directories and resource-allocation variables; they are not sandboxes. Deferred automatic full-tier recovery, after RFC #93 and its correctness tests, confirms a reproducible culprit, opens a conflict with its manifest and temporary sev fix grant, then allows bounded fix-forward. The fix passes the normal gate and full confirmation; failed/timed-out confirmation cannot claim green or extend the bound. Expiry or exhausted attempts invokes a gated revert; failed/conflicting reverts freeze and notify. Flaky/uncertain attribution cannot authorize revert. Policy/window defaults remain pending.
 
 ## Objects and priority
 
 [ADR 0004](adr/0004-objects-manifests-and-priority.md) defines object units, containment and explicit file fallback; module scope is not leasable by default and renames are delete-plus-add. M1 uses file units; M2 adds parsers. Engine manifests are computed at receive and landing, stored in refs/notes/mai-objects, indexed in state.db and summarized in Mai-Objects trailers (full list up to 20 units). Declarations remain intent; scope_drift reports differences.
 
-Priority is sev > high > normal > low, default normal. Audited expiring grants govern sev/high; controlled inheritance/aging and a sev cap prevent inversion and must be qualified against starvation. Priority orders queues, permits sev speculative-slot cancellation, transfers leases only after notice/grace and assigns lower-priority conflict resolvers (ties: later lander). It never chooses content or bypasses validation. check.sev_gate remains undecided. These extend the [AGENTS invariants 1–16](../AGENTS.md#rewrite-invariants-not-current-implementation-claims); exact validation and work preservation still apply.
+The initial MVP uses a single-class queue with dependency-aware arrival ordering. Differentiated priorities, grants, inheritance/aging and lease/slot preemption are deferred to RFC #93; ADR 0004 retains the proposal for discussion. No priority or narrower gate is implicitly enabled. Exact validation, ordinary lease enforcement and work preservation remain mandatory.
 
-M1b validates upstream syncs and exports a branch or maintained PR. Sync conflicts get a configured owner; the queue can continue on the old upstream base where safe. S1–S7 must qualify transport, merges, validators, queue economics, forge cycles, regeneration and crash recovery. Git ≥2.40 and SHA-1-only authority support are proposed qualification requirements; submodules/LFS and distributed services are excluded.
+M1b validates upstream syncs and exports a branch or maintained PR. Sync conflicts get a configured owner; the queue can continue on the old upstream base where safe. Mechanism evidence supports transport, merges, forge cycles and regeneration; S3 corrected functional paths pass fresh native CI on all three platforms, with performance failures retained. S4 workload economics await MVP data, and S7 crash tests accompany each implemented feature before enablement. Git ≥2.40 and SHA-1-only authority support are proposed qualification requirements; submodules/LFS and distributed services are excluded.
+
+Performance claims and optimization follow measured practical need. Opt-in local workload recording (#11), dogfooding and later volunteer data (#37) inform S4 and the priority RFC; synthetic success does not establish realistic throughput or starvation guarantees.

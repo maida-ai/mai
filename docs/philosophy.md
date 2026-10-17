@@ -2,13 +2,13 @@
 
 Status: rewrite direction; not implemented in 0.0.1. The mechanisms and cost model below are design goals, not measured guarantees. [ADR 0003](adr/0003-git-native-integration-queue.md) records qualification gates and unresolved defaults.
 
-### Philosophy: gate the trunk, optimize everything else for recovery
+### Parallel contribution, with recovery supporting the workflow
 
-Classic version control, and the process built around it, maximizes **mean time between failures (MTBF)**. That process includes long-lived branches, careful manual merges, and review before integration. Code was expensive to write and human attention was scarce, so preventing a bad change was worth delaying every change.
+mai's main goal is to let multiple coding agents contribute in parallel without worrying about shared branches or routine conflict coordination. The engine should handle integration bookkeeping so an agent acts when intent genuinely conflicts, validation fails or policy requires a decision. It cannot choose conflicting intent automatically.
 
-Agents invert those economics. Code is cheap, and a rejected change can be regenerated in minutes. The scarce resources become integration bandwidth, validation compute and human attention. mai therefore optimizes for **mean time to recovery (MTTR)**: detect fast, reject fast, restore fast, resume fast.
+Cheap generated code also makes fixes cheaper, but more generated code and bugs can mean more fixes to coordinate. Parallel contribution is the user-facing promise; mean time to recovery (MTTR) is an underlying design principle. Fast detection, rejection, restoration and resumption let that workflow continue despite failures, without requiring every failure to be prevented in advance. Integration bandwidth, validation compute and human attention still constrain useful throughput.
 
-One refinement keeps this from becoming "move fast and break trunk". In a swarm, trunk is shared by N agents. A broken trunk costs N times over, because every agent builds and validates on the broken base. So the rule is MTTR everywhere except the trunk boundary. A fast gate keeps trunk MTBF high, and when a failure slips past the gate, trunk is restored automatically rather than frozen.
+Trunk is shared by all agents, so a broken accepted base can multiply disruption. The blocking gate remains mandatory. Bounded automatic fix-forward and revert are proposed mechanisms below, not shipped behavior or permission to weaken that gate.
 
 | Failure | Recovery mechanism | MTTR measured as |
 | --- | --- | --- |
@@ -39,9 +39,9 @@ One refinement keeps this from becoming "move fast and break trunk". In a swarm,
 4. **Small changes beat big ones.** One change maps to one `rN` and one validation unit. Continued work chains as dependent changes instead of growing one change.
 5. **Fix forward by default; revert as the backstop.** The proposed recovery policy gives a normal change `sev` priority and a bounded window. A revert is a compensating change through the same gate when fix-forward fails or misses its window. History is never rewritten. The shipping default and window remain pending maintainer approval and S4.
 6. **The object is the unit.**
-   - Agents lock, conflict on, and are notified about functions, classes and config keys, never lines.
+   - The intended locking and coordination units are semantic objects: functions, methods, variables, classes and configuration keys, never line ranges.
    - Lines shift with every edit, and files are too coarse for N agents.
-   - Every change carries an engine-computed manifest of affected objects, enabling queries about who touched an object and what else is affected. M1 explicitly reports file-unit fallback; M2 adds parsers.
+   - Current engine-computed manifests and ordinary leases use file units. M2 proposes parsers and object precision; semantic-object locking and stable object-key identity are not shipped. Robustly identifying the same object across changes is future technical work, not an established capability.
 
 
 Automatic recovery requires a reproducibly confirmed culprit; flaky or uncertain attribution never authorizes an automatic revert. A fix passes the normal gate and then full-tier confirmation before trunk is called green. Failure or timeout of confirmation cannot extend the recovery window indefinitely; it invokes the revert backstop. Draft recovery covers commits successfully pushed to retained refs, not unsaved or unpushed edits. Checkout and per-change complexity are hypotheses to measure in S3, not filesystem or build-tool guarantees.

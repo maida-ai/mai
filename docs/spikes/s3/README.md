@@ -1,5 +1,7 @@
 # S3 warm-validator qualification
 
+Historical status — 2026-10-17: This report preserves the 2026-10-15 assessment against the original criteria. [ADR 0010](../../adr/0010-staged-mvp-qualification.md) and the [2026-10-16 corrected functional review](functional-qualification.md) subsequently accepted scoped S3 functional readiness and completed scoped M0. The original measurements, NO-GO wording and broader limitations below remain historical evidence; they do not reopen that accepted gate.
+
 **NO-GO for #53.** All three native jobs failed. Python passes the warm-overhead criterion on Linux/macOS, TypeScript fails it on both, Rust fails before warm sampling, and Windows fails a harness unit assertion before ecosystem execution. Failed criteria are retained, not averaged away.
 
 ## Observed measurements

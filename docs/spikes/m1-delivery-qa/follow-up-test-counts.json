@@ -1,0 +1,127 @@
+{
+  "source": "a6f1181",
+  "date": "2026-10-17",
+  "platform": "Linux local",
+  "log": "/tmp/mai-final-current-tests.log",
+  "targets": [
+    {
+      "target": "src/lib.rs",
+      "passed": 28,
+      "failed": 0,
+      "ignored": 1
+    },
+    {
+      "target": "src/main.rs",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "target": "tests/authority.rs",
+      "passed": 22,
+      "failed": 0,
+      "ignored": 2
+    },
+    {
+      "target": "tests/delivery_cli.rs",
+      "passed": 6,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "target": "tests/engine.rs",
+      "passed": 9,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "target": "tests/landing.rs",
+      "passed": 9,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "target": "tests/lease.rs",
+      "passed": 10,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "target": "tests/lifecycle.rs",
+      "passed": 37,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "target": "tests/manifest.rs",
+      "passed": 5,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "target": "tests/platform.rs",
+      "passed": 7,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "target": "tests/process.rs",
+      "passed": 11,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "target": "tests/receive_qa.rs",
+      "passed": 8,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "target": "tests/recovery_active_gate.rs",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "target": "tests/repository_scope.rs",
+      "passed": 17,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "target": "tests/slots.rs",
+      "passed": 13,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "target": "tests/state.rs",
+      "passed": 15,
+      "failed": 0,
+      "ignored": 1
+    },
+    {
+      "target": "tests/trusted_policy.rs",
+      "passed": 8,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "target": "tests/validator_cli.rs",
+      "passed": 5,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "target": "tests/workspace.rs",
+      "passed": 7,
+      "failed": 0,
+      "ignored": 0
+    }
+  ],
+  "totals": {
+    "passed": 219,
+    "failed": 0,
+    "ignored": 4
+  }
+}

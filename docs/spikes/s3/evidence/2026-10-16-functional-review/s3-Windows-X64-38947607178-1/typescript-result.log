@@ -1,0 +1,6 @@
+raw_median_s=8.458093 warm_median_s=13.3299492 overhead=0.5759993653415728 criterion_lt_0.15=false
+input_change_detected=true bootstrap_reran=true
+stale_cache_rejects_broken_source=true
+ignored_and_untracked_residue_removed=true
+concurrent_slot_0=true concurrent_slot_1=true private_temp_and_build_paths=true
+functional_pass=true performance_pass=false

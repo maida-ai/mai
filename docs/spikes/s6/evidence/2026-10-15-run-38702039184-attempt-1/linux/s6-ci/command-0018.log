@@ -1,0 +1,8 @@
+cwd=/home/runner/work/mai/mai/.throwaway/s6-ci/cargo
+command=git ["checkout", "-b", "agent-beta", "f2d60631c117a23dca4fcbe1d80e3a246f88adbb"]
+timeout_ms=120000
+Switched to a new branch 'agent-beta'
+
+status=exit status: 0
+timeout=false
+elapsed_ms=10

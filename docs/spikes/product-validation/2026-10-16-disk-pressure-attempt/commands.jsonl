@@ -1,0 +1,12 @@
+{"label": "tool-mai", "command": ["/home/zatoichi/Desktop/Git/Maida.AI/maida-mai/.throwaway/next-workspaces/target/debug/mai", "--version"], "cwd": null, "elapsed_s": 0.0014059219975024462, "exit": 0, "log": "tool-mai.log"}
+{"label": "tool-git", "command": ["git", "--version"], "cwd": null, "elapsed_s": 0.0014045429416000843, "exit": 0, "log": "tool-git.log"}
+{"label": "tool-rustc", "command": ["rustc", "-vV"], "cwd": null, "elapsed_s": 0.015572167001664639, "exit": 0, "log": "tool-rustc.log"}
+{"label": "tool-cargo", "command": ["cargo", "--version"], "cwd": null, "elapsed_s": 0.007567524211481214, "exit": 0, "log": "tool-cargo.log"}
+{"label": "tool-uv", "command": ["uv", "--version"], "cwd": null, "elapsed_s": 0.00752082304097712, "exit": 0, "log": "tool-uv.log"}
+{"label": "tool-python3", "command": ["python3", "--version"], "cwd": null, "elapsed_s": 0.0014068428426980972, "exit": 0, "log": "tool-python3.log"}
+{"label": "tool-node", "command": ["node", "--version"], "cwd": null, "elapsed_s": 0.0033992959652096033, "exit": 0, "log": "tool-node.log"}
+{"label": "tool-yarn", "command": ["yarn", "--version"], "cwd": null, "elapsed_s": 0.11383700091391802, "exit": 0, "log": "tool-yarn.log"}
+{"label": "product-revision", "command": ["git", "-C", "/home/zatoichi/Desktop/Git/Maida.AI/maida-mai/.throwaway/next-workspaces", "rev-parse", "HEAD"], "cwd": null, "elapsed_s": 0.0034931059926748276, "exit": 0, "log": "product-revision.log"}
+{"label": "product-working-tree", "command": ["git", "-C", "/home/zatoichi/Desktop/Git/Maida.AI/maida-mai/.throwaway/next-workspaces", "status", "--short"], "cwd": null, "elapsed_s": 0.007525543216615915, "exit": 0, "log": "product-working-tree.log"}
+{"label": "rust-clone", "command": ["git", "clone", "--no-local", "--no-hardlinks", "--no-checkout", "/tmp/mai-product-fixtures/rust", "/var/tmp/mai-product-validation-20261016-d/rust-source"], "cwd": null, "elapsed_s": 0.21403320785611868, "exit": 0, "log": "rust-clone.log"}
+{"label": "rust-checkout", "command": ["git", "-C", "/var/tmp/mai-product-validation-20261016-d/rust-source", "checkout", "--detach", "4649aa9700619f94cf9c66876e9549d83420e16c"], "cwd": null, "elapsed_s": 0.015623177867382765, "exit": 128, "log": "rust-checkout.log"}

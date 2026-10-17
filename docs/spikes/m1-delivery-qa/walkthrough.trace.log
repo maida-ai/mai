@@ -1,0 +1,54 @@
++ set -eu
++ MAI_BIN=/tmp/mai-qa-frozen-34d85b1/target/debug/mai
+++ mktemp -d /tmp/mai-demo.XXXXXX
++ DEMO_ROOT=/tmp/mai-demo.tvPZSR
++ mkdir /tmp/mai-demo.tvPZSR/source
++ git -C /tmp/mai-demo.tvPZSR/source init -b main
++ git -C /tmp/mai-demo.tvPZSR/source config user.name 'Demo maintainer'
++ git -C /tmp/mai-demo.tvPZSR/source config user.email demo@example.invalid
++ cat
++ cat
++ printf 'hello\n'
++ git -C /tmp/mai-demo.tvPZSR/source add .
++ git -C /tmp/mai-demo.tvPZSR/source commit -m 'Add explicit demo gate'
++ /tmp/mai-qa-frozen-34d85b1/target/debug/mai init /tmp/mai-demo.tvPZSR/project --from /tmp/mai-demo.tvPZSR/source --json
++ /tmp/mai-qa-frozen-34d85b1/target/debug/mai status /tmp/mai-demo.tvPZSR/project --json
++ /tmp/mai-qa-frozen-34d85b1/target/debug/mai workspace /tmp/mai-demo.tvPZSR/project alice /tmp/mai-demo.tvPZSR/alice --json
++ /tmp/mai-qa-frozen-34d85b1/target/debug/mai workspace /tmp/mai-demo.tvPZSR/project bob /tmp/mai-demo.tvPZSR/bob --json
+++ git --git-dir=/tmp/mai-demo.tvPZSR/project/authority.git rev-parse refs/heads/trunk
++ BASE=6769b3c3d1671870bbe216616d8b00f7ae6ff775
++ /tmp/mai-qa-frozen-34d85b1/target/debug/mai validator run /tmp/mai-demo.tvPZSR/project 6769b3c3d1671870bbe216616d8b00f7ae6ff775 --json
++ /tmp/mai-qa-frozen-34d85b1/target/debug/mai receive enable /tmp/mai-demo.tvPZSR/project --max-input-bytes 10485760 --max-file-bytes 1048576 --max-changed-files 100 --json
++ git -C /tmp/mai-demo.tvPZSR/alice config user.name 'Demo Alice'
++ git -C /tmp/mai-demo.tvPZSR/alice config user.email alice@example.invalid
++ printf 'parent work\n'
++ git -C /tmp/mai-demo.tvPZSR/alice add parent.txt
++ git -C /tmp/mai-demo.tvPZSR/alice commit -m 'Parent change'
+++ git -C /tmp/mai-demo.tvPZSR/alice rev-parse HEAD
++ PARENT=a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f
++ git -C /tmp/mai-demo.tvPZSR/alice push -o agent=alice mai HEAD:refs/for/main
+remote: mai received alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f generation 1; not landed        
+To /tmp/mai-demo.tvPZSR/project/authority.git
+ * [new reference]   HEAD -> refs/mai/changes/alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f/1
++ printf 'dependent work\n'
++ git -C /tmp/mai-demo.tvPZSR/alice add child.txt
++ git -C /tmp/mai-demo.tvPZSR/alice commit -m 'Dependent child change'
+++ git -C /tmp/mai-demo.tvPZSR/alice rev-parse HEAD
++ CHILD=07652b6ad73244d41cc1f5abb5a69f8bc2187bf5
++ git -C /tmp/mai-demo.tvPZSR/alice push -o agent=alice mai HEAD:refs/for/main
+remote: mai received alice-07652b6ad73244d41cc1f5abb5a69f8bc2187bf5 generation 1; not landed        
+To /tmp/mai-demo.tvPZSR/project/authority.git
+ * [new reference]   HEAD -> refs/mai/changes/alice-07652b6ad73244d41cc1f5abb5a69f8bc2187bf5/1
++ /tmp/mai-qa-frozen-34d85b1/target/debug/mai show /tmp/mai-demo.tvPZSR/project alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f --generation 1 --json
++ /tmp/mai-qa-frozen-34d85b1/target/debug/mai show /tmp/mai-demo.tvPZSR/project alice-07652b6ad73244d41cc1f5abb5a69f8bc2187bf5 --generation 1 --json
++ /tmp/mai-qa-frozen-34d85b1/target/debug/mai integrate /tmp/mai-demo.tvPZSR/project alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f --mode textual --wait-seconds 60 --json
++ /tmp/mai-qa-frozen-34d85b1/target/debug/mai integrate /tmp/mai-demo.tvPZSR/project alice-07652b6ad73244d41cc1f5abb5a69f8bc2187bf5 --mode textual --wait-seconds 60 --json
++ /tmp/mai-qa-frozen-34d85b1/target/debug/mai show /tmp/mai-demo.tvPZSR/project alice-a34ce68b5e9a9ba85616c2eeb4bb7f6496c10a2f --generation 1 --json
++ /tmp/mai-qa-frozen-34d85b1/target/debug/mai show /tmp/mai-demo.tvPZSR/project alice-07652b6ad73244d41cc1f5abb5a69f8bc2187bf5 --generation 1 --json
++ /tmp/mai-qa-frozen-34d85b1/target/debug/mai workspace /tmp/mai-demo.tvPZSR/project fresh /tmp/mai-demo.tvPZSR/fresh --json
++ test -f /tmp/mai-demo.tvPZSR/fresh/parent.txt
++ test -f /tmp/mai-demo.tvPZSR/fresh/child.txt
+++ git -C /tmp/mai-demo.tvPZSR/alice rev-parse HEAD
++ test 07652b6ad73244d41cc1f5abb5a69f8bc2187bf5 = 07652b6ad73244d41cc1f5abb5a69f8bc2187bf5
++ /tmp/mai-qa-frozen-34d85b1/target/debug/mai stop /tmp/mai-demo.tvPZSR/project --json
++ printf 'Disposable demo retained at %s\n' /tmp/mai-demo.tvPZSR

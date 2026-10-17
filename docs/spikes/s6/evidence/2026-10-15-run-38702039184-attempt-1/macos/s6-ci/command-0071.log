@@ -1,0 +1,9 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/npm
+command=npm ["install", "--package-lock-only", "--offline", "--ignore-scripts", "--no-audit", "--no-fund"]
+timeout_ms=120000
+
+up to date in 794ms
+
+status=exit status: 0
+timeout=false
+elapsed_ms=1041

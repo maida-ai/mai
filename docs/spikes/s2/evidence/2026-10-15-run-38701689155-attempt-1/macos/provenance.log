@@ -1,0 +1,20 @@
+2026-10-15T07:52:40Z
+ad30707b3214a7a91b3b2541d7ad90056c5c3291
+mode=run
+git version 2.56.0
+rustc 1.99.0 (b940084d7 2026-09-28)
+binary: rustc
+commit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4
+commit-date: 2026-09-28
+host: aarch64-apple-darwin
+release: 1.99.0
+LLVM version: 23.1.1
+Darwin 25.6.0 arm64
+Apple M1 (Virtual)
+7516192768
+runner_os=macOS
+runner_arch=ARM64
+image_os=macos26
+image_version=20261013.0424.1
+run_id=38701689155
+run_attempt=1

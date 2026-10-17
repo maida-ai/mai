@@ -1,0 +1,17 @@
+{
+  "source_head": "4d1eb89bf87ce4cb0e646478f3ccf9a2807ca20e",
+  "binary": "/home/takeshi/Documents/Codex/2026-10-16/task-2/continuation/target/debug/mai",
+  "binary_sha256": "c83494e11225552dee9d900c92a1125914781ecbbbdc9785a2f4c6e15dc961a5",
+  "document_sha256": "27cb7024d828eaaea252feebec1e92bb2baefa598cdfc62468586afd2a453167",
+  "literal_blocks_sha256": "f897a6c98cd325c9740c8627c9ea7ce41ee09a83d2e88997c699476a21fb4ae7",
+  "shell": "/bin/sh -x",
+  "blocks": 3,
+  "fixture_scope": "Three literal POSIX shell blocks, followed only by fixture identity reporting.",
+  "exit_code": 0,
+  "binary_unchanged": true,
+  "reported": {
+    "FIXTURE": "/var/tmp/mai-two.JYs3ru",
+    "LOCAL": "8d8d572b2d5cf52f06a58c31e3606af838c3a056",
+    "FINAL": "fa30cd77b56365f53cb598017fed59e9eb2b74fc"
+  }
+}

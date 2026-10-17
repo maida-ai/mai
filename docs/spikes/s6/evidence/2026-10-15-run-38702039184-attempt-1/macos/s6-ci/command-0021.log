@@ -1,0 +1,9 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/cargo
+command=git ["commit", "-m", "beta addition and generated lock"]
+timeout_ms=120000
+[agent-beta 158b65e] beta addition and generated lock
+ 2 files changed, 8 insertions(+), 1 deletion(-)
+
+status=exit status: 0
+timeout=false
+elapsed_ms=51

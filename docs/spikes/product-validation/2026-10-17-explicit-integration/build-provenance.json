@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "binary_source_revision": "58dd283c9bf7ea9905c0095b4f2dc94cfce30beb",
+  "build_profile": "release",
+  "binary_sha256": "b61f8658e166eb3142141fe8ae361569393aa3187dd697715b2fac23a780d2bc",
+  "confirmation": "Integration owner confirmed fmt, clippy, all-target tests and release build completed on this revision before authorizing execution. Later checkout HEAD is not used as build provenance.",
+  "tmpdir": "/var/tmp/mai-delivery-test",
+  "load_control": "Integration owner reported no root build running; other host load not controlled."
+}

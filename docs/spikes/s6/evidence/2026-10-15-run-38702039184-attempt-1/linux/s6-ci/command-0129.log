@@ -1,0 +1,7 @@
+cwd=/home/runner/work/mai/mai/.throwaway/s6-ci/npm
+command=git ["update-ref", "refs/heads/accepted", "f3d0bfd590302b343ff36f6bcadac1105bb15603", "0000000000000000000000000000000000000000"]
+timeout_ms=120000
+
+status=exit status: 0
+timeout=false
+elapsed_ms=10

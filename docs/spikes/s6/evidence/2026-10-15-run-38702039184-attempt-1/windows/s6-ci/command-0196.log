@@ -1,0 +1,8 @@
+cwd=D:/a/mai/mai/.throwaway/s6-ci\uv
+command=git ["rev-parse", "80c95d77351537c71c52fa3d1800fda931d24836:vendor/alpha/backend.py"]
+timeout_ms=120000
+456058c1894654581d9c061e288f9577dabc0799
+
+status=exit code: 0
+timeout=false
+elapsed_ms=21

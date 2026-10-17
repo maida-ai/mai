@@ -1,0 +1,17 @@
+{
+  "agent": "experiment-agent",
+  "base": "b30b82092c8e4bb425ce4f477c00c57eb3aacf14",
+  "bootstrap": {
+    "elapsed_ms": 133,
+    "exit_code": 0,
+    "outcome": "success",
+    "stderr_tail": "Using CPython 3.12.3 interpreter at: /usr/bin/python3.12\nCreating virtual environment at: .venv\nActivate with: source .venv/bin/activate\nResolved 8 packages in 0.95ms\nInstalled 8 packages in 3ms\n + flit-core==3.9.0\n + freezegun==1.4.0\n + iniconfig==2.0.0\n + packaging==24.0\n + pluggy==1.4.0\n + pytest==8.1.1\n + python-dateutil==2.9.0.post0\n + six==1.16.0\nResolved 1 package in 0.73ms\n   Building itsdangerous @ file:///var/tmp/mai-product-validation-20261016-b/python-workspace\n      Built itsdangerous @ file:///var/tmp/mai-product-validation-20261016-b/python-workspace\nPrepared 1 package in 49ms\nInstalled 1 package in 0.35ms\n + itsdangerous==2.2.0 (from file:///var/tmp/mai-product-validation-20261016-b/python-workspace)\n",
+    "stdout_tail": ""
+  },
+  "bootstrap_skipped": false,
+  "destination": {
+    "data": "L3Zhci90bXAvbWFpLXByb2R1Y3QtdmFsaWRhdGlvbi0yMDI2MTAxNi1iL3B5dGhvbi13b3Jrc3BhY2U=",
+    "encoding": "unix_bytes"
+  },
+  "schema_version": 1
+}

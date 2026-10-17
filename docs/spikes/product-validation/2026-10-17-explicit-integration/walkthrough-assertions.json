@@ -1,0 +1,30 @@
+{
+  "success": true,
+  "before_states": [
+    "received",
+    "received"
+  ],
+  "child_dependency": [
+    {
+      "change_id": "alice-d182be41260f7eaa147ce1bd5b008e4ed3009f75",
+      "generation": 1
+    }
+  ],
+  "landed_revisions": [
+    1,
+    2
+  ],
+  "landed_commits": [
+    "bc0a6b785d97288c85d9544ba04795c5c544a400",
+    "ea13dc6d44f2f3c8736d459a678badd5020af5c9"
+  ],
+  "terminal_outcomes": [
+    "landed",
+    "landed"
+  ],
+  "fresh_workspace_files": [
+    "parent.txt",
+    "child.txt"
+  ],
+  "original_clone_head_preserved": true
+}

@@ -1,0 +1,51 @@
+{
+  "product": {
+    "approval": null,
+    "binding": {
+      "authority": {
+        "data": "L3Zhci90bXAvbWFpLXByb2R1Y3QtdmFsaWRhdGlvbi0yMDI2MTAxNi1iL3B5dGhvbi1hdXRob3JpdHk=",
+        "encoding": "unix_bytes"
+      },
+      "base": "b30b82092c8e4bb425ce4f477c00c57eb3aacf14",
+      "candidate": "b30b82092c8e4bb425ce4f477c00c57eb3aacf14",
+      "policy": "b30b82092c8e4bb425ce4f477c00c57eb3aacf14",
+      "schema_version": 1,
+      "submitted_identity": null,
+      "tree": "2e2c0ace5c84e8d8fbecdc6bedcf3a9a9b7b0a9a"
+    },
+    "bootstrap": {
+      "elapsed_ms": 103,
+      "exit_code": 0,
+      "outcome": "success",
+      "stderr_tail": "Using CPython 3.12.3 interpreter at: /usr/bin/python3.12\nCreating virtual environment at: .venv\nActivate with: source .venv/bin/activate\nResolved 8 packages in 1ms\nInstalled 8 packages in 3ms\n + flit-core==3.9.0\n + freezegun==1.4.0\n + iniconfig==2.0.0\n + packaging==24.0\n + pluggy==1.4.0\n + pytest==8.1.1\n + python-dateutil==2.9.0.post0\n + six==1.16.0\nResolved 1 package in 0.71ms\n   Building itsdangerous @ file:///var/tmp/mai-product-validation-20261016-b/python-authority/.mai/validators/slot-0/candidate\n      Built itsdangerous @ file:///var/tmp/mai-product-validation-20261016-b/python-authority/.mai/validators/slot-0/candidate\nPrepared 1 package in 47ms\nInstalled 1 package in 0.35ms\n + itsdangerous==2.2.0 (from file:///var/tmp/mai-product-validation-20261016-b/python-authority/.mai/validators/slot-0/candidate)\n",
+      "stdout_tail": ""
+    },
+    "bootstrap_reused": false,
+    "diagnostic": null,
+    "elapsed_ms": 876,
+    "outcome": "success",
+    "process": {
+      "elapsed_ms": 568,
+      "exit_code": 0,
+      "outcome": "success",
+      "stderr_tail": "",
+      "stdout_tail": "============================= test session starts ==============================\nplatform linux -- Python 3.12.3, pytest-8.1.1, pluggy-1.4.0\nrootdir: /var/tmp/mai-product-validation-20261016-b/python-authority/.mai/validators/slot-0/candidate\nconfigfile: pyproject.toml\ntestpaths: tests\ncollected 297 items\n\ntests/test_itsdangerous/test_encoding.py ........                        [  2%]\ntests/test_itsdangerous/test_serializer.py ............................. [ 12%]\n............                                                             [ 16%]\ntests/test_itsdangerous/test_signer.py .................                 [ 22%]\ntests/test_itsdangerous/test_timed.py .................................. [ 33%]\n...................................................................      [ 56%]\ntests/test_itsdangerous/test_url_safe.py ............................... [ 66%]\n........................................................................ [ 90%]\n...........................                                              [100%]\n\n============================= 297 passed in 0.36s ==============================\n"
+    },
+    "protected_changes": [],
+    "schema_version": 1
+  },
+  "bootstrap_before": [
+    {
+      "name": ".mai/validator-bootstrap-0.json",
+      "mtime_ns": 1792189051101707937,
+      "content": "{\"fingerprint\":\"e3d1c1677b4b00ae5ec0252bf6d52577f3be705c\",\"version\":1}"
+    }
+  ],
+  "bootstrap_after": [
+    {
+      "name": ".mai/validator-bootstrap-0.json",
+      "mtime_ns": 1792189055902381010,
+      "content": "{\"fingerprint\":\"4bd6b1be4d6bca840b62540f0186450c80ff2662\",\"version\":1}"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+cwd=/Users/runner/work/mai/mai/.throwaway/s6-ci/npm
+command=npm ["ci", "--offline", "--ignore-scripts", "--no-audit", "--no-fund"]
+timeout_ms=120000
+
+added 2 packages in 214ms
+
+status=exit status: 0
+timeout=false
+elapsed_ms=308

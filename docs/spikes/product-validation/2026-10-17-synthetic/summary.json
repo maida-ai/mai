@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "success": true,
+  "sample_count": 30,
+  "claims": "Gate truth and bounded synthetic timings only; no throughput or MTTR claim"
+}
