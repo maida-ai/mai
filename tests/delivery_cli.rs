@@ -181,6 +181,7 @@ impl Fixture {
         command.arg("--json").arg(action).arg(&self.root).arg(id);
         command
     }
+    #[cfg(unix)]
     fn queue_command(&self) -> Command {
         let mut command = Command::new(env!("CARGO_BIN_EXE_mai"));
         command.arg("--json").arg("queue").arg(&self.root);
