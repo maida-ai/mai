@@ -8,6 +8,7 @@ pub mod state;
 
 pub mod approval;
 pub mod bootstrap;
+pub mod lease;
 pub mod native_path;
 pub mod policy;
 pub mod process;
