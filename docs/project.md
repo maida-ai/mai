@@ -4,11 +4,13 @@ mai is an Apache-2.0 Rust project for 3–30 coding agents working on one reposi
 
 ## Working today
 
-The 0.0.1 MVP foundation replaces the old worktree engine with a versioned lifecycle model: immutable generations, exact dependency identities, explicit attempts and terminal outcomes. The binary exposes help and version at this layer. Persistence, initialization and serving are dependent implementation layers; receive, validation and landing remain future work. [Getting started](getting-started.md) and [CLI reference](cli.md) document the implemented surface.
+The 0.0.1 MVP foundation replaces the old worktree engine with a versioned lifecycle model: immutable generations, exact dependency identities, explicit attempts and terminal outcomes. SQLite persistence, authority initialization/reconciliation, local single-writer serving, independent workspace creation/bootstrap and manual exact-candidate validation are implemented. Manual validation uses trusted trunk policy, bounded validator slots and explicit protected-change approval; it never lands a change. Durable receive and the integrated dependency-aware landing loop remain implementation work. [Getting started](getting-started.md) and [CLI reference](cli.md) document the implemented surface.
+
+The long-term direction is coordination across hundreds or thousands of overlapping agents with less recovery effort. The accepted local MVP scope remains 3–30 agents; neither that workload nor distributed scale is performance-qualified. The immediate test is whether an operator can reproduce a failure, preserve work and recover without specialist intervention while keeping the trunk gate intact.
 
 ## Current limits
 
-Use only disposable trusted repositories during MVP development. Model tests and snapshot round trips do not establish durable registration, exact-candidate validation or publication safety. Those paths need dedicated persistence, Git and interruption tests before enablement. No complete integration queue, authentication or remote multi-tenant service is available. Consult the [current CLI surface](cli.md) before using planned commands.
+Use only disposable trusted repositories during MVP development. Persistence, startup reconciliation and manual validation have dedicated Git/process tests, but model transitions and synthetic landing fixtures do not establish an operational receive-to-land queue. Each enabled receive and publication path needs its own interruption and dependency tests. No complete integration queue, authentication or remote multi-tenant service is available. Consult the [current CLI surface](cli.md) before using planned commands.
 
 ## Rewrite sequence
 
@@ -26,9 +28,15 @@ The maintainer accepted [ADR 0010](adr/0010-staged-mvp-qualification.md) on 2026
 | M5 — Cross-agent groups | #49: atomic topic landing across agents; fork/fuse uses native Git and documentation |
 | M6 — Policy guards | #50: external policy checks using the protected-path approval boundary |
 
-M1b before the users gate is recommended, not settled. Do not begin M2 before the external-users gate without an explicit maintainer override. There are no invented dates or automatic version promotions. Track implementation through [issues and subissues](https://github.com/maida-ai/mai/issues/1), [milestones](https://github.com/maida-ai/mai/milestones) and the [Project](https://github.com/orgs/maida-ai/projects/9).
+M1b before the users gate is recommended, not settled. The maintainer has authorized technically independent implementation work to proceed before external-user feedback when it does not depend on that evidence. This exception permits development; it does not waive external-user exit criteria, select unresolved product defaults or qualify later milestones. The immediate implementation focus remains the coherent M1 workflow. There are no invented dates or automatic version promotions. Track implementation through [issues and subissues](https://github.com/maida-ai/mai/issues/1), [milestones](https://github.com/maida-ai/mai/milestones) and the [Project](https://github.com/orgs/maida-ai/projects/9).
 
 Architecture decisions and their rationale live in versioned ADRs. Discussions can host unresolved debate; acceptance tasks close once the reviewed decision and evidence are committed. Implementation issues, subissues, milestones and the Project track delivery.
+
+## Delivery order and readiness
+
+Separate implementation readiness from acceptance evidence. Durable receive and idempotent retry can be developed alongside file manifests, documentation and independent crash tests. Candidate construction depends on received identities and dependency mapping; landing additionally depends on exact trusted validation, policy/lease enforcement and recovery reconciliation. Integrate those contracts before exposing a receive-to-land workflow. Safe sync and actionable outcome commands complete the agent-facing loop. Later technically independent foundations can proceed under the maintainer exception above, but cannot stand in for missing M1 correctness or real-user feedback.
+
+A merged component is implemented, not automatically operationally qualified. Record which commands are available, which interruption paths and native platforms have passed, and which comparisons remain unmeasured. Keep incomplete issue acceptance criteria open and report partial delivery as foundations until the complete path works. External-user validation still requires 5–10 users and equivalent baseline comparisons; no amount of synthetic testing completes that gate.
 
 ## M0 qualification
 

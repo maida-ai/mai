@@ -39,7 +39,7 @@ git push mai HEAD:refs/for/main
 
 Push success will acknowledge durable registration, not landing. Each agent waits for its change's typed outcome with `mai wait <change>` and runs `mai sync` after landing; the engine combines and checks candidates without requiring a pre-submission rebase. A conflict or failed check returns an actionable outcome and a fetchable candidate. Pipeline mode must validate each landed tree exactly as landed; optional batch mode must label its weaker intermediate-revision evidence explicitly.
 
-The intended audience is one developer or team running 3–30 agents across harnesses. Humans keep their forge and review process; mai integrates agent changes into an export branch. Recovery times, human interventions, time to land and broken-trunk rate will measure whether this design earns its place. None of those improvements has been measured for the rewrite yet.
+The intended audience is one developer or team running 3–30 agents across harnesses. Humans keep their forge and review process; mai integrates agent changes into an export branch. Recovery times, human interventions, time to land and broken-trunk rate will measure whether this design earns its place. None of those improvements has been measured for the rewrite yet. See the [benchmark protocol](docs/benchmarking.md) for comparable workloads and recovery measurements. The longer-term ambition is hundreds or thousands of overlapping agents; that scale and distributed operation are outside the qualified local MVP.
 
 ## Build the MVP foundation
 

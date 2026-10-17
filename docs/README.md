@@ -5,6 +5,7 @@ The current 0.0.1 code is the replacement MVP foundation. The old worktree engin
 ## Evaluate the current binary
 
 - [Getting started](getting-started.md): disposable-repository installation and current commands.
+- [Benchmark protocol](benchmarking.md): reproducible comparisons, recovery metrics and evidence limits.
 - [CLI reference](cli.md): current command behavior, safety limitations and a separate proposed interface outline.
 - [Agent integration](agents.md): current precautions followed by clearly labeled planned harness instructions.
 
