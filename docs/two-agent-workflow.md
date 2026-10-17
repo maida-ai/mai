@@ -1,6 +1,10 @@
 # Two agents: continue, conflict and correct
 
-This disposable POSIX-shell walkthrough demonstrates explicit submission and integration, continuation after squash landing, and ordinary editing to correct conflicting intent. It uses a deliberately trivial gate; it is not a recommended policy or a performance demonstration. Build mai first and run from its checkout. Keep all created directories for inspection.
+This disposable POSIX-shell walkthrough demonstrates explicit submission and integration, continuation after squash landing, and ordinary editing to correct conflicting intent. It uses a deliberately trivial gate; it is not a recommended policy or a performance demonstration. Build mai first and run from its checkout. Run every shell block in order in the same shell session because later steps use variables from earlier ones. Keep all created directories for inspection.
+
+## 1. Prepare a trusted gate and source repository
+
+This step creates the seed repository and the small gate that later candidates must pass. Expected: the source contains one committed baseline and policy.
 
 ```sh
 set -eu
@@ -29,18 +33,39 @@ ports_per_slot = 10
 POLICY
 git -C "$DEMO/seed" add .
 git -C "$DEMO/seed" commit -m 'Seed disposable collaboration'
+```
+
+## 2. Create the authority and enable receive
+
+This step imports the trusted baseline, starts the local engine, enables bounded receive, and creates Alice's independent workspace. Expected: the authority is ready to receive; creating the workspace does not submit or land work.
+
+```sh
 "$MAI_BIN" init "$DEMO/project" --from "$DEMO/seed" --json
 "$MAI_BIN" status "$DEMO/project" --json
 "$MAI_BIN" receive enable "$DEMO/project" --max-input-bytes 1048576 --max-file-bytes 65536 --max-changed-files 32 --json
 "$MAI_BIN" workspace "$DEMO/project" alice "$DEMO/alice" --json
 git -C "$DEMO/alice" config user.name 'Alice'
 git -C "$DEMO/alice" config user.email 'alice@example.invalid'
+```
+
+## 3. Submit and explicitly integrate Alice's parent
+
+Alice submits a change to the parent file, then an operator explicitly selects that generation for serial integration. Expected: the parent lands as revision r1.
+
+```sh
 printf 'accepted Alice parent\n' > "$DEMO/alice/parent.txt"
 git -C "$DEMO/alice" add parent.txt
 git -C "$DEMO/alice" commit -m 'Alice parent'
 A=$(git -C "$DEMO/alice" rev-parse HEAD)
 git -C "$DEMO/alice" push -o agent=alice mai HEAD:refs/for/main
 "$MAI_BIN" integrate "$DEMO/project" "alice-$A" --generation 1 --mode textual --json
+```
+
+## 4. Keep Alice's later work local while Bob submits
+
+Alice makes another local commit but does not submit it yet. Bob starts from the accepted parent, changes that file, adds another file, and submits his change. Expected: Bob's generation lands as r2 while Alice's later commit remains local.
+
+```sh
 # Alice continues locally without submitting this later commit yet.
 printf 'Alice intent\n' > "$DEMO/alice/shared.txt"
 git -C "$DEMO/alice" add shared.txt
@@ -57,6 +82,13 @@ git -C "$DEMO/bob" commit -m 'Bob additional accepted work'
 B=$(git -C "$DEMO/bob" rev-parse HEAD)
 git -C "$DEMO/bob" push -o agent=bob mai HEAD:refs/for/main
 "$MAI_BIN" integrate "$DEMO/project" "bob-$B" --generation 1 --mode textual --json
+```
+
+## 5. Continue Alice after the accepted squash
+
+Continuation copies accepted trunk and replays only Alice's unsubmitted local commit into a new workspace. Expected: the new workspace has Bob's accepted files plus Alice's later edit, while the original clone remains at `$LOCAL`.
+
+```sh
 "$MAI_BIN" continue "$DEMO/project" "$DEMO/alice" "$DEMO/continued" --change "alice-$A" --generation 1 --json
 test "$(cat "$DEMO/continued/parent.txt")" = 'Bob updated accepted parent'
 test "$(cat "$DEMO/continued/shared.txt")" = 'Alice intent'
@@ -66,7 +98,9 @@ test "$(git -C "$DEMO/alice" rev-parse HEAD)" = "$LOCAL"
 
 The continued workspace includes Bob's accepted changes and only Alice's later local commit. Replaying Alice's already accepted parent would overwrite or conflict with Bob's updated parent; that parent must be excluded. Alice's original clone is still available. Repeating the command with the same destination refuses without replacing it.
 
-Now Bob changes the same content as Alice's pending local work. His change lands first; Alice's continued submission is rejected as a true conflict.
+## 6. Create and inspect a true conflict
+
+Bob now changes the same content as Alice's pending local work. His change lands first; Alice's continued submission is rejected as a true conflict. Replaying the original local commit is also expected to fail with exit 5 and preserve an incomplete marker.
 
 ```sh
 printf 'Bob overlapping intent\n' > "$DEMO/bob/shared.txt"
@@ -91,6 +125,10 @@ test -f "$DEMO/conflicted/.mai-continuation-incomplete"
 ```
 
 Neither retrying the rejected generation nor deleting an incomplete marker resolves the conflicting intent. Make the correction in another fresh workspace using ordinary editing. The example deliberately combines both intents; mai does not choose that content for you.
+
+## 7. Correct the conflict in a fresh workspace
+
+Alice combines the intended edits in a new workspace, submits the corrected change, and explicitly selects it for integration. Expected: the correction lands as r4, after Bob's overlapping edit at r3; the rejected generation did not advance trunk.
 
 ```sh
 "$MAI_BIN" workspace "$DEMO/project" alice "$DEMO/correction" --json
