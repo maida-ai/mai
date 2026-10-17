@@ -2,6 +2,8 @@ name: Rust correctness
 on:
   push:
   pull_request:
+permissions:
+  contents: read
 jobs:
   test:
     strategy:
@@ -24,3 +26,39 @@ jobs:
       - run: cargo clippy --all-targets --locked -- -D warnings
       - run: cargo test --all-targets --locked
       - run: cargo build --release --locked --bins
+
+  minimum-linux:
+    # This job qualifies only Linux. Stable native jobs do not prove a Windows
+    # or macOS minimum-version combination.
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: dtolnay/rust-toolchain@1.85.0
+      - name: Build exact Git 2.40.0
+        shell: bash
+        run: |
+          curl --fail --location --retry 2 --max-time 90 https://www.kernel.org/pub/software/scm/git/git-2.40.0.tar.xz --output /tmp/git.tar.xz
+          echo 'b17a598fbf58729ef13b577465eb93b2d484df1201518b708b5044ff623bf46d  /tmp/git.tar.xz' | sha256sum --check
+          tar -xJf /tmp/git.tar.xz -C /tmp
+          make -C /tmp/git-2.40.0 -j2 prefix=/tmp/mai-minimum-git NO_TCLTK=YesPlease NO_GETTEXT=YesPlease NO_CURL=YesPlease NO_EXPAT=YesPlease install
+          echo /tmp/mai-minimum-git/bin >> "$GITHUB_PATH"
+      - name: Verify exact versions and locked build
+        shell: bash
+        run: |
+          test "$(git --version)" = 'git version 2.40.0'
+          rustc --version
+          cargo test --all-targets --locked
+          cargo build --release --locked --bins
+
+  dependency-workflow-policy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo fetch --locked
+        env:
+          CARGO_NET_RETRY: '2'
+          CARGO_HTTP_TIMEOUT: '30'
+      - run: python3 scripts/check_qualification.py

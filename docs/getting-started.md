@@ -21,6 +21,6 @@ The version remains `mai 0.0.1`. The current binary exposes initialization and e
 
 Lifecycle tests cover immutable submission generations, retry deduplication, dependency blocking and rejection, protected-change approval states, explicit validation attempts, terminal outcomes and later annotations. A serialized snapshot round trip tests the model's restart contract; it does not prove durable receive acknowledgment or Git landing. Persistence and startup reconciliation now have interruption tests; receive and landing still require their own integration tests before enablement.
 
-CI runs Rust formatting, Clippy, tests and release builds on Linux, macOS and Windows. A local Linux pass does not establish hosted native results. See [CLI reference](cli.md), [architecture](architecture.md) and [roadmap](project.md) for the staged delivery plan.
+CI runs Rust formatting, Clippy, tests and release builds on Linux, macOS and Windows. A separate bounded Linux job builds the checksum-pinned Git 2.40.0 release and uses Rust 1.85.0 with the locked dependency graph. This minimum combination is not a Windows or macOS qualification. A local Linux pass does not establish hosted native results. See [platform qualification](platform-qualification.md) for capability probes, fallback semantics and evidence limits. See [CLI reference](cli.md), [architecture](architecture.md) and [roadmap](project.md) for the staged delivery plan.
 
 [All docs →](README.md)
