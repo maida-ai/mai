@@ -2,10 +2,12 @@
 //! A prepared tree alone grants no permission to publish; run_one requires the engine writer lock.
 use crate::{
     authority::Authority,
+    lease::{LeaseBlockReason, LeaseBlocked},
     lifecycle::{GenerationId, Lifecycle, Outcome, State},
     repository_scope::external_git_path,
 };
 use anyhow::{Context, Result, ensure};
+use serde::Serialize;
 use std::process::{Command, Output};
 
 /// Explicit opt-in to Git's textual three-way merge. No mode default is selected here.
@@ -210,7 +212,13 @@ use crate::{
     state::{StateStore, ValidationEvidence},
     validator::{self, ValidationOutcome},
 };
-use serde::Serialize;
+
+#[derive(Clone, Copy, Debug, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum LeaseBlockPhase {
+    Preflight,
+    PostValidation,
+}
 
 #[derive(Debug, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
@@ -221,6 +229,12 @@ pub enum RunResult {
     },
     Rejected {
         reason: ReasonCode,
+    },
+    LeaseBlocked {
+        unit: String,
+        reason: LeaseBlockReason,
+        phase: LeaseBlockPhase,
+        next_action: &'static str,
     },
     Landed {
         revision: u64,
@@ -245,6 +259,8 @@ pub fn run_one(
 #[derive(Clone, Copy)]
 enum Checkpoint {
     EvidenceDurable,
+    LeaseBlockBeforeRequeue,
+    LeaseBlockAfterRequeue,
     TrunkPublished,
 }
 
@@ -318,7 +334,12 @@ fn run_one_inner(
         .iter()
         .map(|entry| entry.unit.canonical())
         .collect();
-    leases.check_manifest(&agent, &units, claims, now_ms()?)?;
+    if let Err(error) = leases.check_manifest(&agent, &units, claims, now_ms()?) {
+        if let Some(blocked) = error.downcast_ref::<LeaseBlocked>() {
+            return Ok(lease_blocked_result(blocked, LeaseBlockPhase::Preflight));
+        }
+        return Err(error);
+    }
     let message = format!(
         "Integrate {}\n\nMai-Revision: r{revision}\nMai-Generation: {}\nMai-Attempt: {attempt}\nMai-Policy: {}\nChange-Id: {}\nAgent-ID: {agent}\nMai-Objects: {}\n",
         id.change_id,
@@ -463,7 +484,19 @@ fn run_one_inner(
                     .is_some_and(|a| a.decision == Decision::Approved && a.actor != agent)),
         "approval changed before publication"
     );
-    leases.check_manifest(&agent, &units, claims, now_ms()?)?;
+    if let Err(error) = leases.check_manifest(&agent, &units, claims, now_ms()?) {
+        if let Some(blocked) = error.downcast_ref::<LeaseBlocked>() {
+            checkpoint(Checkpoint::LeaseBlockBeforeRequeue)?;
+            life.retry_attempt(id, attempt)?;
+            store.save_lifecycle(&mut life)?;
+            checkpoint(Checkpoint::LeaseBlockAfterRequeue)?;
+            return Ok(lease_blocked_result(
+                blocked,
+                LeaseBlockPhase::PostValidation,
+            ));
+        }
+        return Err(error);
+    }
     // No lifecycle, policy or lease writer can interleave here under the engine lock.
     git(
         authority,
@@ -482,6 +515,16 @@ fn run_one_inner(
         commit: candidate,
     })
 }
+
+fn lease_blocked_result(blocked: &LeaseBlocked, phase: LeaseBlockPhase) -> RunResult {
+    RunResult::LeaseBlocked {
+        unit: blocked.unit.clone(),
+        reason: blocked.reason,
+        phase,
+        next_action: "Acquire or renew the matching lease, then explicitly integrate this generation again; validation will run again.",
+    }
+}
+
 /// Copy already retained validator output without reading workspace files.
 fn failed_validation_diagnostics(
     result: &validator::ValidationResult,
@@ -604,8 +647,15 @@ mod crash_tests {
             ) {
                 std::process::exit(42);
             }
+            if matches!(
+                (stage.as_str(), point),
+                ("lease-before", Checkpoint::LeaseBlockBeforeRequeue)
+                    | ("lease-after", Checkpoint::LeaseBlockAfterRequeue)
+            ) {
+                std::process::exit(44);
+            }
             if matches!(point, Checkpoint::EvidenceDurable) {
-                if stage == "late-lease" {
+                if stage == "late-lease" || stage.starts_with("lease-") {
                     Authority::open(Path::new(&root))?.lease_store()?.acquire(
                         "file:change",
                         "other",
@@ -620,7 +670,11 @@ mod crash_tests {
             }
             Ok(())
         });
-        if stage == "late-lease" || stage == "stale-trunk" {
+        if stage == "late-lease" {
+            assert!(matches!(result, Ok(RunResult::LeaseBlocked { .. })));
+            std::process::exit(43);
+        }
+        if stage == "stale-trunk" {
             assert!(result.is_err());
             std::process::exit(43);
         }
@@ -628,7 +682,14 @@ mod crash_tests {
     }
     #[test]
     fn process_interruption_before_and_after_cas_reconciles_without_double_landing() {
-        for stage in ["before", "after", "late-lease", "stale-trunk"] {
+        for stage in [
+            "before",
+            "after",
+            "late-lease",
+            "stale-trunk",
+            "lease-before",
+            "lease-after",
+        ] {
             let tmp = tempfile::tempdir().unwrap();
             let source = tmp.path().join("source");
             fs::create_dir(&source).unwrap();
@@ -675,6 +736,8 @@ mod crash_tests {
                 status.code(),
                 Some(if stage == "before" || stage == "after" {
                     42
+                } else if stage.starts_with("lease-") {
+                    44
                 } else {
                     43
                 })
@@ -683,7 +746,32 @@ mod crash_tests {
             assert!(interrupted.landings().unwrap().is_empty());
             assert_eq!(interrupted.evidence_all().unwrap().len(), 1);
             let tip = git(&a, &["rev-parse", "trunk"]).unwrap();
-            assert_eq!(tip == base, stage == "before" || stage == "late-lease");
+            assert_eq!(
+                tip == base,
+                stage != "stale-trunk" && stage != "after",
+                "stage={stage}"
+            );
+            if stage == "lease-before" {
+                let life = interrupted.load_lifecycle().unwrap();
+                let submission = life.get(&id).unwrap();
+                assert!(matches!(
+                    submission.state(),
+                    State::Validating { attempt: 1 }
+                ));
+                assert_eq!(
+                    submission.attempts()[0].status,
+                    crate::lifecycle::AttemptStatus::Running
+                );
+            }
+            if stage == "lease-after" {
+                let life = interrupted.load_lifecycle().unwrap();
+                let submission = life.get(&id).unwrap();
+                assert_eq!(submission.state(), &State::Queued);
+                assert_eq!(
+                    submission.attempts()[0].status,
+                    crate::lifecycle::AttemptStatus::Interrupted
+                );
+            }
             if stage == "stale-trunk" {
                 assert!(
                     a.reconcile().is_err(),
@@ -691,7 +779,7 @@ mod crash_tests {
                 );
                 git(&a, &["update-ref", "refs/heads/trunk", &base, &tip]).unwrap();
             }
-            if stage == "late-lease" {
+            if stage == "late-lease" || stage.starts_with("lease-") {
                 leases
                     .release(
                         "other",

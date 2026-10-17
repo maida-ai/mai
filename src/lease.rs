@@ -11,7 +11,7 @@ use rusqlite::{
     Connection, OpenFlags, OptionalExtension, Transaction, TransactionBehavior, params,
 };
 use serde::{Deserialize, Serialize};
-use std::{collections::BTreeMap, fs::OpenOptions, path::Path, time::Duration};
+use std::{collections::BTreeMap, error::Error, fmt, fs::OpenOptions, path::Path, time::Duration};
 
 pub const SCHEMA_VERSION: u32 = 2;
 const SCHEMA: &str = "
@@ -33,6 +33,42 @@ pub struct Lease {
     pub owner: String,
     pub generation: u64,
     pub expires_ms: i64,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum LeaseBlockReason {
+    ClaimMissing,
+    LeaseExpiredOrReleased,
+    ClaimIdentityMismatch,
+    ActiveLeaseRequiresClaim,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct LeaseBlocked {
+    pub unit: String,
+    pub reason: LeaseBlockReason,
+}
+
+impl fmt::Display for LeaseBlocked {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            formatter,
+            "lease blocked for {}: {:?}",
+            self.unit, self.reason
+        )
+    }
+}
+
+impl Error for LeaseBlocked {}
+
+impl LeaseBlocked {
+    fn new(unit: &str, reason: LeaseBlockReason) -> Self {
+        Self {
+            unit: unit.to_owned(),
+            reason,
+        }
+    }
 }
 
 pub struct LeaseStore {
@@ -232,20 +268,39 @@ impl LeaseStore {
         clock(&tx, now_ms)?;
         let mut claimed = BTreeMap::new();
         for claim in claims {
+            crate::state::canonical_path(&claim.unit)?;
             ensure!(
                 claimed.insert(&claim.unit, claim.generation).is_none(),
                 "duplicate lease claim"
             );
-            held(&tx, owner, claim, now_ms)?;
+            let (lease, released) = row(&tx, &claim.unit)?
+                .ok_or_else(|| LeaseBlocked::new(&claim.unit, LeaseBlockReason::ClaimMissing))?;
+            if released || lease.expires_ms <= now_ms {
+                return Err(LeaseBlocked::new(
+                    &claim.unit,
+                    LeaseBlockReason::LeaseExpiredOrReleased,
+                )
+                .into());
+            }
+            if lease.owner != owner || lease.generation != claim.generation {
+                return Err(LeaseBlocked::new(
+                    &claim.unit,
+                    LeaseBlockReason::ClaimIdentityMismatch,
+                )
+                .into());
+            }
         }
         for unit in units {
             crate::state::canonical_path(unit)?;
             if let Some((lease, false)) = row(&tx, unit)? {
-                if lease.expires_ms > now_ms {
-                    ensure!(
-                        lease.owner == owner && claimed.get(unit) == Some(&lease.generation),
-                        "lease ownership or generation mismatch: {unit}"
-                    );
+                if lease.expires_ms > now_ms
+                    && (lease.owner != owner || claimed.get(unit) != Some(&lease.generation))
+                {
+                    return Err(LeaseBlocked::new(
+                        unit,
+                        LeaseBlockReason::ActiveLeaseRequiresClaim,
+                    )
+                    .into());
                 }
             }
         }
