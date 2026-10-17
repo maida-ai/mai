@@ -340,7 +340,13 @@ fn main() {
 fn result_exit_code(value: &Value) -> i32 {
     match value.get("kind").and_then(Value::as_str) {
         Some("awaiting_approval") => return ExitCode::Pending as i32,
-        Some("rejected") => return ExitCode::Rejected as i32,
+        Some("rejected") => {
+            return if value.get("reason").and_then(Value::as_str) == Some("infrastructure") {
+                ExitCode::Infrastructure as i32
+            } else {
+                ExitCode::Rejected as i32
+            };
+        }
         _ => {}
     }
     let outcome = value
@@ -353,5 +359,35 @@ fn result_exit_code(value: &Value) -> i32 {
             ExitCode::Infrastructure as i32
         }
         _ => ExitCode::Success as i32,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn integration_exit_codes_preserve_lifecycle_failure_categories() {
+        use mai::lifecycle::{Diagnostics, Outcome, ReasonCode};
+        for reason in [
+            ReasonCode::InvalidSubmission,
+            ReasonCode::DependencyFailed,
+            ReasonCode::Conflict,
+            ReasonCode::CheckFailed,
+            ReasonCode::PolicyDenied,
+            ReasonCode::Infrastructure,
+        ] {
+            let outcome = Outcome::Rejected {
+                reason,
+                diagnostics: Diagnostics::default(),
+            };
+            assert_eq!(
+                result_exit_code(&json!({"kind":"rejected", "reason":reason})),
+                outcome.exit_code() as i32,
+                "reason={reason:?}"
+            );
+        }
+        assert_eq!(result_exit_code(&json!({"kind":"awaiting_approval"})), 6);
+        assert_eq!(result_exit_code(&json!({"kind":"landed"})), 0);
     }
 }
