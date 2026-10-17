@@ -508,6 +508,196 @@ pub fn show(root: &Path, generation: GenerationId) -> Result<Submission> {
         operation(root, Action::Show { generation })?.context("engine returned no submission")?,
     )?)
 }
+pub fn queue(root: &Path, limit: usize, after: Option<GenerationId>) -> Result<serde_json::Value> {
+    ensure!(
+        (1..=100).contains(&limit),
+        "queue limit must be between 1 and 100"
+    );
+    let lifecycle = observer_lifecycle(root)?;
+    let all: Vec<_> = lifecycle.submissions().collect();
+    let start = match after {
+        Some(cursor) => {
+            all.iter()
+                .position(|s| s.id() == &cursor)
+                .context("queue cursor generation not found")?
+                + 1
+        }
+        None => 0,
+    };
+    let end = start.saturating_add(limit).min(all.len());
+    let items: Vec<_> = all[start..end]
+        .iter()
+        .map(|submission| {
+            let dependencies = submission.dependencies();
+            let state = serde_json::to_value(submission.state())?;
+            Ok(serde_json::json!({
+                "id": submission.id(),
+                "agent": submission.agent(),
+                "commit": submission.commit(),
+                "dependencies": dependencies.iter().take(8).collect::<Vec<_>>(),
+                "dependency_count": dependencies.len(),
+                "dependencies_truncated": dependencies.len() > 8,
+                "state": state.get("kind").cloned().unwrap_or(serde_json::Value::Null),
+                "outcome": state.get("outcome").map(|outcome| serde_json::json!({
+                    "kind": outcome.get("kind"),
+                    "reason": outcome.get("reason")
+                })),
+                "attempt_count": submission.attempts().len(),
+                "annotation_count": submission.annotations().len()
+            }))
+        })
+        .collect::<Result<Vec<_>>>()?;
+    let next_cursor = if end < all.len() {
+        all.get(end - 1).map(|submission| submission.id().clone())
+    } else {
+        None
+    };
+    let result = serde_json::json!({"items":items,"next_cursor":next_cursor,"total":all.len(),"order":"change_id_generation"});
+    ensure!(
+        serde_json::to_vec(&result)?.len() <= 255 * 1024,
+        "queue page exceeds the 256 KiB response bound; retry with a smaller --limit"
+    );
+    Ok(result)
+}
+pub fn wait(root: &Path, generation: GenerationId, timeout: Duration) -> Result<serde_json::Value> {
+    ensure!(
+        (Duration::from_secs(1)..=Duration::from_secs(3600)).contains(&timeout),
+        "timeout must be between 1 and 3600 seconds"
+    );
+    let deadline = Instant::now() + timeout;
+    let mut last_state = None;
+    let mut observed_identity = None;
+    loop {
+        if Instant::now() >= deadline {
+            return pending_wait(&generation, last_state);
+        }
+        let remaining = deadline.saturating_duration_since(Instant::now());
+        let (lifecycle, authority_id, baseline) = match observer_snapshot(root, remaining) {
+            Ok(snapshot) => snapshot,
+            Err(error) if Instant::now() >= deadline && is_sqlite_lock_timeout(&error) => {
+                return pending_wait(&generation, last_state);
+            }
+            Err(error) => return Err(error),
+        };
+        if let Some((expected_id, expected_baseline)) = &observed_identity {
+            ensure!(
+                authority_id == *expected_id && baseline == *expected_baseline,
+                "authority identity changed while waiting; retry against the intended authority"
+            );
+        } else {
+            observed_identity = Some((authority_id.clone(), baseline.clone()));
+        }
+        let submission = lifecycle
+            .get(&generation)
+            .context("unknown submission generation")?;
+        let state = submission.state().clone();
+        if Instant::now() >= deadline {
+            return pending_wait(&generation, last_state);
+        }
+        if submission.state().is_terminal() {
+            let result = bounded_wait_result(submission)?;
+            ensure!(
+                serde_json::to_vec(&result)?.len() <= 31 * 1024,
+                "terminal wait record exceeds the 32 KiB result bound; inspect the exact generation with mai show"
+            );
+            return Ok(result);
+        }
+        last_state = Some(state);
+        let remaining = deadline.saturating_duration_since(Instant::now());
+        if remaining.is_zero() {
+            return pending_wait(&generation, last_state);
+        }
+        thread::sleep(remaining.min(Duration::from_millis(200)));
+    }
+}
+fn pending_wait(
+    generation: &GenerationId,
+    state: Option<crate::lifecycle::State>,
+) -> Result<serde_json::Value> {
+    let result = serde_json::json!({"kind":"pending","generation":generation,"state":state,"message":"wait timed out before a terminal outcome; submission state is unchanged"});
+    ensure!(
+        serde_json::to_vec(&result)?.len() <= 32 * 1024,
+        "pending wait result exceeds the response bound"
+    );
+    Ok(result)
+}
+fn is_sqlite_lock_timeout(error: &anyhow::Error) -> bool {
+    error.chain().any(|cause| {
+        cause
+            .downcast_ref::<rusqlite::Error>()
+            .is_some_and(|error| match error {
+                rusqlite::Error::SqliteFailure(error, _) => matches!(
+                    error.code,
+                    rusqlite::ffi::ErrorCode::DatabaseBusy
+                        | rusqlite::ffi::ErrorCode::DatabaseLocked
+                ),
+                _ => false,
+            })
+    })
+}
+fn bounded_wait_result(submission: &Submission) -> Result<serde_json::Value> {
+    let dependencies = submission.dependencies();
+    Ok(serde_json::json!({
+        "id": submission.id(),
+        "agent": submission.agent(),
+        "commit": submission.commit(),
+        "dependencies": dependencies.iter().take(8).collect::<Vec<_>>(),
+        "dependency_count": dependencies.len(),
+        "dependencies_truncated": dependencies.len() > 8,
+        "state": submission.state(),
+        "attempt_count": submission.attempts().len(),
+        "annotation_count": submission.annotations().len(),
+        "history_omitted": true
+    }))
+}
+fn observer_snapshot(
+    root: &Path,
+    timeout: Duration,
+) -> Result<(crate::lifecycle::Lifecycle, String, String)> {
+    let local = local_dir(root)?;
+    let config_path = local.join("config.toml");
+    ensure!(
+        fs::symlink_metadata(&config_path)?.is_file(),
+        "authority configuration must be a regular file"
+    );
+    let config: toml::Value = toml::from_str(&fs::read_to_string(config_path)?)?;
+    ensure!(
+        config
+            .get("format_version")
+            .and_then(toml::Value::as_integer)
+            == Some(2),
+        "unsupported authority format"
+    );
+    let authority_id = config
+        .get("authority_id")
+        .and_then(toml::Value::as_str)
+        .context("authority configuration has no identity")?;
+    let baseline = config
+        .get("baseline")
+        .and_then(toml::Value::as_str)
+        .context("authority configuration has no import baseline")?;
+    let path = local.join("state.db");
+    ensure!(
+        fs::symlink_metadata(&path)?.is_file(),
+        "authority state must be a regular file"
+    );
+    let (lifecycle, stored_id, stored_baseline) =
+        crate::state::StateStore::observe_lifecycle_with_timeout(path, timeout)?;
+    let stored_id = stored_id.context("read-only state has no authority identity")?;
+    let stored_baseline = stored_baseline.context("read-only state has no import baseline")?;
+    ensure!(
+        stored_id == authority_id,
+        "authority identity does not match read-only state"
+    );
+    ensure!(
+        stored_baseline == baseline,
+        "authority baseline does not match read-only state"
+    );
+    Ok((lifecycle, stored_id, stored_baseline))
+}
+fn observer_lifecycle(root: &Path) -> Result<crate::lifecycle::Lifecycle> {
+    Ok(observer_snapshot(root, Duration::from_secs(5))?.0)
+}
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]

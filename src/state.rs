@@ -77,6 +77,34 @@ pub struct StateStore {
 }
 
 impl StateStore {
+    /// Read and validate one committed state snapshot without changing durable state,
+    /// reconciling authority state, or acquiring publication ownership. SQLite may manage
+    /// transient WAL shared-memory sidecars while reading an active WAL database.
+    pub fn observe_lifecycle(
+        path: impl AsRef<Path>,
+    ) -> Result<(Lifecycle, Option<String>, Option<String>)> {
+        Self::observe_lifecycle_with_timeout(path, Duration::from_secs(5))
+    }
+
+    pub fn observe_lifecycle_with_timeout(
+        path: impl AsRef<Path>,
+        timeout: Duration,
+    ) -> Result<(Lifecycle, Option<String>, Option<String>)> {
+        let connection = Connection::open_with_flags(
+            path,
+            OpenFlags::SQLITE_OPEN_READ_ONLY | OpenFlags::SQLITE_OPEN_NO_MUTEX,
+        )?;
+        connection.busy_timeout(timeout)?;
+        let store = Self { connection };
+        let transaction = store.connection.unchecked_transaction()?;
+        store.validate_snapshot()?;
+        let lifecycle = store.load_lifecycle()?.model;
+        let authority_id = store.authority_id()?;
+        let baseline = store.baseline()?;
+        transaction.commit()?;
+        Ok((lifecycle, authority_id, baseline))
+    }
+
     /// Create exclusively. Never overwrite a database or accept a partial previous create.
     pub fn create(path: impl AsRef<Path>) -> Result<Self> {
         let path = path.as_ref();
@@ -507,6 +535,7 @@ fn save_model(tx: &Transaction<'_>, model: &Lifecycle) -> Result<()> {
     )?;
     Ok(())
 }
+
 fn validate_relations(connection: &Connection, model: &Lifecycle) -> Result<()> {
     let mut expected = Vec::new();
     let mut edges = BTreeSet::new();
