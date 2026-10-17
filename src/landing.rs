@@ -1,5 +1,5 @@
-//! Candidate construction only. A prepared tree is not validation or permission to publish.
-//! Callers serialize against the engine and must recheck trunk, policy and leases before CAS.
+//! Explicit serial candidate preparation and gated publication.
+//! A prepared tree alone grants no permission to publish; run_one requires the engine writer lock.
 use crate::{
     authority::Authority,
     lifecycle::{GenerationId, Lifecycle, Outcome, State},
@@ -13,6 +13,15 @@ use std::process::{Command, Output};
 pub enum MergeMode {
     Textual,
 }
+
+#[derive(Debug)]
+struct MergeConflict;
+impl std::fmt::Display for MergeConflict {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str("submitted delta conflicts with current trunk")
+    }
+}
+impl std::error::Error for MergeConflict {}
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct PreparedCandidate {
@@ -119,9 +128,12 @@ pub fn prepare_candidate(
             &submitted,
         ])
         .output()?;
+    if output.status.code() == Some(1) {
+        return Err(MergeConflict.into());
+    }
     ensure!(
         output.status.success(),
-        "candidate merge conflicted or Git merge-tree failed"
+        "Git merge-tree failed before producing a clean candidate"
     );
     let text = String::from_utf8(output.stdout)?;
     let tree = text
@@ -256,6 +268,12 @@ fn run_one_inner(
             commit: commit.clone(),
         });
     }
+    if let State::Terminal {
+        outcome: Outcome::Rejected { reason, .. },
+    } = submission.state()
+    {
+        return Ok(RunResult::Rejected { reason: *reason });
+    }
     ensure!(
         matches!(submission.state(), State::Queued | State::AwaitingApproval),
         "generation is not queued; reconcile interrupted attempts before retrying"
@@ -269,7 +287,17 @@ fn run_one_inner(
         git(authority, &["rev-parse", "--verify", &retained])? == submission.commit(),
         "retained submission reference changed; preserve state and investigate"
     );
-    let prepared = prepare_candidate(authority, &life, id, mode)?;
+    let prepared = match prepare_candidate(authority, &life, id, mode) {
+        Ok(candidate) => candidate,
+        Err(error) if error.is::<MergeConflict>() => {
+            life.reject(id, ReasonCode::Conflict, Diagnostics { conflict: Some(error.to_string()), next_action: Some("Resolve the conflict in your own workspace and submit a new change; dependent changes must be resubmitted against the replacement".into()), ..Diagnostics::default() })?;
+            store.save_lifecycle(&mut life)?;
+            return Ok(RunResult::Rejected {
+                reason: ReasonCode::Conflict,
+            });
+        }
+        Err(error) => return Err(error),
+    };
     let records = store.landings()?;
     let revision = if store.baseline()?.as_deref() == Some(&prepared.trunk) {
         ensure!(records.is_empty(), "trunk disagrees with accepted ledger");

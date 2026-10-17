@@ -329,3 +329,51 @@ fn candidate_attributes_and_custom_merge_drivers_are_not_implicitly_enabled() {
     git(&a, &["config", "merge.custom.driver", "false"], "");
     assert!(prepare_candidate(&a, &life, &id, MergeMode::Textual).is_err());
 }
+
+#[cfg(unix)]
+#[test]
+fn true_conflict_has_one_terminal_outcome_and_rejects_dependents() {
+    use mai::landing::{RunResult, run_one};
+    use mai::lifecycle::{ReasonCode, State};
+    let (_tmp, mut a, mut leases, base) = publication_fixture();
+    let winner = submission(&a, &base, &[("a", "winner")]);
+    let loser = submission(&a, &base, &[("a", "loser")]);
+    let dependent = submission(&a, &loser, &[("a", "loser"), ("b", "dependent")]);
+    let w = register(&a, "winner", &winner, vec![]);
+    let l = register(&a, "loser", &loser, vec![]);
+    let d = register(&a, "dependent", &dependent, vec![l.clone()]);
+    run_one(&mut a, &w, MergeMode::Textual, &mut leases, &[]).unwrap();
+    assert!(matches!(
+        run_one(&mut a, &l, MergeMode::Textual, &mut leases, &[]).unwrap(),
+        RunResult::Rejected {
+            reason: ReasonCode::Conflict
+        }
+    ));
+    assert!(matches!(
+        run_one(&mut a, &l, MergeMode::Textual, &mut leases, &[]).unwrap(),
+        RunResult::Rejected {
+            reason: ReasonCode::Conflict
+        }
+    ));
+    let store = mai::state::StateStore::open(a.state_path()).unwrap();
+    let life = store.load_lifecycle().unwrap();
+    assert!(matches!(
+        life.get(&l).unwrap().state(),
+        State::Terminal {
+            outcome: Outcome::Rejected {
+                reason: ReasonCode::Conflict,
+                ..
+            }
+        }
+    ));
+    assert!(matches!(
+        life.get(&d).unwrap().state(),
+        State::Terminal {
+            outcome: Outcome::Rejected {
+                reason: ReasonCode::DependencyFailed,
+                ..
+            }
+        }
+    ));
+    assert_eq!(store.landings().unwrap().len(), 1);
+}
