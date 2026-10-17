@@ -17,11 +17,11 @@
 
 mai aims to shorten recovery when agents fail, conflict or lose their environment, while keeping a blocking gate at the shared trunk boundary. The proposed rewrite uses plain Git submissions and an integrated validation queue so agents spend less time on rebases and humans spend less time coordinating parallel changes.
 
-**MVP foundations under development.** Scoped design acceptance and native S3 functional verification permit replacement under [ADR 0010](docs/adr/0010-staged-mvp-qualification.md). The old worktree engine has been retired. The foundation now provides a versioned lifecycle model, SQLite persistence, safe authority initialization and a local single-writer engine. The supported `init`, `serve`, `status` and `stop` commands are described in the [engine guide](docs/engine.md). The queue flow below is planned, not shipped. Built in Rust, backed by Git, open source under [Apache 2.0](LICENSE), and independent of core Maida.
+**MVP foundations under development.** Scoped design acceptance and native S3 functional verification permit replacement under [ADR 0010](docs/adr/0010-staged-mvp-qualification.md). The old worktree engine has been retired. The foundation now provides a versioned lifecycle model, SQLite persistence, safe authority initialization, a local single-writer engine, manual trusted-gate validation and independent agent workspaces. The authority commands are described in the [engine guide](docs/engine.md); see [manual validation](docs/manual-validator.md) and [workspaces](docs/workspaces.md) for the new explicit operations. The queue flow below is planned, not shipped. Built in Rust, backed by Git, open source under [Apache 2.0](LICENSE), and independent of core Maida.
 
 ## Two agents. One integration queue.
 
-Planned flow after creating Alice's and Bob's clones with `mai workspace`:
+Planned submission flow after creating Alice's and Bob's clones with the implemented `mai workspace` command:
 
 ```sh
 # In Alice's clone:
@@ -53,7 +53,7 @@ cargo test --all-targets --locked
 cargo run --locked -- --version
 ```
 
-See [getting started](docs/getting-started.md). Submission, validation and publication are not enabled in this layer; no legacy worktree commands or format migrations are provided. Performance targets and differentiated priority remain deferred until practical MVP observations.
+See [getting started](docs/getting-started.md). Submission and publication are not enabled in this layer; manual validation requires explicit trusted policy and does not land changes; no legacy worktree commands or format migrations are provided. Performance targets and differentiated priority remain deferred until practical MVP observations.
 
 ## Where mai fits
 

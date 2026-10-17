@@ -1,0 +1,51 @@
+{
+  "product": {
+    "approval": null,
+    "binding": {
+      "authority": {
+        "data": "L2hvbWUvemF0b2ljaGkvRGVza3RvcC9HaXQvTWFpZGEuQUkvbWFpZGEtbWFpLy50aHJvd2F3YXkvbmV4dC1iYXRjaC9maW5hbC1uYXRpdmUtY29ycmVjdGlvbnMvdHlwZXNjcmlwdC1hdXRob3JpdHk=",
+        "encoding": "unix_bytes"
+      },
+      "base": "d6b2e18a126fc9ebfe091763c08c43041594398e",
+      "candidate": "d6b2e18a126fc9ebfe091763c08c43041594398e",
+      "policy": "d6b2e18a126fc9ebfe091763c08c43041594398e",
+      "schema_version": 1,
+      "submitted_identity": null,
+      "tree": "69708da4ba90944d708e14989a6b959bc1cc3815"
+    },
+    "bootstrap": {
+      "elapsed_ms": 3626,
+      "exit_code": 0,
+      "outcome": "success",
+      "stderr_tail": "warning Ignored scripts due to flag.\n",
+      "stdout_tail": "yarn install v1.22.22\n[1/4] Resolving packages...\n[2/4] Fetching packages...\n[3/4] Linking dependencies...\n[4/4] Building fresh packages...\nDone in 3.41s.\n"
+    },
+    "bootstrap_reused": false,
+    "diagnostic": null,
+    "elapsed_ms": 9675,
+    "outcome": "success",
+    "process": {
+      "elapsed_ms": 4486,
+      "exit_code": 0,
+      "outcome": "success",
+      "stderr_tail": "npm warn Unknown env config \"version-commit-hooks\". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.\nnpm warn Unknown env config \"cache-folder\". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.\nnpm warn Unknown env config \"version-tag-prefix\". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.\nnpm warn Unknown env config \"version-git-message\". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.\nnpm warn Unknown env config \"argv\". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.\nnpm warn Unknown env config \"version-git-tag\". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.\nPASS src/__tests__/string.test.ts\nPASS src/__tests__/error.test.ts\nPASS src/__tests__/async-parsing.test.ts\nPASS src/__tests__/primitive.test.ts\nPASS src/__tests__/object.test.ts\nPASS src/__tests__/discriminated-unions.test.ts\nPASS src/__tests__/refine.test.ts\nPASS src/__tests__/readonly.test.ts\nPASS src/__tests__/partials.test.ts\nPASS src/__tests__/function.test.ts\nPASS src/__tests__/catch.test.ts\nPASS src/__tests__/coerce.test.ts\nPASS src/__tests__/number.test.ts\nPASS src/__tests__/transformer.test.ts\nPASS src/__tests__/deepmasking.test.ts\nPASS src/__tests__/all-errors.test.ts\nPASS src/__tests__/set.test.ts\nPASS src/__tests__/preprocess.test.ts\nPASS src/__tests__/validations.test.ts\nPASS src/__tests__/recursive.test.ts\nPASS src/__tests__/record.test.ts\nPASS src/__tests__/pickomit.test.ts\nPASS src/__tests__/map.test.ts\nPASS src/__tests__/default.test.ts\nPASS src/__tests__/intersection.test.ts\nPASS src/__tests__/enum.test.ts\nPASS src/__tests__/tuple.test.ts\nPASS src/__tests__/standard-schema.test.ts\nPASS src/__tests__/promise.test.ts\nPASS src/__tests__/firstparty.test.ts\nPASS src/__tests__/nativeEnum.test.ts\nPASS src/__tests__/bigint.test.ts\nPASS src/__tests__/array.test.ts\nPASS src/__tests__/branded.test.ts\nPASS src/__tests__/async-refinements.test.ts\nPASS src/__tests__/unions.test.ts\nPASS src/__tests__/generics.test.ts\nPASS src/__tests__/description.test.ts\nPASS src/__tests__/optional.test.ts\nPASS src/__tests__/nullable.test.ts\nPASS src/__tests__/instanceof.test.ts\nPASS src/__tests__/parser.test.ts\nPASS src/__tests__/literal.test.ts\nPASS src/__tests__/date.test.ts\nPASS src/__tests__/custom.test.ts\nPASS src/__tests__/parseUtil.test.ts\nPASS src/__tests__/pipeline.test.ts\nPASS src/__tests__/firstpartyschematypes.test.ts\nPASS src/__tests__/base.test.ts\nPASS src/__tests__/object-in-es5-env.test.ts\nPASS src/__tests__/masking.test.ts\nPASS src/__tests__/anyunknown.test.ts\nPASS src/__tests__/safeparse.test.ts\nPASS src/__tests__/complex.test.ts\nPASS src/__tests__/nan.test.ts\nPASS src/__tests__/object-augmentation.test.ts\nPASS src/__tests__/mocker.test.ts\nPASS src/__tests__/void.test.ts\n\nTest Suites: 58 passed, 58 total\nTests:       544 passed, 544 total\nSnapshots:   0 total\nTime:        3.769 s\nRan all test suites.\n",
+      "stdout_tail": "yarn run v1.22.22\n$ npx jest --config ./configs/ts-jest.config.json --runInBand\nDone in 4.35s.\n"
+    },
+    "protected_changes": [],
+    "schema_version": 1
+  },
+  "bootstrap_before": [
+    {
+      "name": ".mai/validator-bootstrap-0.json",
+      "mtime_ns": 1792189954669317120,
+      "content": "{\"fingerprint\":\"12bf8872f28d7a36a2df18ada9716fa08ac51810\",\"version\":1}"
+    }
+  ],
+  "bootstrap_after": [
+    {
+      "name": ".mai/validator-bootstrap-0.json",
+      "mtime_ns": 1792189990718530714,
+      "content": "{\"fingerprint\":\"ecbc4a9d161246d30eafa86fd5ff3ced10c9b62b\",\"version\":1}"
+    }
+  ]
+}

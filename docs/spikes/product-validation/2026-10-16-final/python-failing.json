@@ -1,0 +1,43 @@
+{
+  "approval": null,
+  "binding": {
+    "authority": {
+      "data": "L2hvbWUvemF0b2ljaGkvRGVza3RvcC9HaXQvTWFpZGEuQUkvbWFpZGEtbWFpLy50aHJvd2F3YXkvbmV4dC1iYXRjaC9maW5hbC1ydW4vcHl0aG9uLWF1dGhvcml0eQ==",
+      "encoding": "unix_bytes"
+    },
+    "base": "b389725fbe219b4a840a654b9d7c04f752da2a35",
+    "candidate": "401b80e52b2ee1c32b1c07b5c504db6bfa0790da",
+    "policy": "b389725fbe219b4a840a654b9d7c04f752da2a35",
+    "schema_version": 1,
+    "submitted_identity": null,
+    "tree": "f69097f0c85bc063c88c75d3aa000da8a589c0c8"
+  },
+  "bootstrap": null,
+  "bootstrap_reused": true,
+  "diagnostic": null,
+  "elapsed_ms": 886,
+  "outcome": "failure",
+  "process": {
+    "elapsed_ms": 353,
+    "exit_code": 2,
+    "outcome": "failure",
+    "stderr_tail": "",
+    "stdout_tail": "============================= test session starts ==============================\nplatform linux -- Python 3.12.3, pytest-8.1.1, pluggy-1.4.0\nrootdir: /home/zatoichi/Desktop/Git/Maida.AI/maida-mai/.throwaway/next-batch/final-run/python-authority/.mai/validators/slot-0/candidate\nconfigfile: pyproject.toml\ntestpaths: tests\ncollected 289 items / 1 error\n\n==================================== ERRORS ====================================\n__________ ERROR collecting tests/test_itsdangerous/test_encoding.py ___________\ntests/test_itsdangerous/test_encoding.py:3: in <module>\n    from itsdangerous.encoding import base64_decode\nsrc/itsdangerous/__init__.py:40: in <module>\n    THIS_IS_A_DELIBERATELY_INVALID_PRODUCT_EXPERIMENT\nE   NameError: name 'THIS_IS_A_DELIBERATELY_INVALID_PRODUCT_EXPERIMENT' is not defined\n=========================== short test summary info ============================\nERROR tests/test_itsdangerous/test_encoding.py - NameError: name 'THIS_IS_A_DELIBERATELY_INVALID_PRODUCT_EXPERIMENT' is not defined\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n=============================== 1 error in 0.11s ===============================\n"
+  },
+  "protected_changes": [],
+  "schema_version": 1,
+  "experiment_bootstrap_before": [
+    {
+      "name": ".mai/validator-bootstrap-0.json",
+      "mtime_ns": 1792189410138200196,
+      "content": "{\"fingerprint\":\"04b4ae599fcfa28ff32d5ab477f36598cfb6d0a7\",\"version\":1}"
+    }
+  ],
+  "experiment_bootstrap_after": [
+    {
+      "name": ".mai/validator-bootstrap-0.json",
+      "mtime_ns": 1792189410138200196,
+      "content": "{\"fingerprint\":\"04b4ae599fcfa28ff32d5ab477f36598cfb6d0a7\",\"version\":1}"
+    }
+  ]
+}

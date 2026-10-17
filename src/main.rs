@@ -43,6 +43,15 @@ enum Action {
     },
     /// Request graceful engine shutdown without starting one.
     Stop { project: PathBuf },
+    /// Create an independent agent clone and run configured bootstrap.
+    Workspace {
+        project: PathBuf,
+        agent: String,
+        destination: PathBuf,
+        #[arg(long)]
+        skip_bootstrap: bool,
+    },
+
     /// Manually validate exact candidates; receive and landing remain unavailable.
     Validator {
         #[command(subcommand)]
@@ -80,6 +89,17 @@ fn run(command: Action) -> Result<Value> {
             no_autostart,
         } => serde_json::to_value(engine::status(&project, !no_autostart)?)?,
         Action::Stop { project } => serde_json::to_value(engine::stop(&project)?)?,
+        Action::Workspace {
+            project,
+            agent,
+            destination,
+            skip_bootstrap,
+        } => serde_json::to_value(mai::workspace::create(
+            &project,
+            &agent,
+            &destination,
+            skip_bootstrap,
+        )?)?,
         Action::Validator {
             command: ValidatorAction::Run { project, candidate },
         } => serde_json::to_value(mai::validator::run(&project, &candidate)?)?,
@@ -125,7 +145,10 @@ fn main() {
 
 // Results retain their structured JSON even when the operation is unsuccessful.
 fn result_exit_code(value: &Value) -> i32 {
-    match value.get("outcome").and_then(Value::as_str) {
+    let outcome = value
+        .get("outcome")
+        .or_else(|| value.get("bootstrap").and_then(|v| v.get("outcome")));
+    match outcome.and_then(Value::as_str) {
         Some("approval_required") => ExitCode::Pending as i32,
         Some("policy_denied" | "failure" | "check_failed") => ExitCode::Rejected as i32,
         Some("timeout" | "cancelled" | "cleanup_failure" | "infrastructure" | "policy_changed") => {
