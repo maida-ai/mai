@@ -27,6 +27,12 @@ Run `mai integrate PROJECT CHANGE --mode textual --generation 1 --wait-seconds 6
 
 An active ordinary lease requires an exact `--lease file:PATH=GENERATION` claim even for its owner. Another owner's active lease blocks integration; lease generations fence stale claims. Lease operations require the live engine and use engine time. Client timeouts are not cancellations: the engine serializes integration with other requests, so inspect the submission after the operation ends rather than assuming a timed-out request had no effect.
 
+## Diagnose before retrying
+
+A failed or timed-out command and a rejected submission are different. If receipt or integration has an uncertain response, preserve the command output and query the same immutable identity once the engine can answer. A query may itself time out while the serial gate runs; that does not prove owner death. If the owner exited during publication, restart/reconcile before deciding whether to integrate again. A terminal rejection will not be cleared by retries: inspect its reason and available diagnostics, then submit corrected work as a new change. Replacement generations are not implemented.
+
+`mai show` is the durable inspection surface; retain any diagnostic check result, bounded log tail, candidate ref and next-action text it provides. A bounded tail may omit the beginning of a failure, so keep the original command output too. Never treat absent diagnostics as a passing check. Keep reports free of credentials and raw agent context. The [operations guide](operations.md#diagnose-current-outcomes) maps observed states to supported next steps, including occupied validators and failed startup.
+
 ## Scope and recovery limits
 
 The receive path rejects touched `.env`, `.env.*` and `node_modules` paths, including deletions. Repository scope restrictions still apply. Admission is not a secret scanner or a guarantee that candidate content is safe to execute. The configured gate and explicit protected-policy approval remain separate requirements.
