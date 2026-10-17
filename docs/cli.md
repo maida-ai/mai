@@ -10,6 +10,10 @@
 
 Ordinary lease commands are `mai lease acquire PROJECT UNIT --owner AGENT --duration-ms N`, `renew PROJECT UNIT --owner AGENT --generation N --duration-ms N`, `release PROJECT UNIT --owner AGENT --generation N`, and `query PROJECT UNIT`. Units use canonical `file:` encoding. An active lease requires an exact current generation claim even for its owner; reacquisition after release creates a new generation. These commands require a running engine and do not autostart it. Release/expiry never rewrites work. There is no priority or preemption policy. See the [receive contract](receive.md) for restrictions and recovery.
 
+## Copy-based continuation
+
+`mai continue PROJECT SOURCE DESTINATION --change CHANGE --generation N [--skip-bootstrap]` verifies an exact landed generation and replays only its clean, unregistered linear local suffix into a new workspace based on a pinned accepted trunk. The source is preserved. An existing destination, stale boundary, dirty/untracked source, registered suffix or unsupported ancestry is refused. Interrupted and conflicting destinations remain available for inspection; retry uses a new path. This does not implement in-place sync or autostash. See [continuation](continuation.md) for prerequisites, bootstrap behavior and subsequent submission.
+
 ## Versioned lifecycle contract
 
 The Rust `lifecycle` module defines schema version 1. A submission is identified by an immutable Change-Id and positive generation number, with immutable agent identity, lowercase nonzero SHA-1 commit and exact parent-generation dependencies. Change/agent identifiers contain 1–128 ASCII letters, digits, underscores or hyphens. Identical commit retries with identical metadata return the existing generation, including after snapshot restoration; conflicting metadata rejects.
@@ -24,7 +28,7 @@ Stable process categories for upcoming commands are success 0, invalid input 2, 
 
 ## Planned interface — unavailable
 
-Ordinary clones and explicit push receipt are implemented above; the wider automatic workflow remains planned. Additional planned commands include `submit`, `wait`, `sync`, `queue` and `lease`; current `status` reports engine readiness only. Exact flags and response schemas must be implemented and tested before use. Explicit sync must preserve unsubmitted local work after squash landing. See [agent protocol](agents.md), [configuration](configuration.md) and [operations](operations.md).
+Ordinary clones and explicit push receipt are implemented above; the wider automatic workflow remains planned. Additional planned commands include `submit`, `wait`, `sync` and `queue`; current `status` reports engine readiness only. Exact flags and response schemas must be implemented and tested before use. Explicit sync must preserve unsubmitted local work after squash landing. See [agent protocol](agents.md), [configuration](configuration.md) and [operations](operations.md).
 
 Differentiated priority and automated incident recovery remain deferred under [ADR 0010](adr/0010-staged-mvp-qualification.md) and RFC #93. They are not represented as enabled features or speculative fields in the current schema. The initial MVP uses a single-class dependency-aware queue.
 

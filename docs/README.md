@@ -2,11 +2,15 @@
 
 The current 0.0.1 code is the replacement MVP foundation. The old worktree engine is retired. Scoped M0 acceptance is complete under ADR 0010, with explicit trusted-local receive and serial integration of a named generation now available. This is a scoped workflow, not the full automatic integration queue; each enabled path requires its own correctness tests.
 
+- [Current delivery and next decisions](release-status.md): implemented user loop, qualification limits and unfinished milestones.
+
 ## Evaluate the current binary
 
 - [Getting started](getting-started.md): disposable-repository installation and current commands.
 - [Benchmark protocol](benchmarking.md): reproducible comparisons, recovery metrics and evidence limits.
 - [Receive and integration](receive.md): durable receipt, named-generation integration, limits and recovery.
+- [Two-agent workflow](two-agent-workflow.md): continue later work, diagnose overlap and submit an explicit correction.
+- [Continue after landing](continuation.md): replay a clean local suffix into a new workspace while preserving the original clone.
 - [Validator recovery](validator-recovery.md): opt-in Linux supervision, explicit proof-backed reclaim and refusal cases.
 - [CLI reference](cli.md): current command behavior, safety limitations and a separate proposed interface outline.
 - [Agent integration](agents.md): current precautions followed by clearly labeled planned harness instructions.
