@@ -53,6 +53,23 @@ enum Action {
         #[arg(long, default_value_t = 1)]
         generation: u64,
     },
+    /// List durable submission generations in deterministic identity order.
+    Queue {
+        project: PathBuf,
+        #[arg(long, default_value_t = 50)]
+        limit: usize,
+        #[arg(long, value_parser = parse_cursor)]
+        after: Option<GenerationId>,
+    },
+    /// Wait for one exact generation to reach a terminal outcome.
+    Wait {
+        project: PathBuf,
+        change: String,
+        #[arg(long, default_value_t = 1)]
+        generation: u64,
+        #[arg(long, default_value_t = 600)]
+        timeout_seconds: u64,
+    },
     #[command(hide = true)]
     ReceiveHook { project: PathBuf },
     #[command(hide = true)]
@@ -159,6 +176,19 @@ fn parse_claim(text: &str) -> std::result::Result<mai::lease::LeaseClaim, String
     }
     Ok(mai::lease::LeaseClaim {
         unit: unit.into(),
+        generation,
+    })
+}
+fn parse_cursor(text: &str) -> std::result::Result<GenerationId, String> {
+    let (change_id, generation) = text
+        .rsplit_once(':')
+        .ok_or("cursor must be CHANGE:GENERATION")?;
+    let generation = generation.parse::<u64>().map_err(|e| e.to_string())?;
+    if change_id.is_empty() || generation == 0 {
+        return Err("cursor must identify a positive generation".into());
+    }
+    Ok(GenerationId {
+        change_id: change_id.into(),
         generation,
     })
 }
@@ -289,6 +319,45 @@ fn run(command: Action) -> Result<Value> {
             result["schema_version"] = json!(SCHEMA_VERSION);
             result
         }
+        Action::Queue {
+            project,
+            limit,
+            after,
+        } => {
+            let mut result = engine::queue(&project, limit, after)?;
+            result["schema_version"] = json!(SCHEMA_VERSION);
+            result
+        }
+        Action::Wait {
+            project,
+            change,
+            generation,
+            timeout_seconds,
+        } => {
+            let mut result = engine::wait(
+                &project,
+                GenerationId {
+                    change_id: change,
+                    generation,
+                },
+                std::time::Duration::from_secs(timeout_seconds),
+            )?;
+            result["schema_version"] = json!(SCHEMA_VERSION);
+            if result["kind"] != "pending" && result["state"]["kind"] == "terminal" {
+                let outcome = result["state"]["outcome"].clone();
+                if outcome["kind"] == "landed" {
+                    result["kind"] = json!("landed");
+                } else {
+                    result["kind"] = json!("rejected");
+                    result["reason"] = if outcome["kind"] == "rejected" {
+                        outcome["reason"].clone()
+                    } else {
+                        outcome["kind"].clone()
+                    };
+                }
+            }
+            result
+        }
         Action::ReceiveHook { project } => {
             mai::receive::hook(&project, false)?;
             Value::Null
@@ -398,6 +467,7 @@ fn main() {
 // Results retain their structured JSON even when the operation is unsuccessful.
 fn result_exit_code(value: &Value) -> i32 {
     match value.get("kind").and_then(Value::as_str) {
+        Some("pending") => return ExitCode::Pending as i32,
         Some("awaiting_approval") => return ExitCode::Pending as i32,
         Some("rejected") => {
             return if value.get("reason").and_then(Value::as_str) == Some("infrastructure") {

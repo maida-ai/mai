@@ -87,6 +87,9 @@ impl Fixture {
         Self::with_gate(None)
     }
     fn with_gate(gate: Option<&str>) -> Self {
+        Self::with_gate_timeout(gate, 10_000)
+    }
+    fn with_gate_timeout(gate: Option<&str>, gate_timeout_ms: u64) -> Self {
         let temp = tempfile::tempdir().unwrap();
         let source = temp.path().join("seed");
         let root = temp.path().join("authority");
@@ -96,7 +99,7 @@ impl Fixture {
         fs::create_dir(&control).unwrap();
         git(&source, &["init"]);
         fs::write(source.join("gate.sh"), gate.unwrap_or("if test -f \"$MAI_CANDIDATE_ROOT/hold\"; then\n  printf ready > \"$1/ready\"\n  while ! test -f \"$1/release\"; do sleep 0.02; done\nfi\ntest ! -f \"$MAI_CANDIDATE_ROOT/fail\"\n")).unwrap();
-        fs::write(source.join("mai.toml"), format!("version=1\n[check]\nprogram=\"sh\"\nscript=\"gate.sh\"\nargs=[{}]\ntimeout_ms=10000\noutput_tail_bytes=1024\n[validators]\nslots=1\nport_base=33000\nports_per_slot=10\n[policy]\nprotected=[\"protected.txt\"]\n", serde_json::to_string(control.to_str().unwrap()).unwrap())).unwrap();
+        fs::write(source.join("mai.toml"), format!("version=1\n[check]\nprogram=\"sh\"\nscript=\"gate.sh\"\nargs=[{}]\ntimeout_ms={gate_timeout_ms}\noutput_tail_bytes=1024\n[validators]\nslots=1\nport_base=33000\nports_per_slot=10\n[policy]\nprotected=[\"protected.txt\"]\n", serde_json::to_string(control.to_str().unwrap()).unwrap())).unwrap();
         fs::write(source.join("protected.txt"), "baseline\n").unwrap();
         fs::write(source.join("overlap.txt"), "baseline\n").unwrap();
         git(&source, &["add", "."]);
@@ -178,6 +181,12 @@ impl Fixture {
         command.arg("--json").arg(action).arg(&self.root).arg(id);
         command
     }
+    #[cfg(unix)]
+    fn queue_command(&self) -> Command {
+        let mut command = Command::new(env!("CARGO_BIN_EXE_mai"));
+        command.arg("--json").arg("queue").arg(&self.root);
+        command
+    }
     fn submit(&self, files: &[(&str, &str)]) -> String {
         for (name, contents) in files {
             fs::write(self.client.join(name), contents).unwrap();
@@ -199,7 +208,13 @@ impl Fixture {
     }
     fn show(&self, id: &str) -> Value {
         let output = self.command("show", id).output().unwrap();
-        assert!(output.status.success());
+        assert!(
+            output.status.success(),
+            "show failed ({:?}): stdout={} stderr={}",
+            output.status.code(),
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
         value(&output)
     }
     fn trunk(&self) -> String {
@@ -299,6 +314,490 @@ fn actual_cli_reports_gate_and_conflict_rejection_without_moving_trunk() {
     );
     assert_eq!(f.trunk(), accepted);
     assert_eq!(value(&f.integrate(&conflict)), value(&output));
+}
+
+#[test]
+fn queue_pages_are_bounded_and_follow_stable_generation_identity_order() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().join("authority");
+    mai::authority::Authority::init(&root, None).unwrap();
+    let binary = env!("CARGO_BIN_EXE_mai");
+    let queue = || {
+        let mut command = Command::new(binary);
+        command.args(["--json", "queue"]).arg(&root);
+        command
+    };
+    let empty = queue().output().unwrap();
+    assert!(empty.status.success());
+    assert_eq!(value(&empty)["items"].as_array().unwrap().len(), 0);
+    let mut store = mai::state::StateStore::open(root.join(".mai/state.db")).unwrap();
+    let mut life = store.load_lifecycle().unwrap();
+    for index in (0..105).rev() {
+        let id = format!("change-{index:03}");
+        let oid = format!("{:040x}", index + 1);
+        life.register(&id, "fixture", &oid, vec![]).unwrap();
+    }
+    let large_id = mai::lifecycle::GenerationId {
+        change_id: "change-050".into(),
+        generation: 1,
+    };
+    life.reject(
+        &large_id,
+        mai::lifecycle::ReasonCode::CheckFailed,
+        Default::default(),
+    )
+    .unwrap();
+    for _ in 0..64 {
+        life.annotate(
+            &large_id,
+            mai::lifecycle::Annotation {
+                kind: mai::lifecycle::AnnotationKind::Recovery,
+                message: "x".repeat(4096),
+            },
+        )
+        .unwrap();
+    }
+    store.save_lifecycle(&mut life).unwrap();
+    drop(store);
+    let first = queue().args(["--limit", "100"]).output().unwrap();
+    assert!(
+        first.status.success(),
+        "{}",
+        String::from_utf8_lossy(&first.stderr)
+    );
+    let first = value(&first);
+    assert!(serde_json::to_vec(&first).unwrap().len() < 256 * 1024);
+    assert_eq!(first["items"].as_array().unwrap().len(), 100);
+    assert_eq!(first["total"], 105);
+    assert_eq!(first["items"][0]["id"]["change_id"], "change-000");
+    assert_eq!(first["items"][99]["id"]["change_id"], "change-099");
+    let summary = first["items"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|item| item["id"]["change_id"] == "change-050")
+        .unwrap();
+    assert_eq!(summary["annotation_count"], 64);
+    assert!(summary.get("annotations").is_none());
+    let cursor = format!(
+        "{}:{}",
+        first["next_cursor"]["change_id"].as_str().unwrap(),
+        first["next_cursor"]["generation"].as_u64().unwrap()
+    );
+    let second = queue()
+        .args(["--limit", "100", "--after", &cursor])
+        .output()
+        .unwrap();
+    assert!(second.status.success());
+    let second = value(&second);
+    assert_eq!(second["items"].as_array().unwrap().len(), 5);
+    assert_eq!(second["items"][0]["id"]["change_id"], "change-100");
+    assert!(second["next_cursor"].is_null());
+}
+
+#[test]
+fn wait_timeout_is_pending_and_does_not_change_received_submission() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().join("authority");
+    mai::authority::Authority::init(&root, None).unwrap();
+    let change_id = "waiting";
+    let mut store = mai::state::StateStore::open(root.join(".mai/state.db")).unwrap();
+    let mut life = store.load_lifecycle().unwrap();
+    life.register(change_id, "fixture", &format!("{:040x}", 500), vec![])
+        .unwrap();
+    store.save_lifecycle(&mut life).unwrap();
+    let output = Command::new(env!("CARGO_BIN_EXE_mai"))
+        .args(["--json", "wait"])
+        .arg(&root)
+        .arg(change_id)
+        .args(["--timeout-seconds", "1"])
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(6));
+    let result = value(&output);
+    assert_eq!(result["kind"], "pending");
+    assert_eq!(result["state"]["kind"], "received");
+    let (snapshot, _, _) =
+        mai::state::StateStore::observe_lifecycle(root.join(".mai/state.db")).unwrap();
+    assert_eq!(
+        snapshot
+            .get(&mai::lifecycle::GenerationId {
+                change_id: change_id.into(),
+                generation: 1
+            })
+            .unwrap()
+            .state(),
+        &mai::lifecycle::State::Received
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn wait_deadline_bounds_sqlite_lock_waits() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().join("authority");
+    mai::authority::Authority::init(&root, None).unwrap();
+    let change_id = "locked";
+    let mut store = mai::state::StateStore::open(root.join(".mai/state.db")).unwrap();
+    let mut life = store.load_lifecycle().unwrap();
+    life.register(change_id, "fixture", &format!("{:040x}", 501), vec![])
+        .unwrap();
+    store.save_lifecycle(&mut life).unwrap();
+    drop(store);
+
+    let lock = rusqlite::Connection::open(root.join(".mai/state.db")).unwrap();
+    lock.execute_batch("PRAGMA locking_mode=EXCLUSIVE; BEGIN EXCLUSIVE;")
+        .unwrap();
+    let started = Instant::now();
+    let output = Command::new(env!("CARGO_BIN_EXE_mai"))
+        .args(["--json", "wait"])
+        .arg(&root)
+        .arg(change_id)
+        .args(["--timeout-seconds", "1"])
+        .output()
+        .unwrap();
+    let elapsed = started.elapsed();
+    lock.execute_batch("ROLLBACK;").unwrap();
+    assert_eq!(output.status.code(), Some(6));
+    assert_eq!(value(&output)["kind"], "pending");
+    assert!(elapsed < Duration::from_secs(3), "elapsed {elapsed:?}");
+}
+
+#[test]
+fn queue_rejects_authority_identity_mismatch_without_repairing_state() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().join("authority");
+    mai::authority::Authority::init(&root, None).unwrap();
+    let config_path = root.join(".mai/config.toml");
+    let original = fs::read_to_string(&config_path).unwrap();
+    // Change only the configured identity; the read-only observer must reject the mismatch.
+    let mut config: toml::Value = toml::from_str(&original).unwrap();
+    config["authority_id"] = toml::Value::String("different-authority".into());
+    fs::write(&config_path, toml::to_string(&config).unwrap()).unwrap();
+    let state_path = root.join(".mai/state.db");
+    let before = fs::read(&state_path).unwrap();
+    let output = Command::new(env!("CARGO_BIN_EXE_mai"))
+        .args(["--json", "queue"])
+        .arg(&root)
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(5));
+    assert_eq!(fs::read(state_path).unwrap(), before);
+}
+
+#[test]
+fn wait_rejects_authority_replacement_between_polls() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().join("authority");
+    let replacement = temp.path().join("replacement");
+    mai::authority::Authority::init(&root, None).unwrap();
+    mai::authority::Authority::init(&replacement, None).unwrap();
+    for authority in [&root, &replacement] {
+        let mut store = mai::state::StateStore::open(authority.join(".mai/state.db")).unwrap();
+        let mut life = store.load_lifecycle().unwrap();
+        life.register("same-change", "fixture", &format!("{:040x}", 502), vec![])
+            .unwrap();
+        if authority == &replacement {
+            let id = mai::lifecycle::GenerationId {
+                change_id: "same-change".into(),
+                generation: 1,
+            };
+            life.reject(
+                &id,
+                mai::lifecycle::ReasonCode::CheckFailed,
+                Default::default(),
+            )
+            .unwrap();
+        }
+        store.save_lifecycle(&mut life).unwrap();
+    }
+
+    let mut wait = Process(
+        Command::new(env!("CARGO_BIN_EXE_mai"))
+            .args(["--json", "wait"])
+            .arg(&root)
+            .args(["same-change", "--timeout-seconds", "4"])
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .spawn()
+            .unwrap(),
+    );
+    thread::sleep(Duration::from_millis(300));
+    fs::copy(
+        replacement.join(".mai/state.db"),
+        root.join(".mai/state.db"),
+    )
+    .unwrap();
+    fs::copy(
+        replacement.join(".mai/config.toml"),
+        root.join(".mai/config.toml"),
+    )
+    .unwrap();
+    let status = wait.0.wait().unwrap();
+    assert_eq!(status.code(), Some(5));
+}
+
+#[test]
+fn wait_reports_landed_and_rejected_terminal_outcomes_with_show_diagnostics() {
+    let f = Fixture::new();
+    let landed = f.submit(&[("landed.txt", "landed\n")]);
+    assert!(f.integrate(&landed).status.success());
+    let result = f.command("wait", &landed).output().unwrap();
+    assert!(result.status.success());
+    assert_eq!(value(&result)["state"]["outcome"]["kind"], "landed");
+
+    f.checkout_trunk();
+    let rejected = f.submit(&[("fail", "force trusted gate failure\n")]);
+    assert_eq!(f.integrate(&rejected).status.code(), Some(3));
+    let result = f.command("wait", &rejected).output().unwrap();
+    assert_eq!(result.status.code(), Some(3));
+    assert_eq!(value(&result)["state"]["outcome"]["reason"], "check_failed");
+    assert!(value(&result)["state"]["outcome"]["diagnostics"]["check"].is_string());
+}
+
+#[test]
+fn wait_preserves_superseded_cancelled_and_infrastructure_outcomes() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().join("authority");
+    mai::authority::Authority::init(&root, None).unwrap();
+    let mut store = mai::state::StateStore::open(root.join(".mai/state.db")).unwrap();
+    let mut life = store.load_lifecycle().unwrap();
+    let _superseded = life
+        .register("replace", "fixture", &format!("{:040x}", 710), vec![])
+        .unwrap();
+    life.register("replace", "fixture", &format!("{:040x}", 711), vec![])
+        .unwrap();
+    let cancelled = life
+        .register("cancel", "fixture", &format!("{:040x}", 712), vec![])
+        .unwrap();
+    life.cancel(&cancelled, Default::default()).unwrap();
+    let infrastructure = life
+        .register("infra", "fixture", &format!("{:040x}", 713), vec![])
+        .unwrap();
+    life.reject(
+        &infrastructure,
+        mai::lifecycle::ReasonCode::Infrastructure,
+        Default::default(),
+    )
+    .unwrap();
+    store.save_lifecycle(&mut life).unwrap();
+
+    let run = |change_id: &str| {
+        Command::new(env!("CARGO_BIN_EXE_mai"))
+            .args(["--json", "wait"])
+            .arg(&root)
+            .arg(change_id)
+            .args(["--timeout-seconds", "1"])
+            .output()
+            .unwrap()
+    };
+    let superseded_output = run("replace");
+    assert_eq!(superseded_output.status.code(), Some(3));
+    assert_eq!(
+        value(&superseded_output)["state"]["outcome"]["kind"],
+        "superseded"
+    );
+    let cancelled_output = run("cancel");
+    assert_eq!(cancelled_output.status.code(), Some(3));
+    assert_eq!(
+        value(&cancelled_output)["state"]["outcome"]["kind"],
+        "cancelled"
+    );
+    let infrastructure_output = run("infra");
+    assert_eq!(infrastructure_output.status.code(), Some(5));
+    assert_eq!(
+        value(&infrastructure_output)["state"]["outcome"]["reason"],
+        "infrastructure"
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn read_only_queue_and_wait_observe_during_a_blocked_engine_gate() {
+    let f = Fixture::new();
+    let id = f.submit(&[("hold", "wait for explicit release\n")]);
+    let mut integrate = Process(
+        f.command("integrate", &id)
+            .args(["--mode", "textual", "--wait-seconds", "20"])
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .unwrap(),
+    );
+    let deadline = Instant::now() + Duration::from_secs(5);
+    while !f.control.join("ready").exists() {
+        assert!(integrate.0.try_wait().unwrap().is_none());
+        assert!(
+            Instant::now() < deadline,
+            "trusted gate did not reach marker"
+        );
+        thread::sleep(Duration::from_millis(10));
+    }
+    let queued = f.queue_command().output().unwrap();
+    assert!(
+        queued.status.success(),
+        "{}",
+        String::from_utf8_lossy(&queued.stderr)
+    );
+    let waiting = f
+        .command("wait", &id)
+        .args(["--timeout-seconds", "1"])
+        .output()
+        .unwrap();
+    assert_eq!(waiting.status.code(), Some(6));
+    assert_eq!(value(&waiting)["state"]["kind"], "validating");
+    fs::write(f.control.join("release"), "release").unwrap();
+    let deadline = Instant::now() + Duration::from_secs(10);
+    loop {
+        let result = f
+            .command("wait", &id)
+            .args(["--timeout-seconds", "1"])
+            .output()
+            .unwrap();
+        if result.status.success() {
+            assert_eq!(value(&result)["state"]["outcome"]["kind"], "landed");
+            break;
+        }
+        assert!(
+            Instant::now() < deadline,
+            "wait did not observe terminal landing"
+        );
+        thread::sleep(Duration::from_millis(30));
+    }
+    assert!(integrate.0.wait().unwrap().success());
+}
+
+#[cfg(unix)]
+#[test]
+fn wait_survives_a_gate_longer_than_ten_seconds_and_observes_landing() {
+    let f = Fixture::with_gate_timeout(None, 30_000);
+    let id = f.submit(&[("hold", "wait for explicit release\n")]);
+    let mut integrate = Process(
+        f.command("integrate", &id)
+            .args(["--mode", "textual", "--wait-seconds", "30"])
+            .stdout(Stdio::null())
+            .stderr(Stdio::piped())
+            .spawn()
+            .unwrap(),
+    );
+    let deadline = Instant::now() + Duration::from_secs(5);
+    while !f.control.join("ready").exists() {
+        assert!(integrate.0.try_wait().unwrap().is_none());
+        assert!(
+            Instant::now() < deadline,
+            "trusted gate did not reach marker"
+        );
+        thread::sleep(Duration::from_millis(10));
+    }
+    let mut wait = Process(
+        f.command("wait", &id)
+            .args(["--timeout-seconds", "20"])
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .spawn()
+            .unwrap(),
+    );
+    thread::sleep(Duration::from_millis(10_200));
+    let waiting_status = wait.0.try_wait().unwrap();
+    assert!(
+        waiting_status.is_none(),
+        "wait ended while generation remained validating: status={waiting_status:?}, current={:?}",
+        f.show(&id)["state"]
+    );
+    fs::write(f.control.join("release"), "release").unwrap();
+    assert!(wait.0.wait().unwrap().success());
+    assert_eq!(f.show(&id)["state"]["outcome"]["kind"], "landed");
+    assert!(integrate.0.wait().unwrap().success());
+}
+
+#[test]
+fn queue_and_wait_read_persisted_state_when_engine_is_down() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().join("authority");
+    mai::authority::Authority::init(&root, None).unwrap();
+    let change_id = "offline";
+    let mut store = mai::state::StateStore::open(root.join(".mai/state.db")).unwrap();
+    let mut life = store.load_lifecycle().unwrap();
+    life.register(change_id, "fixture", &format!("{:040x}", 600), vec![])
+        .unwrap();
+    store.save_lifecycle(&mut life).unwrap();
+    let queued = Command::new(env!("CARGO_BIN_EXE_mai"))
+        .args(["--json", "queue"])
+        .arg(&root)
+        .output()
+        .unwrap();
+    assert!(
+        queued.status.success(),
+        "{}",
+        String::from_utf8_lossy(&queued.stderr)
+    );
+    assert_eq!(value(&queued)["items"][0]["id"]["change_id"], change_id);
+    let waiting = Command::new(env!("CARGO_BIN_EXE_mai"))
+        .args(["--json", "wait"])
+        .arg(&root)
+        .arg(change_id)
+        .args(["--timeout-seconds", "1"])
+        .output()
+        .unwrap();
+    assert_eq!(waiting.status.code(), Some(6));
+    assert_eq!(value(&waiting)["state"]["kind"], "received");
+}
+
+#[test]
+fn wait_reports_dependency_blocked_state_and_terminal_rejection() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().join("authority");
+    mai::authority::Authority::init(&root, None).unwrap();
+    let mut store = mai::state::StateStore::open(root.join(".mai/state.db")).unwrap();
+    let mut life = store.load_lifecycle().unwrap();
+    let parent = life
+        .register("parent", "fixture", &format!("{:040x}", 701), vec![])
+        .unwrap();
+    let child = life
+        .register("child", "fixture", &format!("{:040x}", 702), vec![parent])
+        .unwrap();
+    life.queue(&child).unwrap();
+    let rejected = life
+        .register("rejected", "fixture", &format!("{:040x}", 703), vec![])
+        .unwrap();
+    life.reject(
+        &rejected,
+        mai::lifecycle::ReasonCode::CheckFailed,
+        Default::default(),
+    )
+    .unwrap();
+    for _ in 0..16 {
+        life.annotate(
+            &rejected,
+            mai::lifecycle::Annotation {
+                kind: mai::lifecycle::AnnotationKind::Recovery,
+                message: "x".repeat(4096),
+            },
+        )
+        .unwrap();
+    }
+    store.save_lifecycle(&mut life).unwrap();
+    let wait = |id: &str| {
+        Command::new(env!("CARGO_BIN_EXE_mai"))
+            .args(["--json", "wait"])
+            .arg(&root)
+            .arg(id)
+            .args(["--timeout-seconds", "1"])
+            .output()
+            .unwrap()
+    };
+    let blocked = wait("child");
+    assert_eq!(blocked.status.code(), Some(6));
+    assert_eq!(value(&blocked)["state"]["kind"], "dependency_blocked");
+    let rejected = wait("rejected");
+    assert_eq!(rejected.status.code(), Some(3));
+    assert_eq!(
+        value(&rejected)["state"]["outcome"]["reason"],
+        "check_failed"
+    );
+    assert_eq!(value(&rejected)["annotation_count"], 16);
+    assert_eq!(value(&rejected)["history_omitted"], true);
+    assert!(serde_json::to_vec(&value(&rejected)).unwrap().len() < 32 * 1024);
 }
 
 #[cfg(unix)]
