@@ -18,6 +18,8 @@ Rust 1.85+, Git 2.40+, a C compiler (bundled SQLite).
   `needs_scope` saying what and why. Don't expand scope yourself.
 - Never edit INTENT.md, AGENTS.md or anything under .agents/. Propose changes in your report.
 - Never weaken a test, gate or acceptance criterion to make something pass. If one is wrong, report it.
+- Use only the credentials the kit provides (GH_TOKEN, the harness login). If an action
+  is denied, report it; don't retry through another integration or connector.
 - Don't create ADRs, RFCs, milestone docs or evidence bundles unless your brief asks for one.
 - Prefer deleting code to adding abstractions. No speculative generality.
 - One logical change per commit, imperative subject, task id in the message.

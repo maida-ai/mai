@@ -110,7 +110,17 @@ doctor() {
   command -v codex >/dev/null && ok "codex on PATH" || bad "codex not on PATH"
   [[ -f $HOME/.codex/auth.json || -n ${OPENAI_API_KEY:-} ]] && ok "codex auth" || bad "no codex auth"
   if [[ -n ${GH_TOKEN:-} ]]; then
-    gh auth status >/dev/null 2>&1 && ok "gh authenticated" || bad "GH_TOKEN set but gh auth fails"
+    if gh auth status >/dev/null 2>&1; then
+      ok "gh authenticated"
+      # Dry-run push to a probe ref: contacts GitHub with write auth, changes nothing.
+      if git push --dry-run "$(gh repo view --json url -q .url).git" HEAD:refs/heads/mai-doctor-probe >/dev/null 2>&1; then
+        ok "GH_TOKEN can push branches"
+      else
+        warn "GH_TOKEN can't push: runs won't publish a branch or PR (token needs Contents: read/write)"
+      fi
+    else
+      bad "GH_TOKEN set but gh auth fails"
+    fi
   else
     warn "no GH_TOKEN: no issue grooming, no push, no PR"
   fi
