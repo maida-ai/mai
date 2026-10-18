@@ -17,10 +17,11 @@
 
 mai is a local Git workflow for submitting and validating changes from independent coding-agent workspaces. An operator selects each generation for integration; a successful submission is not a landed change. mai belongs to the maida-ai family and runs independently of Maida infrastructure. Installation and initialization do not move Maida assets.
 
+Build from this checkout with Rust 1.85+, Git 2.40+ and a C compiler:
+
 ```sh
-cargo install --path .
-mai init demo --from ./my-project
-mai workspace demo alice ./alice
+cargo build --locked --bin mai
+./target/debug/mai --help
 ```
 
 See [getting started](docs/getting-started.md) for the complete submission and integration walkthrough, and [current delivery and limits](docs/release-status.md) for supported behavior and known gaps.
