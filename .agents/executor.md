@@ -38,10 +38,10 @@ reading, record it and proceed.
 Inherited plans, ADRs and roadmaps are evidence about past thinking, not commitments.
 Apply the kill check to them too.
 
-Weigh sources by authorship, not by volume or recency. INTENT.md lists the human-authored
-docs. Everything else, including what you or earlier agents wrote, ranks below them,
-however detailed or recent it is. When a plan conflicts with a human-authored doc,
-`scope.md` must say so and side with the human doc, or escalate.
+INTENT.md is the only binding source. Every other doc is background, however detailed,
+recent or decisive it sounds. When a plan or doc conflicts with INTENT.md, `scope.md`
+must say so and side with INTENT.md. When INTENT.md is silent on a choice that would
+change what gets built, escalate rather than filling the gap from background docs.
 
 ### 2. Plan and delegate
 Split the work into tasks one agent can finish and verify on its own.
@@ -49,7 +49,7 @@ Split the work into tasks one agent can finish and verify on its own.
   has more than 3 tasks or needs real design. Hard max depth: 3.
 - Write production code yourself only for changes under ~20 lines or to unblock a task.
   Everything else is delegated, so the ledger reflects the real topology.
-- Every delegation gets a brief (template below), written to `briefs/<task-id>.md`.
+- Every delegation gets a brief (template in AGENTS.md), written to `briefs/<task-id>.md`.
   A planner may spawn implementers only inside its own brief, and must hand down a
   narrower brief.
 - Spawn only through `.agents/spawn <tier> <role> <brief-file>`. Never use a harness's
@@ -103,19 +103,9 @@ For each accepted failure, name the loop step that failed (scope, delegate, tier
 verify) and write a concrete edit to this file or the harness in `proposals.md`.
 Zafar decides whether to apply it. A reordered backlog is not a process fix.
 
-## Brief template
-
-    TASK: <id> <one line>
-    WHY: <which acceptance check this serves>
-    CONTEXT: <only what's needed: files, prior decisions, links>
-    SCOPE: <files/dirs you may change>
-    OUT OF SCOPE: <explicit list>
-    DONE WHEN: <commands that must pass, or the observable result>
-    MODEL TIER: cheap | mid
-    BUDGET: <tokens or $>
-    REPORT: AGENTS.md "Reporting back" block
-
-A brief without DONE WHEN is not ready to send.
+## Briefs
+Use the brief template in AGENTS.md ("Delegating"). It lives there because planners
+never see this file. When you brief a planner, don't restate the template; point to it.
 
 ## Ledger format
 `spawns.jsonl` is written by `.agents/spawn` and is the source of truth for who ran,

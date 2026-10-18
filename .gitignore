@@ -32,6 +32,7 @@ rustc-ice-*.txt
 !MAIDA_MIGRATION.md
 !README.md
 
-# Throwaway folders for experimentation
+# Throwaway folders
 .throwaway/
+.worktrees/
 runs/

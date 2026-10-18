@@ -9,12 +9,42 @@ root=$(cd "$here/.." && pwd)
 source "$here/tiers.sh"
 usage() { sed -n '2,3p' "$0" | sed 's/^# //'; exit 2; }
 
+# On the host, re-run this same command inside the container. Agents run with the
+# sandbox bypassed, which is only acceptable in a disposable box.
+if [[ -z ${MAI_IN_CONTAINER:-} ]]; then
+  command -v docker >/dev/null || { echo "docker not found; agents only run in the container" >&2; exit 2; }
+  docker info >/dev/null 2>&1 || {
+    echo "can't reach the Docker daemon as $USER. Check: docker run --rm hello-world" >&2
+    echo "Fix: add yourself to the docker group, or use rootless Docker. Don't run this with sudo." >&2
+    exit 2; }
+  docker image inspect mai-agents >/dev/null 2>&1 \
+    || docker build -t mai-agents -f "$here/Dockerfile" "$here"
+  # Mount only your Codex login. The rest of ~/.codex is host-specific (installed
+  # binaries, symlinks to host paths); the container keeps its own copy in a volume.
+  auth=()
+  if [[ -f $HOME/.codex/auth.json ]]; then
+    auth=(-v "$HOME/.codex/auth.json":/root/.codex/auth.json)
+  elif [[ -z ${OPENAI_API_KEY:-} ]]; then
+    echo "no ~/.codex/auth.json and no OPENAI_API_KEY; log in to codex on the host first" >&2
+    exit 2
+  fi
+  tty=-i; [[ -t 0 && -t 1 ]] && tty=-it
+  # Same path inside and out, so worktree paths and logs stay valid on the host.
+  exec docker run $tty --rm \
+    -v "$root":"$root" -w "$root" \
+    -v mai-codex-home:/root/.codex ${auth[@]+"${auth[@]}"} \
+    -v "$HOME/.gitconfig":/root/.gitconfig:ro \
+    -e OPENAI_API_KEY -e MAI_IN_CONTAINER=1 \
+    mai-agents "$here/run" "$@"
+fi
+
 case ${1:-} in
   start)
     [[ $# -eq 3 ]] || usage
     export MAI_RUN_ID="$(date +%F)-$2"
     export MAI_RUN_DIR="$root/runs/$MAI_RUN_ID"
     export MAI_AGENT_DEPTH=1 MAI_AGENT_ID=executor
+    export MAI_WORKTREE_ROOT="$root/.worktrees"
     [[ -e $MAI_RUN_DIR ]] && { echo "run exists: $MAI_RUN_DIR" >&2; exit 2; }
     mkdir -p "$MAI_RUN_DIR/briefs"
     printf '%s\n' "$3" > "$MAI_RUN_DIR/directive.txt"

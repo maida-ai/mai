@@ -1,27 +1,31 @@
 # Tier -> harness and model. Human-owned; agents choose tiers, never models.
 # Each run_<tier> receives the composed prompt file as $1 and runs inside the
-# agent's worktree. Non-interactive runs need tools pre-approved (cargo, git):
-# set that up in each harness's own config. Check flags against installed versions.
+# agent's worktree. Check flags against your installed CLI versions.
 
 CHEAP_MODEL="gpt-6-luna"
 MID_MODEL="gpt-6-sol"
 HIGH_MODEL="gpt-6-astra"
 
+# Agents must write to .git (worktrees, commits) and to runs/, which Codex's sandbox
+# blocks. The bypass is only acceptable inside the container; .agents/run enforces that
+# (MAI_IN_CONTAINER=1), so agents don't need to check it themselves.
+CODEX_FLAGS="--dangerously-bypass-approvals-and-sandbox"
 
-CHEAP_DESC="opencode <provider/model>"
-run_cheap() { codex exec --approve-for-me -m $CHEAP_MODEL "$(cat "$1")"; }
+codex_exec() { local model=$1 prompt=$2; codex exec $CODEX_FLAGS -m "$model" "$(cat "$prompt")"; }
 
-MID_DESC="codex exec <model>"
-run_mid() { codex exec --approve-for-me -m $MID_MODEL "$(cat "$1")"; }
+CHEAP_DESC="codex exec $CHEAP_MODEL"
+run_cheap() { codex_exec "$CHEAP_MODEL" "$1"; }
 
-HIGH_DESC="claude -p opus"
-run_high() { codex exec --approve-for-me -m $HIGH_MODEL "$(cat "$1")"; }
+MID_DESC="codex exec $MID_MODEL"
+run_mid() { codex_exec "$MID_MODEL" "$1"; }
 
-# Executor: interactive session. $1 = role file, $2 = opening message.
-run_executor() { codex -m $HIGH_MODEL "Read $1; it defines your role for this session. $2"; }
-# Harnesses without a system-prompt append flag: the first message carries the role.
-# run_executor() { codex -m "<model>" "Read $1; it defines your role for this session. $2"; }
+HIGH_DESC="codex exec $HIGH_MODEL"
+run_high() { codex_exec "$HIGH_MODEL" "$1"; }
 
-# Evaluator: non-interactive, on a different vendor than the executor.
-# It must be able to build and run the project, but it should not commit.
-run_evaluator() { codex exec --approve-for-me -m $HIGH_MODEL "Read $1; it defines your role. $2"; }
+# Executor: interactive. $1 = role file, $2 = opening message.
+# Codex has no system-prompt append, so the first message carries the role.
+run_executor() { codex $CODEX_FLAGS -m "$HIGH_MODEL" "Read $1; it defines your role for this session. $2"; }
+
+# Evaluator: should be a different vendor than the executor. Same-vendor is a known
+# weakness until a second provider is wired in here.
+run_evaluator() { codex exec $CODEX_FLAGS -m "$HIGH_MODEL" "Read $1; it defines your role. $2"; }

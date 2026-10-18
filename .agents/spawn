@@ -14,7 +14,8 @@ tier=$1 role=$2 brief=$3
 
 case $role in planner|implementer|verifier) ;; *) die "unknown role: $role" ;; esac
 [[ -f $brief ]] || die "brief not found: $brief"
-grep -q '^DONE WHEN:' "$brief" || die "brief has no DONE WHEN line"
+brief="$(cd "$(dirname "$brief")" && pwd)/$(basename "$brief")"
+grep -q '^DONE WHEN:' "$brief" || die "brief has no DONE WHEN line. Use the template in AGENTS.md (Delegating), fix the brief and resubmit."
 
 : "${MAI_RUN_ID:?set MAI_RUN_ID}"
 : "${MAI_RUN_DIR:?set MAI_RUN_DIR (absolute path to runs/<run-id>)}"
@@ -32,7 +33,8 @@ harness=${!desc_var:-unknown}
 id="$(date +%H%M%S)-$role-$RANDOM"
 parent=${MAI_AGENT_ID:-executor}
 branch="agent/$MAI_RUN_ID/$id"
-wt_root=${MAI_WORKTREE_ROOT:-"$(git rev-parse --show-toplevel)/../.mai-worktrees"}
+main_root=$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")
+wt_root=${MAI_WORKTREE_ROOT:-"$main_root/.worktrees"}
 wt="$wt_root/$id"
 mkdir -p "$MAI_RUN_DIR/agents" "$wt_root"
 git worktree add -q -b "$branch" "$wt" HEAD
@@ -58,11 +60,14 @@ set +e
 rc=$?
 set -e
 end=$(date -u +%FT%TZ)
+# Harness exit 0 only means the process ended. The agent's own STATUS line is the outcome.
+status=$(grep -oE '^STATUS: *[a-z_]+' "$log" | tail -n 1 | sed 's/^STATUS: *//' || true)
+status=${status:-missing}
 
-printf '{"id":"%s","parent":"%s","role":"%s","tier":"%s","harness":"%s","brief":"%s","branch":"%s","worktree":"%s","start":"%s","end":"%s","exit":%d}\n' \
-  "$id" "$parent" "$role" "$tier" "$harness" "$brief" "$branch" "$wt" "$start" "$end" "$rc" \
+printf '{"id":"%s","parent":"%s","role":"%s","tier":"%s","harness":"%s","brief":"%s","branch":"%s","worktree":"%s","start":"%s","end":"%s","exit":%d,"status":"%s"}\n' \
+  "$id" "$parent" "$role" "$tier" "$harness" "$brief" "$branch" "$wt" "$start" "$end" "$rc" "$status" \
   >> "$MAI_RUN_DIR/spawns.jsonl"
 
-echo "agent $id exit=$rc branch=$branch log=$log"
+echo "agent $id exit=$rc status=$status branch=$branch log=$log"
 tail -n 30 "$log"
 exit "$rc"
