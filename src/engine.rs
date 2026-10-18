@@ -504,9 +504,17 @@ pub fn register(root: &Path, agent: &str, commit: &str) -> Result<Submission> {
     )?)
 }
 pub fn show(root: &Path, generation: GenerationId) -> Result<Submission> {
-    Ok(serde_json::from_value(
-        operation(root, Action::Show { generation })?.context("engine returned no submission")?,
-    )?)
+    let lifecycle = observer_lifecycle(root)?;
+    let submission = lifecycle
+        .get(&generation)
+        .context("unknown submission generation")?;
+    let mut response = serde_json::to_value(submission)?;
+    response["schema_version"] = serde_json::json!(crate::lifecycle::SCHEMA_VERSION);
+    ensure!(
+        serde_json::to_vec(&response)?.len() <= MAX_FRAME,
+        "durable result exceeds the bounded show response; inspect authority state"
+    );
+    Ok(submission.clone())
 }
 pub fn queue(root: &Path, limit: usize, after: Option<GenerationId>) -> Result<serde_json::Value> {
     ensure!(

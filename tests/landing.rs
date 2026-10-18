@@ -372,6 +372,18 @@ fn true_conflict_has_one_terminal_outcome_and_rejects_dependents() {
             }
         }
     ));
+    let State::Terminal {
+        outcome:
+            Outcome::Rejected {
+                reason: ReasonCode::Conflict,
+                diagnostics,
+            },
+    } = life.get(&l).unwrap().state()
+    else {
+        panic!("conflict was not durably rejected")
+    };
+    assert!(diagnostics.conflict.as_deref().unwrap().contains("\n- a"));
+    assert!(!diagnostics.conflict.as_deref().unwrap().contains("loser"));
     assert!(matches!(
         life.get(&d).unwrap().state(),
         State::Terminal {
@@ -382,4 +394,98 @@ fn true_conflict_has_one_terminal_outcome_and_rejects_dependents() {
         }
     ));
     assert_eq!(store.landings().unwrap().len(), 1);
+    drop(store);
+    a.reconcile().unwrap();
+}
+
+#[cfg(unix)]
+#[test]
+fn unsupported_attributes_are_terminal_policy_refusal_and_do_not_block_unrelated_work() {
+    use mai::landing::{RunResult, run_one};
+    use mai::lifecycle::{ReasonCode, State};
+    let (_tmp, mut a, mut leases, base) = publication_fixture();
+    let attrs = submission(
+        &a,
+        &base,
+        &[(".gitattributes", "*.txt merge=union\n"), ("a.txt", "text")],
+    );
+    let child_commit = commit(
+        &a,
+        &attrs,
+        &[
+            (".gitattributes", "*.txt merge=union\n"),
+            ("a.txt", "text"),
+            ("b", "child"),
+        ],
+    );
+    let refused = register(&a, "attrs", &attrs, vec![]);
+    let dependent = register(&a, "child", &child_commit, vec![refused.clone()]);
+    let retained = format!(
+        "refs/mai/changes/{}/{}",
+        refused.change_id, refused.generation
+    );
+    let trunk_before = git(&a, &["rev-parse", "refs/heads/trunk"], "");
+    assert!(matches!(
+        run_one(&mut a, &refused, MergeMode::Textual, &mut leases, &[]).unwrap(),
+        RunResult::Rejected {
+            reason: ReasonCode::PolicyDenied
+        }
+    ));
+    assert!(matches!(
+        run_one(&mut a, &dependent, MergeMode::Textual, &mut leases, &[]).unwrap(),
+        RunResult::Rejected {
+            reason: ReasonCode::DependencyFailed
+        }
+    ));
+    let store = mai::state::StateStore::open(a.state_path()).unwrap();
+    let life = store.load_lifecycle().unwrap();
+    let State::Terminal {
+        outcome:
+            Outcome::Rejected {
+                reason: ReasonCode::PolicyDenied,
+                diagnostics,
+            },
+    } = life.get(&refused).unwrap().state()
+    else {
+        panic!("unsupported merge policy was not durably refused")
+    };
+    assert!(
+        diagnostics
+            .conflict
+            .as_deref()
+            .unwrap()
+            .contains(".gitattributes")
+    );
+    assert!(
+        diagnostics
+            .next_action
+            .as_deref()
+            .unwrap()
+            .contains("Remove .gitattributes")
+    );
+    assert_eq!(life.get(&refused).unwrap().attempts().len(), 0);
+    assert_eq!(git(&a, &["rev-parse", &retained], ""), attrs);
+    assert_eq!(
+        git(&a, &["rev-parse", "refs/heads/trunk"], ""),
+        trunk_before
+    );
+    assert!(store.landings().unwrap().is_empty());
+    assert!(matches!(
+        run_one(&mut a, &refused, MergeMode::Textual, &mut leases, &[]).unwrap(),
+        RunResult::Rejected {
+            reason: ReasonCode::PolicyDenied
+        }
+    ));
+    drop(store);
+    a.reconcile().unwrap();
+    let unrelated_commit = submission(&a, &base, &[("unrelated", "ok")]);
+    let unrelated = register(&a, "unrelated", &unrelated_commit, vec![]);
+    assert!(matches!(
+        run_one(&mut a, &unrelated, MergeMode::Textual, &mut leases, &[]).unwrap(),
+        RunResult::Landed { revision: 1, .. }
+    ));
+    assert_ne!(
+        git(&a, &["rev-parse", "refs/heads/trunk"], ""),
+        trunk_before
+    );
 }

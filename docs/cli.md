@@ -4,7 +4,7 @@
 
 ## Explicit receive and integration
 
-`mai receive enable PROJECT --max-input-bytes N --max-file-bytes N --max-changed-files N` enables bounded admission. Push one commit with `git push -o agent=AGENT mai HEAD:refs/for/main`; success means received, not landed. `mai show PROJECT CHANGE [--generation 1]` returns its typed state; query exit 0 is not acceptance.
+`mai receive enable PROJECT --max-input-bytes N --max-file-bytes N --max-changed-files N` enables bounded admission. Push one commit with `git push -o agent=AGENT mai HEAD:refs/for/main`; success means received, not landed. `mai show PROJECT CHANGE [--generation 1]` returns its full typed durable record from a validated SQLite snapshot, including during a gate and while the engine is stopped. Its serialized response is bounded to 64 KiB; query exit 0 is not acceptance.
 
 `mai integrate PROJECT CHANGE --mode textual [--generation 1] [--lease file:PATH=GENERATION] [--wait-seconds 600]` selects one generation through the engine. Repeat `--lease` for multiple exact claims. The mode must be selected explicitly. Results have `schema_version`, `generation` and `kind`: `landed` adds `revision`/`commit` (exit 0), `awaiting_approval` adds `candidate`/`reference` (exit 6), and `rejected` adds `reason` (exit 3). Infrastructure or uncertain transport errors use exit 5. Client timeout does not cancel integration; see [engine timing](engine.md).
 

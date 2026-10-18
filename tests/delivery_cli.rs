@@ -448,6 +448,14 @@ fn queue_pages_are_bounded_and_follow_stable_generation_identity_order() {
         .unwrap();
     assert_eq!(summary["annotation_count"], 64);
     assert!(summary.get("annotations").is_none());
+    let oversized = Command::new(binary)
+        .args(["--json", "show"])
+        .arg(&root)
+        .arg("change-050")
+        .output()
+        .unwrap();
+    assert_eq!(oversized.status.code(), Some(5));
+    assert!(String::from_utf8_lossy(&oversized.stderr).contains("bounded show response"));
     let cursor = format!(
         "{}:{}",
         first["next_cursor"]["change_id"].as_str().unwrap(),
@@ -537,6 +545,12 @@ fn queue_rejects_authority_identity_mismatch_without_repairing_state() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path().join("authority");
     mai::authority::Authority::init(&root, None).unwrap();
+    let mut store = mai::state::StateStore::open(root.join(".mai/state.db")).unwrap();
+    let mut lifecycle = store.load_lifecycle().unwrap();
+    lifecycle
+        .register("identity", "fixture", &format!("{:040x}", 611), vec![])
+        .unwrap();
+    store.save_lifecycle(&mut lifecycle).unwrap();
     let config_path = root.join(".mai/config.toml");
     let original = fs::read_to_string(&config_path).unwrap();
     // Change only the configured identity; the read-only observer must reject the mismatch.
@@ -551,6 +565,13 @@ fn queue_rejects_authority_identity_mismatch_without_repairing_state() {
         .output()
         .unwrap();
     assert_eq!(output.status.code(), Some(5));
+    let shown = Command::new(env!("CARGO_BIN_EXE_mai"))
+        .args(["--json", "show"])
+        .arg(&root)
+        .args(["identity", "--generation", "1"])
+        .output()
+        .unwrap();
+    assert_eq!(shown.status.code(), Some(5));
     assert_eq!(fs::read(state_path).unwrap(), before);
 }
 
@@ -824,6 +845,13 @@ fn read_only_queue_and_wait_observe_during_a_blocked_engine_gate() {
         queued.status.success(),
         "{}",
         String::from_utf8_lossy(&queued.stderr)
+    );
+    let shown = f.show(&id);
+    assert_eq!(shown["state"]["kind"], "validating");
+    assert!(
+        shown["attempts"]
+            .as_array()
+            .is_some_and(|items| !items.is_empty())
     );
     let waiting = f
         .command("wait", &id)
@@ -1210,7 +1238,18 @@ fn timed_out_integration_keeps_running_and_exact_identity_recovers_result() {
     );
     assert_eq!(f.trunk(), baseline);
     fs::write(f.control.join("release"), "continue\n").unwrap();
-    let shown = f.show(&id);
+    let deadline = Instant::now() + Duration::from_secs(5);
+    let shown = loop {
+        let shown = f.show(&id);
+        if shown["state"]["kind"] == "terminal" {
+            break shown;
+        }
+        assert!(
+            Instant::now() < deadline,
+            "generation did not finish after gate release"
+        );
+        thread::sleep(Duration::from_millis(10));
+    };
     assert_eq!(shown["state"]["kind"], "terminal");
     assert_eq!(shown["state"]["outcome"]["kind"], "landed");
     let accepted = f.trunk();
@@ -1221,6 +1260,7 @@ fn timed_out_integration_keeps_running_and_exact_identity_recovers_result() {
     assert_eq!(f.trunk(), accepted);
     succeeded(f.cli(&["stop"]));
     assert!(f.owner.0.wait().unwrap().success());
+    assert_eq!(f.show(&id)["state"]["outcome"]["kind"], "landed");
     f.owner = Process(
         Command::new(env!("CARGO_BIN_EXE_mai"))
             .args(["serve", "--foreground"])
