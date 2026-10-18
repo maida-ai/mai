@@ -45,3 +45,7 @@ The [explicit parent/child integration evidence](spikes/product-validation/2026-
 The [explicit validator recovery evidence](spikes/validator-recovery/2026-10-17/README.md) records a frozen-binary Linux engine-kill/reclaim/revalidation workflow from PR #112. Its 0.160-second reclaim and 0.615-second fresh landing are one tiny functional fixture, not a production MTTR distribution, comparative advantage or scale result. Missing proof and worker death remain unsupported recovery cases.
 
 The [frozen copy-continuation evidence](spikes/continuation/2026-10-17/README.md) records source preservation, overlap rejection, preserved replay failure and a gated correction to r4, plus literal execution of the documentation. Its single 0.255-second continuation observation is a tiny functional fixture, not performance qualification.
+
+## Real-agent intervention measurement
+
+The [north-star harness](../experiments/north-star/README.md) runs a supplied agent runner in independent disposable mai workspaces and counts explicit integration commands per landed change. It retains failed and unfinished tasks and checks every landed tree. The task repository is synthetic; real agents choose their implementations. This measures required operator commands, not observed human time or representative repository performance.
