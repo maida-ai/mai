@@ -55,10 +55,28 @@ the hook is installed.
 
 ```bash
 .agents/run doctor                            # environment check; no model calls
-.agents/run start <slug> "<directive>"        # interactive: you can answer escalations
-.agents/run auto  <slug> "<directive>"        # unattended: executor → evaluator → post-mortem
+.agents/run start <slug> "<directive>"        # interactive: the executor's TUI, you can answer escalations
+.agents/run auto  <slug> "<directive>"        # unattended, in the background: executor → evaluator → post-mortem
+.agents/run status [run-id]                   # progress of a run (default: latest)
 .agents/run eval  <run-id>                    # evaluate a run started with `start`
 ```
+
+### Monitoring an `auto` run
+
+`auto` runs doctor, then starts a background container named `mai-<run-id>` and returns.
+
+- `.agents/run status` shows the phase (executor / evaluating / post-mortem / done), finished
+  agents with their status, agents still running and for how long, which artifacts exist,
+  and the tail of the executor's log. It reads files only, so it works on the host. Use
+  `watch -n 15 .agents/run status` for a live view.
+- `tail -f runs/<id>/executor.log` for the executor's full output, `runs/<id>/agents/*.log`
+  for any sub-agent.
+- `docker exec -it mai-<run-id> bash` gives a shell in the running container, including
+  the Codex session state, so any Codex inspection command works there.
+- `docker stop mai-<run-id>` stops it. A stopped run doesn't clean up: remove its
+  worktrees with the command in Cleanup.
+
+There's no steering an `auto` run mid-flight; that's what `start` is for.
 
 `start` and `auto` run doctor first and refuse to start if anything fails. Every run
 gets its id (`YYYY-MM-DD-<slug>`), a directory under `runs/`, and its own branch,
@@ -126,7 +144,14 @@ work), kept for inspection.
 
 ```bash
 git branch --list 'agent/*' 'run/*'      # delete reviewed ones with git branch -D
-git worktree prune                       # only after a crash left a stale entry
+```
+
+After a crash or `docker stop`, remove leftover worktrees:
+
+```bash
+git worktree list --porcelain | awk '/^worktree .*\/\.worktrees\//{print $2}' \
+  | xargs -r -n1 git worktree remove --force
+git worktree prune
 ```
 
 ## Troubleshooting

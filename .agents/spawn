@@ -57,6 +57,7 @@ log="$MAI_RUN_DIR/agents/$id.log"
 } > "$prompt"
 
 start=$(date -u +%FT%TZ)
+touch "$MAI_RUN_DIR/agents/$id.running"
 set +e
 ( cd "$wt"
   export MAI_AGENT_DEPTH=$((depth + 1)) MAI_AGENT_ID=$id
@@ -66,6 +67,7 @@ set +e
 rc=$?
 set -e
 end=$(date -u +%FT%TZ)
+rm -f "$MAI_RUN_DIR/agents/$id.running"
 
 # The branch holds the work; the worktree was only scaffolding. Save anything left
 # uncommitted as a patch so nothing is lost, then remove the worktree.

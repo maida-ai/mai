@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # .agents/run start <slug> "<directive>"   interactive executor session for a new run
-# .agents/run auto <slug> "<directive>"    unattended: executor, then evaluator, then post-mortem
+# .agents/run auto <slug> "<directive>"    unattended, in the background: executor, evaluator, post-mortem
+# .agents/run status [run-id]              progress of a run (default: latest); runs on the host
 # .agents/run eval <run-id>                run the independent evaluator on a finished run
 # .agents/run doctor                       check the environment; no model calls
 set -euo pipefail
@@ -9,7 +10,47 @@ here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/.." && pwd)
 # shellcheck source=/dev/null
 source "$here/tiers.sh"
-usage() { sed -n '2,5p' "$0" | sed 's/^# //'; exit 2; }
+usage() { sed -n '2,6p' "$0" | sed 's/^# //'; exit 2; }
+
+# Read-only view of a run, from the files it writes. Needs no container.
+status() {
+  local id=${1:-$(ls -1t "$root/runs" 2>/dev/null | head -n 1)}
+  local dir="$root/runs/$id"
+  [[ -n $id && -d $dir ]] || { echo "no runs yet" >&2; return 2; }
+  local cname="mai-$id" state="not running"
+  if command -v docker >/dev/null && docker ps --format '{{.Names}}' 2>/dev/null | grep -qx "$cname"; then
+    state="running ($cname)"
+  fi
+  local started; started=$(stat -c %Y "$dir/directive.txt" 2>/dev/null || echo 0)
+  echo "run      $id"
+  echo "phase    $(cat "$dir/phase" 2>/dev/null || echo interactive)   container: $state"
+  echo "elapsed  $(( ($(date +%s) - started) / 60 )) min"
+  echo "directive: $(head -c 160 "$dir/directive.txt")"
+  echo
+  if [[ -f $dir/spawns.jsonl ]]; then
+    echo "finished agents:"
+    python3 - "$dir/spawns.jsonl" <<'PY'
+import json, sys
+for line in open(sys.argv[1]):
+    r = json.loads(line)
+    print(f"  {r['id']:<28} {r['role']:<11} {r['tier']:<5} {r['status']:<11} exit={r['exit']}")
+PY
+  fi
+  local f any=""
+  for f in "$dir"/agents/*.running; do
+    [[ -e $f ]] || continue
+    [[ -z $any ]] && { echo "running agents:"; any=1; }
+    echo "  $(basename "$f" .running)  $(( ($(date +%s) - $(stat -c %Y "$f")) / 60 )) min"
+  done
+  for f in triage.md scope.md claim.md evaluation.md proposals.md escalations.md report.md; do
+    [[ -f $dir/$f ]] && printf '%s ' "$f"
+  done; echo
+  local log="$dir/executor.log"
+  [[ -f $dir/postmortem.log ]] && log="$dir/postmortem.log"
+  if [[ -f $log ]]; then echo; echo "tail of $(basename "$log"):"; tail -n 15 "$log" | sed 's/^/  /'; fi
+}
+
+[[ ${1:-} == status ]] && { shift; status "$@"; exit $?; }
 
 # On the host, re-run this same command inside the container. Agents run with the
 # sandbox bypassed, which is only acceptable in a disposable box.
@@ -30,13 +71,26 @@ if [[ -z ${MAI_IN_CONTAINER:-} ]]; then
     echo "no ~/.codex/auth.json and no OPENAI_API_KEY; log in to codex on the host first" >&2
     exit 2
   fi
-  tty=-i; [[ -t 0 && -t 1 ]] && tty=-it
   # Same path inside and out, so worktree paths and logs stay valid on the host.
-  exec docker run $tty --rm \
-    -v "$root":"$root" -w "$root" \
-    -v mai-codex-home:/root/.codex ${auth[@]+"${auth[@]}"} \
-    -e OPENAI_API_KEY -e GH_TOKEN -e MAI_IN_CONTAINER=1 \
-    mai-agents "$here/run" "$@"
+  common=(--rm --init -v "$root":"$root" -w "$root"
+          -v mai-codex-home:/root/.codex ${auth[@]+"${auth[@]}"}
+          -e OPENAI_API_KEY -e GH_TOKEN -e MAI_IN_CONTAINER=1)
+  if [[ ${1:-} == auto ]]; then
+    [[ $# -eq 3 ]] || usage
+    docker run "${common[@]}" mai-agents "$here/run" doctor \
+      || { echo "doctor failed; fix the above before spending on models" >&2; exit 2; }
+    cname="mai-$(date -u +%F)-$2"
+    docker run -d --name "$cname" "${common[@]}" mai-agents "$here/run" "$@" >/dev/null
+    echo "started $cname in the background"
+    echo "  progress:  .agents/run status        (or: watch -n 15 .agents/run status)"
+    echo "  phases:    docker logs -f $cname"
+    echo "  inside:    docker exec -it $cname bash"
+    echo "  stop:      docker stop $cname"
+    exit 0
+  fi
+  tty=-i; [[ -t 0 && -t 1 ]] && tty=-it
+  name=(); [[ ${1:-} == start ]] && name=(--name "mai-$(date -u +%F)-${2:-x}")
+  exec docker run $tty ${name[@]+"${name[@]}"} "${common[@]}" mai-agents "$here/run" "$@"
 fi
 
 KIT=(INTENT.md AGENTS.md CLAUDE.md .agents)
@@ -162,19 +216,21 @@ case ${1:-} in
     doctor || { echo "doctor failed; fix the above before spending on models" >&2; exit 2; }
     setup_run "$2" "$3"
     cd "$RUN_WT"
+    echo executor > "$MAI_RUN_DIR/phase"
     echo "executor running; log: $MAI_RUN_DIR/executor.log"
     run_executor_batch "$RUN_WT/.agents/executor.md" \
       "Unattended run: nobody will answer until it ends. $OPENING Directive: $3" \
       > "$MAI_RUN_DIR/executor.log" 2>&1 || true
-    [[ -f $MAI_RUN_DIR/claim.md ]] || { finish_run "$MAI_RUN_ID"; echo "executor wrote no claim.md; see executor.log" >&2; exit 1; }
-    echo "evaluating"
+    [[ -f $MAI_RUN_DIR/claim.md ]] || { finish_run "$MAI_RUN_ID"; echo "failed: no claim.md" > "$MAI_RUN_DIR/phase"; echo "executor wrote no claim.md; see executor.log" >&2; exit 1; }
+    echo "evaluating"; echo evaluating > "$MAI_RUN_DIR/phase"
     ( evaluate "$MAI_RUN_ID" > /dev/null ) || true
-    echo "post-mortem"
+    echo "post-mortem"; echo post-mortem > "$MAI_RUN_DIR/phase"
     cd "$RUN_WT"
     run_executor_batch "$RUN_WT/.agents/executor.md" \
       "Unattended post-mortem for run $MAI_RUN_ID. Read $MAI_RUN_DIR/evaluation.md and claim.md, then follow 'After evaluation' in your role file. Don't change code." \
       > "$MAI_RUN_DIR/postmortem.log" 2>&1 || true
     finish_run "$MAI_RUN_ID"
+    echo done > "$MAI_RUN_DIR/phase"
     echo "done. Read: $MAI_RUN_DIR/{report.md,evaluation.md,proposals.md,escalations.md}"
     ;;
   eval)
