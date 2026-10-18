@@ -25,6 +25,17 @@ impl std::fmt::Display for MergeConflict {
 }
 impl std::error::Error for MergeConflict {}
 
+#[derive(Debug)]
+struct UnsupportedTreePolicy;
+impl std::fmt::Display for UnsupportedTreePolicy {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str(
+            ".gitattributes in a candidate input tree is unsupported for textual merging",
+        )
+    }
+}
+impl std::error::Error for UnsupportedTreePolicy {}
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct PreparedCandidate {
     pub generation: GenerationId,
@@ -105,12 +116,13 @@ pub fn prepare_candidate(
             paths.status.success(),
             "cannot inspect candidate merge attributes"
         );
-        ensure!(
-            !paths.stdout.split(|b| *b == 0).any(
-                |path| path.rsplit(|b| *b == b'/').next() == Some(b".gitattributes".as_slice())
-            ),
-            "attribute-driven merges are not qualified for textual mode"
-        );
+        if paths
+            .stdout
+            .split(|b| *b == 0)
+            .any(|path| path.rsplit(|b| *b == b'/').next() == Some(b".gitattributes".as_slice()))
+        {
+            return Err(UnsupportedTreePolicy.into());
+        }
     }
     // Never execute repository-configured external merge drivers. They need a trusted-policy
     // integration contract before candidate construction may use them.
@@ -310,6 +322,21 @@ fn run_one_inner(
             store.save_lifecycle(&mut life)?;
             return Ok(RunResult::Rejected {
                 reason: ReasonCode::Conflict,
+            });
+        }
+        Err(error) if error.is::<UnsupportedTreePolicy>() => {
+            life.reject(
+                id,
+                ReasonCode::PolicyDenied,
+                Diagnostics {
+                    conflict: Some(error.to_string()),
+                    next_action: Some("Remove .gitattributes from the submitted change and submit a new generation".into()),
+                    ..Diagnostics::default()
+                },
+            )?;
+            store.save_lifecycle(&mut life)?;
+            return Ok(RunResult::Rejected {
+                reason: ReasonCode::PolicyDenied,
             });
         }
         Err(error) => return Err(error),
