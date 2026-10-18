@@ -1,0 +1,2 @@
+Acceptance 1: ok=False; planners=1, implementers=0, statuses=['needs_scope']
+Acceptance 2: comment_ok=False; git diff --numstat 5c802a7 -- src/main.rs output=''
