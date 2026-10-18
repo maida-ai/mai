@@ -34,3 +34,4 @@ rustc-ice-*.txt
 
 # Throwaway folders for experimentation
 .throwaway/
+runs/

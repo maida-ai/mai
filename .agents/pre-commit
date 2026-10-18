@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Install: cp .agents/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+# Blocks agent commits (MAI_AGENT_ID set by .agents/run and .agents/spawn) that touch
+# human-owned files. Applies to every worktree. Your own commits are unaffected.
+[[ -z ${MAI_AGENT_ID:-} ]] && exit 0
+if git diff --cached --name-only | grep -qE '^(INTENT\.md|AGENTS\.md|CLAUDE\.md|\.agents/)'; then
+  echo "pre-commit: agents may not modify INTENT.md, AGENTS.md, CLAUDE.md or .agents/." >&2
+  echo "Propose the change in your report instead." >&2
+  exit 1
+fi

@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# Usage: .agents/spawn <cheap|mid|high> <planner|implementer|verifier> <brief.md>
+#
+# The only sanctioned way to start a sub-agent, whatever harness runs it.
+# - logs every spawn to $MAI_RUN_DIR/spawns.jsonl (the ledger's source of truth)
+# - enforces the depth limit
+# - gives each agent its own git worktree and branch
+# Harness and model per tier live in .agents/tiers.sh.
+set -euo pipefail
+
+die() { echo "spawn: $*" >&2; exit 2; }
+[[ $# -eq 3 ]] || die "usage: spawn <tier> <role> <brief.md>"
+tier=$1 role=$2 brief=$3
+
+case $role in planner|implementer|verifier) ;; *) die "unknown role: $role" ;; esac
+[[ -f $brief ]] || die "brief not found: $brief"
+grep -q '^DONE WHEN:' "$brief" || die "brief has no DONE WHEN line"
+
+: "${MAI_RUN_ID:?set MAI_RUN_ID}"
+: "${MAI_RUN_DIR:?set MAI_RUN_DIR (absolute path to runs/<run-id>)}"
+depth=${MAI_AGENT_DEPTH:-1}
+max=${MAI_MAX_DEPTH:-3}
+(( depth < max )) || die "refused: depth $depth is at the limit ($max)"
+
+here=$(cd "$(dirname "$0")" && pwd)
+# shellcheck source=/dev/null
+source "$here/tiers.sh"
+declare -F "run_$tier" >/dev/null || die "unknown tier: $tier"
+desc_var="$(echo "$tier" | tr '[:lower:]' '[:upper:]')_DESC"
+harness=${!desc_var:-unknown}
+
+id="$(date +%H%M%S)-$role-$RANDOM"
+parent=${MAI_AGENT_ID:-executor}
+branch="agent/$MAI_RUN_ID/$id"
+wt_root=${MAI_WORKTREE_ROOT:-"$(git rev-parse --show-toplevel)/../.mai-worktrees"}
+wt="$wt_root/$id"
+mkdir -p "$MAI_RUN_DIR/agents" "$wt_root"
+git worktree add -q -b "$branch" "$wt" HEAD
+
+prompt="$MAI_RUN_DIR/agents/$id.prompt.md"
+log="$MAI_RUN_DIR/agents/$id.log"
+{
+  echo "Role: $role sub-agent (id $id, depth $((depth + 1)) of max $max)."
+  echo "Read AGENTS.md first. Your scope is the brief below and nothing more."
+  if [[ $role == planner ]]; then
+    echo "Delegate only via .agents/spawn. Never use built-in subagent tools."
+  else
+    echo "Do not spawn other agents."
+  fi
+  echo "Commit your work on the current branch ($branch)."
+  echo
+  cat "$brief"
+} > "$prompt"
+
+start=$(date -u +%FT%TZ)
+set +e
+( cd "$wt" && MAI_AGENT_DEPTH=$((depth + 1)) MAI_AGENT_ID=$id "run_$tier" "$prompt" ) > "$log" 2>&1
+rc=$?
+set -e
+end=$(date -u +%FT%TZ)
+
+printf '{"id":"%s","parent":"%s","role":"%s","tier":"%s","harness":"%s","brief":"%s","branch":"%s","worktree":"%s","start":"%s","end":"%s","exit":%d}\n' \
+  "$id" "$parent" "$role" "$tier" "$harness" "$brief" "$branch" "$wt" "$start" "$end" "$rc" \
+  >> "$MAI_RUN_DIR/spawns.jsonl"
+
+echo "agent $id exit=$rc branch=$branch log=$log"
+tail -n 30 "$log"
+exit "$rc"
