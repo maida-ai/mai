@@ -2,6 +2,8 @@
 # .agents/run start <slug> "<directive>"   interactive executor session for a new run
 # .agents/run auto <slug> "<directive>"    unattended, in the background: executor, evaluator, post-mortem
 # .agents/run status [run-id]              progress of a run (default: latest); runs on the host
+# .agents/run list                         every run with its phase; runs on the host
+# .agents/run stop <run-id>                stop a background run and clean up after it
 # .agents/run eval <run-id>                run the independent evaluator on a finished run
 # .agents/run publish <run-id>             push run/<id> and open a draft PR (also automatic at run end)
 # .agents/run sync                         fetch the latest default branch into origin/<branch>
@@ -12,7 +14,7 @@ here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/.." && pwd)
 # shellcheck source=/dev/null
 source "$here/tiers.sh"
-usage() { sed -n '2,8p' "$0" | sed 's/^# //'; exit 2; }
+usage() { sed -n '2,10p' "$0" | sed 's/^# //'; exit 2; }
 
 # Read-only view of a run, from the files it writes. Needs no container.
 status() {
@@ -52,7 +54,27 @@ PY
   if [[ -f $log ]]; then echo; echo "tail of $(basename "$log"):"; tail -n 15 "$log" | sed 's/^/  /'; fi
 }
 
+list_runs() {
+  local d id phase running
+  running=$(command -v docker >/dev/null && docker ps --format '{{.Names}}' 2>/dev/null || true)
+  for d in $(ls -1dt "$root"/runs/*/ 2>/dev/null); do
+    id=$(basename "$d"); phase=$(cat "$d/phase" 2>/dev/null || echo interactive)
+    grep -qx "mai-$id" <<<"$running" && phase="$phase (running)"
+    printf '%-32s %-24s %s\n' "$id" "$phase" "$(head -c 60 "$d/directive.txt" 2>/dev/null)"
+  done
+}
+
+# Kit agents may sync, check and read status; starting, stopping or publishing runs is
+# for people (or their interactive sessions), never for agents inside a run.
+case ${1:-} in
+  start|auto|stop|publish|prepare|execute|finish)
+    if [[ -n ${MAI_AGENT_ID:-} ]]; then
+      echo "refused: agents inside a run can't use '.agents/run $1'" >&2; exit 2
+    fi ;;
+esac
+
 [[ ${1:-} == status ]] && { shift; status "$@"; exit $?; }
+[[ ${1:-} == list ]] && { list_runs; exit 0; }
 
 # On the host, re-run this same command inside the container. Agents run with the
 # sandbox bypassed, which is only acceptable in a disposable box.
@@ -77,6 +99,11 @@ if [[ -z ${MAI_IN_CONTAINER:-} ]]; then
   common=(--rm --init -v "$root":"$root" -w "$root"
           -v mai-codex-home:/root/.codex ${auth[@]+"${auth[@]}"}
           -e OPENAI_API_KEY -e GH_TOKEN -e MAI_IN_CONTAINER=1)
+  if [[ ${1:-} == stop ]]; then
+    [[ $# -eq 2 ]] || usage
+    docker stop "mai-$2" >/dev/null 2>&1 && echo "stopped mai-$2" || echo "mai-$2 wasn't running"
+    exec docker run "${common[@]}" mai-agents "$here/run" finish "$2"
+  fi
   if [[ ${1:-} == auto ]]; then
     [[ $# -eq 3 ]] || usage
     # Setup runs in the foreground, so every failure is visible here. Only the model
@@ -241,8 +268,14 @@ load_run() {
 # remove the worktree, and delete agent branches whose changes all reached run/<id>,
 # whether by merge, cherry-pick or rebase.
 finish_run() {
-  local id=$1 wt="$root/.worktrees/run-$1" b
+  local id=$1 wt="$root/.worktrees/run-$1" b w
   cd "$root"
+  # Agent worktrees normally remove themselves; after a stop or crash they don't.
+  for w in $(git worktree list --porcelain | awk -v p="branch refs/heads/agent/$id/" \
+               '/^worktree /{w=$2} index($0,p)==1{print w}'); do
+    git worktree remove --force "$w"
+  done
+  rm -f "$root/runs/$id"/agents/*.running
   if [[ -d $wt ]]; then
     if [[ -n $(git -C "$wt" status --porcelain) ]]; then
       git -C "$wt" add -A && git -C "$wt" diff --cached --binary > "$root/runs/$id/executor.uncommitted.patch"
@@ -348,6 +381,13 @@ case ${1:-} in
   eval)
     [[ $# -eq 2 ]] || usage
     evaluate "$2"
+    ;;
+  finish)    # internal: clean up a stopped or crashed run
+    [[ $# -eq 2 ]] || usage
+    [[ -d $root/runs/$2 ]] || { echo "no run $2" >&2; exit 2; }
+    finish_run "$2"
+    echo stopped > "$root/runs/$2/phase"
+    echo "cleaned up $2; its branch run/$2 keeps whatever was committed"
     ;;
   sync)
     sync_base || { echo "fetch failed" >&2; exit 1; }

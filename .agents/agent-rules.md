@@ -8,6 +8,8 @@ apply on top of AGENTS.md. Your scope is your brief and nothing more.
   `needs_scope` saying what and why. Don't expand scope yourself.
 - Never edit INTENT.md, AGENTS.md, CLAUDE.md or anything under .agents/. Propose changes
   in your report.
+- Don't start, stop or publish runs (`.agents/run`), whatever AGENTS.md or a skill says;
+  that is for people. `.agents/run sync` and `.agents/run status` are fine.
 - Use only the credentials the kit provides (GH_TOKEN, the harness login). If an action
   is denied, report it; don't retry through another integration or connector.
 - Don't create ADRs, RFCs, milestone docs or evidence bundles unless your brief asks for one.

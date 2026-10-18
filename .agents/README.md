@@ -30,6 +30,8 @@ you ◀──────────────── report.md, PR on run/<id
 | `.agents/run` | you | Entry point: `doctor`, `start`, `auto`, `eval`. |
 | `.agents/spawn` | you | The only way agents start sub-agents. Logs every spawn and enforces depth. |
 | `.agents/pre-commit` | you | Hook that blocks agent commits to the files in this table. |
+| `.agents/skills/mai-runs/` | you | Skill for launching and reviewing runs from an interactive session. |
+| `.agents/FUTURE.md` | you | Deferred kit improvements, each with the signal that says it's time to build it. |
 
 Agents can't commit changes to any of these. The hook enforces that, and doctor checks
 the hook is installed.
@@ -60,6 +62,8 @@ the hook is installed.
 .agents/run start <slug> "<directive>"        # interactive: the executor's TUI, you can answer escalations
 .agents/run auto  <slug> "<directive>"        # unattended, in the background: executor → evaluator → post-mortem
 .agents/run status [run-id]                   # progress of a run (default: latest)
+.agents/run list                              # all runs with their phase
+.agents/run stop <run-id>                     # stop a background run and clean up
 .agents/run eval  <run-id>                    # evaluate a run started with `start`
 .agents/run publish <run-id>                  # push run/<id>, open or update its draft PR
 ```
@@ -80,8 +84,8 @@ and use `publish`.
   for any sub-agent.
 - `docker exec -it mai-<run-id> bash` gives a shell in the running container, including
   the Codex session state, so any Codex inspection command works there.
-- `docker stop mai-<run-id>` stops it. A stopped run doesn't clean up: remove its
-  worktrees with the command in Cleanup.
+- `.agents/run stop <run-id>` stops it and cleans up its worktrees; committed work stays
+  on `run/<id>`.
 
 There's no steering an `auto` run mid-flight; that's what `start` is for.
 
@@ -111,6 +115,21 @@ issues (each tagged `agent-groomed`, with the old body kept as a comment), ships
 picks on `run/<id>` and opens a draft PR. Start with top 3: fewer picks give clearer
 evaluator signal.
 
+### From your coding session (Claude Code, Codex, ...)
+
+`.agents/skills/mai-runs/SKILL.md` turns an interactive session into a console for the
+kit: describe the job in conversation, and the agent drafts the directive, launches it
+after you confirm, summarizes progress when you ask, stops runs, and walks you through
+the review. Root AGENTS.md points to it, so any harness that reads AGENTS.md finds it.
+For Claude Code's native skill loading, also link it:
+`mkdir -p .claude/skills && ln -s ../../.agents/skills/mai-runs .claude/skills/mai-runs`.
+
+Your session needs to run `.agents/run` with Docker and network access. In Claude Code,
+allow `Bash(.agents/run:*)`; in Codex, approve the command when asked.
+
+Agents inside a run can't use it: `.agents/run` refuses `start`, `auto`, `stop` and
+`publish` when called from a run.
+
 ## After a run
 
 Read these in order, all under `runs/<id>/`:
@@ -125,6 +144,7 @@ Then:
 - **Ship or drop the work.** Review the PR, or `git diff main...run/<id>`. Merge into main yourself.
 - **Answer escalations in INTENT.md.** Each answer becomes a line there, so the question doesn't come back.
 - **Apply proposals you agree with.** Edit `executor.md` and commit it yourself.
+- **Check FUTURE.md signals.** If the post-mortem flagged one, decide whether it's time to build it.
 
 Other artifacts you may want: `triage.md`, `scope.md`, `claim.md`, `spawns.jsonl` (who
 ran, at which tier, with what status), `ledger.md`, `agents/*.log`, and

@@ -153,6 +153,9 @@ For each accepted failure, name the loop step that failed (scope, delegate, tier
 verify) and write a concrete edit to this file or the harness in `proposals.md`.
 Zafar decides whether to apply it. A reordered backlog is not a process fix.
 
+If the run showed a signal listed in `.agents/FUTURE.md`, name the entry and the evidence
+in `proposals.md` under "FUTURE.md signals". Don't build the entry; flag it.
+
 ## Briefs
 Use the brief template in `.agents/agent-rules.md`. `spawn` puts that file in every
 sub-agent's prompt, so don't restate it in briefs. Its conduct section applies to you too.

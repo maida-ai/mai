@@ -3,6 +3,9 @@
 Project facts and conventions for anyone working in this repo, interactive or not.
 INTENT.md describes what the product is for.
 
+In an interactive session, when the user wants a long-running or parallel job done
+autonomously, or asks about agent runs, follow .agents/skills/mai-runs/SKILL.md.
+
 ## Build and test
 Rust 1.85+, Git 2.40+, a C compiler (bundled SQLite).
 
