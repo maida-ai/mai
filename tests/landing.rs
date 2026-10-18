@@ -382,7 +382,7 @@ fn true_conflict_has_one_terminal_outcome_and_rejects_dependents() {
     else {
         panic!("conflict was not durably rejected")
     };
-    assert!(diagnostics.conflict.as_deref().unwrap().contains("a"));
+    assert!(diagnostics.conflict.as_deref().unwrap().contains("\n- a"));
     assert!(!diagnostics.conflict.as_deref().unwrap().contains("loser"));
     assert!(matches!(
         life.get(&d).unwrap().state(),
