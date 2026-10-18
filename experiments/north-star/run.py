@@ -83,6 +83,7 @@ def main():
         call("setup","receive-enable",[binary,"--json","receive","enable",project,"--max-input-bytes","10485760","--max-file-bytes","1048576","--max-changed-files","100"])
         trunk0=call("observation","baseline-trunk",["git","--git-dir",project/"authority.git","rev-parse","refs/heads/trunk"]).strip()
         baseline_gate=json.loads(mai("validator","run",project,trunk0,group="observation"))
+        if baseline_gate.get("outcome")!="success": failures.append({"guardrail":"baseline_gate_failed","outcome":baseline_gate.get("outcome")})
         workspaces=[]
         for i in range(1,a.agents+1):
             w=out/f"workspace-{i}"; workspaces.append(w); mai("workspace",project,f"agent_{i}",w)
