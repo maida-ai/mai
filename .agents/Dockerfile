@@ -9,7 +9,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:$PATH
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      build-essential pkg-config curl ca-certificates git python3 \
+      build-essential pkg-config curl ca-certificates git gh python3 \
  && curl -fsSL https://sh.rustup.rs | sh -s -- -y --no-modify-path --profile minimal --default-toolchain 1.85.0 \
  && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
  && apt-get install -y --no-install-recommends nodejs \

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# .agents/run start <slug> "<directive>"   start an executor session for a new run
+# .agents/run start <slug> "<directive>"   interactive executor session for a new run
+# .agents/run auto <slug> "<directive>"    unattended: executor, then evaluator, then post-mortem
 # .agents/run eval <run-id>                run the independent evaluator on a finished run
 # .agents/run doctor                       check the environment; no model calls
 set -euo pipefail
@@ -8,7 +9,7 @@ here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/.." && pwd)
 # shellcheck source=/dev/null
 source "$here/tiers.sh"
-usage() { sed -n '2,4p' "$0" | sed 's/^# //'; exit 2; }
+usage() { sed -n '2,5p' "$0" | sed 's/^# //'; exit 2; }
 
 # On the host, re-run this same command inside the container. Agents run with the
 # sandbox bypassed, which is only acceptable in a disposable box.
@@ -34,17 +35,18 @@ if [[ -z ${MAI_IN_CONTAINER:-} ]]; then
   exec docker run $tty --rm \
     -v "$root":"$root" -w "$root" \
     -v mai-codex-home:/root/.codex ${auth[@]+"${auth[@]}"} \
-    -v "$HOME/.gitconfig":/root/.gitconfig:ro \
-    -e OPENAI_API_KEY -e MAI_IN_CONTAINER=1 \
+    -e OPENAI_API_KEY -e GH_TOKEN -e MAI_IN_CONTAINER=1 \
     mai-agents "$here/run" "$@"
 fi
 
 KIT=(INTENT.md AGENTS.md CLAUDE.md .agents)
+[[ -n ${GH_TOKEN:-} ]] && gh auth setup-git >/dev/null 2>&1 || true
 
 doctor() {
   local fail=0
   ok() { echo "ok    $*"; }
   bad() { echo "FAIL  $*"; fail=1; }
+  warn() { echo "warn  $*"; }
   cd "$root"
 
   command -v cargo >/dev/null && ok "cargo $(cargo --version | cut -d' ' -f2)" || bad "cargo not on PATH"
@@ -53,6 +55,11 @@ doctor() {
   [[ $(printf '2.40\n%s\n' "$gv" | sort -V | head -n 1) == 2.40 ]] && ok "git $gv" || bad "git $gv < 2.40"
   command -v codex >/dev/null && ok "codex on PATH" || bad "codex not on PATH"
   [[ -f $HOME/.codex/auth.json || -n ${OPENAI_API_KEY:-} ]] && ok "codex auth" || bad "no codex auth"
+  if [[ -n ${GH_TOKEN:-} ]]; then
+    gh auth status >/dev/null 2>&1 && ok "gh authenticated" || bad "GH_TOKEN set but gh auth fails"
+  else
+    warn "no GH_TOKEN: no issue grooming, no push, no PR"
+  fi
   git check-ignore -q runs/x && git check-ignore -q .worktrees/x && ok "runs/ and .worktrees/ ignored" || bad "add runs/ and .worktrees/ to .gitignore"
   [[ -x $(git rev-parse --path-format=absolute --git-common-dir)/hooks/pre-commit ]] \
     && ok "pre-commit hook installed" || bad "pre-commit hook missing"
@@ -94,28 +101,85 @@ STUB
   return $fail
 }
 
+# Set up a run: env, run dir, and the executor's own worktree on branch run/<run-id>,
+# so your checkout is never touched.
+setup_run() {
+  export MAI_RUN_ID="$(date +%F)-$1"
+  export MAI_RUN_DIR="$root/runs/$MAI_RUN_ID"
+  export MAI_WORKTREE_ROOT="$root/.worktrees"
+  export MAI_AGENT_DEPTH=1 MAI_AGENT_ID=executor
+  export GIT_AUTHOR_NAME="mai-executor" GIT_AUTHOR_EMAIL="executor@agents.mai.local"
+  export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME" GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
+  [[ -e $MAI_RUN_DIR ]] && { echo "run exists: $MAI_RUN_DIR" >&2; exit 2; }
+  mkdir -p "$MAI_RUN_DIR/briefs"
+  printf '%s\n' "$2" > "$MAI_RUN_DIR/directive.txt"
+  RUN_WT="$MAI_WORKTREE_ROOT/run-$MAI_RUN_ID"
+  git -C "$root" worktree add -q -b "run/$MAI_RUN_ID" "$RUN_WT" HEAD
+  OPENING="Run id: $MAI_RUN_ID. Run directory: $MAI_RUN_DIR. Working branch: run/$MAI_RUN_ID."
+}
+
+# End of run: the run/<id> branch holds the work. Save anything uncommitted as a patch,
+# remove the worktree, and delete agent branches already merged into run/<id>.
+finish_run() {
+  local id=$1 wt="$root/.worktrees/run-$1" b
+  cd "$root"
+  if [[ -d $wt ]]; then
+    if [[ -n $(git -C "$wt" status --porcelain) ]]; then
+      git -C "$wt" add -A && git -C "$wt" diff --cached --binary > "$root/runs/$id/executor.uncommitted.patch"
+      echo "executor left uncommitted changes: runs/$id/executor.uncommitted.patch"
+    fi
+    git worktree remove --force "$wt"
+  fi
+  for b in $(git for-each-ref --format='%(refname:short)' --merged "run/$id" "refs/heads/agent/$id/"); do
+    git branch -q -D "$b"   # merged into run/<id>, checked above; -d would check HEAD
+  done
+}
+
+# The evaluator gets a throwaway checkout of run/<id>, removed when it finishes.
+evaluate() {
+  local id=$1 dir="$root/runs/$1" wt="$root/.worktrees/eval-$1"
+  [[ -f $dir/claim.md ]] || { echo "no claim.md in $dir" >&2; return 2; }
+  git -C "$root" worktree add -q --detach "$wt" "run/$id"
+  ( cd "$wt"
+    unset MAI_AGENT_ID MAI_AGENT_DEPTH
+    run_evaluator "$here/evaluator.md" "Evaluate run $id. Its artifacts are in $dir/. The work is on branch run/$id." ) \
+    | tee "$dir/evaluation.md"
+  git -C "$root" worktree remove --force "$wt"
+}
+
 case ${1:-} in
   doctor) doctor ;;
   start)
     [[ $# -eq 3 ]] || usage
     doctor || { echo "doctor failed; fix the above before spending on models" >&2; exit 2; }
-    export MAI_RUN_ID="$(date +%F)-$2"
-    export MAI_RUN_DIR="$root/runs/$MAI_RUN_ID"
-    export MAI_AGENT_DEPTH=1 MAI_AGENT_ID=executor
-    export MAI_WORKTREE_ROOT="$root/.worktrees"
-    [[ -e $MAI_RUN_DIR ]] && { echo "run exists: $MAI_RUN_DIR" >&2; exit 2; }
-    mkdir -p "$MAI_RUN_DIR/briefs"
-    printf '%s\n' "$3" > "$MAI_RUN_DIR/directive.txt"
-    cd "$root"
-    run_executor "$here/executor.md" "Run id: $MAI_RUN_ID. Run directory: runs/$MAI_RUN_ID. Directive: $3"
+    setup_run "$2" "$3"
+    cd "$RUN_WT"
+    run_executor "$RUN_WT/.agents/executor.md" "Interactive run. $OPENING Directive: $3" || true
+    finish_run "$MAI_RUN_ID"
+    ;;
+  auto)
+    [[ $# -eq 3 ]] || usage
+    doctor || { echo "doctor failed; fix the above before spending on models" >&2; exit 2; }
+    setup_run "$2" "$3"
+    cd "$RUN_WT"
+    echo "executor running; log: $MAI_RUN_DIR/executor.log"
+    run_executor_batch "$RUN_WT/.agents/executor.md" \
+      "Unattended run: nobody will answer until it ends. $OPENING Directive: $3" \
+      > "$MAI_RUN_DIR/executor.log" 2>&1 || true
+    [[ -f $MAI_RUN_DIR/claim.md ]] || { finish_run "$MAI_RUN_ID"; echo "executor wrote no claim.md; see executor.log" >&2; exit 1; }
+    echo "evaluating"
+    ( evaluate "$MAI_RUN_ID" > /dev/null ) || true
+    echo "post-mortem"
+    cd "$RUN_WT"
+    run_executor_batch "$RUN_WT/.agents/executor.md" \
+      "Unattended post-mortem for run $MAI_RUN_ID. Read $MAI_RUN_DIR/evaluation.md and claim.md, then follow 'After evaluation' in your role file. Don't change code." \
+      > "$MAI_RUN_DIR/postmortem.log" 2>&1 || true
+    finish_run "$MAI_RUN_ID"
+    echo "done. Read: $MAI_RUN_DIR/{report.md,evaluation.md,proposals.md,escalations.md}"
     ;;
   eval)
     [[ $# -eq 2 ]] || usage
-    dir="$root/runs/$2"
-    [[ -f $dir/claim.md ]] || { echo "no claim.md in $dir" >&2; exit 2; }
-    cd "$root"
-    run_evaluator "$here/evaluator.md" "Evaluate run $2. Its artifacts are in runs/$2/." \
-      | tee "$dir/evaluation.md"
+    evaluate "$2"
     ;;
   *) usage ;;
 esac

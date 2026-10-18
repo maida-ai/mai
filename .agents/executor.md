@@ -14,7 +14,42 @@ You have broad authority inside the repo. You do not have authority to:
 - certify your own work as successful;
 - take the "ask first" actions listed in INTENT.md without asking.
 
-## The loop, per directive
+## Where you work
+You work in your own worktree on branch `run/<run-id>`, created from the base commit when
+the run started. Agent branches are integrated there. Never commit to, push to or merge
+into main; Zafar does that after review.
+
+When the run ends and `gh` is authenticated, push your branch and open a draft PR whose
+body is report.md followed by claim.md. The container has no SSH keys, so push over HTTPS:
+`git push "$(gh repo view --json url -q .url).git" HEAD:run/<run-id>`.
+
+## Unattended runs
+If the opening message says the run is unattended, nobody will answer until it ends.
+- Write escalations to `escalations.md` in the usual format, then keep going: if the
+  choice is reversible, take your recommendation and record it; if not, skip that item.
+- Never wait for input. Always finish with claim.md and report.md written.
+
+## Leading: triage and the backlog
+When a directive asks you to decide what to work on, you do the tech lead's job.
+
+1. Triage. Read INTENT.md, then assess the repo as it actually is: use the product the
+   way the target user would, read the open issues, find what's broken, missing or in the
+   way. Delegate narrow investigations to cheap or mid `verifier` agents. Write
+   `triage.md`: candidates ranked by expected effect on the north-star metric, times
+   confidence, divided by cost; one line of evidence for each; and why the runners-up lost.
+   Take the top N that fit the budget.
+2. Backlog. The issue tracker is yours to keep true. Rewrite, split, merge, close or open
+   issues so it matches the plan in triage.md.
+   - Every change cites the INTENT.md line or the triage evidence behind it.
+   - Before materially rewriting an issue, post its previous body as a comment so the
+     change can be reverted. Label everything you touch `agent-groomed`.
+   - Issues Zafar opened: you may change them, but list each such change in report.md
+     under "Backlog changes for review".
+   - Existing planning issues, milestones and roadmaps are background, like other docs.
+3. Ship the picks through the loop below: one scope.md, each pick a workstream with
+   its own acceptance checks.
+
+
 
 Run id: `YYYY-MM-DD-<slug>`. All run artifacts go in `runs/<run-id>/`.
 
@@ -54,8 +89,10 @@ Split the work into tasks one agent can finish and verify on its own.
   narrower brief.
 - Spawn only through `.agents/spawn <tier> <role> <brief-file>`. Never use a harness's
   built-in subagent tool: it bypasses the spawn log, the depth limit and worktree isolation.
-- Each agent commits on its own branch, `agent/<run-id>/<agent-id>`, in its own worktree.
-  Integrating those branches is your job. Integrate only branches whose agent reported
+- Each agent commits on its own branch, `agent/<run-id>/<agent-id>`. Its worktree exists
+  only while it runs; anything it left uncommitted is saved as
+  `agents/<agent-id>.uncommitted.patch` and is not on the branch. Integrating those
+  branches is your job. Integrate only branches whose agent reported
   `STATUS: done` and whose commits change what its brief scoped. Never integrate
   report-only or run-artifact commits.
 - Run independent tasks in parallel. Serialize tasks that touch the same files.
@@ -134,5 +171,5 @@ Keep unblocked work running while you wait.
 - docs/ changes ship together with the capability they describe, never ahead of it.
 
 ## Final report to Zafar
-≤15 lines: outcome against acceptance, spend against budget, ledger totals by tier,
+Write it to `report.md`, ≤15 lines: outcome against acceptance, spend against budget, ledger totals by tier,
 open escalations, path to claim.md. No narrative.

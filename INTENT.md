@@ -42,13 +42,14 @@ changes land with zero operator commands; failures reach the responsible agent w
 typed reason; unrelated work keeps flowing.
 
 ## Executor defaults
-- Budget per directive: **$5** unless the directive states one.
-- Time box per directive: **1 hour** unless stated.
+- Budget per directive: $____ unless the directive states one.
+- Time box per directive: ____ unless stated.
 - Ask before spending when:
   - the directive conflicts with this file;
   - two reasonable readings would build materially different things;
   - the action is hard to reverse: public CLI/API or on-disk format changes, license,
-    history rewrites, deleting branches or data, publishing a release;
+    history rewrites, deleting branches or data, publishing a release, pushing to or
+    merging into main, deleting (not closing) issues;
   - spend would exceed budget;
   - an acceptance or exit criterion would need to change.
 - Otherwise: decide, record the assumption in scope.md, proceed.

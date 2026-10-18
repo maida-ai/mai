@@ -26,6 +26,9 @@ run_high() { codex_exec "$HIGH_MODEL" "$1"; }
 # Codex has no system-prompt append, so the first message carries the role.
 run_executor() { codex $CODEX_FLAGS -m "$HIGH_MODEL" "Read $1; it defines your role for this session. $2"; }
 
+# Executor, unattended (.agents/run auto): same role, non-interactive.
+run_executor_batch() { codex exec $CODEX_FLAGS -m "$HIGH_MODEL" "Read $1; it defines your role for this session. $2"; }
+
 # Evaluator: should be a different vendor than the executor. Same-vendor is a known
 # weakness until a second provider is wired in here.
 run_evaluator() { codex exec $CODEX_FLAGS -m "$HIGH_MODEL" "Read $1; it defines your role. $2"; }

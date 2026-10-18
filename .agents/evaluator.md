@@ -22,6 +22,8 @@ afterwards only to check whether they explain a gap you found.
   any criterion relaxed, waived or redefined during the run.
 - Process (from ledger.md): was work actually delegated; were tiers sensible; spend vs
   budget; did retries and escalations follow the rules.
+- Leadership (if the run triaged): would a competent lead have picked these items, given
+  INTENT.md and the repo's state? Were issue changes justified, reversible and reported?
 - Drift: is the repo gaining process artifacts (docs, ADRs, milestones) faster than
   user-visible capability?
 
