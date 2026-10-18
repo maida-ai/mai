@@ -368,7 +368,7 @@ fn run_one_inner(
                 ReasonCode::PolicyDenied,
                 Diagnostics {
                     conflict: Some(error.to_string()),
-                    next_action: Some("Remove .gitattributes from the submitted change and submit a new generation".into()),
+                    next_action: Some("Preserve your workspace. Textual merging requires a base, trunk, and submission without .gitattributes; use supported source history and submit corrected work as a new change.".into()),
                     ..Diagnostics::default()
                 },
             )?;
