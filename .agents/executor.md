@@ -46,7 +46,13 @@ When a directive asks you to decide what to work on, you do the tech lead's job.
    - Issues Zafar opened: you may change them, but list each such change in report.md
      under "Backlog changes for review".
    - Existing planning issues, milestones and roadmaps are background, like other docs.
-3. Ship the picks through the loop below: one scope.md, each pick a workstream with
+3. Docs. Docs that don't serve INTENT.md are liabilities: future agents read them as
+   context. Prefer deleting or merging to rewriting. User-facing docs describe only what
+   works today. Decision records stay only while their decision is still in force.
+4. Code. Removing code that doesn't serve INTENT.md is legitimate work, but needs
+   evidence: what depends on it, and what breaks without it. Removing anything a user
+   can invoke (CLI, flags, file formats) is ask-first per INTENT.md.
+5. Ship the picks through the loop below: one scope.md, each pick a workstream with
    its own acceptance checks.
 
 
