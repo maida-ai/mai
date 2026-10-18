@@ -1,6 +1,6 @@
 # Benchmark and recovery protocol
 
-mai aims to reduce recovery effort while preserving an exact gate at trunk. A faster acknowledgment is not a faster landing, and passing a synthetic workload is not evidence of realistic agent throughput. This protocol defines comparable measurements; it reports no measured advantage. Performance tuning, the 15% warm-overhead target and differentiated priority remain deferred under [ADR 0010](adr/0010-staged-mvp-qualification.md).
+mai aims to reduce recovery effort while preserving an exact gate at trunk. A faster acknowledgment is not a faster landing, and passing a synthetic workload is not evidence of realistic agent throughput. This protocol defines comparable measurements; it reports no measured advantage. Performance tuning, the 15% warm-overhead target and differentiated priority remain deferred under [current delivery and limits](release-status.md).
 
 ## Match the comparison
 
@@ -32,7 +32,7 @@ Correctness guardrails accompany every timing: lost acknowledged submissions, du
 
 Keep harnesses, fixed fixtures and workload manifests under `experiments/`, separate from product tests. A run bundle should include the command transcript, environment manifest, per-event CSV/JSON, bounded diagnostic logs, final Git identities and assertions, plus a report linking the exact source revision. Use opaque local identities and synthetic/consented repositories; do not export source contents, prompts, credentials or raw agent context. Review any export explicitly. Place reviewed summaries under `docs/spikes/`; link raw artifacts and include unsuccessful runs, limitations and reproduction commands. Any experiment CI must be manual-only, explicitly select platforms and use bounded artifact retention.
 
-Start with a small deterministic local smoke workload. Its purpose is to make comparison and recovery failures reproducible, not to qualify M1 throughput or satisfy the external-user gate. Practical workload claims require dogfooding and consented real-repository observations; [project measurements](project.md#success-measurements) define that later evidence and the 5–10-user gate.
+Start with a small deterministic local smoke workload. Its purpose is to make comparison and recovery failures reproducible, not to qualify M1 throughput or satisfy the external-user gate. Practical workload claims require dogfooding and consented real-repository observations; [current delivery limits](release-status.md) define that later evidence and the 5–10-user gate.
 
 ## Available offline smoke comparison
 

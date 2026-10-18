@@ -1,6 +1,6 @@
 # S4 synthetic queue and recovery assessment
 
-Historical status — 2026-10-17: This report preserves the 2026-10-15 synthetic assessment against the original criteria. [ADR 0010](../../adr/0010-staged-mvp-qualification.md) subsequently completed scoped M0 and deferred realistic S4 performance qualification until useful MVP observations. The original measurements, NO-GO wording and model limitations below remain historical evidence; S4 completion is not a blanket implementation gate.
+Historical status — 2026-10-17: This report preserves the 2026-10-15 synthetic assessment against the original criteria. [current delivery and limits](../../release-status.md) subsequently completed scoped M0 and deferred realistic S4 performance qualification until useful MVP observations. The original measurements, NO-GO wording and model limitations below remain historical evidence; S4 completion is not a blanket implementation gate.
 
 **NO-GO for full #54 acceptance; GO only for collecting and reviewing this synthetic sensitivity grid.** Native jobs and all 16 harness units pass on all three platforms. Metrics are simulated seconds, not measured production gate performance. Realistic workloads and shipping recommendations remain pending as agreed with the maintainer.
 

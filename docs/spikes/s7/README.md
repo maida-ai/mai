@@ -1,6 +1,6 @@
 # S7 receive and landing crash-recovery assessment
 
-Historical status — 2026-10-17: This report preserves the 2026-10-15 fixture assessment against the original criteria, including its original M0 disposition. [ADR 0010](../../adr/0010-staged-mvp-qualification.md) subsequently completed scoped M0 and requires crash/failure qualification before each implemented correctness path is enabled; unimplemented S7 mechanisms are not blanket blockers. The original results, NO-GO wording and fixture limitations below remain historical evidence, not claims about current product recovery.
+Historical status — 2026-10-17: This report preserves the 2026-10-15 fixture assessment against the original criteria, including its original M0 disposition. [current delivery and limits](../../release-status.md) subsequently completed scoped M0 and requires crash/failure qualification before each implemented correctness path is enabled; unimplemented S7 mechanisms are not blanket blockers. The original results, NO-GO wording and fixture limitations below remain historical evidence, not claims about current product recovery.
 
 **NO-GO for full #57 qualification; GO for the implemented process-kill fixture subset.** Linux, macOS and native Windows jobs pass. Each passes three unit tests, all 26 kill checkpoints with two recovery retries, active/stale lock handling, note/index rebuilding, stale-pass refusal and six independent corruption probes. Process kills do not establish power-loss durability or a shared Git/SQLite transaction.
 

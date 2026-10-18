@@ -1,6 +1,6 @@
 # S4 go/no-go decision
 
-Historical status — 2026-10-17: This report preserves the 2026-10-15 synthetic assessment against the original criteria. [ADR 0010](../../adr/0010-staged-mvp-qualification.md) subsequently completed scoped M0 and deferred realistic S4 performance qualification until useful MVP observations. The original measurements, NO-GO wording and model limitations below remain historical evidence; S4 completion is not a blanket implementation gate.
+Historical status — 2026-10-17: This report preserves the 2026-10-15 synthetic assessment against the original criteria. [current delivery and limits](../../release-status.md) subsequently completed scoped M0 and deferred realistic S4 performance qualification until useful MVP observations. The original measurements, NO-GO wording and model limitations below remain historical evidence; S4 completion is not a blanket implementation gate.
 
 **NO-GO for issue #54.** The synthetic grid is useful and reproducible, but realistic rates, coupled recovery costs and admissible-load service bounds remain unqualified.
 
