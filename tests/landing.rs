@@ -372,6 +372,18 @@ fn true_conflict_has_one_terminal_outcome_and_rejects_dependents() {
             }
         }
     ));
+    let State::Terminal {
+        outcome:
+            Outcome::Rejected {
+                reason: ReasonCode::Conflict,
+                diagnostics,
+            },
+    } = life.get(&l).unwrap().state()
+    else {
+        panic!("conflict was not durably rejected")
+    };
+    assert!(diagnostics.conflict.as_deref().unwrap().contains("a"));
+    assert!(!diagnostics.conflict.as_deref().unwrap().contains("loser"));
     assert!(matches!(
         life.get(&d).unwrap().state(),
         State::Terminal {
@@ -382,6 +394,8 @@ fn true_conflict_has_one_terminal_outcome_and_rejects_dependents() {
         }
     ));
     assert_eq!(store.landings().unwrap().len(), 1);
+    drop(store);
+    a.reconcile().unwrap();
 }
 
 #[cfg(unix)]

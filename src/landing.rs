@@ -17,10 +17,10 @@ pub enum MergeMode {
 }
 
 #[derive(Debug)]
-struct MergeConflict;
+struct MergeConflict(String);
 impl std::fmt::Display for MergeConflict {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        formatter.write_str("submitted delta conflicts with current trunk")
+        formatter.write_str(&self.0)
     }
 }
 impl std::error::Error for MergeConflict {}
@@ -137,13 +137,15 @@ pub fn prepare_candidate(
         .args([
             "merge-tree",
             "--write-tree",
+            "--name-only",
+            "-z",
             &format!("--merge-base={base}"),
             &trunk,
             &submitted,
         ])
         .output()?;
     if output.status.code() == Some(1) {
-        return Err(MergeConflict.into());
+        return Err(MergeConflict(conflict_diagnostic(&output.stdout)).into());
     }
     ensure!(
         output.status.success(),
@@ -151,6 +153,7 @@ pub fn prepare_candidate(
     );
     let text = String::from_utf8(output.stdout)?;
     let tree = text
+        .trim_end_matches('\0')
         .lines()
         .next()
         .context("merge-tree omitted tree")?
@@ -166,6 +169,41 @@ pub fn prepare_candidate(
         trunk,
         tree,
     })
+}
+
+fn conflict_diagnostic(output: &[u8]) -> String {
+    const MAX_BYTES: usize = 3000;
+    const PREFIX: &str = "Submitted changes conflict with current trunk. Affected paths:";
+    const OMITTED: &str = "\n- (additional paths omitted)";
+    let paths = output
+        .iter()
+        .position(|byte| *byte == 0)
+        .map(|separator| &output[separator + 1..])
+        .unwrap_or_default();
+    let mut diagnostic = PREFIX.to_owned();
+    for path in paths
+        .split(|byte| *byte == 0)
+        .take_while(|path| !path.is_empty())
+    {
+        let escaped: String = path
+            .iter()
+            .copied()
+            .flat_map(std::ascii::escape_default)
+            .map(char::from)
+            .collect();
+        let addition = format!("\n- {escaped}");
+        if diagnostic.len() + addition.len() > MAX_BYTES {
+            if diagnostic.len() + OMITTED.len() <= MAX_BYTES {
+                diagnostic.push_str(OMITTED);
+            }
+            break;
+        }
+        diagnostic.push_str(&addition);
+    }
+    if diagnostic == PREFIX {
+        diagnostic.push_str("\n- (Git did not report path names)");
+    }
+    diagnostic
 }
 fn command(authority: &Authority) -> Command {
     let mut cmd = Command::new("git");
@@ -591,6 +629,32 @@ fn failed_validation_diagnostics(
     let diagnostics = Diagnostics { check: Some(check), log_tail, candidate_ref: Some(reference), next_action: Some("Preserve your workspace and inspect these gate diagnostics before submitting a corrected commit as a new change".into()), ..Diagnostics::default() };
     diagnostics.validate()?;
     Ok(diagnostics)
+}
+
+#[cfg(test)]
+mod conflict_diagnostic_tests {
+    use super::conflict_diagnostic;
+
+    #[test]
+    fn conflict_paths_are_escaped_and_bounded() {
+        let mut output = b"tree\0line\nname\0".to_vec();
+        output.extend_from_slice(b"bad-\xff-name\0\0ignored source text");
+        let diagnostic = conflict_diagnostic(&output);
+        assert!(diagnostic.contains("line\\nname"));
+        assert!(diagnostic.contains("bad-\\xff-name"));
+        assert!(!diagnostic.contains('\0'));
+        assert!(!diagnostic.contains("ignored source text"));
+
+        let mut oversized = b"tree\0".to_vec();
+        for _ in 0..1000 {
+            oversized.extend_from_slice(&[b'x'; 64]);
+            oversized.push(0);
+        }
+        oversized.push(0);
+        let diagnostic = conflict_diagnostic(&oversized);
+        assert!(diagnostic.len() <= 3000);
+        assert!(diagnostic.contains("additional paths omitted"));
+    }
 }
 fn diagnostic_tail(text: &str, budget: usize) -> String {
     let text = text.replace('\0', "\u{fffd}");
