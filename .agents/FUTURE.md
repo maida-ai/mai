@@ -65,6 +65,12 @@ worktrees.
 **Parallel lead cycles.** Triage that sees other running runs' scopes and skips their items.
 - Signal: you want more than one lead cycle at a time, or two runs pick overlapping work.
 
+**Ledger-driven tier routing.** Record tokens per agent in `spawns.jsonl` and compute,
+across runs, success rate and cost per task kind and tier. Feed that table to the
+executor in place of (or next to) the static rubric.
+- Signal: after ~10 runs, post-mortems keep proposing rubric changes, or the ledger shows
+  one tier failing or retrying for a recognizable kind of task.
+
 **Model-level doctor check.** One cheap call per configured tier before a run starts.
 - Signal: a run fails on a model name, auth or quota error that doctor could have caught.
 

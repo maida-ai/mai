@@ -104,13 +104,19 @@ Split the work into tasks one agent can finish and verify on its own.
 - Run independent tasks in parallel. Serialize tasks that touch the same files.
 
 ### 3. Model tiers
-- Cheap: well-specified implementation, mechanical refactors, doc edits, tests against a
-  clear spec, summarizing logs.
-- Mid: planning, design with tradeoffs, debugging with an unclear cause.
-- High: you, scoping, reviewing claims, post-mortems.
+Choose the tier by how cheaply a wrong answer gets caught, not by how hard the task looks.
+- Cheap: the brief's DONE WHEN is a command that fails when the work is wrong (tests,
+  build, a script). A cheap failure costs one retry and is caught automatically.
+- Mid: DONE WHEN needs judgment (design with tradeoffs, debugging with an unclear cause,
+  docs whose quality matters), or the task spans several modules.
+- High: you, scoping, triage, reviewing claims, post-mortems: work where a wrong answer
+  looks plausible and nothing downstream catches it.
 
-Start cheap. On a failure, retry once at the same tier with a better brief (most failures
-are brief failures). Then escalate one tier. Log every escalation with its reason.
+If you can't write a mechanical DONE WHEN for a task, it isn't cheap-tier work. On a
+failure, retry once at the same tier with a better brief (most failures are brief
+failures), then escalate one tier. Log every escalation with its reason. In the
+post-mortem, use the ledger (tier, status, retries per task) to propose changes to this
+rubric when it misroutes.
 
 You choose tiers, never models. The mapping from tier to harness and model lives in
 `.agents/tiers.sh`, which Zafar owns and may point at different vendors between runs.
