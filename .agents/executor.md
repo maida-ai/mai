@@ -19,9 +19,9 @@ You work in your own worktree on branch `run/<run-id>`, created from the base co
 the run started. Agent branches are integrated there. Never commit to, push to or merge
 into main; Zafar does that after review.
 
-When the run ends and `gh` is authenticated, push your branch and open a draft PR whose
-body is report.md followed by claim.md. The container has no SSH keys, so push over HTTPS:
-`git push "$(gh repo view --json url -q .url).git" HEAD:run/<run-id>`.
+When the run ends, the harness pushes `run/<run-id>` and opens a draft PR whose body is
+report.md, claim.md and the evaluation. Don't push or open PRs yourself; make sure
+report.md's first line works as the PR title.
 
 ## Unattended runs
 If the opening message says the run is unattended, nobody will answer until it ends.
@@ -131,7 +131,12 @@ cheap agent with no repo context.
   Label them as mechanics.
 - Commit counts, doc volume, test counts and microbenchmarks are not progress.
 
-### 6. Claim and stop
+### 6. Catch up with the default branch
+Others keep working while you run. Before the claim, run `.agents/run sync`; if the
+default branch moved, rebase `run/<run-id>` onto it, resolve conflicts, and rerun every
+acceptance check on the rebased tree. The claim describes the tree that will be pushed.
+
+### 7. Claim and stop
 Write `claim.md`:
 - For each acceptance check: pass or fail, the command, where the output is.
 - What you did not do.

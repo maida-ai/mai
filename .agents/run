@@ -3,6 +3,8 @@
 # .agents/run auto <slug> "<directive>"    unattended, in the background: executor, evaluator, post-mortem
 # .agents/run status [run-id]              progress of a run (default: latest); runs on the host
 # .agents/run eval <run-id>                run the independent evaluator on a finished run
+# .agents/run publish <run-id>             push run/<id> and open a draft PR (also automatic at run end)
+# .agents/run sync                         fetch the latest default branch into origin/<branch>
 # .agents/run doctor                       check the environment; no model calls
 set -euo pipefail
 
@@ -10,7 +12,7 @@ here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/.." && pwd)
 # shellcheck source=/dev/null
 source "$here/tiers.sh"
-usage() { sed -n '2,6p' "$0" | sed 's/^# //'; exit 2; }
+usage() { sed -n '2,8p' "$0" | sed 's/^# //'; exit 2; }
 
 # Read-only view of a run, from the files it writes. Needs no container.
 status() {
@@ -77,12 +79,15 @@ if [[ -z ${MAI_IN_CONTAINER:-} ]]; then
           -e OPENAI_API_KEY -e GH_TOKEN -e MAI_IN_CONTAINER=1)
   if [[ ${1:-} == auto ]]; then
     [[ $# -eq 3 ]] || usage
-    docker run "${common[@]}" mai-agents "$here/run" doctor \
-      || { echo "doctor failed; fix the above before spending on models" >&2; exit 2; }
-    cname="mai-$(date -u +%F)-$2"
-    docker run -d --name "$cname" "${common[@]}" mai-agents "$here/run" "$@" >/dev/null
+    # Setup runs in the foreground, so every failure is visible here. Only the model
+    # work goes to the background.
+    out=$(docker run "${common[@]}" mai-agents "$here/run" prepare "$2" "$3" 2>&1) \
+      || { echo "$out" >&2; exit 2; }
+    id=$(grep -m1 '^RUN_ID=' <<<"$out" | cut -d= -f2)
+    cname="mai-$id"
+    docker run -d --name "$cname" "${common[@]}" mai-agents "$here/run" execute "$id" >/dev/null
     echo "started $cname in the background"
-    echo "  progress:  .agents/run status        (or: watch -n 15 .agents/run status)"
+    echo "  progress:  .agents/run status $id     (or: watch -n 15 .agents/run status)"
     echo "  phases:    docker logs -f $cname"
     echo "  inside:    docker exec -it $cname bash"
     echo "  stop:      docker stop $cname"
@@ -95,6 +100,18 @@ fi
 
 KIT=(INTENT.md AGENTS.md CLAUDE.md .agents)
 [[ -n ${GH_TOKEN:-} ]] && gh auth setup-git >/dev/null 2>&1 || true
+
+# Fetch the default branch over HTTPS (the container has no SSH keys) into
+# refs/remotes/origin/<branch>. Sets BASE_REF. Without GH_TOKEN, falls back to HEAD.
+sync_base() {
+  BASE_REF=HEAD
+  [[ -n ${GH_TOKEN:-} ]] || return 0
+  local b url
+  b=$(gh repo view --json defaultBranchRef -q .defaultBranchRef.name) || return 1
+  url="$(gh repo view --json url -q .url).git"
+  git fetch -q "$url" "+refs/heads/$b:refs/remotes/origin/$b" || return 1
+  BASE_REF="origin/$b"
+}
 
 doctor() {
   local fail=0
@@ -131,6 +148,15 @@ doctor() {
   # Agents' worktrees branch from HEAD, so they only see the committed kit.
   if git diff --quiet HEAD -- "${KIT[@]}" && [[ -z $(git ls-files --others --exclude-standard -- "${KIT[@]}") ]]; then
     ok "kit committed"
+    if [[ -n ${GH_TOKEN:-} ]]; then
+      if ! sync_base; then
+        bad "can't fetch the default branch with GH_TOKEN"
+      elif git diff --quiet "$BASE_REF" HEAD -- "${KIT[@]}"; then
+        ok "kit matches $BASE_REF (runs start there)"
+      else
+        bad "kit differs from $BASE_REF, where runs start. Push your kit commits first."
+      fi
+    fi
   else
     bad "kit has uncommitted changes; agents' worktrees won't see them. Commit: ${KIT[*]}"
     echo "skip  spawn test (needs a committed kit)"
@@ -167,23 +193,53 @@ STUB
 
 # Set up a run: env, run dir, and the executor's own worktree on branch run/<run-id>,
 # so your checkout is never touched.
-setup_run() {
-  export MAI_RUN_ID="$(date +%F)-$1"
-  export MAI_RUN_DIR="$root/runs/$MAI_RUN_ID"
-  export MAI_WORKTREE_ROOT="$root/.worktrees"
+executor_env() {
+  export MAI_RUN_ID=$1 MAI_RUN_DIR="$root/runs/$1" MAI_WORKTREE_ROOT="$root/.worktrees"
   export MAI_AGENT_DEPTH=1 MAI_AGENT_ID=executor
   export GIT_AUTHOR_NAME="mai-executor" GIT_AUTHOR_EMAIL="executor@agents.mai.local"
   export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME" GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
-  [[ -e $MAI_RUN_DIR ]] && { echo "run exists: $MAI_RUN_DIR" >&2; exit 2; }
+  RUN_WT="$MAI_WORKTREE_ROOT/run-$1"
+}
+
+# Create a run, or fail loudly without leaving anything half-made behind.
+setup_run() {
+  local id; id="$(date +%F)-$1"
+  executor_env "$id"
+  if [[ -e $MAI_RUN_DIR ]]; then
+    local phase; phase=$(cat "$MAI_RUN_DIR/phase" 2>/dev/null || echo unknown)
+    echo "run $id already exists (phase: $phase)." >&2
+    case $phase in
+      executor|evaluating|post-mortem)
+        echo "It may still be running: .agents/run status $id. Use a new slug." >&2 ;;
+      *) echo "Use a new slug, or discard it: rm -rf runs/$id && git branch -D run/$id" >&2 ;;
+    esac
+    exit 2
+  fi
+  if git -C "$root" rev-parse -q --verify "refs/heads/run/$id" >/dev/null; then
+    echo "branch run/$id exists without a run directory. Delete it: git branch -D run/$id" >&2
+    exit 2
+  fi
+  ( cd "$root" && sync_base && echo "$BASE_REF" ) > "$root/.base.$$" \
+    || { rm -f "$root/.base.$$"; echo "can't fetch the default branch" >&2; exit 2; }
+  local base; base=$(cat "$root/.base.$$"); rm -f "$root/.base.$$"
   mkdir -p "$MAI_RUN_DIR/briefs"
   printf '%s\n' "$2" > "$MAI_RUN_DIR/directive.txt"
-  RUN_WT="$MAI_WORKTREE_ROOT/run-$MAI_RUN_ID"
-  git -C "$root" worktree add -q -b "run/$MAI_RUN_ID" "$RUN_WT" HEAD
-  OPENING="Run id: $MAI_RUN_ID. Run directory: $MAI_RUN_DIR. Working branch: run/$MAI_RUN_ID."
+  printf '%s\n%s\n' "$base" "$(git -C "$root" rev-parse "$base")" > "$MAI_RUN_DIR/base.txt"
+  git -C "$root" worktree add -q -b "run/$id" "$RUN_WT" "$base" \
+    || { rm -rf "$MAI_RUN_DIR"; echo "couldn't create the run worktree" >&2; exit 2; }
+  load_run "$id"
+}
+
+load_run() {
+  executor_env "$1"
+  [[ -d $RUN_WT && -f $MAI_RUN_DIR/directive.txt ]] || { echo "run $1 isn't prepared" >&2; exit 2; }
+  DIRECTIVE=$(cat "$MAI_RUN_DIR/directive.txt")
+  OPENING="Run id: $MAI_RUN_ID. Run directory: $MAI_RUN_DIR. Working branch: run/$MAI_RUN_ID, started from $(head -n 1 "$MAI_RUN_DIR/base.txt")."
 }
 
 # End of run: the run/<id> branch holds the work. Save anything uncommitted as a patch,
-# remove the worktree, and delete agent branches already merged into run/<id>.
+# remove the worktree, and delete agent branches whose changes all reached run/<id>,
+# whether by merge, cherry-pick or rebase.
 finish_run() {
   local id=$1 wt="$root/.worktrees/run-$1" b
   cd "$root"
@@ -194,9 +250,38 @@ finish_run() {
     fi
     git worktree remove --force "$wt"
   fi
-  for b in $(git for-each-ref --format='%(refname:short)' --merged "run/$id" "refs/heads/agent/$id/"); do
-    git branch -q -D "$b"   # merged into run/<id>, checked above; -d would check HEAD
+  for b in $(git for-each-ref --format='%(refname:short)' "refs/heads/agent/$id/"); do
+    # git cherry marks commits with no equivalent on run/<id> with "+"
+    git cherry "run/$id" "$b" | grep -q '^+' || git branch -q -D "$b"
   done
+}
+
+# Push run/<id> and open a draft PR whose body is report, claim and evaluation.
+# Plumbing lives here, not in the executor's instructions, so it happens every time.
+publish() {
+  local id=$1 dir="$root/runs/$1" br="run/$1" base title url
+  [[ -n ${GH_TOKEN:-} ]] || { echo "no GH_TOKEN: not publishing $br"; return 0; }
+  cd "$root"
+  git rev-parse -q --verify "refs/heads/$br" >/dev/null || { echo "no branch $br" >&2; return 2; }
+  base=$(gh repo view --json defaultBranchRef -q .defaultBranchRef.name)
+  url="$(gh repo view --json url -q .url).git"
+  title=$(grep -m1 -v '^[[:space:]]*$' "$dir/report.md" 2>/dev/null | sed 's/^#* *//' | cut -c1-100)
+  { cat "$dir/report.md" 2>/dev/null
+    printf '\n---\n\n'; cat "$dir/claim.md" 2>/dev/null
+    [[ -f $dir/evaluation.md ]] && { printf '\n---\n\n## Independent evaluation\n\n'; cat "$dir/evaluation.md"; }
+  } | head -c 60000 > "$dir/pr-body.md"
+  local existing; existing=$(gh pr view "$br" --json url -q .url 2>/dev/null || true)
+  if { git push "$url" "$br:refs/heads/$br" &&
+       if [[ -n $existing ]]; then
+         gh pr edit "$br" --body-file "$dir/pr-body.md" && echo "$existing"
+       else
+         gh pr create --draft --base "$base" --head "$br" --title "${title:-Agent run $id}" --body-file "$dir/pr-body.md"
+       fi
+     } > "$dir/publish.log" 2>&1; then
+    echo "published: $(tail -n 1 "$dir/publish.log")"
+  else
+    echo "publish failed; see runs/$id/publish.log. Retry with: .agents/run publish $id" >&2
+  fi
 }
 
 # The evaluator gets a throwaway checkout of run/<id>, removed when it finishes.
@@ -211,25 +296,12 @@ evaluate() {
   git -C "$root" worktree remove --force "$wt"
 }
 
-case ${1:-} in
-  doctor) doctor ;;
-  start)
-    [[ $# -eq 3 ]] || usage
-    doctor || { echo "doctor failed; fix the above before spending on models" >&2; exit 2; }
-    setup_run "$2" "$3"
-    cd "$RUN_WT"
-    run_executor "$RUN_WT/.agents/executor.md" "Interactive run. $OPENING Directive: $3" || true
-    finish_run "$MAI_RUN_ID"
-    ;;
-  auto)
-    [[ $# -eq 3 ]] || usage
-    doctor || { echo "doctor failed; fix the above before spending on models" >&2; exit 2; }
-    setup_run "$2" "$3"
+execute_run() {
     cd "$RUN_WT"
     echo executor > "$MAI_RUN_DIR/phase"
     echo "executor running; log: $MAI_RUN_DIR/executor.log"
     run_executor_batch "$RUN_WT/.agents/executor.md" \
-      "Unattended run: nobody will answer until it ends. $OPENING Directive: $3" \
+      "Unattended run: nobody will answer until it ends. $OPENING Directive: $DIRECTIVE" \
       > "$MAI_RUN_DIR/executor.log" 2>&1 || true
     [[ -f $MAI_RUN_DIR/claim.md ]] || { finish_run "$MAI_RUN_ID"; echo "failed: no claim.md" > "$MAI_RUN_DIR/phase"; echo "executor wrote no claim.md; see executor.log" >&2; exit 1; }
     echo "evaluating"; echo evaluating > "$MAI_RUN_DIR/phase"
@@ -240,12 +312,50 @@ case ${1:-} in
       "Unattended post-mortem for run $MAI_RUN_ID. Read $MAI_RUN_DIR/evaluation.md and claim.md, then follow 'After evaluation' in your role file. Don't change code." \
       > "$MAI_RUN_DIR/postmortem.log" 2>&1 || true
     finish_run "$MAI_RUN_ID"
+    publish "$MAI_RUN_ID"
     echo done > "$MAI_RUN_DIR/phase"
     echo "done. Read: $MAI_RUN_DIR/{report.md,evaluation.md,proposals.md,escalations.md}"
+}
+
+case ${1:-} in
+  doctor) doctor ;;
+  start)
+    [[ $# -eq 3 ]] || usage
+    doctor || { echo "doctor failed; fix the above before spending on models" >&2; exit 2; }
+    setup_run "$2" "$3"
+    cd "$RUN_WT"
+    run_executor "$RUN_WT/.agents/executor.md" "Interactive run. $OPENING Directive: $3" || true
+    finish_run "$MAI_RUN_ID"
+    publish "$MAI_RUN_ID"
+    ;;
+  auto)
+    [[ $# -eq 3 ]] || usage
+    doctor || { echo "doctor failed; fix the above before spending on models" >&2; exit 2; }
+    setup_run "$2" "$3"
+    execute_run
+    ;;
+  prepare)   # internal: doctor + setup, in the foreground, so errors are visible
+    [[ $# -eq 3 ]] || usage
+    doctor || { echo "doctor failed; fix the above before spending on models" >&2; exit 2; }
+    setup_run "$2" "$3"
+    echo "RUN_ID=$MAI_RUN_ID"
+    ;;
+  execute)   # internal: the unattended part of auto, for an already prepared run
+    [[ $# -eq 2 ]] || usage
+    load_run "$2"
+    execute_run
     ;;
   eval)
     [[ $# -eq 2 ]] || usage
     evaluate "$2"
+    ;;
+  sync)
+    sync_base || { echo "fetch failed" >&2; exit 1; }
+    echo "$BASE_REF $(git rev-parse --short "$BASE_REF")"
+    ;;
+  publish)
+    [[ $# -eq 2 ]] || usage
+    publish "$2"
     ;;
   *) usage ;;
 esac

@@ -38,8 +38,9 @@ the hook is installed.
 1. Docker usable without sudo (rootless recommended). Codex logged in on the host
    (`~/.codex/auth.json`) or `OPENAI_API_KEY` exported.
 2. Optional, for issue grooming and PRs: export `GH_TOKEN`, a fine-grained token limited
-   to this repo with Issues, Pull requests and Contents set to read/write. Protect `main`
-   on GitHub so the token can't push to it.
+   to this repo, owned by the org, with Issues, Pull requests and Contents set to
+   read/write. Protect `main` on GitHub so the token can't push to it. Doctor checks
+   that the token can push.
 3. In the repo:
    ```bash
    printf 'runs/\n.worktrees/\n' >> .gitignore
@@ -59,7 +60,12 @@ the hook is installed.
 .agents/run auto  <slug> "<directive>"        # unattended, in the background: executor → evaluator → post-mortem
 .agents/run status [run-id]                   # progress of a run (default: latest)
 .agents/run eval  <run-id>                    # evaluate a run started with `start`
+.agents/run publish <run-id>                  # push run/<id>, open or update its draft PR
 ```
+
+Every run ends by pushing `run/<id>` and opening a draft PR (report, claim and evaluation
+as the body), if `GH_TOKEN` is set. If that fails, the run still completes; fix the token
+and use `publish`.
 
 ### Monitoring an `auto` run
 
@@ -78,9 +84,18 @@ the hook is installed.
 
 There's no steering an `auto` run mid-flight; that's what `start` is for.
 
-`start` and `auto` run doctor first and refuse to start if anything fails. Every run
+`start` and `auto` run doctor first and refuse to start if anything fails. A slug can be
+used once per day: starting an existing run id fails with a message saying whether that
+run may still be going and how to discard it. Setup happens in the foreground even for
+`auto`, so any failure shows up before anything goes to the background. Every run
 gets its id (`YYYY-MM-DD-<slug>`), a directory under `runs/`, and its own branch,
 `run/<id>`, in its own worktree. Your checkout is never touched.
+
+Runs start from the latest default branch on GitHub, not your local HEAD, so unpushed
+local work never leaks into a PR. That means kit changes must be pushed before a run;
+doctor checks this. Before claiming, the executor rebases onto the default branch again
+and re-verifies, so the PR is current even if main moved during the run. Without
+`GH_TOKEN`, runs start from local HEAD and nothing is fetched.
 
 ### Lead cycle: let it decide what to do
 
@@ -138,7 +153,8 @@ that harness in the Dockerfile.
 Worktrees exist only while something runs: agents' worktrees are removed when the agent
 exits, and the run's when the run ends. Anything left uncommitted is saved as a patch
 (`runs/<id>/agents/<agent-id>.uncommitted.patch` or `runs/<id>/executor.uncommitted.patch`).
-At the end of a run, agent branches already merged into `run/<id>` are deleted. What's
+At the end of a run, agent branches whose changes all reached `run/<id>` (by merge,
+cherry-pick or rebase) are deleted. What's
 left are `run/<id>` and the agent branches that were never integrated (failed or rejected
 work), kept for inspection.
 
