@@ -41,11 +41,19 @@ Don't use `.agents/run start` here: it opens another interactive session inside 
 Confirm with the user first unless they asked for it directly.
 
 ## Review a finished run
-Read, in order: `runs/<id>/report.md`, `evaluation.md`, `escalations.md`, `proposals.md`.
-Give a verdict first (did it deliver, per the evaluator), then what needs the user:
-escalations to answer, proposals to accept, FUTURE.md signals the post-mortem flagged,
-and the PR to review (URL in `publish.log`).
-If publishing failed, the fix is in `publish.log`; retry with `.agents/run publish <id>`.
+A finished run ends in phase `needs-review` with `runs/<id>/review.md`: the headline
+numbers, the evaluator's spot checks, the post-mortem's decisions, and the PR. The next
+run can't start until it's reviewed. Your job is to make the review fast, not to do it.
+- Go through the sheet item by item with the user. For spot checks, you may run the
+  command and show its raw output; the user judges whether it holds.
+- Write only the user's own words on `Decision:` lines. Never fill one yourself, and
+  never infer a decision from silence.
+- When every line is filled, run `.agents/run review <id>`.
+- `.agents/run review <id> --skip "<reason>"` only when the user asks and gives the
+  reason; it's recorded.
+- For background, `report.md`, `evaluation.md`, `escalations.md` and `proposals.md` are in
+  the same directory. If publishing failed, the fix is in `publish.log`; retry with
+  `.agents/run publish <id>`.
 
 ## PM actions: only with explicit approval of the exact text
 - Answering an escalation means adding a line under `## Decisions` in INTENT.md.

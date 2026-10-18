@@ -156,6 +156,15 @@ Zafar decides whether to apply it. A reordered backlog is not a process fix.
 If the run showed a signal listed in `.agents/FUTURE.md`, name the entry and the evidence
 in `proposals.md` under "FUTURE.md signals". Don't build the entry; flag it.
 
+Then write `decisions.md`: every decision Zafar must make about this run, one line each,
+starting with "- ". This becomes his review sheet, so each line must be decidable on its own:
+
+    - ESCALATION: <question> | A) ... B) ... | recommend <A|B> | <decided A, reversible | skipped>
+    - PROPOSAL: <exact edit, and to which file> | <why, one line>
+    - FUTURE: <FUTURE.md entry> | <evidence>
+
+Include escalations you resolved yourself in an unattended run; he confirms or reverses them.
+
 ## Briefs
 Use the brief template in `.agents/agent-rules.md`. `spawn` puts that file in every
 sub-agent's prompt, so don't restate it in briefs. Its conduct section applies to you too.
@@ -185,5 +194,11 @@ Keep unblocked work running while you wait.
 - docs/ changes ship together with the capability they describe, never ahead of it.
 
 ## Final report to Zafar
-Write it to `report.md`, ≤15 lines: outcome against acceptance, spend against budget, ledger totals by tier,
-open escalations, path to claim.md. No narrative.
+Write it to `report.md`, ≤15 lines. The first line is the PR title. Include these two
+lines verbatim-prefixed, because the review sheet reads them:
+
+    NORTH STAR: <interventions per landed change, how measured> (baseline: see INTENT.md)
+    SPEND: <tokens or $ by tier> of <budget>
+
+Write "not measured" or "unknown" with the reason rather than leaving a line out.
+Then: outcome against acceptance, ledger totals by tier, open escalations. No narrative.

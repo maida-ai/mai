@@ -4,6 +4,7 @@
 # .agents/run status [run-id]              progress of a run (default: latest); runs on the host
 # .agents/run list                         every run with its phase; runs on the host
 # .agents/run stop <run-id>                stop a background run and clean up after it
+# .agents/run review <run-id> [--skip "<reason>"]   record your review; required before the next run
 # .agents/run eval <run-id>                run the independent evaluator on a finished run
 # .agents/run publish <run-id>             push run/<id> and open a draft PR (also automatic at run end)
 # .agents/run sync                         fetch the latest default branch into origin/<branch>
@@ -14,7 +15,7 @@ here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/.." && pwd)
 # shellcheck source=/dev/null
 source "$here/tiers.sh"
-usage() { sed -n '2,10p' "$0" | sed 's/^# //'; exit 2; }
+usage() { sed -n '2,11p' "$0" | sed 's/^# //'; exit 2; }
 
 # Read-only view of a run, from the files it writes. Needs no container.
 status() {
@@ -67,7 +68,7 @@ list_runs() {
 # Kit agents may sync, check and read status; starting, stopping or publishing runs is
 # for people (or their interactive sessions), never for agents inside a run.
 case ${1:-} in
-  start|auto|stop|publish|prepare|execute|finish)
+  start|auto|stop|publish|prepare|execute|finish|review)
     if [[ -n ${MAI_AGENT_ID:-} ]]; then
       echo "refused: agents inside a run can't use '.agents/run $1'" >&2; exit 2
     fi ;;
@@ -218,6 +219,68 @@ STUB
   return $fail
 }
 
+# The review sheet: the few decisions a person must make before trusting a run.
+# Built from the evaluator's spot checks and the post-mortem's decisions, not from the
+# executor's own summary, so the executor can't soften what you're asked to check.
+build_review() {
+  local id=$1 dir="$root/runs/$1" out="$root/runs/$1/review.md" pr n=0 line
+  pr=$(grep -o 'https://[^ ]*' "$dir/publish.log" 2>/dev/null | tail -n 1 || true)
+  {
+    echo "# Review: $id"
+    echo
+    echo "Work was delegated; responsibility wasn't. Write your decision on every"
+    echo "\`Decision:\` line, in your own words, then run \`.agents/run review $id\`."
+    echo "The next run won't start until this run is reviewed (or explicitly skipped)."
+    echo
+    echo "- $(grep -m1 '^ *VERDICT:' "$dir/evaluation.md" 2>/dev/null | sed 's/^ *//' || echo 'VERDICT: missing (no evaluation)')"
+    echo "- $(grep -m1 '^NORTH STAR:' "$dir/report.md" 2>/dev/null || echo 'NORTH STAR: not reported')"
+    echo "- $(grep -m1 '^SPEND:' "$dir/report.md" 2>/dev/null || echo 'SPEND: not reported')"
+    echo "- PR: ${pr:-not published}"
+    echo
+    echo "## Spot checks (chosen by the evaluator; do them, don't just read them)"
+    while IFS= read -r line; do
+      n=$((n + 1)); printf '\n### S%d\n%s\nDecision: \n' "$n" "${line#*- }"
+    done < <(awk '/^ *SPOT CHECKS:/{f=1;next} f&&/^ *[A-Z][A-Z ]+:/{f=0} f&&/^ *- /' "$dir/evaluation.md" 2>/dev/null)
+    if [[ $n == 0 ]]; then
+      printf '\n### S1\nThe evaluator gave no spot checks. Pick one claim in claim.md and verify it yourself.\nDecision: \n'
+    fi
+    echo
+    echo "## Decisions (escalations, proposals, FUTURE.md signals)"
+    n=0
+    while IFS= read -r line; do
+      n=$((n + 1)); printf '\n### D%d\n%s\nDecision: \n' "$n" "${line#- }"
+    done < <(grep '^- ' "$dir/decisions.md" 2>/dev/null)
+    [[ $n == 0 ]] && printf '\nNone listed. If escalations.md or proposals.md exist, read them anyway.\n'
+    echo
+    echo "## The PR"
+    printf '\n### P1\nready (marks the draft PR ready for review) / rework: <what> / close\nDecision: \n'
+  } > "$out"
+}
+
+review_run() {
+  local id=$1 dir="$root/runs/$1" f="$root/runs/$1/review.md" open pr_decision
+  [[ -d $dir ]] || { echo "no run $id" >&2; return 2; }
+  [[ -f $f ]] || build_review "$id"
+  if [[ ${2:-} == --skip ]]; then
+    [[ -n ${3:-} ]] || { echo "--skip needs a reason" >&2; return 2; }
+    printf '\nSKIPPED %s: %s\n' "$(date -u +%FT%TZ)" "$3" >> "$f"
+    echo skipped > "$dir/phase"; echo "review of $id skipped; reason recorded in runs/$id/review.md"
+    return 0
+  fi
+  open=$(awk '/^### /{h=$2} /^Decision: *$/{print h}' "$f" | tr '\n' ' ')
+  if [[ -n $open ]]; then
+    echo "runs/$id/review.md still needs decisions: $open" >&2
+    return 1
+  fi
+  printf '\nREVIEWED %s\n' "$(date -u +%FT%TZ)" >> "$f"
+  echo reviewed > "$dir/phase"
+  pr_decision=$(awk '/^### P1/{f=1} f&&/^Decision:/{sub(/^Decision: */,""); print; exit}' "$f")
+  if [[ $pr_decision == ready* && -n ${GH_TOKEN:-} ]]; then
+    ( cd "$root" && gh pr ready "run/$id" ) && echo "PR marked ready for review"
+  fi
+  echo "reviewed $id. Apply what you accepted: INTENT.md Decisions, executor.md edits. Then commit and push."
+}
+
 # Set up a run: env, run dir, and the executor's own worktree on branch run/<run-id>,
 # so your checkout is never touched.
 executor_env() {
@@ -240,6 +303,16 @@ setup_run() {
         echo "It may still be running: .agents/run status $id. Use a new slug." >&2 ;;
       *) echo "Use a new slug, or discard it: rm -rf runs/$id && git branch -D run/$id" >&2 ;;
     esac
+    exit 2
+  fi
+  local d pending=""
+  for d in "$root"/runs/*/; do
+    [[ $(cat "$d/phase" 2>/dev/null) == needs-review ]] && pending+=" $(basename "$d")"
+  done
+  if [[ -n $pending ]]; then
+    echo "unreviewed runs:$pending" >&2
+    echo "Review each: fill runs/<id>/review.md, then .agents/run review <id>" >&2
+    echo "Or skip on the record: .agents/run review <id> --skip \"<reason>\"" >&2
     exit 2
   fi
   if git -C "$root" rev-parse -q --verify "refs/heads/run/$id" >/dev/null; then
@@ -346,8 +419,9 @@ execute_run() {
       > "$MAI_RUN_DIR/postmortem.log" 2>&1 || true
     finish_run "$MAI_RUN_ID"
     publish "$MAI_RUN_ID"
-    echo done > "$MAI_RUN_DIR/phase"
-    echo "done. Read: $MAI_RUN_DIR/{report.md,evaluation.md,proposals.md,escalations.md}"
+    build_review "$MAI_RUN_ID"
+    echo needs-review > "$MAI_RUN_DIR/phase"
+    echo "done. Review: runs/$MAI_RUN_ID/review.md, then .agents/run review $MAI_RUN_ID"
 }
 
 case ${1:-} in
@@ -359,7 +433,14 @@ case ${1:-} in
     cd "$RUN_WT"
     run_executor "$RUN_WT/.agents/executor.md" "Interactive run. $OPENING Directive: $3" || true
     finish_run "$MAI_RUN_ID"
-    publish "$MAI_RUN_ID"
+    if [[ -f $MAI_RUN_DIR/claim.md ]]; then
+      publish "$MAI_RUN_ID"
+      build_review "$MAI_RUN_ID"
+      echo needs-review > "$MAI_RUN_DIR/phase"
+      echo "Review: runs/$MAI_RUN_ID/review.md, then .agents/run review $MAI_RUN_ID"
+    else
+      echo ended > "$MAI_RUN_DIR/phase"
+    fi
     ;;
   auto)
     [[ $# -eq 3 ]] || usage
@@ -388,6 +469,10 @@ case ${1:-} in
     finish_run "$2"
     echo stopped > "$root/runs/$2/phase"
     echo "cleaned up $2; its branch run/$2 keeps whatever was committed"
+    ;;
+  review)
+    [[ $# -ge 2 ]] || usage
+    review_run "$2" "${3:-}" "${4:-}"
     ;;
   sync)
     sync_base || { echo "fetch failed" >&2; exit 1; }

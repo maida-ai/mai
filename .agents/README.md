@@ -64,6 +64,7 @@ the hook is installed.
 .agents/run status [run-id]                   # progress of a run (default: latest)
 .agents/run list                              # all runs with their phase
 .agents/run stop <run-id>                     # stop a background run and clean up
+.agents/run review <run-id>                   # record your review (required before the next run)
 .agents/run eval  <run-id>                    # evaluate a run started with `start`
 .agents/run publish <run-id>                  # push run/<id>, open or update its draft PR
 ```
@@ -132,23 +133,31 @@ Agents inside a run can't use it: `.agents/run` refuses `start`, `auto`, `stop` 
 
 ## After a run
 
-Read these in order, all under `runs/<id>/`:
+Work is delegated; responsibility isn't. A finished run ends in phase `needs-review`
+with a review sheet, `runs/<id>/review.md`, and **the next run won't start until it's
+reviewed**. The sheet asks for decisions, not reading:
 
-1. `report.md`: outcome against acceptance, spend, open escalations, and backlog changes
-   to issues you opened.
-2. `evaluation.md`: the independent verdict.
-3. `proposals.md`: the executor's suggested edits to its own instructions.
-4. `escalations.md`: decisions it deferred or made without you (unattended runs).
+| Section | Source | What you do |
+| --- | --- | --- |
+| Headline | evaluation.md, report.md | Verdict, north-star number against baseline, spend against budget, PR link. |
+| Spot checks | the evaluator | Run each check (≤2 min each) and write whether it held. The evaluator picks them, not the executor, so the executor can't soften what you're asked to verify. |
+| Decisions | the post-mortem's decisions.md | Confirm or reverse each escalation, accept or reject each proposal, decide on each FUTURE.md signal. |
+| The PR | | `ready`, `rework: <what>`, or `close`. |
 
-Then:
-- **Ship or drop the work.** Review the PR, or `git diff main...run/<id>`. Merge into main yourself.
-- **Answer escalations in INTENT.md.** Each answer becomes a line there, so the question doesn't come back.
-- **Apply proposals you agree with.** Edit `executor.md` and commit it yourself.
-- **Check FUTURE.md signals.** If the post-mortem flagged one, decide whether it's time to build it.
+Write a decision on every `Decision:` line, then:
 
-Other artifacts you may want: `triage.md`, `scope.md`, `claim.md`, `spawns.jsonl` (who
-ran, at which tier, with what status), `ledger.md`, `agents/*.log`, and
-`executor.log`/`postmortem.log` for `auto` runs.
+```bash
+.agents/run review <id>                     # lists what's still open, or records the review
+.agents/run review <id> --skip "<reason>"   # skip on the record; the reason stays in review.md
+```
+
+A completed review with `ready` on the PR marks the draft PR ready for review. Then
+apply what you accepted (INTENT.md Decisions, executor.md edits), commit, and push.
+From your coding session, the mai-runs skill walks you through the sheet.
+
+Background, if a decision needs it: `report.md`, `evaluation.md`, `escalations.md`,
+`proposals.md`, `triage.md`, `scope.md`, `claim.md`, `spawns.jsonl`, `ledger.md`,
+`agents/*.log`, and `executor.log`/`postmortem.log` for `auto` runs.
 
 ## Adjusting the system
 

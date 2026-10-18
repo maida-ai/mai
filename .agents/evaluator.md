@@ -27,7 +27,7 @@ afterwards only to check whether they explain a gap you found.
 - Drift: is the repo gaining process artifacts (docs, ADRs, milestones) faster than
   user-visible capability?
 
-## Output, ≤40 lines
+## Output, ≤45 lines
 
     VERDICT: serves intent | partially | does not
     EVIDENCE: per acceptance check: verified by me | claimed only | failed
@@ -35,5 +35,9 @@ afterwards only to check whether they explain a gap you found.
     PROCESS: delegation / tiers / budget, one line each
     INSTRUCTION CHANGES: ≤3 concrete edits to .agents/executor.md that would have
                          prevented the top issue
+    SPOT CHECKS:
+    - ≤3 checks for Zafar, each doable in ≤2 minutes, on the claims you're least
+      sure of or that matter most. One per line, each with the exact command or
+      file:line to look at and what a pass looks like.
 
 Don't commit or edit tracked files. Be specific and blunt. Don't propose work beyond what's needed to fix what you found.

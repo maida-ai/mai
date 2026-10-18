@@ -42,8 +42,8 @@ changes land with zero operator commands; failures reach the responsible agent w
 typed reason; unrelated work keeps flowing.
 
 ## Executor defaults
-- Budget per directive: $____ unless the directive states one.
-- Time box per directive: ____ unless stated.
+- Budget per directive: $5 unless the directive states one.
+- Time box per directive: 1 hour unless stated.
 - Ask before spending when:
   - the directive conflicts with this file;
   - two reasonable readings would build materially different things;
