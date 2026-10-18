@@ -55,7 +55,9 @@ Split the work into tasks one agent can finish and verify on its own.
 - Spawn only through `.agents/spawn <tier> <role> <brief-file>`. Never use a harness's
   built-in subagent tool: it bypasses the spawn log, the depth limit and worktree isolation.
 - Each agent commits on its own branch, `agent/<run-id>/<agent-id>`, in its own worktree.
-  Integrating those branches is your job.
+  Integrating those branches is your job. Integrate only branches whose agent reported
+  `STATUS: done` and whose commits change what its brief scoped. Never integrate
+  report-only or run-artifact commits.
 - Run independent tasks in parallel. Serialize tasks that touch the same files.
 
 ### 3. Model tiers

@@ -2,10 +2,14 @@
 # You don't run this directly: .agents/run builds the image on first use and
 # re-executes itself inside it. Rebuild after editing: docker build -t mai-agents -f .agents/Dockerfile .agents
 FROM rust:1.85-bookworm
-RUN apt-get update && apt-get install -y --no-install-recommends bubblewrap curl ca-certificates git python3 \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates git python3 \
  && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
  && apt-get install -y --no-install-recommends nodejs \
  && npm install -g @openai/codex \
+ && rm -rf /var/lib/apt/lists/*
+# bookworm ships git 2.39; the project needs >= 2.40.
+RUN echo 'deb http://deb.debian.org/debian bookworm-backports main' > /etc/apt/sources.list.d/backports.list \
+ && apt-get update && apt-get install -y --no-install-recommends -t bookworm-backports git \
  && rm -rf /var/lib/apt/lists/*
 RUN git config --system --add safe.directory '*'
 # Agent harnesses may run commands in a login shell, where /etc/profile resets PATH and

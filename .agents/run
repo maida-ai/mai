@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 # .agents/run start <slug> "<directive>"   start an executor session for a new run
 # .agents/run eval <run-id>                run the independent evaluator on a finished run
+# .agents/run doctor                       check the environment; no model calls
 set -euo pipefail
 
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/.." && pwd)
 # shellcheck source=/dev/null
 source "$here/tiers.sh"
-usage() { sed -n '2,3p' "$0" | sed 's/^# //'; exit 2; }
+usage() { sed -n '2,4p' "$0" | sed 's/^# //'; exit 2; }
 
 # On the host, re-run this same command inside the container. Agents run with the
 # sandbox bypassed, which is only acceptable in a disposable box.
@@ -38,9 +39,66 @@ if [[ -z ${MAI_IN_CONTAINER:-} ]]; then
     mai-agents "$here/run" "$@"
 fi
 
+KIT=(INTENT.md AGENTS.md CLAUDE.md .agents)
+
+doctor() {
+  local fail=0
+  ok() { echo "ok    $*"; }
+  bad() { echo "FAIL  $*"; fail=1; }
+  cd "$root"
+
+  command -v cargo >/dev/null && ok "cargo $(cargo --version | cut -d' ' -f2)" || bad "cargo not on PATH"
+  bash -lc 'command -v cargo' >/dev/null 2>&1 && ok "cargo in login shell" || bad "cargo missing in login shell"
+  local gv; gv=$(git --version | awk '{print $3}')
+  [[ $(printf '2.40\n%s\n' "$gv" | sort -V | head -n 1) == 2.40 ]] && ok "git $gv" || bad "git $gv < 2.40"
+  command -v codex >/dev/null && ok "codex on PATH" || bad "codex not on PATH"
+  [[ -f $HOME/.codex/auth.json || -n ${OPENAI_API_KEY:-} ]] && ok "codex auth" || bad "no codex auth"
+  git check-ignore -q runs/x && git check-ignore -q .worktrees/x && ok "runs/ and .worktrees/ ignored" || bad "add runs/ and .worktrees/ to .gitignore"
+  [[ -x $(git rev-parse --path-format=absolute --git-common-dir)/hooks/pre-commit ]] \
+    && ok "pre-commit hook installed" || bad "pre-commit hook missing"
+
+  # Agents' worktrees branch from HEAD, so they only see the committed kit.
+  if git diff --quiet HEAD -- "${KIT[@]}" && [[ -z $(git ls-files --others --exclude-standard -- "${KIT[@]}") ]]; then
+    ok "kit committed"
+  else
+    bad "kit has uncommitted changes; agents' worktrees won't see them. Commit: ${KIT[*]}"
+    echo "skip  spawn test (needs a committed kit)"
+    return $fail
+  fi
+
+  # Depth-2 and depth-3 spawn through the committed kit, with a stub instead of a model.
+  local tmp; tmp=$(mktemp -d)
+  cat > "$tmp/tiers.sh" <<'STUB'
+CHEAP_DESC=stub
+run_cheap() {
+  if grep -q '^Role: planner' "$1"; then
+    printf 'TASK: doctor-impl\nDONE WHEN: true\n' > "$MAI_RUN_DIR/briefs/impl.md"
+    .agents/spawn cheap implementer "$MAI_RUN_DIR/briefs/impl.md" >/dev/null || { echo "STATUS: failed"; return; }
+  fi
+  echo "STATUS: done"
+}
+STUB
+  mkdir -p "$tmp/run/briefs"
+  printf 'TASK: doctor-plan\nDONE WHEN: true\n' > "$tmp/run/briefs/plan.md"
+  local rid="doctor-$$"
+  ( export MAI_RUN_ID=$rid MAI_RUN_DIR=$tmp/run MAI_TIERS_FILE=$tmp/tiers.sh \
+           MAI_WORKTREE_ROOT=$tmp/wt MAI_AGENT_DEPTH=1 MAI_AGENT_ID=doctor
+    "$here/spawn" cheap planner "$tmp/run/briefs/plan.md" ) >/dev/null 2>&1
+  local done_rows; done_rows=$(grep -c '"status":"done"' "$tmp/run/spawns.jsonl" 2>/dev/null || true)
+  [[ $done_rows == 2 ]] && ok "spawn depth 2 and 3" \
+    || bad "spawn test: expected 2 done rows, got ${done_rows:-0}; see $tmp/run"
+  local w b
+  for w in "$tmp"/wt/*; do [[ -d $w ]] && git worktree remove --force "$w"; done
+  for b in $(git for-each-ref --format='%(refname:short)' "refs/heads/agent/$rid/"); do git branch -q -D "$b"; done
+  [[ $fail == 0 ]] && rm -rf "$tmp"
+  return $fail
+}
+
 case ${1:-} in
+  doctor) doctor ;;
   start)
     [[ $# -eq 3 ]] || usage
+    doctor || { echo "doctor failed; fix the above before spending on models" >&2; exit 2; }
     export MAI_RUN_ID="$(date +%F)-$2"
     export MAI_RUN_DIR="$root/runs/$MAI_RUN_ID"
     export MAI_AGENT_DEPTH=1 MAI_AGENT_ID=executor

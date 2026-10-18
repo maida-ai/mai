@@ -25,7 +25,7 @@ max=${MAI_MAX_DEPTH:-3}
 
 here=$(cd "$(dirname "$0")" && pwd)
 # shellcheck source=/dev/null
-source "$here/tiers.sh"
+source "${MAI_TIERS_FILE:-$here/tiers.sh}"
 declare -F "run_$tier" >/dev/null || die "unknown tier: $tier"
 desc_var="$(echo "$tier" | tr '[:lower:]' '[:upper:]')_DESC"
 harness=${!desc_var:-unknown}
@@ -49,7 +49,8 @@ log="$MAI_RUN_DIR/agents/$id.log"
   else
     echo "Do not spawn other agents."
   fi
-  echo "Commit your work on the current branch ($branch)."
+  echo "Commit code changes on the current branch ($branch). Don't write your report to a"
+  echo "file or commit it: print the AGENTS.md 'Reporting back' block as your final output."
   echo
   cat "$brief"
 } > "$prompt"

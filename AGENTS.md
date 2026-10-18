@@ -21,6 +21,8 @@ Rust 1.85+, Git 2.40+, a C compiler (bundled SQLite).
 - Don't create ADRs, RFCs, milestone docs or evidence bundles unless your brief asks for one.
 - Prefer deleting code to adding abstractions. No speculative generality.
 - One logical change per commit, imperative subject, task id in the message.
+- Never commit run artifacts (anything under runs/) or report files. Your report is
+  your final output, not a file.
 
 ## Writing
 - User-facing docs: plain language, no internal vocabulary, shortest working example first.
