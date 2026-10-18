@@ -165,6 +165,7 @@ enum LeaseCommand {
         unit: String,
     },
 }
+// Lease claims require a canonical file unit and a positive generation.
 fn parse_claim(text: &str) -> std::result::Result<mai::lease::LeaseClaim, String> {
     let (unit, generation) = text
         .rsplit_once('=')
