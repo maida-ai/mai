@@ -65,6 +65,7 @@ the hook is installed.
 .agents/run list                              # all runs with their phase
 .agents/run stop <run-id>                     # stop a background run and clean up
 .agents/run review <run-id>                   # record your review (required before the next run)
+.agents/run rework <run-id> <slug>            # redo a reviewed run on top of its own branch
 .agents/run eval  <run-id>                    # evaluate a run started with `start`
 .agents/run publish <run-id>                  # push run/<id>, open or update its draft PR
 ```
@@ -131,6 +132,25 @@ allow `Bash(.agents/run:*)`; in Codex, approve the command when asked.
 Agents inside a run can't use it: `.agents/run` refuses `start`, `auto`, `stop` and
 `publish` when called from a run.
 
+## Running in parallel, alongside your own work
+
+Several runs can go at once, and you can keep committing, branching, pushing and
+rebasing in your checkout. Each run has its own id, branch, worktree, container and run
+directory, and starts from the default branch on GitHub, not from your checkout. Tested
+with three concurrent runs of four parallel agents each while another process committed,
+pushed and ran `git gc` in a loop.
+
+What the kit does not do is coordinate *content* between runs. Two runs (or a run and
+you) can edit the same lines; that surfaces when the second PR is merged. Each executor
+rebases onto the default branch before claiming, so a run that finishes after another's
+PR is merged absorbs it. The dangerous case is two PRs that merge cleanly as text but
+break together. Protect `main` with required CI and "require branches to be up to date
+before merging" (or a GitHub merge queue), so every merge is tested against current
+`main`.
+
+Two lead cycles at once can groom the same issues and pick the same work. Run one lead
+cycle at a time; parallel runs should have separate directives.
+
 ## After a run
 
 Work is delegated; responsibility isn't. A finished run ends in phase `needs-review`
@@ -151,8 +171,25 @@ Write a decision on every `Decision:` line, then:
 .agents/run review <id> --skip "<reason>"   # skip on the record; the reason stays in review.md
 ```
 
-A completed review with `ready` on the PR marks the draft PR ready for review. Then
-apply what you accepted (INTENT.md Decisions, executor.md edits), commit, and push.
+Then apply what you accepted (INTENT.md Decisions, executor.md edits), commit, and push.
+
+### How the work gets submitted
+
+Every run's work is already on GitHub as a draft PR from `run/<id>` to the default
+branch; publishing happens at the end of the run, before review. Your PR decision
+decides what happens to it:
+
+| Decision | What `.agents/run review` does | Then |
+| --- | --- | --- |
+| `ready` | Marks the draft PR ready for review. | Merge it on GitHub (CI and branch protection apply). |
+| `rework: <what>` | Prints the rework command. | `.agents/run rework <id> <slug>`: a new unattended run that starts *from* `run/<id>`, with your review as its brief. Its PR closes the old one as superseded. |
+| `close` | Closes the PR. | Nothing; the branch stays for reference. |
+
+To fix something small yourself instead: `git switch run/<id>`, commit, `git push`.
+After publishing, `run/<id>` tracks `origin/run/<id>`, so plain `git push` and
+`git pull` work. Run branches start without tracking on purpose: they're created from
+`origin/<default>`, and tracking that would make `git pull` on the run branch pull
+`main` into it.
 From your coding session, the mai-runs skill walks you through the sheet.
 
 Background, if a decision needs it: `report.md`, `evaluation.md`, `escalations.md`,
@@ -193,13 +230,14 @@ work), kept for inspection.
 git branch --list 'agent/*' 'run/*'      # delete reviewed ones with git branch -D
 ```
 
-After a crash or `docker stop`, remove leftover worktrees:
+After a crash or a bare `docker stop`, clean up that run only:
 
 ```bash
-git worktree list --porcelain | awk '/^worktree .*\/\.worktrees\//{print $2}' \
-  | xargs -r -n1 git worktree remove --force
-git worktree prune
+.agents/run stop <run-id>     # safe even if it's no longer running; touches only that run
 ```
+
+Don't remove everything under `.worktrees/` while other runs are active: their agents
+are working in there.
 
 ## Troubleshooting
 

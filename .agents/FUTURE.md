@@ -71,6 +71,11 @@ executor in place of (or next to) the static rubric.
 - Signal: after ~10 runs, post-mortems keep proposing rubric changes, or the ledger shows
   one tier failing or retrying for a recognizable kind of task.
 
+**Per-run Codex home.** Concurrent containers share the `mai-codex-home` volume
+(sessions, the app-server daemon's install). Untested under real concurrent Codex load.
+- Signal: a run fails with a Codex session, lock or daemon error while another run is
+  active. Fix: a per-run Codex home that reuses the installed daemon from the shared volume.
+
 **Model-level doctor check.** One cheap call per configured tier before a run starts.
 - Signal: a run fails on a model name, auth or quota error that doctor could have caught.
 

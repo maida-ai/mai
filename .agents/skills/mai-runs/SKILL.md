@@ -48,7 +48,11 @@ run can't start until it's reviewed. Your job is to make the review fast, not to
   command and show its raw output; the user judges whether it holds.
 - Write only the user's own words on `Decision:` lines. Never fill one yourself, and
   never infer a decision from silence.
-- When every line is filled, run `.agents/run review <id>`.
+- When every line is filled, run `.agents/run review <id>`. With `ready`, the PR leaves
+  draft and the user merges it on GitHub. With `close`, the PR is closed.
+- With `rework: <what>`, offer `.agents/run rework <id> <slug> ["<extra>"]`: a new run
+  that starts from the reviewed branch with the review as its brief, and supersedes the
+  old PR. Confirm the slug with the user first, like any launch.
 - `.agents/run review <id> --skip "<reason>"` only when the user asks and gives the
   reason; it's recorded.
 - For background, `report.md`, `evaluation.md`, `escalations.md` and `proposals.md` are in

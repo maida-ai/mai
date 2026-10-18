@@ -81,7 +81,7 @@ if [[ -n $(git -C "$wt" status --porcelain 2>/dev/null) ]]; then
   uncommitted="$MAI_RUN_DIR/agents/$id.uncommitted.patch"
   git -C "$wt" add -A && git -C "$wt" diff --cached --binary > "$uncommitted"
 fi
-git worktree remove --force "$wt"
+git worktree remove --force "$wt" || echo "warning: couldn't remove $wt" >&2
 # Harness exit 0 only means the process ended. The agent's own STATUS line is the outcome.
 status=$(grep -oE '^STATUS: *[a-z_]+' "$log" | tail -n 1 | sed 's/^STATUS: *//' || true)
 status=${status:-missing}

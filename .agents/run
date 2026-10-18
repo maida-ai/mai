@@ -5,6 +5,7 @@
 # .agents/run list                         every run with its phase; runs on the host
 # .agents/run stop <run-id>                stop a background run and clean up after it
 # .agents/run review <run-id> [--skip "<reason>"]   record your review; required before the next run
+# .agents/run rework <run-id> <slug> ["<extra>"]   new unattended run on top of a reviewed run's branch
 # .agents/run eval <run-id>                run the independent evaluator on a finished run
 # .agents/run publish <run-id>             push run/<id> and open a draft PR (also automatic at run end)
 # .agents/run sync                         fetch the latest default branch into origin/<branch>
@@ -15,7 +16,7 @@ here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/.." && pwd)
 # shellcheck source=/dev/null
 source "$here/tiers.sh"
-usage() { sed -n '2,11p' "$0" | sed 's/^# //'; exit 2; }
+usage() { sed -n '2,12p' "$0" | sed 's/^# //'; exit 2; }
 
 # Read-only view of a run, from the files it writes. Needs no container.
 status() {
@@ -68,11 +69,24 @@ list_runs() {
 # Kit agents may sync, check and read status; starting, stopping or publishing runs is
 # for people (or their interactive sessions), never for agents inside a run.
 case ${1:-} in
-  start|auto|stop|publish|prepare|execute|finish|review)
+  start|auto|stop|publish|prepare|execute|finish|review|rework)
     if [[ -n ${MAI_AGENT_ID:-} ]]; then
       echo "refused: agents inside a run can't use '.agents/run $1'" >&2; exit 2
     fi ;;
 esac
+
+# A rework run starts from the reviewed run's branch, with your review as its brief.
+rework_directive() {
+  local old=$1 extra=${2:-} f="$root/runs/$1/review.md" pr
+  [[ -f $f ]] || { echo "run $old has no review.md" >&2; return 2; }
+  [[ $(cat "$root/runs/$old/phase" 2>/dev/null) == reviewed ]] \
+    || { echo "review run $old first (.agents/run review $old)" >&2; return 2; }
+  awk '/^### P1/{f=1} f&&/^Decision:/{sub(/^Decision: */,""); print; exit}' "$f" | grep -q '^rework' \
+    || { echo "run $old's PR decision isn't 'rework: ...'" >&2; return 2; }
+  pr=$(grep -o 'https://[^ ]*' "$root/runs/$old/publish.log" 2>/dev/null | tail -n 1 || true)
+  printf 'Rework of run %s%s. You start on its branch, so its work is already in your tree. Address every decision Zafar recorded in its review, quoted below; keep what he accepted and change what he rejected. Context: runs/%s/evaluation.md and claim.md. %s\n\n--- review of %s ---\n%s\n' \
+    "$old" "${pr:+ (PR $pr)}" "$old" "$extra" "$old" "$(cat "$f")"
+}
 
 [[ ${1:-} == status ]] && { shift; status "$@"; exit $?; }
 [[ ${1:-} == list ]] && { list_runs; exit 0; }
@@ -105,11 +119,18 @@ if [[ -z ${MAI_IN_CONTAINER:-} ]]; then
     docker stop "mai-$2" >/dev/null 2>&1 && echo "stopped mai-$2" || echo "mai-$2 wasn't running"
     exec docker run "${common[@]}" mai-agents "$here/run" finish "$2"
   fi
-  if [[ ${1:-} == auto ]]; then
-    [[ $# -eq 3 ]] || usage
+  if [[ ${1:-} == auto || ${1:-} == rework ]]; then
+    if [[ $1 == auto ]]; then
+      [[ $# -eq 3 ]] || usage
+      prep=(prepare "$2" "$3")
+    else
+      [[ $# -ge 3 ]] || usage
+      directive=$(rework_directive "$2" "${4:-}") || exit 2
+      prep=(prepare "$3" "$directive" "run/$2")
+    fi
     # Setup runs in the foreground, so every failure is visible here. Only the model
     # work goes to the background.
-    out=$(docker run "${common[@]}" mai-agents "$here/run" prepare "$2" "$3" 2>&1) \
+    out=$(docker run "${common[@]}" mai-agents "$here/run" "${prep[@]}" 2>&1) \
       || { echo "$out" >&2; exit 2; }
     id=$(grep -m1 '^RUN_ID=' <<<"$out" | cut -d= -f2)
     cname="mai-$id"
@@ -137,8 +158,13 @@ sync_base() {
   local b url
   b=$(gh repo view --json defaultBranchRef -q .defaultBranchRef.name) || return 1
   url="$(gh repo view --json url -q .url).git"
-  git fetch -q "$url" "+refs/heads/$b:refs/remotes/origin/$b" || return 1
-  BASE_REF="origin/$b"
+  # Another run may be fetching the same ref right now; ref locks make one of us retry.
+  local try
+  for try in 1 2 3 4 5; do
+    git fetch -q "$url" "+refs/heads/$b:refs/remotes/origin/$b" 2>/dev/null && { BASE_REF="origin/$b"; return 0; }
+    sleep $((try * 2))
+  done
+  return 1
 }
 
 doctor() {
@@ -253,7 +279,7 @@ build_review() {
     [[ $n == 0 ]] && printf '\nNone listed. If escalations.md or proposals.md exist, read them anyway.\n'
     echo
     echo "## The PR"
-    printf '\n### P1\nready (marks the draft PR ready for review) / rework: <what> / close\nDecision: \n'
+    printf '\n### P1\nready (marks the draft PR ready; you merge it on GitHub) / rework: <what> (then: .agents/run rework <id> <slug>) / close (closes the PR)\nDecision: \n'
   } > "$out"
 }
 
@@ -275,9 +301,14 @@ review_run() {
   printf '\nREVIEWED %s\n' "$(date -u +%FT%TZ)" >> "$f"
   echo reviewed > "$dir/phase"
   pr_decision=$(awk '/^### P1/{f=1} f&&/^Decision:/{sub(/^Decision: */,""); print; exit}' "$f")
-  if [[ $pr_decision == ready* && -n ${GH_TOKEN:-} ]]; then
-    ( cd "$root" && gh pr ready "run/$id" ) && echo "PR marked ready for review"
-  fi
+  case $pr_decision in
+    ready*)
+      [[ -n ${GH_TOKEN:-} ]] && ( cd "$root" && gh pr ready "run/$id" ) && echo "PR marked ready; merge it on GitHub" ;;
+    rework*)
+      echo "next: .agents/run rework $id <slug>   (starts from run/$id with this review as the brief)" ;;
+    close*)
+      [[ -n ${GH_TOKEN:-} ]] && ( cd "$root" && gh pr close "run/$id" --comment "Closed in review: $pr_decision" ) && echo "PR closed" ;;
+  esac
   echo "reviewed $id. Apply what you accepted: INTENT.md Decisions, executor.md edits. Then commit and push."
 }
 
@@ -319,13 +350,23 @@ setup_run() {
     echo "branch run/$id exists without a run directory. Delete it: git branch -D run/$id" >&2
     exit 2
   fi
-  ( cd "$root" && sync_base && echo "$BASE_REF" ) > "$root/.base.$$" \
-    || { rm -f "$root/.base.$$"; echo "can't fetch the default branch" >&2; exit 2; }
-  local base; base=$(cat "$root/.base.$$"); rm -f "$root/.base.$$"
+  local base
+  if [[ -n ${3:-} ]]; then
+    git -C "$root" rev-parse -q --verify "refs/heads/$3" >/dev/null \
+      || { echo "base branch $3 doesn't exist" >&2; exit 2; }
+    base=$3
+  else
+    ( cd "$root" && sync_base && echo "$BASE_REF" ) > "$root/.base.$$" \
+      || { rm -f "$root/.base.$$"; echo "can't fetch the default branch" >&2; exit 2; }
+    base=$(cat "$root/.base.$$"); rm -f "$root/.base.$$"
+  fi
   mkdir -p "$MAI_RUN_DIR/briefs"
+  [[ $base == run/* ]] && echo "${base#run/}" > "$MAI_RUN_DIR/supersedes.txt"
   printf '%s\n' "$2" > "$MAI_RUN_DIR/directive.txt"
   printf '%s\n%s\n' "$base" "$(git -C "$root" rev-parse "$base")" > "$MAI_RUN_DIR/base.txt"
-  git -C "$root" worktree add -q -b "run/$id" "$RUN_WT" "$base" \
+  # --no-track: branching from origin/<b> would otherwise write upstream config to the
+  # shared .git/config, which collides when two runs start at the same moment.
+  git -C "$root" worktree add -q --no-track -b "run/$id" "$RUN_WT" "$base" \
     || { rm -rf "$MAI_RUN_DIR"; echo "couldn't create the run worktree" >&2; exit 2; }
   load_run "$id"
 }
@@ -346,7 +387,7 @@ finish_run() {
   # Agent worktrees normally remove themselves; after a stop or crash they don't.
   for w in $(git worktree list --porcelain | awk -v p="branch refs/heads/agent/$id/" \
                '/^worktree /{w=$2} index($0,p)==1{print w}'); do
-    git worktree remove --force "$w"
+    git worktree remove --force "$w" || echo "warning: couldn't remove $w; git worktree prune later" >&2
   done
   rm -f "$root/runs/$id"/agents/*.running
   if [[ -d $wt ]]; then
@@ -354,11 +395,13 @@ finish_run() {
       git -C "$wt" add -A && git -C "$wt" diff --cached --binary > "$root/runs/$id/executor.uncommitted.patch"
       echo "executor left uncommitted changes: runs/$id/executor.uncommitted.patch"
     fi
-    git worktree remove --force "$wt"
+    git worktree remove --force "$wt" || echo "warning: couldn't remove $wt; git worktree prune later" >&2
   fi
+  # Cleanup is best effort: a concurrent gc or another run may hold ref locks, and
+  # a leftover branch must never cost a run its publish and review.
   for b in $(git for-each-ref --format='%(refname:short)' "refs/heads/agent/$id/"); do
     # git cherry marks commits with no equivalent on run/<id> with "+"
-    git cherry "run/$id" "$b" | grep -q '^+' || git branch -q -D "$b"
+    git cherry "run/$id" "$b" | grep -q '^+' || git branch -q -D "$b" 2>/dev/null || true
   done
 }
 
@@ -385,6 +428,15 @@ publish() {
        fi
      } > "$dir/publish.log" 2>&1; then
     echo "published: $(tail -n 1 "$dir/publish.log")"
+    # Track the pushed branch, so checking it out on the host and running
+    # git pull / git push just works. Best effort: .git/config may be locked.
+    git update-ref "refs/remotes/origin/$br" "$br" 2>/dev/null \
+      && git branch -q --set-upstream-to="origin/$br" "$br" 2>/dev/null || true
+    if [[ -f $dir/supersedes.txt ]]; then
+      local old; old=$(cat "$dir/supersedes.txt")
+      gh pr close "run/$old" --comment "Superseded by $(tail -n 1 "$dir/publish.log")" >/dev/null 2>&1 \
+        && echo "closed the PR for run/$old (superseded)"
+    fi
   else
     echo "publish failed; see runs/$id/publish.log. Retry with: .agents/run publish $id" >&2
   fi
@@ -448,10 +500,17 @@ case ${1:-} in
     setup_run "$2" "$3"
     execute_run
     ;;
-  prepare)   # internal: doctor + setup, in the foreground, so errors are visible
-    [[ $# -eq 3 ]] || usage
+  rework)
+    [[ $# -ge 3 ]] || usage
+    directive=$(rework_directive "$2" "${4:-}") || exit 2
     doctor || { echo "doctor failed; fix the above before spending on models" >&2; exit 2; }
-    setup_run "$2" "$3"
+    setup_run "$3" "$directive" "run/$2"
+    execute_run
+    ;;
+  prepare)   # internal: doctor + setup, in the foreground, so errors are visible
+    [[ $# -ge 3 ]] || usage
+    doctor || { echo "doctor failed; fix the above before spending on models" >&2; exit 2; }
+    setup_run "$2" "$3" "${4:-}"
     echo "RUN_ID=$MAI_RUN_ID"
     ;;
   execute)   # internal: the unattended part of auto, for an already prepared run
