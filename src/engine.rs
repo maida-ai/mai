@@ -508,8 +508,10 @@ pub fn show(root: &Path, generation: GenerationId) -> Result<Submission> {
     let submission = lifecycle
         .get(&generation)
         .context("unknown submission generation")?;
+    let mut response = serde_json::to_value(submission)?;
+    response["schema_version"] = serde_json::json!(crate::lifecycle::SCHEMA_VERSION);
     ensure!(
-        serde_json::to_vec(submission)?.len() <= MAX_FRAME,
+        serde_json::to_vec(&response)?.len() <= MAX_FRAME,
         "durable result exceeds the bounded show response; inspect authority state"
     );
     Ok(submission.clone())

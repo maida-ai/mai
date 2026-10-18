@@ -448,6 +448,14 @@ fn queue_pages_are_bounded_and_follow_stable_generation_identity_order() {
         .unwrap();
     assert_eq!(summary["annotation_count"], 64);
     assert!(summary.get("annotations").is_none());
+    let oversized = Command::new(binary)
+        .args(["--json", "show"])
+        .arg(&root)
+        .arg("change-050")
+        .output()
+        .unwrap();
+    assert_eq!(oversized.status.code(), Some(5));
+    assert!(String::from_utf8_lossy(&oversized.stderr).contains("bounded show response"));
     let cursor = format!(
         "{}:{}",
         first["next_cursor"]["change_id"].as_str().unwrap(),
@@ -840,9 +848,11 @@ fn read_only_queue_and_wait_observe_during_a_blocked_engine_gate() {
     );
     let shown = f.show(&id);
     assert_eq!(shown["state"]["kind"], "validating");
-    assert!(shown["attempts"]
-        .as_array()
-        .is_some_and(|items| !items.is_empty()));
+    assert!(
+        shown["attempts"]
+            .as_array()
+            .is_some_and(|items| !items.is_empty())
+    );
     let waiting = f
         .command("wait", &id)
         .args(["--timeout-seconds", "1"])
