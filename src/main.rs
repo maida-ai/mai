@@ -226,6 +226,7 @@ enum ValidatorAction {
     #[command(hide = true)]
     Worker { project: PathBuf, candidate: String },
 }
+// Dispatch the selected CLI action and return its JSON result.
 fn run(command: Action) -> Result<Value> {
     Ok(match command {
         Action::Integrate {
