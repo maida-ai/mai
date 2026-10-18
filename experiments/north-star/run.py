@@ -6,7 +6,6 @@ import hashlib
 import json
 import os
 from pathlib import Path
-import shutil
 import signal
 import subprocess
 import time
@@ -79,7 +78,7 @@ def main():
         (source/"README.txt").write_text("North-star disposable synthetic agent task.\n")
         git(source,"add","."); git(source,"commit","-m","Seed trusted independent-agent gate")
         source_head_before=git(source,"rev-parse","HEAD")
-        project=out/"authority"; mai("init",project,"--from",source)
+        project=out/"authority"; mai("init",project,"--from",source); engine_owned=True
         call("setup","receive-enable",[binary,"--json","receive","enable",project,"--max-input-bytes","10485760","--max-file-bytes","1048576","--max-changed-files","100"])
         trunk0=call("observation","baseline-trunk",["git","--git-dir",project/"authority.git","rev-parse","refs/heads/trunk"]).strip()
         baseline_gate=json.loads(mai("validator","run",project,trunk0,group="observation"))
@@ -94,6 +93,7 @@ def main():
         with concurrent.futures.ThreadPoolExecutor(max_workers=a.agents) as pool:
             list(pool.map(lambda iw: agent(*iw),enumerate(workspaces,1)))
         agent_elapsed=time.monotonic()-started
+        workspace_heads={str(w): git(w,"rev-parse","HEAD") for w in workspaces}
         entries=queue_all("queue"); (out/"received.json").write_text(json.dumps(entries,indent=2)+"\n")
         received=[e for e in entries if isinstance(e,dict) and e.get("state")=="received"]
         summary["received"]=len(received); summary["attempted"]=len(records["agents"])
@@ -123,12 +123,16 @@ def main():
             deadline=time.monotonic()+min(a.timeout,300)
             while time.monotonic()<deadline:
                 current=queue_all("observe-queue")
-                if all(e.get("state") in ("landed","rejected","cancelled") for e in current): break
+                if all(e.get("state")=="terminal" for e in current): break
                 time.sleep(1)
         finals=queue_all("final-queue")
         for e in finals:
             state=e.get("state"); outcome=e.get("outcome") or {}; kind=outcome.get("kind") if isinstance(outcome,dict) else None
-            if state=="terminal" and kind=="landed": continue
+            if state=="terminal" and kind=="landed":
+                if not any(x["identity"]==e["id"] for x in landed):
+                    detail=json.loads(mai("show",project,e["id"]["change_id"],"--generation",str(e["id"]["generation"]),group="observation"))
+                    landed.append({"identity":e["id"],"submitted_commit":detail["commit"],"landed_commit":detail["state"]["outcome"]["commit"]})
+                continue
             row={"identity":e.get("id"),"state":state,"outcome":kind}
             (failures if state in ("rejected","cancelled") or kind in ("rejected","cancelled") else unfinished).append(row)
         trunk1=call("observation","final-trunk",["git","--git-dir",project/"authority.git","rev-parse","refs/heads/trunk"]).strip()
@@ -140,6 +144,12 @@ def main():
                 result=json.loads(mai("validator","run",project,oid,group="observation",label=f"landed-gate-{index}",check=False))
                 row["gate"]=result.get("outcome")
                 if row["gate"]!="success": broken.append(oid)
+        for item in retained:
+            item["exists"]=subprocess.run(["git","--git-dir",str(project/"authority.git"),"cat-file","-e",item["submitted_oid"]]).returncode==0
+        for w, oid in workspace_heads.items():
+            if git(w,"rev-parse","HEAD") != oid: failures.append({"guardrail":"agent_head_changed","workspace":w})
+        summary["task_start_to_observation_s"]=time.monotonic()-started
+        summary["agent_workspace_heads"]=workspace_heads
         source_head_after=git(source,"rev-parse","HEAD")
         if source_head_after != source_head_before: failures.append({"guardrail":"source_workspace_head_changed","before":source_head_before,"after":source_head_after})
         accepted=out/"accepted"; mai("workspace",project,"north_star_audit",accepted,group="observation",label="accepted-workspace")
