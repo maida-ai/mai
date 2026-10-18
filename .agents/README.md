@@ -20,8 +20,9 @@ you ◀──────────────── report.md, PR on run/<id
 | File | Owner | Purpose |
 | --- | --- | --- |
 | `INTENT.md` | you | The only binding statement of intent: product, metric, non-goals, when to ask. |
-| `AGENTS.md` | you | Shared facts and conduct for every agent, plus the brief template. |
-| `CLAUDE.md` | you | `@AGENTS.md`, so Claude Code reads the same rules. |
+| `AGENTS.md` | you | Project facts and conventions, for any session: yours or the kit's. |
+| `CLAUDE.md` | you | `@AGENTS.md`, so Claude Code reads the same conventions. |
+| `.agents/agent-rules.md` | you | Kit-only conduct, brief template, report format. Injected into every sub-agent's prompt by `spawn`; your own interactive sessions never see it. |
 | `.agents/executor.md` | you | The tech-lead role. Changes only through proposals you accept. |
 | `.agents/evaluator.md` | you | The independent evaluator role. |
 | `.agents/tiers.sh` | you | Which harness and model run each tier, the executor and the evaluator. |
@@ -135,7 +136,8 @@ ran, at which tier, with what status), `ledger.md`, `agents/*.log`, and
 | --- | --- |
 | Worked on the wrong thing; misread what you want | `INTENT.md`: add the missing priority, non-goal or ask-first rule |
 | Right goal, bad process (scope creep, weak verification, didn't delegate) | `executor.md`, ideally from `proposals.md` |
-| Sub-agents misbehave the same way repeatedly | `AGENTS.md` conduct section |
+| Sub-agents misbehave the same way repeatedly | `.agents/agent-rules.md` |
+| A project convention you want everyone (you included) to follow | `AGENTS.md` |
 | Too expensive, or the cheap tier keeps failing | `tiers.sh`: change a tier's model |
 | Evaluator too lenient | `evaluator.md`; also move `run_evaluator` to a different vendor |
 | A tool or environment problem | `Dockerfile`, then add a check to `doctor` in `run` |

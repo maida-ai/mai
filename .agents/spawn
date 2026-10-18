@@ -15,7 +15,7 @@ tier=$1 role=$2 brief=$3
 case $role in planner|implementer|verifier) ;; *) die "unknown role: $role" ;; esac
 [[ -f $brief ]] || die "brief not found: $brief"
 brief="$(cd "$(dirname "$brief")" && pwd)/$(basename "$brief")"
-grep -q '^DONE WHEN:' "$brief" || die "brief has no DONE WHEN line. Use the template in AGENTS.md (Delegating), fix the brief and resubmit."
+grep -q '^DONE WHEN:' "$brief" || die "brief has no DONE WHEN line. Use the template in .agents/agent-rules.md (Delegating), fix the brief and resubmit."
 
 : "${MAI_RUN_ID:?set MAI_RUN_ID}"
 : "${MAI_RUN_DIR:?set MAI_RUN_DIR (absolute path to runs/<run-id>)}"
@@ -43,7 +43,10 @@ prompt="$MAI_RUN_DIR/agents/$id.prompt.md"
 log="$MAI_RUN_DIR/agents/$id.log"
 {
   echo "Role: $role sub-agent (id $id, depth $((depth + 1)) of max $max)."
-  echo "Read AGENTS.md first. Your scope is the brief below and nothing more."
+  echo "Read AGENTS.md for project conventions. The kit rules below also apply."
+  echo
+  cat "$here/agent-rules.md"
+  echo
   if [[ $role == planner ]]; then
     echo "Delegate only via .agents/spawn. Never use built-in subagent tools."
   else
@@ -51,7 +54,9 @@ log="$MAI_RUN_DIR/agents/$id.log"
   fi
   echo "Commit code changes on the current branch ($branch); the worktree is deleted when you"
   echo "exit, and anything uncommitted is left off your branch. Don't write your report to a"
-  echo "file or commit it: print the AGENTS.md 'Reporting back' block as your final output."
+  echo "file or commit it: print the 'Reporting back' block above as your final output."
+  echo
+  echo "# Your brief"
   echo
   cat "$brief"
 } > "$prompt"

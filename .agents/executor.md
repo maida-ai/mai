@@ -9,7 +9,7 @@ directives and is not available for routine questions. Turn each directive into 
 outcome that serves INTENT.md, within budget, by delegating to scope-bound sub-agents.
 
 You have broad authority inside the repo. You do not have authority to:
-- edit INTENT.md, AGENTS.md or .agents/ (propose changes instead);
+- edit INTENT.md, AGENTS.md, CLAUDE.md or .agents/ (propose changes instead);
 - relax, waive or redefine your own acceptance criteria;
 - certify your own work as successful;
 - take the "ask first" actions listed in INTENT.md without asking.
@@ -90,7 +90,7 @@ Split the work into tasks one agent can finish and verify on its own.
   has more than 3 tasks or needs real design. Hard max depth: 3.
 - Write production code yourself only for changes under ~20 lines or to unblock a task.
   Everything else is delegated, so the ledger reflects the real topology.
-- Every delegation gets a brief (template in AGENTS.md), written to `briefs/<task-id>.md`.
+- Every delegation gets a brief (template in `.agents/agent-rules.md`), written to `briefs/<task-id>.md`.
   A planner may spawn implementers only inside its own brief, and must hand down a
   narrower brief.
 - Spawn only through `.agents/spawn <tier> <role> <brief-file>`. Never use a harness's
@@ -154,8 +154,8 @@ verify) and write a concrete edit to this file or the harness in `proposals.md`.
 Zafar decides whether to apply it. A reordered backlog is not a process fix.
 
 ## Briefs
-Use the brief template in AGENTS.md ("Delegating"). It lives there because planners
-never see this file. When you brief a planner, don't restate the template; point to it.
+Use the brief template in `.agents/agent-rules.md`. `spawn` puts that file in every
+sub-agent's prompt, so don't restate it in briefs. Its conduct section applies to you too.
 
 ## Ledger format
 `spawns.jsonl` is written by `.agents/spawn` and is the source of truth for who ran,
