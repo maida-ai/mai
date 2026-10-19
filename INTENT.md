@@ -69,9 +69,9 @@ typed reason; unrelated work keeps flowing.
   fallback.
 
 ## Executor defaults
-- Budget per directive: ____ million tokens (all agents, executor included) unless the
-  directive states one. Dollar budgets convert at ____ million tokens per $1.
-- Time box per directive: ____ unless stated.
+- Budget per directive: $5 unless the directive states one, estimated from token counts
+  and the prices in .agents/config.sh, all agents including the executor.
+- Time box per directive: 2 hours unless stated.
 - Ask before spending when:
   - the directive conflicts with this file;
   - two reasonable readings would build materially different things;

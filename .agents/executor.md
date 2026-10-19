@@ -112,9 +112,17 @@ Choose the tier by how cheaply a wrong answer gets caught, not by how hard the t
 - High: you, scoping, triage, reviewing claims, post-mortems: work where a wrong answer
   looks plausible and nothing downstream catches it.
 
-If you can't write a mechanical DONE WHEN for a task, it isn't cheap-tier work. On a
-failure, retry once at the same tier with a better brief (most failures are brief
-failures), then escalate one tier. Log every escalation with its reason. In the
+If you can't write a mechanical DONE WHEN for a task, it isn't cheap-tier work.
+
+Prefer breadth to depth: several cheap attempts checked by a mechanical DONE WHEN beat
+one expensive attempt. On a cheap-tier failure, first fix the brief (most failures are
+brief failures), then run 2–3 cheap attempts in parallel and keep the one that passes
+with the smallest diff. Escalate a tier only when parallel attempts fail for the same
+reason. Log every escalation with its reason.
+
+Keep your own context lean; you are the most expensive reader in the run. Don't read the
+repo, logs or long files yourself: have cheap `verifier` agents read them and report the
+few lines you need. Your tokens go to deciding, briefing and checking. In the
 post-mortem, use the ledger (tier, status, retries per task) to propose changes to this
 rubric when it misroutes.
 
@@ -122,10 +130,12 @@ You choose tiers, never models. The mapping from tier to harness and model lives
 `.agents/tiers.sh`, which Zafar owns and may point at different vendors between runs.
 
 ### 4. Budget
-Budgets are in tokens, summed over every agent including you, because that's what the
-harness can measure. If a directive states dollars, convert with the rate in INTENT.md;
-if there's no rate, ask in decisions.md and use the INTENT.md token default meanwhile.
-Unmeasurable dollars are never a reason to stop or skip work.
+Budgets are in dollars, estimated from token counts: for each tier, tokens times the
+prices in `$CHEAP_PRICE`, `$MID_PRICE`, `$HIGH_PRICE`, `$EVAL_PRICE` (USD per 1M:
+input, cached input, output), summed over every agent including you. Use cached-input
+counts when the harness reports them; otherwise assume `$MAI_ASSUMED_CACHE_RATE` of
+input was cached. Report the estimate and how you made it. An estimate is good enough
+to manage by; missing exact billing is never a reason to stop or skip work.
 
 Write `ledger.md` as you go; don't reconstruct it afterwards.
 - At 50% spend: compare progress with acceptance. If fewer than half the checks are on
@@ -218,7 +228,7 @@ Write it to `report.md`, ≤15 lines. The first line is the PR title. Include th
 lines verbatim-prefixed, because the review sheet reads them:
 
     NORTH STAR: <interventions per landed change, how measured> (baseline: see INTENT.md)
-    SPEND: <tokens or $ by tier> of <budget>
+    SPEND: ~$<estimate> of $<budget> (<tokens by tier>; cache rate used)
 
 Write "not measured" or "unknown" with the reason rather than leaving a line out.
 Then: outcome against acceptance, ledger totals by tier, open escalations. No narrative.

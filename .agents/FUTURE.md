@@ -28,9 +28,12 @@ when you answer, instead of skipping the item.
 
 ## Evaluation
 
-**Evaluator on a different vendor.** `run_evaluator` currently uses the executor's model.
+**Evaluator on a different model.** By default the evaluator runs on the executor's
+model (Sol), so it shares its blind spots. Astra per run (`EVAL_MODEL`) or a second
+vendor would make the check independent.
 - Signal: you find problems in PR review that `evaluation.md` called fine, or verdicts
-  track the executor's own claims too closely. Or simply: a second provider is available.
+  track the executor's own claims too closely (it never says "does not"). Or simply: a
+  second provider is available.
 
 **Evaluation as a pluggable gate.** Define the evaluator's interface: input (INTENT.md,
 claim, branch), output (verdict, evidence). This is also where maida could plug in later,

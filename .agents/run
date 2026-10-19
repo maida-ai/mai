@@ -275,6 +275,7 @@ build_review() {
     echo "- $(grep -m1 '^NORTH STAR:' "$dir/report.md" 2>/dev/null | sed 's/^NORTH STAR: */North star: /' || echo 'North star: not reported')"
     echo "- $(grep -m1 '^SPEND:' "$dir/report.md" 2>/dev/null | sed 's/^SPEND: */Spend: /' || echo 'Spend: not reported')"
     echo "- PR: ${pr:-not published}"
+    echo "- Models: executor $(grep -m1 '^HIGH_MODEL=' "$dir/config.txt" 2>/dev/null | cut -d= -f2), evaluator $(grep -m1 '^EVAL_MODEL=' "$dir/config.txt" 2>/dev/null | cut -d= -f2), workers $(grep -m1 '^CHEAP_MODEL=' "$dir/config.txt" 2>/dev/null | cut -d= -f2)"
     echo
     echo "## Your checks"
     echo "Answer each with: pass, fail: <what you saw>, or unsure: <why>."

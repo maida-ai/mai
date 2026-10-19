@@ -32,6 +32,9 @@ rustc-ice-*.txt
 !MAIDA_MIGRATION.md
 !README.md
 
+# Local config
+.agents/config.local.sh
+
 # Throwaway folders
 .throwaway/
 .worktrees/
