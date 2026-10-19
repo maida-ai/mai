@@ -60,7 +60,25 @@ impl Fixture {
         let temp = tempfile::tempdir().unwrap();
         let root = temp.path().join("authority");
         let client = temp.path().join("client");
-        success(cli(&root, &["init"]));
+        let seed = temp.path().join("seed");
+        std::fs::create_dir(&seed).unwrap();
+        success(
+            Command::new("git")
+                .args(["init", "-b", "main"])
+                .arg(&seed)
+                .output()
+                .unwrap(),
+        );
+        std::fs::write(seed.join("gate.sh"), "exit 0\n").unwrap();
+        std::fs::write(
+            seed.join("mai.toml"),
+            "version=1\n[check]\nprogram=\"sh\"\nscript=\"gate.sh\"\ntimeout_ms=5000\noutput_tail_bytes=1024\n[validators]\nslots=1\nport_base=41000\nports_per_slot=10\n",
+        )
+        .unwrap();
+        success(git(&seed, &["add", "."]));
+        success(git(&seed, &["commit", "-m", "trusted policy"]));
+        // Initialize from a trusted seed so the automatic integration gate can pass.
+        success(cli(&root, &["init", "--from", seed.to_str().unwrap()]));
         success(
             Command::new("git")
                 .args(["clone", "--no-local"])
@@ -138,15 +156,45 @@ impl Fixture {
 }
 
 #[test]
-fn automatic_integration_is_opt_in_and_registration_survives_engine_failure() {
+fn automatic_integration_lands_with_trusted_policy() {
     let f = Fixture::new();
     let _owner = f.start();
     f.enable_mode(true);
     f.commit("automatic.txt");
-    let _push = f.push(&["HEAD:refs/for/main"]);
-    let submissions = f.submissions();
+    success(f.push(&["HEAD:refs/for/main"]));
+    let deadline = Instant::now() + Duration::from_secs(15);
+    let submissions = loop {
+        let rows = f.submissions();
+        if rows.first().is_some_and(|s| {
+            matches!(
+                s.state(),
+                mai::lifecycle::State::Terminal {
+                    outcome: mai::lifecycle::Outcome::Landed { .. }
+                }
+            )
+        }) {
+            break rows;
+        }
+        assert!(Instant::now() < deadline, "automatic integration did not land: {rows:?}");
+        thread::sleep(Duration::from_millis(25));
+    };
     assert_eq!(submissions.len(), 1);
-    assert!(!matches!(submissions[0].state(), mai::lifecycle::State::Received));
+    let landed = match submissions[0].state() {
+        mai::lifecycle::State::Terminal { outcome: mai::lifecycle::Outcome::Landed { commit, .. } } => commit,
+        state => panic!("expected landed terminal state, got {state:?}"),
+    };
+    let trunk = success(git(
+        &f.root.join("authority.git"),
+        &["rev-parse", "refs/heads/trunk"],
+    ));
+    assert_eq!(trunk, *landed);
+    assert_eq!(
+        success(git(
+            &f.root.join("authority.git"),
+            &["show", "refs/heads/trunk:automatic.txt"],
+        )),
+        "automatic.txt"
+    );
 }
 
 #[test]
