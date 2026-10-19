@@ -15,7 +15,7 @@
   <a href="CONTRIBUTING.md">Contribute</a>
 </p>
 
-mai provides a local Git submission workflow with operator-selected, serial integration for coding agents working in parallel. Each agent works in an independent clone and submits ordinary Git commits. Automatic dependency-aware scheduling is future work; the current workflow requires an operator to select each generation for integration through a blocking validation gate.
+mai provides a local Git submission workflow with gated, serial integration for coding agents working in parallel. Receive can opt into automatic integration; explicit integration remains the default. Each agent works in an independent clone and submits ordinary Git commits. Automatic dependency-aware scheduling is future work; the current workflow requires an operator to select each generation for integration through a blocking validation gate.
 
 **Available now: an explicit, trusted-local evaluation workflow.** Push a change, inspect its durable receipt, then select it for gated integration. Dependent changes map onto accepted squashes without requiring an agent rebase first. True conflicts still require a correction. Use disposable repositories: automatic scheduling, draft backup and in-place sync/autostash are unfinished.
 
