@@ -356,7 +356,13 @@ fn service_request(
                 // An expired/disconnected client changes no durable result.
                 let deadline = Instant::now() + IO_TIMEOUT;
                 write_frame(&mut stream, &reply, deadline)?;
-                if read_frame::<Request>(&mut stream, deadline).is_ok() {
+                if matches!(
+                    read_frame::<Request>(&mut stream, deadline),
+                    Ok(Request {
+                        protocol_version: PROTOCOL_VERSION,
+                        action: Action::Ack
+                    })
+                ) {
                     listener.complete(&mut stream);
                 }
                 return Ok(false);
@@ -374,7 +380,15 @@ fn service_request(
             // Once a valid stop is accepted, a disconnected requester must
             // not leave a live engine advertising a false stopping state.
             if stop {
-                if written.is_ok() && read_frame::<Request>(&mut stream, deadline).is_ok() {
+                if written.is_ok()
+                    && matches!(
+                        read_frame::<Request>(&mut stream, deadline),
+                        Ok(Request {
+                            protocol_version: PROTOCOL_VERSION,
+                            action: Action::Ack
+                        })
+                    )
+                {
                     listener.complete(&mut stream);
                 }
                 return Ok(true);
@@ -1606,6 +1620,7 @@ mod transport {
             server.write_all(b"y").unwrap();
             assert_eq!(client.read(&mut byte).unwrap(), 1);
             assert_eq!(byte, [b'y']);
+            listener.complete(&mut server);
             drop(server);
             // Keep the old client alive and connect BEFORE another accept.
             // Dropping the consumed server stream must release the sole instance.
