@@ -15,7 +15,7 @@
   <a href="CONTRIBUTING.md">Contribute</a>
 </p>
 
-mai is a local Git workflow for submitting and validating changes from independent coding-agent workspaces. An operator selects each generation for integration; a successful submission is not a landed change. mai belongs to the maida-ai family and runs independently of Maida infrastructure. Installation and initialization do not move Maida assets.
+mai is a local Git workflow for submitting and validating changes from independent coding-agent workspaces. By default, an operator selects each generation for integration; receive can opt into automatic integration. A successful submission is not a landed change. mai belongs to the maida-ai family and runs independently of Maida infrastructure. Installation and initialization do not move Maida assets.
 
 Build from this checkout with Rust 1.85+, Git 2.40+ and a C compiler:
 

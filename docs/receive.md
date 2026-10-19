@@ -9,6 +9,11 @@ git push -o agent=alice mai HEAD:refs/for/main
 mai show PROJECT alice-COMMIT_OID --generation 1 --json
 ```
 
+Add `--auto-integrate` to opt into running each accepted submission through the
+serial engine as soon as it is received. The default keeps submissions received
+without integration; `mai integrate` remains available for that mode. Automatic
+integration records the same typed terminal outcome as explicit integration.
+
 These numbers are explicit example choices, not recommended defaults. `max-input-bytes` bounds the received pack; file-size and changed-file limits bound admission. They do not establish a bound on total diff-parsing memory or latency. Inspect the result of enablement before accepting submissions; engine status reports `registration_available` from its receive configuration.
 
 Receive-hook installation requires the executable and authority paths to be UTF-8 and contain no newline. Enablement rejects unsupported paths before mutation. This restriction belongs to receive hooks; workspace and status results retain their lossless platform-tagged native-path contract. Do not decode those path objects as portable UTF-8 strings.
@@ -41,6 +46,6 @@ A failed or timed-out command and a rejected submission are different. If receip
 
 The receive path rejects touched `.env`, `.env.*` and `node_modules` paths, including deletions. Repository scope restrictions still apply. Admission is not a secret scanner or a guarantee that candidate content is safe to execute. The configured gate and explicit protected-policy approval remain separate requirements.
 
-Manual validation does not consume a submission or land it. The explicit integration path, when used, must report its own outcome. Textual integration rejects `.gitattributes`, repository-local `info/attributes` and configured custom merge drivers until their executable policy is qualified. There is no automatic queue scheduler, draft backup or in-place post-squash sync in this increment. Creating a fresh workspace from accepted trunk is useful for new work. For a clean unregistered suffix after an exact landed identity, [copy-based continuation](continuation.md) creates a new workspace and replays only later local commits. Keep the old clone and any unpushed work.
+Manual validation does not consume a submission or land it. The explicit integration path, when used, must report its own outcome. Textual integration rejects `.gitattributes`, repository-local `info/attributes` and configured custom merge drivers until their executable policy is qualified. There is no background queue scheduler, draft backup or in-place post-squash sync in this increment. Creating a fresh workspace from accepted trunk is useful for new work. For a clean unregistered suffix after an exact landed identity, [copy-based continuation](continuation.md) creates a new workspace and replays only later local commits. Keep the old clone and any unpushed work.
 
 An interrupted active validator can leave an occupied slot claim. Restart/reconciliation does not prove that all descendants have stopped, so automatic slot reuse is refused. For an opted-in Linux claim whose worker completed cleanup, follow [explicit validator recovery](validator-recovery.md) before retrying. Otherwise preserve state and obtain trusted inspection; do not remove the claim merely because a PID is absent. An uncertain publication result must be reconciled before retrying. These constraints shorten diagnosis without pretending that process interruption is automatically recoverable or that process-kill tests prove power-loss durability.

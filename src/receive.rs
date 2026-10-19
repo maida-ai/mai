@@ -25,6 +25,8 @@ struct Config {
     max_input_bytes: u64,
     max_file_bytes: u64,
     max_changed_files: u64,
+    #[serde(default)]
+    auto_integrate: bool,
 }
 
 fn configuration(authority: &Authority) -> Result<Option<Config>> {
@@ -56,6 +58,7 @@ pub fn enable(
     max_input_bytes: u64,
     max_file_bytes: u64,
     max_changed_files: u64,
+    auto_integrate: bool,
 ) -> Result<()> {
     ensure!(
         max_input_bytes > 0
@@ -132,11 +135,15 @@ pub fn enable(
             max_input_bytes,
             max_file_bytes,
             max_changed_files,
+            auto_integrate,
         },
     )?;
     config.as_file().sync_all()?;
     config.persist(authority.root().join(".mai/receive.json"))?;
     Ok(())
+}
+pub fn auto_integrate(authority: &Authority) -> Result<bool> {
+    Ok(configuration(authority)?.is_some_and(|config| config.auto_integrate))
 }
 
 fn valid_agent(agent: &str) -> bool {
@@ -533,7 +540,7 @@ mod tests {
         for stage in ["Retained", "Noted", "Stored"] {
             let temp = tempfile::tempdir().unwrap();
             let mut authority = Authority::init(&temp.path().join("authority"), None).unwrap();
-            enable(&authority, 1_000_000, 100_000, 10).unwrap();
+            enable(&authority, 1_000_000, 100_000, 10, false).unwrap();
             let base = authority.git(&["rev-parse", "trunk"], None).unwrap();
             let tree = authority.git(&["rev-parse", "trunk^{tree}"], None).unwrap();
             let commit = authority
