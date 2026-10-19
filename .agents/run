@@ -255,37 +255,52 @@ STUB
 # Built from the evaluator's spot checks and the post-mortem's decisions, not from the
 # executor's own summary, so the executor can't soften what you're asked to check.
 build_review() {
-  local id=$1 dir="$root/runs/$1" out="$root/runs/$1/review.md" pr n=0 line
+  local id=$1 dir="$root/runs/$1" out="$root/runs/$1/review.md" pr n=0 line ev
+  ev="$dir/evaluation.md"
   pr=$(grep -o 'https://[^ ]*' "$dir/publish.log" 2>/dev/null | tail -n 1 || true)
+  section() { awk -v h="$1" '$0 ~ "^ *"h":"{f=1;next} f&&/^ *[A-Z][A-Z ]+:/{f=0} f&&/^ *- /{sub(/^ *- */,""); print}' "$ev" 2>/dev/null; }
   {
     echo "# Review: $id"
     echo
-    echo "Work was delegated; responsibility wasn't. Write your decision on every"
-    echo "\`Decision:\` line, in your own words, then run \`.agents/run review $id\`."
-    echo "The next run won't start until this run is reviewed (or explicitly skipped)."
+    echo "Answer the items below, then run \`.agents/run review $id\`. Short answers are fine."
+    echo "The next run starts only after this one is reviewed."
     echo
-    echo "- $(grep -m1 '^ *VERDICT:' "$dir/evaluation.md" 2>/dev/null | sed 's/^ *//' || echo 'VERDICT: missing (no evaluation)')"
-    echo "- $(grep -m1 '^NORTH STAR:' "$dir/report.md" 2>/dev/null || echo 'NORTH STAR: not reported')"
-    echo "- $(grep -m1 '^SPEND:' "$dir/report.md" 2>/dev/null || echo 'SPEND: not reported')"
+    echo "## What changed"
+    n=0
+    while IFS= read -r line; do n=$((n + 1)); echo "- $line"; done < <(section CHANGES)
+    [[ $n == 0 ]] && echo "- (the evaluator didn't summarize the changes; see the PR)"
+    echo
+    echo "## Did it work"
+    echo "- $(grep -m1 '^ *VERDICT:' "$ev" 2>/dev/null | sed 's/^ *VERDICT: */Evaluator: /' || echo 'Evaluator: no verdict')"
+    echo "- $(grep -m1 '^NORTH STAR:' "$dir/report.md" 2>/dev/null | sed 's/^NORTH STAR: */North star: /' || echo 'North star: not reported')"
+    echo "- $(grep -m1 '^SPEND:' "$dir/report.md" 2>/dev/null | sed 's/^SPEND: */Spend: /' || echo 'Spend: not reported')"
     echo "- PR: ${pr:-not published}"
     echo
-    echo "## Spot checks (chosen by the evaluator; do them, don't just read them)"
+    echo "## Your checks"
+    echo "Answer each with: pass, fail: <what you saw>, or unsure: <why>."
+    echo "Any fail means the PR can't be marked ready."
+    n=0
     while IFS= read -r line; do
-      n=$((n + 1)); printf '\n### S%d\n%s\nDecision: \n' "$n" "${line#*- }"
-    done < <(awk '/^ *SPOT CHECKS:/{f=1;next} f&&/^ *[A-Z][A-Z ]+:/{f=0} f&&/^ *- /' "$dir/evaluation.md" 2>/dev/null)
+      n=$((n + 1)); printf '\n### S%d\n%s\nDecision: \n' "$n" "$line"
+    done < <(section "SPOT CHECKS")
     if [[ $n == 0 ]]; then
-      printf '\n### S1\nThe evaluator gave no spot checks. Pick one claim in claim.md and verify it yourself.\nDecision: \n'
+      printf '\n### S1\nThe evaluator gave no checks. Open the PR and check that its first change is what you asked for.\nDecision: \n'
     fi
     echo
-    echo "## Decisions (escalations, proposals, FUTURE.md signals)"
+    echo "## Your decisions"
+    echo "Answer each with ok (take the recommendation), A / B, or your own words."
     n=0
     while IFS= read -r line; do
       n=$((n + 1)); printf '\n### D%d\n%s\nDecision: \n' "$n" "${line#- }"
-    done < <(grep '^- ' "$dir/decisions.md" 2>/dev/null)
-    [[ $n == 0 ]] && printf '\nNone listed. If escalations.md or proposals.md exist, read them anyway.\n'
+    done < <(grep '^- ' "$dir/decisions.md" 2>/dev/null | head -n 3)
+    [[ $n == 0 ]] && printf '\nNone.\n'
     echo
     echo "## The PR"
-    printf '\n### P1\nready (marks the draft PR ready; you merge it on GitHub) / rework: <what> (then: .agents/run rework <id> <slug>) / close (closes the PR)\nDecision: \n'
+    printf '\n### P1\nready (leaves draft; you merge it on GitHub) / rework: <what> (then .agents/run rework %s <slug>) / close\nDecision: \n' "$id"
+    echo
+    echo "---"
+    echo "Reference, not required: report.md (incl. \"Decided without you\"), evaluation.md,"
+    echo "proposals.md, escalations.md, alignment.md or triage.md, claim.md in runs/$id/."
   } > "$out"
 }
 
@@ -304,9 +319,14 @@ review_run() {
     echo "runs/$id/review.md still needs decisions: $open" >&2
     return 1
   fi
+  pr_decision=$(awk '/^### P1/{f=1} f&&/^Decision:/{sub(/^Decision: */,""); print; exit}' "$f")
+  local failed; failed=$(awk '/^### S/{h=$2} /^Decision: *[Ff]ail/{print h}' "$f" | tr '\n' ' ')
+  if [[ -n $failed && $pr_decision == ready* ]]; then
+    echo "check(s) $failed failed, so the PR can't be ready. Use rework: <what> or close." >&2
+    return 1
+  fi
   printf '\nREVIEWED %s\n' "$(date -u +%FT%TZ)" >> "$f"
   echo reviewed > "$dir/phase"
-  pr_decision=$(awk '/^### P1/{f=1} f&&/^Decision:/{sub(/^Decision: */,""); print; exit}' "$f")
   case $pr_decision in
     ready*)
       [[ -n ${GH_TOKEN:-} ]] && ( cd "$root" && gh pr ready "run/$id" ) && echo "PR marked ready; merge it on GitHub" ;;
@@ -355,15 +375,15 @@ setup_run() {
     echo "branch run/$id exists without a run directory. Delete it: git branch -D run/$id" >&2
     exit 2
   fi
-  local base
+  local base main_ref
+  ( cd "$root" && sync_base && echo "$BASE_REF" ) > "$root/.base.$$" \
+    || { rm -f "$root/.base.$$"; echo "can't fetch the default branch" >&2; exit 2; }
+  main_ref=$(cat "$root/.base.$$"); rm -f "$root/.base.$$"
+  base=$main_ref
   if [[ -n ${3:-} ]]; then
     git -C "$root" rev-parse -q --verify "refs/heads/$3" >/dev/null \
       || { echo "base branch $3 doesn't exist" >&2; exit 2; }
     base=$3
-  else
-    ( cd "$root" && sync_base && echo "$BASE_REF" ) > "$root/.base.$$" \
-      || { rm -f "$root/.base.$$"; echo "can't fetch the default branch" >&2; exit 2; }
-    base=$(cat "$root/.base.$$"); rm -f "$root/.base.$$"
   fi
   mkdir -p "$MAI_RUN_DIR/briefs"
   [[ $base == run/* ]] && echo "${base#run/}" > "$MAI_RUN_DIR/supersedes.txt"
@@ -374,6 +394,18 @@ setup_run() {
   # shared .git/config, which collides when two runs start at the same moment.
   git -C "$root" worktree add -q --no-track -b "run/$id" "$RUN_WT" "$base" \
     || { rm -rf "$MAI_RUN_DIR"; echo "couldn't create the run worktree" >&2; exit 2; }
+  # A rework starts from an older run's branch, which carries the kit as it was then.
+  # Bring it onto the current default branch first, so this run uses today's kit.
+  if [[ $base != "$main_ref" ]] && ! git -C "$RUN_WT" merge-base --is-ancestor "$main_ref" HEAD; then
+    if ! git -C "$RUN_WT" rebase -q "$main_ref" >/dev/null 2>&1; then
+      git -C "$RUN_WT" rebase --abort >/dev/null 2>&1
+      git -C "$root" worktree remove --force "$RUN_WT"; git -C "$root" branch -q -D "run/$id"
+      rm -rf "$MAI_RUN_DIR"
+      echo "$base doesn't rebase cleanly onto $main_ref. Rebase it yourself, push, and retry:" >&2
+      echo "  git rebase $main_ref $base" >&2
+      exit 2
+    fi
+  fi
   load_run "$id"
 }
 

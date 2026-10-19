@@ -160,10 +160,14 @@ reviewed**. The sheet asks for decisions, not reading:
 
 | Section | Source | What you do |
 | --- | --- | --- |
-| Headline | evaluation.md, report.md | Verdict, north-star number against baseline, spend against budget, PR link. |
-| Spot checks | the evaluator | Run each check (≤2 min each) and write whether it held. The evaluator picks them, not the executor, so the executor can't soften what you're asked to verify. |
-| Decisions | the post-mortem's decisions.md | Confirm or reverse each escalation, accept or reject each proposal, decide on each FUTURE.md signal. |
+| What changed | the evaluator | Read: the ≤5 most consequential changes, broad or hard-to-undo ones first, with how to undo them. |
+| Did it work | evaluation.md, report.md | Read: verdict, north-star number, spend in tokens, PR link. |
+| Your checks | the evaluator | ≤3 judgment checks (≤2 min each): `pass`, `fail: <what you saw>` or `unsure: <why>`. Any fail blocks `ready`. Mechanical checks are the evaluator's job, never yours. |
+| Your decisions | the post-mortem | ≤3 decisions only you can make, each with a recommendation: `ok` takes it. |
 | The PR | | `ready`, `rework: <what>`, or `close`. |
+
+Everything else (the executor's own reversible choices, the full proposals and
+escalations) is listed at the bottom as reference, not review.
 
 Write a decision on every `Decision:` line, then:
 

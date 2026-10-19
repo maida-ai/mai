@@ -44,8 +44,10 @@ Confirm with the user first unless they asked for it directly.
 A finished run ends in phase `needs-review` with `runs/<id>/review.md`: the headline
 numbers, the evaluator's spot checks, the post-mortem's decisions, and the PR. The next
 run can't start until it's reviewed. Your job is to make the review fast, not to do it.
-- Go through the sheet item by item with the user. For spot checks, you may run the
-  command and show its raw output; the user judges whether it holds.
+- Start with "What changed" and "Did it work" in two or three sentences, then go through
+  checks and decisions one by one. For a check, open what it points to and show it; the
+  user judges. Checks take pass / fail: ... / unsure: ...; decisions take ok / A / B or
+  the user's words. A failed check means the PR can't be ready.
 - Write only the user's own words on `Decision:` lines. Never fill one yourself, and
   never infer a decision from silence.
 - When every line is filled, run `.agents/run review <id>`. With `ready`, the PR leaves

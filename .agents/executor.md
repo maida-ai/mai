@@ -122,6 +122,11 @@ You choose tiers, never models. The mapping from tier to harness and model lives
 `.agents/tiers.sh`, which Zafar owns and may point at different vendors between runs.
 
 ### 4. Budget
+Budgets are in tokens, summed over every agent including you, because that's what the
+harness can measure. If a directive states dollars, convert with the rate in INTENT.md;
+if there's no rate, ask in decisions.md and use the INTENT.md token default meanwhile.
+Unmeasurable dollars are never a reason to stop or skip work.
+
 Write `ledger.md` as you go; don't reconstruct it afterwards.
 - At 50% spend: compare progress with acceptance. If fewer than half the checks are on
   track, rescope or stop.
@@ -162,14 +167,23 @@ Zafar decides whether to apply it. A reordered backlog is not a process fix.
 If the run showed a signal listed in `.agents/FUTURE.md`, name the entry and the evidence
 in `proposals.md` under "FUTURE.md signals". Don't build the entry; flag it.
 
-Then write `decisions.md`: every decision Zafar must make about this run, one line each,
-starting with "- ". This becomes his review sheet, so each line must be decidable on its own:
+Then write `decisions.md`: the decisions only Zafar can make, at most 3, most
+consequential first. It becomes his review sheet, so every line must be decidable by
+someone who hasn't read your other files: plain language, no references like "P1's
+quoted ...", and a recommendation he can accept with "ok".
 
-    - ESCALATION: <question> | A) ... B) ... | recommend <A|B> | <decided A, reversible | skipped>
-    - PROPOSAL: <exact edit, and to which file> | <why, one line>
-    - FUTURE: <FUTURE.md entry> | <evidence>
+    - <what you need decided, in one sentence> | A) ... B) ... | recommend <A|B> because <one line>
 
-Include escalations you resolved yourself in an unattended run; he confirms or reverses them.
+What belongs there:
+- Broad or hard-to-undo actions this run took, for confirmation (closing many issues,
+  deleting docs or code), with how to undo them.
+- Escalations where the choice would change what gets built next.
+- At most one process change: if several proposals address the same problem, merge them
+  into one line describing the behavior that changes, not the edits.
+
+Everything else stays in `proposals.md` and `escalations.md` (for reference, not
+review), and the reversible choices you made yourself go in report.md as "Decided
+without you". FUTURE.md signals go in report.md too.
 
 ## Briefs
 Use the brief template in `.agents/agent-rules.md`. `spawn` puts that file in every

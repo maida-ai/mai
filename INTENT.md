@@ -18,6 +18,20 @@ their work land on a shared trunk without a human integrating it.
 One developer or small team running 3–30 coding agents (any harness) locally against a
 real repository. They keep their own forge and review process.
 
+## First users
+mai is independent of Maida. Maida's repositories (maida, maida-assert) are its first
+users: their friction is the primary source of requirements, and runs on them count as
+real-user evidence. Making mai usable on them is a priority.
+
+## Positioning
+Anthropic's Scion (anthropic.com/engineering/redesigning-source-control; internal, not
+public) solves this at monorepo scale: server-centric, hundreds of agents. mai targets
+what Scion explicitly doesn't: ordinary git repositories, a handful to a few dozen agents,
+local, no server to operate. Borrow its ideas where they fit (compare-and-swap landing,
+a changeset log); don't chase its scale. Open reimplementations of Scion's ideas exist
+(e.g. gitai); they are server-centric, mai is not.
+(Not to be confused with Google Cloud's unrelated "Scion" agent orchestrator.)
+
 ## North-star metric
 Human interventions per landed change. Target: 0 for non-conflicting work.
 Guardrails: broken-trunk landings = 0; no lost committed work; bounded queue time.
@@ -31,7 +45,9 @@ Guardrails: broken-trunk landings = 0; no lost committed work; bounded queue tim
 - Value claims are backed by unscripted runs, not fixtures.
 
 ## Non-goals (for now)
-- Commercial features. mai is a community project, independent of Maida.
+- Commercial features. mai is a free, open-source project, independent of Maida.
+- Depending on Maida. mai may later use maida for reliability through an optional
+  interface; mai must always work fully without it.
 - Distributed operation, or hundreds of agents.
 - Replacing git, jj, or the user's forge.
 - Durability work beyond "never lose committed work".
@@ -41,9 +57,21 @@ The autonomous loop: N independent agents submit successive changes; non-conflic
 changes land with zero operator commands; failures reach the responsible agent with a
 typed reason; unrelated work keeps flowing.
 
+## Decisions
+- Automatic integration is approved, including new CLI flags and config for it. Weigh
+  automating the queue against compare-and-swap landing (no queue, no operator) on
+  evidence before building either. Explicit integration stays the default until a run
+  shows zero-intervention landing; flipping the default is a separate, ask-first change.
+- Baseline: lead-1 (2026-10-18) measured 1.0 operator interventions per landed change
+  (one agent, two landings). Report each cycle's number against it.
+- Dogfooding: agents may integrate their own work through mai only with a pinned build
+  Zafar chooses, never a build of the branch under development. Plain git stays the
+  fallback.
+
 ## Executor defaults
-- Budget per directive: $5 unless the directive states one.
-- Time box per directive: 1 hour unless stated.
+- Budget per directive: ____ million tokens (all agents, executor included) unless the
+  directive states one. Dollar budgets convert at ____ million tokens per $1.
+- Time box per directive: ____ unless stated.
 - Ask before spending when:
   - the directive conflicts with this file;
   - two reasonable readings would build materially different things;

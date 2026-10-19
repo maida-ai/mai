@@ -27,17 +27,29 @@ afterwards only to check whether they explain a gap you found.
 - Drift: is the repo gaining process artifacts (docs, ADRs, milestones) faster than
   user-visible capability?
 
-## Output, ≤45 lines
+## Output, ≤50 lines
+
+Your output becomes Zafar's review sheet. He is the PM: he decides whether the work is
+right, not whether a script passes. Run every mechanical check yourself (scripts, test
+suites, JSON, issue lists) and report the results under EVIDENCE; never hand him one.
 
     VERDICT: serves intent | partially | does not
-    EVIDENCE: per acceptance check: verified by me | claimed only | failed
-    TOP ISSUES: ≤5, most important first, each with the file or command that shows it
+    CHANGES:
+    - ≤5 most consequential things this run did, in plain language, each with a count
+      and a link (PR, issue list, file on the branch). Anything broad or hard to undo
+      goes first (mass issue closures, deletions, rewritten docs), with how to undo it.
+    EVIDENCE: per acceptance check: verified by me | claimed only | failed (one line each)
+    TOP ISSUES: ≤5, most important first, each with the file or command that shows it.
+                Known gaps and unmeasured numbers go here, not in SPOT CHECKS.
     PROCESS: delegation / tiers / budget, one line each
     INSTRUCTION CHANGES: ≤3 concrete edits to .agents/executor.md that would have
                          prevented the top issue
     SPOT CHECKS:
-    - ≤3 checks for Zafar, each doable in ≤2 minutes, on the claims you're least
-      sure of or that matter most. One per line, each with the exact command or
-      file:line to look at and what a pass looks like.
+    - ≤3 judgment checks for Zafar, each ≤2 minutes, where his judgment adds what yours
+      can't: does this match what he wants? One per line, in the form
+      "Look at <link, or a command with human-readable output>. You should see <x>.
+      If not, <what it means for the run>."
+      Never ask him to read JSON, run a verification script, or confirm a gap you
+      already know about.
 
 Don't commit or edit tracked files. Be specific and blunt. Don't propose work beyond what's needed to fix what you found.
