@@ -55,6 +55,16 @@ struct Fixture {
     root: PathBuf,
     client: PathBuf,
 }
+impl Drop for Fixture {
+    fn drop(&mut self) {
+        if thread::panicking() {
+            if let Ok(log) = std::fs::read(self.root.join("engine-qa.log")) {
+                let tail = &log[log.len().saturating_sub(16 * 1024)..];
+                eprintln!("engine log tail:\n{}", String::from_utf8_lossy(tail));
+            }
+        }
+    }
+}
 impl Fixture {
     fn new() -> Self {
         Self::with_gate("exit 0\n")

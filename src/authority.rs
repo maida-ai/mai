@@ -298,9 +298,18 @@ impl Authority {
     /// Reconcile only exact, previously validated candidates. The caller holds
     /// the engine lock; Git and SQLite are intentionally separate writes.
     pub fn reconcile(&mut self) -> Result<()> {
+        self.reconcile_servicing(|_| Ok(()))
+    }
+
+    pub(crate) fn reconcile_servicing(
+        &mut self,
+        mut service: impl FnMut(&mut Self) -> Result<()>,
+    ) -> Result<()> {
+        service(self)?;
         let mut state = StateStore::open(self.state_path())?;
         let lifecycle = state.load_lifecycle()?;
         for submission in lifecycle.submissions() {
+            service(self)?;
             let id = submission.id();
             let reference = format!("refs/mai/changes/{}/{}", id.change_id, id.generation);
             ensure!(
@@ -328,6 +337,7 @@ impl Authority {
             .collect::<Result<_>>()?;
         let mut missing_candidates = Vec::new();
         for evidence in &all_evidence {
+            service(self)?;
             let reference = format!(
                 "refs/mai/candidates/{}/{}/{}",
                 evidence.generation.change_id, evidence.generation.generation, evidence.attempt
@@ -369,6 +379,7 @@ impl Authority {
         let mut parent = self.config.baseline.clone();
         let mut verified = Vec::new();
         for (offset, commit) in accepted.iter().enumerate() {
+            service(self)?;
             let trailers = self.trailers(commit)?;
             let generation: GenerationId =
                 serde_json::from_str(required(&trailers, "Mai-Generation")?)?;
@@ -418,11 +429,17 @@ impl Authority {
         }
         // Validate the entire ledger before updating any landing or derived note.
         if crate::receive::enabled(self)? {
-            for submission in lifecycle.submissions() {
+            // Registration may have added records while the ledger was verified.
+            // Their own admission already checked retained refs; include their notes
+            // and never write the earlier lifecycle snapshot back over them.
+            let current = state.load_lifecycle()?;
+            for submission in current.submissions() {
+                service(self)?;
                 self.restore_received_note(submission)?;
             }
         }
         for (reference, commit) in missing_candidates {
+            service(self)?;
             self.git(
                 &[
                     "update-ref",
@@ -434,6 +451,7 @@ impl Authority {
             )?;
         }
         for (record, note) in verified {
+            service(self)?;
             self.restore_note(&record.commit, note)?;
             state.record_landing(&record)?;
         }

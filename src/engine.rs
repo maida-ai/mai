@@ -315,6 +315,7 @@ fn service_request(
                         &mode,
                         &claims,
                         |authority, candidate| crate::validator::run(authority.root(), candidate),
+                        |_, _| Ok(()),
                     )
                     .map(Some),
                     Action::Lease { operation } => lease_owned(authority, operation).map(Some),
@@ -404,20 +405,71 @@ fn integrate_servicing(
     listener: &transport::Listener,
     status: &mut Status,
 ) -> Result<serde_json::Value> {
-    integrate_owned_with_validation(authority, id, mode, claims, |authority, candidate| {
-        let root = authority.root().to_path_buf();
-        let candidate = candidate.to_owned();
-        thread::scope(|scope| {
-            let worker = scope.spawn(|| crate::validator::run(&root, &candidate));
-            while !worker.is_finished() {
-                service_request(listener, authority, status, true)?;
-                thread::sleep(POLL);
+    let started = Instant::now();
+    eprintln!(
+        "automatic integration {}: preparation started",
+        id.change_id
+    );
+    let status = std::cell::RefCell::new(status);
+    let mut previous_phase = None;
+    let result = integrate_owned_with_validation(
+        authority,
+        id,
+        mode,
+        claims,
+        |authority, candidate| {
+            eprintln!(
+                "automatic integration {}: validation started at {}ms",
+                id.change_id,
+                started.elapsed().as_millis()
+            );
+            let root = authority.root().to_path_buf();
+            let candidate = candidate.to_owned();
+            let result = thread::scope(|scope| {
+                let worker = scope.spawn(|| {
+                    let result = crate::validator::run(&root, &candidate);
+                    eprintln!(
+                        "automatic integration {}: validator worker finished at {}ms",
+                        id.change_id,
+                        started.elapsed().as_millis()
+                    );
+                    result
+                });
+                while !worker.is_finished() {
+                    service_request(listener, authority, &mut status.borrow_mut(), true)?;
+                    thread::sleep(POLL);
+                }
+                worker
+                    .join()
+                    .map_err(|_| anyhow::anyhow!("validator worker panicked"))?
+            });
+            eprintln!(
+                "automatic integration {}: owner resumed at {}ms; publication starts",
+                id.change_id,
+                started.elapsed().as_millis()
+            );
+            result
+        },
+        |authority, phase| {
+            if previous_phase != Some(phase) {
+                eprintln!(
+                    "automatic integration {}: {phase} at {}ms",
+                    id.change_id,
+                    started.elapsed().as_millis()
+                );
+                previous_phase = Some(phase);
             }
-            worker
-                .join()
-                .map_err(|_| anyhow::anyhow!("validator worker panicked"))?
-        })
-    })
+            service_request(listener, authority, &mut status.borrow_mut(), true)?;
+            Ok(())
+        },
+    );
+    eprintln!(
+        "automatic integration {}: finished at {}ms (success={})",
+        id.change_id,
+        started.elapsed().as_millis(),
+        result.is_ok()
+    );
+    result
 }
 
 fn exchange(local: &Path, action: Action, timeout: Duration) -> Result<Status> {
@@ -938,6 +990,7 @@ fn integrate_owned_with_validation(
     mode: &str,
     claims: &[crate::lease::LeaseClaim],
     validate: impl FnMut(&mut Authority, &str) -> Result<crate::validator::ValidationResult>,
+    service: impl FnMut(&mut Authority, &'static str) -> Result<()>,
 ) -> Result<serde_json::Value> {
     ensure!(
         mode == "textual",
@@ -969,6 +1022,7 @@ fn integrate_owned_with_validation(
         &mut leases,
         claims,
         validate,
+        service,
     )?)?;
     result["schema_version"] = serde_json::json!(1);
     result["generation"] = serde_json::to_value(id)?;
@@ -1317,7 +1371,6 @@ mod transport {
 mod transport {
     use super::*;
     use std::{
-        cell::Cell,
         hash::{Hash, Hasher},
         os::windows::{
             ffi::OsStrExt,
@@ -1370,25 +1423,14 @@ mod transport {
     }
     pub struct Listener {
         file: File,
-        connected: Cell<bool>,
     }
     impl Listener {
         pub fn bind(local: &Path) -> Result<Self> {
             Ok(Self {
                 file: create(local)?,
-                connected: Cell::new(false),
             })
         }
         pub fn accept(&self) -> Result<Option<Stream>> {
-            if self.connected.replace(false) {
-                // SAFETY: listener retains the original valid server handle.
-                // The previous response has been acknowledged or timed out.
-                // Reuse this instance even while a previous client closes its
-                // handle; creating another FIRST_PIPE_INSTANCE would race it.
-                unsafe {
-                    DisconnectNamedPipe(self.file.as_raw_handle());
-                }
-            }
             // SAFETY: File owns a valid named pipe; nonblocking mode needs no OVERLAPPED.
             let connected =
                 unsafe { ConnectNamedPipe(self.file.as_raw_handle(), std::ptr::null_mut()) };
@@ -1397,10 +1439,7 @@ mod transport {
             } // PIPE_NOWAIT transitioned to listening.
             let error = io::Error::last_os_error();
             match error.raw_os_error().map(|code| code as u32) {
-                Some(ERROR_PIPE_CONNECTED) => {
-                    self.connected.set(true);
-                    Ok(Some(Stream(self.file.try_clone()?)))
-                }
+                Some(ERROR_PIPE_CONNECTED) => Ok(Some(Stream(self.file.try_clone()?, true))),
                 Some(ERROR_PIPE_LISTENING) => Ok(None),
                 Some(ERROR_NO_DATA) => {
                     // SAFETY: a client closed before acceptance; reset the
@@ -1414,7 +1453,23 @@ mod transport {
             }
         }
     }
-    pub struct Stream(File);
+    // Only accepted server streams disconnect the instance. Client streams merely
+    // close their handle. Request handling waits for response consumption before drop.
+    pub struct Stream(File, bool);
+    impl Drop for Stream {
+        fn drop(&mut self) {
+            if self.1 {
+                // SAFETY: the stream owns a clone of the valid server handle.
+                // Release the sole instance now, even if no next accept runs soon.
+                unsafe {
+                    DisconnectNamedPipe(self.0.as_raw_handle());
+                    // PIPE_NOWAIT immediately makes the instance listen again;
+                    // no engine poll is needed before the next client connects.
+                    ConnectNamedPipe(self.0.as_raw_handle(), std::ptr::null_mut());
+                }
+            }
+        }
+    }
     fn map_nonblocking<T>(result: io::Result<T>) -> io::Result<T> {
         result.map_err(|error| {
             if error.raw_os_error() == Some(ERROR_NO_DATA as i32) {
@@ -1493,7 +1548,7 @@ mod transport {
             "set nonblocking pipe mode: {}",
             io::Error::last_os_error()
         );
-        Ok(Stream(file))
+        Ok(Stream(file, false))
     }
     #[cfg(test)]
     mod tests {
@@ -1533,9 +1588,8 @@ mod transport {
             assert_eq!(client.read(&mut byte).unwrap(), 1);
             assert_eq!(byte, [b'y']);
             drop(server);
-            // Keep the old client alive deliberately. The listener resets and
-            // reuses its instance instead of racing FIRST_PIPE_INSTANCE.
-            assert!(listener.accept().unwrap().is_none());
+            // Keep the old client alive and connect BEFORE another accept.
+            // Dropping the consumed server stream must release the sole instance.
             let mut next = connect(temp.path(), Instant::now() + IO_TIMEOUT).unwrap();
             let mut server = accept(&listener);
             next.write_all(b"z").unwrap();
