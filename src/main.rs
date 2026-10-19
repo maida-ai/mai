@@ -306,7 +306,13 @@ fn run(command: Action) -> Result<Value> {
                     auto_integrate,
                 },
         } => {
-            engine::enable_receive(&project, max_input_bytes, max_file_bytes, max_changed_files, auto_integrate)?;
+            engine::enable_receive(
+                &project,
+                max_input_bytes,
+                max_file_bytes,
+                max_changed_files,
+                auto_integrate,
+            )?;
             json!({"schema_version": SCHEMA_VERSION, "registration_available": true, "max_input_bytes": max_input_bytes, "max_file_bytes": max_file_bytes, "max_changed_files": max_changed_files, "automatic_integration": auto_integrate})
         }
         Action::Show {
