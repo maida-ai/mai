@@ -57,6 +57,9 @@ struct Fixture {
 }
 impl Fixture {
     fn new() -> Self {
+        Self::with_gate("exit 0\n")
+    }
+    fn with_gate(gate: &str) -> Self {
         let temp = tempfile::tempdir().unwrap();
         let root = temp.path().join("authority");
         let client = temp.path().join("client");
@@ -69,7 +72,7 @@ impl Fixture {
                 .output()
                 .unwrap(),
         );
-        std::fs::write(seed.join("gate.sh"), "exit 0\n").unwrap();
+        std::fs::write(seed.join("gate.sh"), gate).unwrap();
         std::fs::write(
             seed.join("mai.toml"),
             "version=1\n[check]\nprogram=\"sh\"\nscript=\"gate.sh\"\ntimeout_ms=5000\noutput_tail_bytes=1024\n[validators]\nslots=1\nport_base=41000\nports_per_slot=10\n",
@@ -92,6 +95,18 @@ impl Fixture {
             root,
             client,
         }
+    }
+    fn clone_client(&self, name: &str) -> PathBuf {
+        let client = self._temp.path().join(name);
+        success(
+            Command::new("git")
+                .args(["clone", "--no-local"])
+                .arg(self.root.join("authority.git"))
+                .arg(&client)
+                .output()
+                .unwrap(),
+        );
+        client
     }
     fn start(&self) -> Owner {
         let mut owner = Owner(
@@ -207,6 +222,90 @@ fn automatic_integration_lands_with_trusted_policy() {
         )),
         "automatic.txt"
     );
+}
+
+#[test]
+fn automatic_gate_rejection_does_not_block_independent_landing() {
+    let f = Fixture::with_gate("test ! -f \"$MAI_CANDIDATE_ROOT/reject\"\n");
+    let _owner = f.start();
+    f.enable_mode(true);
+    let good_client = f.clone_client("good-client");
+
+    let rejected_commit = f.commit("reject");
+    success(f.push(&["HEAD:refs/for/main"]));
+    let good_commit = {
+        std::fs::write(good_client.join("independent.txt"), "independent").unwrap();
+        success(git(&good_client, &["add", "independent.txt"]));
+        success(git(&good_client, &["commit", "-m", "independent"]));
+        success(git(&good_client, &["rev-parse", "HEAD"]))
+    };
+    success(git(
+        &good_client,
+        &["push", "-o", "agent=good", "origin", "HEAD:refs/for/main"],
+    ));
+
+    let deadline = Instant::now() + Duration::from_secs(15);
+    let submissions = loop {
+        let rows = f.submissions();
+        let terminal = |commit: &str| {
+            rows.iter()
+                .find(|s| s.commit() == commit)
+                .is_some_and(|s| matches!(s.state(), mai::lifecycle::State::Terminal { .. }))
+        };
+        if terminal(&rejected_commit) && terminal(&good_commit) {
+            break rows;
+        }
+        assert!(
+            Instant::now() < deadline,
+            "automatic outcomes missing: {rows:?}"
+        );
+        thread::sleep(Duration::from_millis(25));
+    };
+    assert_eq!(submissions.len(), 2);
+    let rejected = submissions
+        .iter()
+        .find(|s| s.commit() == rejected_commit)
+        .unwrap();
+    assert!(matches!(
+        rejected.state(),
+        mai::lifecycle::State::Terminal {
+            outcome: mai::lifecycle::Outcome::Rejected {
+                reason: mai::lifecycle::ReasonCode::CheckFailed,
+                ..
+            }
+        }
+    ));
+    let good = submissions
+        .iter()
+        .find(|s| s.commit() == good_commit)
+        .unwrap();
+    let landed = match good.state() {
+        mai::lifecycle::State::Terminal {
+            outcome: mai::lifecycle::Outcome::Landed { commit, .. },
+        } => commit,
+        state => panic!("expected good submission landed, got {state:?}"),
+    };
+    let repo = f.root.join("authority.git");
+    assert_eq!(
+        success(git(&repo, &["rev-parse", "refs/heads/trunk"])),
+        *landed
+    );
+    assert_eq!(
+        success(git(&repo, &["show", "refs/heads/trunk:independent.txt"])),
+        "independent"
+    );
+    assert!(
+        !git(&repo, &["cat-file", "-e", "refs/heads/trunk:reject"])
+            .status
+            .success()
+    );
+    for submission in [&*rejected, &*good] {
+        let retained = mai::receive::retained_ref(submission.id());
+        assert_eq!(
+            success(git(&repo, &["rev-parse", &retained])),
+            submission.commit()
+        );
+    }
 }
 
 #[test]
