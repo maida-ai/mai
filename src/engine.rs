@@ -356,7 +356,9 @@ fn service_request(
                 // An expired/disconnected client changes no durable result.
                 let deadline = Instant::now() + IO_TIMEOUT;
                 write_frame(&mut stream, &reply, deadline)?;
-                let _ = read_frame::<Request>(&mut stream, deadline);
+                if read_frame::<Request>(&mut stream, deadline).is_ok() {
+                    listener.complete(&mut stream);
+                }
                 return Ok(false);
             }
             let stop = match request.action {
@@ -372,8 +374,8 @@ fn service_request(
             // Once a valid stop is accepted, a disconnected requester must
             // not leave a live engine advertising a false stopping state.
             if stop {
-                if written.is_ok() {
-                    let _ = read_frame::<Request>(&mut stream, deadline);
+                if written.is_ok() && read_frame::<Request>(&mut stream, deadline).is_ok() {
+                    listener.complete(&mut stream);
                 }
                 return Ok(true);
             }
@@ -385,6 +387,7 @@ fn service_request(
                     ack.protocol_version == PROTOCOL_VERSION && matches!(ack.action, Action::Ack),
                     "invalid acknowledgment"
                 );
+                listener.complete(&mut stream);
             }
             Ok(stop)
         })();
@@ -1242,6 +1245,7 @@ mod transport {
                 Err(error) => Err(error.into()),
             }
         }
+        pub fn complete(&self, _stream: &mut UnixStream) {}
     }
     pub fn connect(local: &Path, deadline: Instant) -> Result<UnixStream> {
         use std::os::{
@@ -1370,6 +1374,7 @@ mod transport {
 #[cfg(windows)]
 mod transport {
     use super::*;
+    use std::cell::Cell;
     use std::{
         hash::{Hash, Hasher},
         os::windows::{
@@ -1423,14 +1428,21 @@ mod transport {
     }
     pub struct Listener {
         file: File,
+        connected: Cell<bool>,
     }
     impl Listener {
         pub fn bind(local: &Path) -> Result<Self> {
             Ok(Self {
                 file: create(local)?,
+                connected: Cell::new(false),
             })
         }
         pub fn accept(&self) -> Result<Option<Stream>> {
+            if self.connected.replace(false) {
+                // Defer releasing an unconsumed client until the next accept,
+                // preserving any reply bytes for clients that closed early.
+                unsafe { DisconnectNamedPipe(self.file.as_raw_handle()) };
+            }
             // SAFETY: File owns a valid named pipe; nonblocking mode needs no OVERLAPPED.
             let connected =
                 unsafe { ConnectNamedPipe(self.file.as_raw_handle(), std::ptr::null_mut()) };
@@ -1439,7 +1451,10 @@ mod transport {
             } // PIPE_NOWAIT transitioned to listening.
             let error = io::Error::last_os_error();
             match error.raw_os_error().map(|code| code as u32) {
-                Some(ERROR_PIPE_CONNECTED) => Ok(Some(Stream(self.file.try_clone()?, true))),
+                Some(ERROR_PIPE_CONNECTED) => {
+                    self.connected.set(true);
+                    Ok(Some(Stream(self.file.try_clone()?, true, false)))
+                }
                 Some(ERROR_PIPE_LISTENING) => Ok(None),
                 Some(ERROR_NO_DATA) => {
                     // SAFETY: a client closed before acceptance; reset the
@@ -1452,13 +1467,17 @@ mod transport {
                 _ => Err(error.into()),
             }
         }
+        pub fn complete(&self, stream: &mut Stream) {
+            stream.2 = true;
+            self.connected.set(false);
+        }
     }
     // Only accepted server streams disconnect the instance. Client streams merely
     // close their handle. Request handling waits for response consumption before drop.
-    pub struct Stream(File, bool);
+    pub struct Stream(File, bool, bool);
     impl Drop for Stream {
         fn drop(&mut self) {
-            if self.1 {
+            if self.1 && self.2 {
                 // SAFETY: the stream owns a clone of the valid server handle.
                 // Release the sole instance now, even if no next accept runs soon.
                 unsafe {
@@ -1548,7 +1567,7 @@ mod transport {
             "set nonblocking pipe mode: {}",
             io::Error::last_os_error()
         );
-        Ok(Stream(file, false))
+        Ok(Stream(file, false, false))
     }
     #[cfg(test)]
     mod tests {
