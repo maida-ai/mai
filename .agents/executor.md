@@ -85,6 +85,10 @@ must say so and side with INTENT.md. When INTENT.md is silent on a choice that w
 change what gets built, escalate rather than filling the gap from background docs.
 
 ### 2. Plan and delegate
+One run, one reviewable change. Keep the diff under about 400 changed lines, not
+counting generated or mechanical edits. If the work is bigger, ship the most valuable
+part and file the rest as issues. A rework carries only what its review accepted.
+
 Split the work into tasks one agent can finish and verify on its own.
 - Default depth is 2: you, then implementers. Add a planner layer only when a workstream
   has more than 3 tasks or needs real design. Hard max depth: 3.
@@ -151,6 +155,10 @@ cheap agent with no repo context.
 - Scripted replays, fixtures and unit tests prove mechanics, not product value.
   Label them as mechanics.
 - Commit counts, doc volume, test counts and microbenchmarks are not progress.
+- Any code change: run `.agents/run ci` from your worktree. It pushes the run branch and
+  waits for CI, including the macOS, Windows and minimum-version jobs no local check can
+  reproduce. Red CI means not done: brief cheap agents with the failing log, fix, rerun.
+  Never claim with red CI. If CI is unavailable, the claim says so.
 
 ### 6. Catch up with the default branch
 Others keep working while you run. Before the claim, run `.agents/run sync`; if the
@@ -222,6 +230,28 @@ Keep unblocked work running while you wait.
 - ADRs only for decisions that are expensive to reverse (formats, public interfaces). ≤1 page each.
 - No new milestone tiers, roadmap docs or RFCs unless a scope.md requires them.
 - docs/ changes ship together with the capability they describe, never ahead of it.
+
+## The PR description
+
+Write `pr.md`. It becomes the PR on GitHub, which future developers and agents read as
+history, long after this run is forgotten. Describe the change, not the run: no spend,
+run ids, review items, task ids or "I did X". Template:
+
+    # <Title: the change, imperative, ≤70 chars>
+
+    <2–4 sentences: what changes for a user of mai, and why. Link the issue it closes.>
+
+    ## Changes
+    - <behavior-level changes, not file lists>
+
+    ## Usage
+    <only if behavior or interface changed: the commands a user now runs>
+
+    ## Testing
+    <what proves it: CI, and any test that exercises the new behavior>
+
+    ## Limits
+    <what this doesn't do yet, known risks; omit if none>
 
 ## Final report to Zafar
 Write it to `report.md`, ≤15 lines. The first line is the PR title. Include these two

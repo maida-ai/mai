@@ -71,9 +71,16 @@ the hook is installed.
 .agents/run publish <run-id>                  # push run/<id>, open or update its draft PR
 ```
 
-Every run ends by pushing `run/<id>` and opening a draft PR (report, claim and evaluation
-as the body), if `GH_TOKEN` is set. If that fails, the run still completes; fix the token
-and use `publish`.
+Every run ends by pushing `run/<id>` and opening a draft PR, if `GH_TOKEN` is set. The
+PR description is the executor's `pr.md`, written as history for future readers (what
+changes and why, usage, testing, limits), never as a run report; run details stay in
+`runs/<id>/`. Before claiming, the executor runs `.agents/run ci`, which pushes the run
+branch and waits for CI, including the macOS, Windows and minimum-version jobs that no
+local check reproduces. If publishing fails, the run still completes; fix the token and
+use `publish`.
+
+If the evaluator produces no verdict, it's retried once at lower effort; if it still
+fails, the review sheet says so and the PR can't be marked ready.
 
 ### Monitoring an `auto` run
 

@@ -79,9 +79,6 @@ executor in place of (or next to) the static rubric.
 - Signal: a run fails with a Codex session, lock or daemon error while another run is
   active. Fix: a per-run Codex home that reuses the installed daemon from the shared volume.
 
-**Model-level doctor check.** One cheap call per configured tier before a run starts.
-- Signal: a run fails on a model name, auth or quota error that doctor could have caught.
-
 ## Beyond mai
 
 **Repo-agnostic kit.** Move repo specifics (toolchain checks, build and test commands,

@@ -13,7 +13,8 @@ apply on top of AGENTS.md. Your scope is your brief and nothing more.
 - Use only the credentials the kit provides (GH_TOKEN, the harness login). If an action
   is denied, report it; don't retry through another integration or connector.
 - Don't create ADRs, RFCs, milestone docs or evidence bundles unless your brief asks for one.
-- Put the task id in every commit message.
+- Put your task id in a trailer at the end of the commit message
+  (`Agent-Task: <id>`), never in the subject.
 - Never commit run artifacts (anything under runs/) or report files. Your report is your
   final output, not a file.
 

@@ -9,6 +9,7 @@
 # .agents/run eval <run-id>                run the independent evaluator on a finished run
 # .agents/run publish <run-id>             push run/<id> and open a draft PR (also automatic at run end)
 # .agents/run sync                         fetch the latest default branch into origin/<branch>
+# .agents/run ci                           push the current run branch and wait for CI (for the executor)
 # .agents/run doctor                       check the environment; no model calls
 set -euo pipefail
 
@@ -18,7 +19,7 @@ root=$(cd "$here/.." && pwd)
 source "$here/config.sh"
 # shellcheck source=/dev/null
 source "$here/tiers.sh"
-usage() { sed -n '2,12p' "$0" | sed 's/^# //'; exit 2; }
+usage() { sed -n '2,13p' "$0" | sed 's/^# //'; exit 2; }
 
 # Read-only view of a run, from the files it writes. Needs no container.
 status() {
@@ -180,6 +181,8 @@ doctor() {
 
   command -v cargo >/dev/null && ok "cargo $(cargo --version | cut -d' ' -f2)" || bad "cargo not on PATH"
   bash -lc 'command -v cargo' >/dev/null 2>&1 && ok "cargo in login shell" || bad "cargo missing in login shell"
+  cargo fmt --version >/dev/null 2>&1 && cargo clippy --version >/dev/null 2>&1 \
+    && ok "rustfmt and clippy" || bad "rustfmt or clippy missing (CI runs both); rebuild the image"
   local gv; gv=$(git --version | awk '{print $3}')
   [[ $(printf '2.40\n%s\n' "$gv" | sort -V | head -n 1) == 2.40 ]] && ok "git $gv" || bad "git $gv < 2.40"
   command -v codex >/dev/null && ok "codex on PATH" || bad "codex not on PATH"
@@ -204,6 +207,41 @@ doctor() {
     || bad "add runs/, .worktrees/ and .agents/config.local.sh to .gitignore"
   [[ -x $(git rev-parse --path-format=absolute --git-common-dir)/hooks/pre-commit ]] \
     && ok "pre-commit hook installed" || bad "pre-commit hook missing"
+
+  # One tiny call per tier, so a model name or effort level the provider rejects fails
+  # here, not an hour into a run. Cached until models, efforts or tiers.sh change.
+  local key cache="$root/runs/.model-check" t m e tmp_p out
+  # timeout(1) can't run shell functions, so time-limit them by hand.
+  with_timeout() {
+    local secs=$1; shift
+    "$@" & local pid=$!
+    ( sleep "$secs"; kill "$pid" 2>/dev/null ) >/dev/null 2>&1 & local watcher=$!
+    wait "$pid"; local rc=$?
+    kill "$watcher" 2>/dev/null; return $rc
+  }
+  key=$( { for t in CHEAP MID HIGH EVAL; do m=${t}_MODEL; e=${t}_EFFORT; echo "${!m}/${!e}"; done
+           cat "$here/tiers.sh"; } | sha256sum | cut -c1-16)
+  if [[ $(cat "$cache" 2>/dev/null) == "$key" ]]; then
+    ok "models (checked earlier with these settings)"
+  else
+    tmp_p=$(mktemp); echo "Reply with the single word OK and nothing else. Don't use tools." > "$tmp_p"
+    local models_ok=1
+    for t in cheap mid high; do
+      m=$(echo "$t" | tr '[:lower:]' '[:upper:]')_MODEL; e=$(echo "$t" | tr '[:lower:]' '[:upper:]')_EFFORT
+      if out=$(cd "$(mktemp -d)" && with_timeout 180 "run_$t" "$tmp_p" 2>&1) && grep -q 'OK' <<<"$out"; then
+        ok "model $t: ${!m} effort=${!e}"
+      else
+        bad "model $t: ${!m} effort=${!e} rejected: $(tail -n 2 <<<"$out" | tr '\n' ' ' | cut -c1-160)"; models_ok=0
+      fi
+    done
+    if out=$(cd "$(mktemp -d)" && with_timeout 180 run_evaluator "$tmp_p" "Do what that file says." 2>&1) && grep -q 'OK' <<<"$out"; then
+      ok "model eval: $EVAL_MODEL effort=$EVAL_EFFORT"
+    else
+      bad "model eval: $EVAL_MODEL effort=$EVAL_EFFORT rejected: $(tail -n 2 <<<"$out" | tr '\n' ' ' | cut -c1-160)"; models_ok=0
+    fi
+    rm -f "$tmp_p"
+    [[ $models_ok == 1 ]] && { mkdir -p "$root/runs"; echo "$key" > "$cache"; }
+  fi
 
   # Agents' worktrees branch from HEAD, so they only see the committed kit.
   if git diff --quiet HEAD -- "${KIT[@]}" && [[ -z $(git ls-files --others --exclude-standard -- "${KIT[@]}") ]]; then
@@ -271,7 +309,7 @@ build_review() {
     [[ $n == 0 ]] && echo "- (the evaluator didn't summarize the changes; see the PR)"
     echo
     echo "## Did it work"
-    echo "- $(grep -m1 '^ *VERDICT:' "$ev" 2>/dev/null | sed 's/^ *VERDICT: */Evaluator: /' || echo 'Evaluator: no verdict')"
+    echo "- $(grep -m1 '^ *VERDICT:' "$ev" 2>/dev/null | sed 's/^ *VERDICT: */Evaluator: /' || echo '**Evaluator: FAILED, no verdict (runs/'"$id"'/evaluator.log). The PR cannot be marked ready.**')"
     echo "- $(grep -m1 '^NORTH STAR:' "$dir/report.md" 2>/dev/null | sed 's/^NORTH STAR: */North star: /' || echo 'North star: not reported')"
     echo "- $(grep -m1 '^SPEND:' "$dir/report.md" 2>/dev/null | sed 's/^SPEND: */Spend: /' || echo 'Spend: not reported')"
     echo "- PR: ${pr:-not published}"
@@ -321,6 +359,10 @@ review_run() {
     return 1
   fi
   pr_decision=$(awk '/^### P1/{f=1} f&&/^Decision:/{sub(/^Decision: */,""); print; exit}' "$f")
+  if [[ $pr_decision == ready* ]] && ! grep -q '^ *VERDICT:' "$dir/evaluation.md" 2>/dev/null; then
+    echo "this run has no independent evaluation, so the PR can't be ready. Use rework: <what> or close." >&2
+    return 1
+  fi
   local failed; failed=$(awk '/^### S/{h=$2} /^Decision: *[Ff]ail/{print h}' "$f" | tr '\n' ' ')
   if [[ -n $failed && $pr_decision == ready* ]]; then
     echo "check(s) $failed failed, so the PR can't be ready. Use rework: <what> or close." >&2
@@ -453,13 +495,17 @@ publish() {
   git rev-parse -q --verify "refs/heads/$br" >/dev/null || { echo "no branch $br" >&2; return 2; }
   base=$(gh repo view --json defaultBranchRef -q .defaultBranchRef.name)
   url="$(gh repo view --json url -q .url).git"
-  title=$(grep -m1 -v '^[[:space:]]*$' "$dir/report.md" 2>/dev/null | sed 's/^#* *//' | cut -c1-100)
-  { cat "$dir/report.md" 2>/dev/null
-    printf '\n---\n\n'; cat "$dir/claim.md" 2>/dev/null
-    [[ -f $dir/evaluation.md ]] && { printf '\n---\n\n## Independent evaluation\n\n'; cat "$dir/evaluation.md"; }
-  } | head -c 60000 > "$dir/pr-body.md"
+  # The PR is history for future readers: it describes the change, not the run.
+  # Run details (spend, review, evaluation) stay in runs/<id>/.
+  if [[ -f $dir/pr.md ]]; then
+    title=$(grep -m1 '^# ' "$dir/pr.md" | sed 's/^# *//' | cut -c1-100)
+    sed '0,/^# /{/^# /d}' "$dir/pr.md" | head -c 60000 > "$dir/pr-body.md"
+  else
+    title=$(grep -m1 -v '^[[:space:]]*$' "$dir/report.md" 2>/dev/null | sed 's/^#* *//' | cut -c1-100)
+    { echo "_The run wrote no pr.md; this is its report._"; echo; cat "$dir/report.md" 2>/dev/null; } > "$dir/pr-body.md"
+  fi
   local existing; existing=$(gh pr view "$br" --json url -q .url 2>/dev/null || true)
-  if { git push "$url" "$br:refs/heads/$br" &&
+  if { git push --force "$url" "$br:refs/heads/$br" &&   # run branches belong to their run; ci may have pushed an older head
        if [[ -n $existing ]]; then
          gh pr edit "$br" --body-file "$dir/pr-body.md" && echo "$existing"
        else
@@ -481,15 +527,53 @@ publish() {
   fi
 }
 
+# CI is the only place macOS, Windows and minimum-version jobs run. Push the run branch
+# (CI runs on push), wait for every workflow on this commit, report failures with logs.
+ci_run() {
+  [[ -n ${GH_TOKEN:-} ]] || { echo "no GH_TOKEN: CI unavailable; say so in the claim" >&2; return 2; }
+  local br sha url waited=0 lines pending
+  br=$(git branch --show-current)
+  [[ $br == run/* ]] || { echo "run ci from the run branch (on $br)" >&2; return 2; }
+  sha=$(git rev-parse HEAD); url="$(gh repo view --json url -q .url).git"
+  git push -q --force "$url" "HEAD:refs/heads/$br" || { echo "push failed" >&2; return 2; }
+  echo "pushed $br at ${sha:0:9}; waiting for CI"
+  while :; do
+    lines=$(gh run list --commit "$sha" --json databaseId,status,conclusion,name \
+              --jq '.[] | "\(.databaseId) \(.status) \(.conclusion) \(.name)"' 2>/dev/null || true)
+    pending=$(grep -vc ' completed ' <<<"$lines" || true)
+    if [[ -n $lines && $pending == 0 ]]; then break; fi
+    if (( waited > ${MAI_CI_TIMEOUT:-2700} )); then echo "CI still running after ${waited}s" >&2; return 1; fi
+    sleep 30; waited=$((waited + 30))
+  done
+  echo "$lines" | awk '{print "  " $3 "  " substr($0, index($0,$4))}'
+  if grep -qv ' completed success ' <<<"$lines"; then
+    local id
+    for id in $(awk '$3 != "success" {print $1}' <<<"$lines"); do
+      echo "--- failed jobs in run $id (last 60 lines)"
+      gh run view "$id" --log-failed 2>/dev/null | tail -n 60
+    done
+    return 1
+  fi
+  echo "CI green"
+}
+
 # The evaluator gets a throwaway checkout of run/<id>, removed when it finishes.
 evaluate() {
   local id=$1 dir="$root/runs/$1" wt="$root/.worktrees/eval-$1"
   [[ -f $dir/claim.md ]] || { echo "no claim.md in $dir" >&2; return 2; }
   git -C "$root" worktree add -q --detach "$wt" "run/$id"
-  ( cd "$wt"
-    unset MAI_AGENT_ID MAI_AGENT_DEPTH
-    run_evaluator "$here/evaluator.md" "Evaluate run $id. Its artifacts are in $dir/. The work is on branch run/$id." ) \
-    | tee "$dir/evaluation.md"
+  local attempt
+  for attempt in 1 2; do
+    ( cd "$wt"
+      unset MAI_AGENT_ID MAI_AGENT_DEPTH
+      # Second attempt: drop the effort level, the most common reason for a model to refuse.
+      [[ $attempt == 2 ]] && export EVAL_EFFORT=high
+      run_evaluator "$here/evaluator.md" "Evaluate run $id. Its artifacts are in $dir/. The work is on branch run/$id." \
+        2>>"$dir/evaluator.log" ) > "$dir/evaluation.md"
+    grep -q '^ *VERDICT:' "$dir/evaluation.md" && break
+    echo "evaluation attempt $attempt produced no verdict; see runs/$id/evaluator.log" >&2
+  done
+  cat "$dir/evaluation.md"
   git -C "$root" worktree remove --force "$wt"
 }
 
@@ -567,6 +651,9 @@ case ${1:-} in
     finish_run "$2"
     echo stopped > "$root/runs/$2/phase"
     echo "cleaned up $2; its branch run/$2 keeps whatever was committed"
+    ;;
+  ci)
+    ci_run
     ;;
   review)
     [[ $# -ge 2 ]] || usage
