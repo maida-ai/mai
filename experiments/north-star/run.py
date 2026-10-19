@@ -8,7 +8,6 @@ import os
 from pathlib import Path
 import signal
 import subprocess
-import threading
 import time
 
 
@@ -71,7 +70,7 @@ def main():
             items.extend(page.get("items",[])); cursor=page.get("next_cursor")
             if not cursor: return items
 
-    summary={"schema_version":3,"baseline":1.0,"integration_mode":a.integration,"landed":landed,"attempted":0,"received":0,"failed":failures,"unfinished":unfinished,"operator_interventions_per_landed_change":None,"operator_surrogate_command_count":0,"operator_surrogate_commands":interventions,"guardrails":{},"measurement_note":"Synthetic task repository; fake-runner mechanics are not representative real-agent results. Queue timing uses polling observations because mai does not expose receipt timestamps."}
+    summary={"schema_version":3,"baseline":1.0,"integration_mode":a.integration,"landed":landed,"attempted":0,"received":0,"failed":failures,"unfinished":unfinished,"operator_interventions_per_landed_change":None,"operator_surrogate_command_count":0,"operator_surrogate_commands":interventions,"guardrails":{},"measurement_note":"Synthetic task repository; fake-runner mechanics are not representative real-agent results. mai does not expose receipt timestamps. Each reported receipt-to-terminal interval is a conservative [0, upper-lower] bound: lower is the pre-launch time for that generation's agent (the initial queue snapshot omitted it); upper is the end time of a successful queue snapshot observing terminal. Bounds include agent execution and integration time, not endpoint detection latency."}
     try:
         source=out/"source"; source.mkdir(); call("setup","git-init",["git","-C",source,"init","-b","main"])
         git(source,"config","user.name","north-star"); git(source,"config","user.email","north-star@example.invalid")
@@ -93,30 +92,15 @@ def main():
         def agent(i,w):
             call("agents",f"agent-{i}",[runner,w,out/f"prompt-{i}.txt"],timeout=a.timeout,check=False)
         started=time.monotonic()
-        timing_stop=threading.Event(); timing_seen={}; timing_terminal={}; timing_last=None; timing_max_gap=0.0
-        def observe_timing():
-            nonlocal timing_last,timing_max_gap
-            while not timing_stop.is_set():
-                try:
-                    current=queue_all("timing-queue")
-                    observed=time.monotonic()
-                    if timing_last is not None: timing_max_gap=max(timing_max_gap,observed-timing_last)
-                    timing_last=observed
-                    for item in current:
-                        key=json.dumps(item.get("id"),sort_keys=True)
-                        timing_seen.setdefault(key,observed)
-                        if item.get("state")=="terminal": timing_terminal.setdefault(key,observed)
-                except Exception:
-                    pass
-                timing_stop.wait(0.25)
-        timing_thread=threading.Thread(target=observe_timing,daemon=True); timing_thread.start()
+        timing_lower={}; timing_terminal={}
+        initial_queue=queue_all("pre-agent-queue")
+        if initial_queue: failures.append({"guardrail":"queue_not_empty_before_agents","items":len(initial_queue)})
+        for i in range(1,a.agents+1): timing_lower[f"agent_{i}"]=started
         with concurrent.futures.ThreadPoolExecutor(max_workers=a.agents) as pool:
             list(pool.map(lambda iw: agent(*iw),enumerate(workspaces,1)))
         agent_elapsed=time.monotonic()-started
         workspace_heads={str(w): git(w,"rev-parse","HEAD") for w in workspaces}
         entries=queue_all("queue"); (out/"received.json").write_text(json.dumps(entries,indent=2)+"\n")
-        observed_entries=time.monotonic()
-        for item in entries: timing_seen.setdefault(json.dumps(item.get("id"),sort_keys=True),observed_entries)
         received=[e for e in entries if isinstance(e,dict) and e.get("state")=="received"]
         summary["received"]=len(received); summary["attempted"]=len(records["agents"])
         known={f"agent_{i}" for i in range(1,a.agents+1)}
@@ -148,18 +132,24 @@ def main():
                 observed=time.monotonic()
                 for e in current:
                     key=json.dumps(e.get("id"),sort_keys=True)
-                    timing_seen.setdefault(key,observed)
                     if e.get("state")=="terminal": timing_terminal.setdefault(key,observed)
                 if all(e.get("state")=="terminal" for e in current): break
                 time.sleep(0.25)
-        timing_stop.set(); timing_thread.join(timeout=2)
         finals=queue_all("final-queue")
         observed_finals=time.monotonic()
         for item in finals:
             if item.get("state")=="terminal": timing_terminal.setdefault(json.dumps(item.get("id"),sort_keys=True),observed_finals)
-        summary["queue_time"]={"method":"polling_observation","requested_poll_interval_s":0.25,"max_observed_poll_gap_s":timing_max_gap,"receipt_to_terminal_observed_s":{key:max(0.0,timing_terminal[key]-timing_seen[key]) for key in timing_terminal if key in timing_seen},"endpoint_detection_bound_s":[0,timing_max_gap],"complete":all(key in timing_terminal for key in timing_seen)}
-        if timing_seen and not summary["queue_time"]["complete"]:
-            failures.append({"guardrail":"incomplete_queue_timing","observed":len(timing_seen),"terminal":len(timing_terminal)})
+        by_agent={e.get("agent"):e for e in entries if isinstance(e,dict)}
+        intervals={}
+        for agent_name,e in by_agent.items():
+            key=json.dumps(e.get("id"),sort_keys=True)
+            lower=timing_lower.get(agent_name); upper=timing_terminal.get(key)
+            if lower is not None and upper is not None:
+                intervals[key]={"identity":e.get("id"),"agent":agent_name,"lower_s":lower-started,"upper_s":upper-started,"receipt_to_terminal_s":[0.0,max(0.0,upper-lower)]}
+        expected_keys={json.dumps(e.get("id"),sort_keys=True) for e in entries if isinstance(e,dict)}
+        summary["queue_time"]={"method":"agent_launch_lower_bound_to_terminal_snapshot_upper_bound","clock":"monotonic seconds from immediately before agent launch","intervals":intervals,"complete":len(intervals)==a.agents and set(intervals)==expected_keys}
+        if not summary["queue_time"]["complete"]:
+            failures.append({"guardrail":"incomplete_queue_timing","expected_agents":a.agents,"timed_generations":len(intervals),"submitted_generations":len(expected_keys),"terminal_generations":len(timing_terminal)})
         for e in finals:
             state=e.get("state"); outcome=e.get("outcome") or {}; kind=outcome.get("kind") if isinstance(outcome,dict) else None
             if state=="terminal" and kind=="landed":

@@ -28,10 +28,14 @@ The harness checks the fresh trunk and every landed commit against the trusted g
 retains all submitted commit OIDs, checks the expected module identities and content,
 and reports failed runners, rejected submissions, and unfinished queue entries.
 Queue pages are read until the CLI cursor is exhausted. Automatic and observe modes
-poll every 250 ms during agent execution and integration. Because mai does not expose
-receipt timestamps, timing reports the observed receipt-to-terminal interval and a
-0–250 ms detection bound at each endpoint. Missing or nonterminal results fail the
-run.
+observe queue state after agent execution and during automatic/observe integration.
+Because mai does not expose receipt timestamps, timing reports conservative
+receipt-to-terminal intervals for every submitted generation. The lower bound is
+the pre-agent-launch time (the initial successful queue snapshot must be empty); the
+upper bound is the end time of a successful snapshot that observes that generation
+as terminal. Each interval is `[0, upper - lower]`, so it includes agent execution
+and integration time. It does not claim a polling detection latency. Missing
+submissions, missing terminal observations, and incomplete timing fail the run.
 The output directory must not already exist. Logs, commands, provenance, queue data,
 authority and summary are retained even when a guardrail fails. Runner timeout defaults
 to 900 seconds and cleans up the runner's process group.
