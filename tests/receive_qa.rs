@@ -299,7 +299,7 @@ fn automatic_gate_rejection_does_not_block_independent_landing() {
             .status
             .success()
     );
-    for submission in [&*rejected, &*good] {
+    for submission in [rejected, good] {
         let retained = mai::receive::retained_ref(submission.id());
         assert_eq!(
             success(git(&repo, &["rev-parse", &retained])),
