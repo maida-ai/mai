@@ -360,13 +360,7 @@ fn service_request(
             }
             let stop = match request.action {
                 Action::Status => false,
-                Action::Stop => {
-                    ensure!(
-                        !busy,
-                        "integration is active; retry stop after its outcome is recorded"
-                    );
-                    true
-                }
+                Action::Stop => !busy,
                 Action::Ack => bail!("unexpected acknowledgment"),
                 _ => unreachable!(),
             };
@@ -1099,8 +1093,13 @@ pub fn validator_recover(root: &Path, slot: usize, claim_id: &str) -> Result<std
 }
 
 pub fn stop(root: &Path) -> Result<Status> {
-    exchange(&local_dir(root)?, Action::Stop, IO_TIMEOUT)
-        .context("engine unavailable; stop never autostarts an engine")
+    let status = exchange(&local_dir(root)?, Action::Stop, IO_TIMEOUT)
+        .context("engine unavailable; stop never autostarts an engine")?;
+    ensure!(
+        status.state == "stopping",
+        "integration is active; retry stop after its outcome is recorded"
+    );
+    Ok(status)
 }
 
 fn read_frame<T: serde::de::DeserializeOwned>(

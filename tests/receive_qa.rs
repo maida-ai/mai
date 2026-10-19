@@ -282,6 +282,57 @@ fn concurrent_automatic_receipts(seconds: u64, rounds: usize) {
     let pending = mai::engine::wait(&f.root, waiting.id().clone(), Duration::from_secs(1)).unwrap();
     assert_eq!(pending["kind"], "pending");
     assert!(wait_started.elapsed() < Duration::from_secs(3));
+    let before_retry = f.submissions();
+    let pending_row = before_retry
+        .iter()
+        .find(|row| row.id() == waiting.id())
+        .unwrap();
+    assert!(matches!(
+        pending_row.state(),
+        mai::lifecycle::State::Received
+    ));
+    let client_index = commits
+        .iter()
+        .position(|candidate| candidate == pending_row.commit())
+        .unwrap();
+    let client = &clients[client_index / rounds];
+    let retry_started = Instant::now();
+    let retry = receipt(git(
+        client,
+        &[
+            "push",
+            "-o",
+            &format!("agent=agent-{}", client_index / rounds),
+            "origin",
+            &format!("{}:refs/for/main", pending_row.commit()),
+        ],
+    ));
+    assert!(
+        retry_started.elapsed() < Duration::from_secs(10),
+        "pending retry waited for a gate"
+    );
+    assert!(retry.contains("pending; durable receipt only"), "{retry}");
+    assert_eq!(
+        f.submissions(),
+        before_retry,
+        "identical pending retry changed durable submissions"
+    );
+    let stop = cli(&f.root, &["stop"]);
+    let stop_diagnostics = String::from_utf8_lossy(&stop.stderr);
+    assert!(
+        !stop.status.success(),
+        "busy stop unexpectedly stopped the engine"
+    );
+    assert!(
+        stop_diagnostics
+            .contains("integration is active; retry stop after its outcome is recorded"),
+        "{stop_diagnostics}"
+    );
+    assert!(
+        !stop_diagnostics.contains("engine unavailable"),
+        "{stop_diagnostics}"
+    );
+    assert!(cli(&f.root, &["status", "--no-autostart"]).status.success());
     let rows = wait_terminal(
         &f,
         3 * rounds,
