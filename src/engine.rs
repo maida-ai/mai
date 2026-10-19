@@ -51,6 +51,7 @@ enum Action {
         max_input_bytes: u64,
         max_file_bytes: u64,
         max_changed_files: u64,
+        auto_integrate: bool,
     },
     Register {
         agent: String,
@@ -184,133 +185,54 @@ pub fn serve(root: &Path) -> Result<()> {
         state: "ready".into(),
         registration_available: receive::enabled(&authority)?,
     };
+    // Durable state is the queue: restart can resume receipts whose replies were lost.
+    let mut discovered = std::collections::BTreeSet::new();
+    let mut pending = std::collections::VecDeque::new();
     loop {
-        if let Some(mut stream) = listener.accept()? {
-            let deadline = Instant::now() + IO_TIMEOUT;
-            let result = (|| -> Result<bool> {
-                let request: Request = read_frame(&mut stream, deadline)?;
-                ensure!(
-                    request.protocol_version == PROTOCOL_VERSION,
-                    "unsupported IPC version"
-                );
+        if service_request(&listener, &mut authority, &mut status, false)? {
+            break;
+        }
+        if receive::auto_integrate(&authority)? {
+            let store = crate::state::StateStore::open(authority.state_path())?;
+            let life = store.load_lifecycle()?;
+            for submission in life.submissions() {
                 if matches!(
-                    request.action,
-                    Action::EnableReceive { .. }
-                        | Action::Register { .. }
-                        | Action::Show { .. }
-                        | Action::ContinuationSnapshot { .. }
-                        | Action::Approve { .. }
-                        | Action::Integrate { .. }
-                        | Action::Lease { .. }
-                ) {
-                    let result: Result<Option<serde_json::Value>> = match request.action {
-                        Action::EnableReceive {
-                            max_input_bytes,
-                            max_file_bytes,
-                            max_changed_files,
-                        } => receive::enable(
-                            &authority,
-                            max_input_bytes,
-                            max_file_bytes,
-                            max_changed_files,
-                        )
-                        .map(|()| None),
-                        Action::Register { agent, commit } => {
-                            receive::register(&authority, &agent, &commit)
-                                .and_then(|s| Ok(Some(serde_json::to_value(s)?)))
-                        }
-                        Action::Show { generation } => receive::query(&authority, &generation)
-                            .and_then(|s| Ok(Some(serde_json::to_value(s)?))),
-                        Action::ContinuationSnapshot { generation, suffix } => authority
-                            .reconcile()
-                            .and_then(|()| {
-                                continuation_snapshot_owned(&authority, &generation, &suffix)
-                            })
-                            .and_then(|s| Ok(Some(serde_json::to_value(s)?))),
-                        Action::Integrate {
-                            generation,
-                            mode,
-                            claims,
-                        } => integrate_owned(&mut authority, &generation, &mode, &claims).map(Some),
-                        Action::Lease { operation } => lease_owned(&authority, operation).map(Some),
-                        Action::Approve {
-                            candidate,
-                            actor,
-                            reason,
-                            denied,
-                        } => crate::validator::approve(
-                            authority.root(),
-                            &candidate,
-                            &actor,
-                            &reason,
-                            denied,
-                        )
-                        .and_then(|approval| Ok(Some(serde_json::to_value(approval)?))),
-                        _ => unreachable!(),
-                    };
-                    status.registration_available = receive::enabled(&authority)?;
-                    let mut reply = match result {
-                        Ok(result) => Reply {
-                            protocol_version: PROTOCOL_VERSION,
-                            authority: status.authority.clone(),
-                            result,
-                            error: None,
-                        },
-                        Err(error) => Reply {
-                            protocol_version: PROTOCOL_VERSION,
-                            authority: status.authority.clone(),
-                            result: None,
-                            error: Some(format!("{error:#}").chars().take(1024).collect()),
-                        },
-                    };
-                    if serde_json::to_vec(&reply)?.len() > MAX_FRAME {
-                        reply.result = None;
-                        reply.error = Some("durable result exceeds the bounded IPC response; no result was discarded; inspect authority state".into());
-                    }
-                    // An expired/disconnected client changes no durable result.
-                    let deadline = Instant::now() + IO_TIMEOUT;
-                    write_frame(&mut stream, &reply, deadline)?;
-                    let _ = read_frame::<Request>(&mut stream, deadline);
-                    return Ok(false);
+                    submission.state(),
+                    crate::lifecycle::State::Received | crate::lifecycle::State::Queued
+                ) && discovered.insert(submission.id().clone())
+                {
+                    pending.push_back(submission.id().clone());
                 }
-                let stop = match request.action {
-                    Action::Status => false,
-                    Action::Stop => true,
-                    Action::Ack => bail!("unexpected acknowledgment"),
-                    _ => unreachable!(),
-                };
-                if stop {
-                    status.state = "stopping".into();
-                }
-                let written = write_frame(&mut stream, &status, deadline);
-                // Once a valid stop is accepted, a disconnected requester must
-                // not leave a live engine advertising a false stopping state.
-                if stop {
-                    if written.is_ok() {
-                        let _ = read_frame::<Request>(&mut stream, deadline);
-                    }
-                    return Ok(true);
-                }
-                written?;
-                // A bounded acknowledgment guarantees Windows clients consumed
-                // the response without an unbounded FlushFileBuffers call.
-                if let Ok(ack) = read_frame::<Request>(&mut stream, deadline) {
-                    ensure!(
-                        ack.protocol_version == PROTOCOL_VERSION
-                            && matches!(ack.action, Action::Ack),
-                        "invalid acknowledgment"
+            }
+            // New receipts join the tail; ready older work cannot be starved.
+            let next = pending.iter().position(|id| {
+                let s = life.get(id).expect("queued identity remains durable");
+                matches!(
+                    s.state(),
+                    crate::lifecycle::State::Received | crate::lifecycle::State::Queued
+                ) && s.dependencies().iter().all(|id| {
+                    matches!(
+                        life.get(id).map(|s| s.state()),
+                        Some(crate::lifecycle::State::Terminal {
+                            outcome: crate::lifecycle::Outcome::Landed { .. }
+                        })
+                    )
+                })
+            });
+            if let Some(index) = next {
+                let id = pending.remove(index).unwrap();
+                if let Err(error) =
+                    integrate_servicing(&mut authority, &id, "textual", &[], &listener, &mut status)
+                {
+                    // An uncertain attempt must be reconciled on restart, never retried blindly.
+                    eprintln!(
+                        "automatic integration stopped for {}: {error:#}",
+                        id.change_id
                     );
                 }
-                Ok(stop)
-            })();
-            match result {
-                Ok(true) => break,
-                Ok(false) => {}
-                Err(error) => eprintln!("local IPC request rejected: {error:#}"),
             }
-        } else {
-            thread::sleep(POLL);
         }
+        thread::sleep(POLL);
     }
     drop(listener);
     // Cleanup runs while lock is held, and lock file is never removed.
@@ -327,6 +249,244 @@ impl Drop for Cleanup {
         #[cfg(unix)]
         let _ = fs::remove_file(self.local.join("engine.sock"));
     }
+}
+
+// The engine remains the sole lifecycle writer, including while a validator runs.
+fn service_request(
+    listener: &transport::Listener,
+    authority: &mut Authority,
+    status: &mut Status,
+    busy: bool,
+) -> Result<bool> {
+    if let Some(mut stream) = listener.accept()? {
+        let deadline = Instant::now() + IO_TIMEOUT;
+        let result = (|| -> Result<bool> {
+            let request: Request = read_frame(&mut stream, deadline)?;
+            ensure!(
+                request.protocol_version == PROTOCOL_VERSION,
+                "unsupported IPC version"
+            );
+            if matches!(
+                request.action,
+                Action::EnableReceive { .. }
+                    | Action::Register { .. }
+                    | Action::Show { .. }
+                    | Action::ContinuationSnapshot { .. }
+                    | Action::Approve { .. }
+                    | Action::Integrate { .. }
+                    | Action::Lease { .. }
+            ) {
+                let result: Result<Option<serde_json::Value>> = match request.action {
+                    Action::Integrate { .. } | Action::ContinuationSnapshot { .. } if busy => {
+                        Err(anyhow::anyhow!(
+                            "integration is active; retry after its outcome is recorded"
+                        ))
+                    }
+                    Action::EnableReceive {
+                        max_input_bytes,
+                        max_file_bytes,
+                        max_changed_files,
+                        auto_integrate,
+                    } => receive::enable(
+                        authority,
+                        max_input_bytes,
+                        max_file_bytes,
+                        max_changed_files,
+                        auto_integrate,
+                    )
+                    .map(|()| None),
+                    Action::Register { agent, commit } => {
+                        receive::register(authority, &agent, &commit)
+                            .and_then(|s| Ok(Some(serde_json::to_value(s)?)))
+                    }
+                    Action::Show { generation } => receive::query(authority, &generation)
+                        .and_then(|s| Ok(Some(serde_json::to_value(s)?))),
+                    Action::ContinuationSnapshot { generation, suffix } => authority
+                        .reconcile()
+                        .and_then(|()| continuation_snapshot_owned(authority, &generation, &suffix))
+                        .and_then(|s| Ok(Some(serde_json::to_value(s)?))),
+                    Action::Integrate {
+                        generation,
+                        mode,
+                        claims,
+                    } => integrate_owned_with_validation(
+                        authority,
+                        &generation,
+                        &mode,
+                        &claims,
+                        |authority, candidate| crate::validator::run(authority.root(), candidate),
+                        |_, _| Ok(()),
+                    )
+                    .map(Some),
+                    Action::Lease { operation } => lease_owned(authority, operation).map(Some),
+                    Action::Approve {
+                        candidate,
+                        actor,
+                        reason,
+                        denied,
+                    } => crate::validator::approve(
+                        authority.root(),
+                        &candidate,
+                        &actor,
+                        &reason,
+                        denied,
+                    )
+                    .and_then(|approval| Ok(Some(serde_json::to_value(approval)?))),
+                    _ => unreachable!(),
+                };
+                status.registration_available = receive::enabled(authority)?;
+                let mut reply = match result {
+                    Ok(result) => Reply {
+                        protocol_version: PROTOCOL_VERSION,
+                        authority: status.authority.clone(),
+                        result,
+                        error: None,
+                    },
+                    Err(error) => Reply {
+                        protocol_version: PROTOCOL_VERSION,
+                        authority: status.authority.clone(),
+                        result: None,
+                        error: Some(format!("{error:#}").chars().take(1024).collect()),
+                    },
+                };
+                if serde_json::to_vec(&reply)?.len() > MAX_FRAME {
+                    reply.result = None;
+                    reply.error = Some("durable result exceeds the bounded IPC response; no result was discarded; inspect authority state".into());
+                }
+                // An expired/disconnected client changes no durable result.
+                let deadline = Instant::now() + IO_TIMEOUT;
+                write_frame(&mut stream, &reply, deadline)?;
+                if matches!(
+                    read_frame::<Request>(&mut stream, deadline),
+                    Ok(Request {
+                        protocol_version: PROTOCOL_VERSION,
+                        action: Action::Ack
+                    })
+                ) {
+                    listener.complete(&mut stream);
+                }
+                return Ok(false);
+            }
+            let stop = match request.action {
+                Action::Status => false,
+                Action::Stop => !busy,
+                Action::Ack => bail!("unexpected acknowledgment"),
+                _ => unreachable!(),
+            };
+            if stop {
+                status.state = "stopping".into();
+            }
+            let written = write_frame(&mut stream, &status, deadline);
+            // Once a valid stop is accepted, a disconnected requester must
+            // not leave a live engine advertising a false stopping state.
+            if stop {
+                if written.is_ok()
+                    && matches!(
+                        read_frame::<Request>(&mut stream, deadline),
+                        Ok(Request {
+                            protocol_version: PROTOCOL_VERSION,
+                            action: Action::Ack
+                        })
+                    )
+                {
+                    listener.complete(&mut stream);
+                }
+                return Ok(true);
+            }
+            written?;
+            // A bounded acknowledgment guarantees Windows clients consumed
+            // the response without an unbounded FlushFileBuffers call.
+            if let Ok(ack) = read_frame::<Request>(&mut stream, deadline) {
+                ensure!(
+                    ack.protocol_version == PROTOCOL_VERSION && matches!(ack.action, Action::Ack),
+                    "invalid acknowledgment"
+                );
+                listener.complete(&mut stream);
+            }
+            Ok(stop)
+        })();
+        match result {
+            Ok(true) => return Ok(true),
+            Ok(false) => {}
+            Err(error) => eprintln!("local IPC request rejected: {error:#}"),
+        }
+    }
+    Ok(false)
+}
+
+fn integrate_servicing(
+    authority: &mut Authority,
+    id: &GenerationId,
+    mode: &str,
+    claims: &[crate::lease::LeaseClaim],
+    listener: &transport::Listener,
+    status: &mut Status,
+) -> Result<serde_json::Value> {
+    let started = Instant::now();
+    eprintln!(
+        "automatic integration {}: preparation started",
+        id.change_id
+    );
+    let status = std::cell::RefCell::new(status);
+    let mut previous_phase = None;
+    let result = integrate_owned_with_validation(
+        authority,
+        id,
+        mode,
+        claims,
+        |authority, candidate| {
+            eprintln!(
+                "automatic integration {}: validation started at {}ms",
+                id.change_id,
+                started.elapsed().as_millis()
+            );
+            let root = authority.root().to_path_buf();
+            let candidate = candidate.to_owned();
+            let result = thread::scope(|scope| {
+                let worker = scope.spawn(|| {
+                    let result = crate::validator::run(&root, &candidate);
+                    eprintln!(
+                        "automatic integration {}: validator worker finished at {}ms",
+                        id.change_id,
+                        started.elapsed().as_millis()
+                    );
+                    result
+                });
+                while !worker.is_finished() {
+                    service_request(listener, authority, &mut status.borrow_mut(), true)?;
+                    thread::sleep(POLL);
+                }
+                worker
+                    .join()
+                    .map_err(|_| anyhow::anyhow!("validator worker panicked"))?
+            });
+            eprintln!(
+                "automatic integration {}: owner resumed at {}ms; publication starts",
+                id.change_id,
+                started.elapsed().as_millis()
+            );
+            result
+        },
+        |authority, phase| {
+            if previous_phase != Some(phase) {
+                eprintln!(
+                    "automatic integration {}: {phase} at {}ms",
+                    id.change_id,
+                    started.elapsed().as_millis()
+                );
+                previous_phase = Some(phase);
+            }
+            service_request(listener, authority, &mut status.borrow_mut(), true)?;
+            Ok(())
+        },
+    );
+    eprintln!(
+        "automatic integration {}: finished at {}ms (success={})",
+        id.change_id,
+        started.elapsed().as_millis(),
+        result.is_ok()
+    );
+    result
 }
 
 fn exchange(local: &Path, action: Action, timeout: Duration) -> Result<Status> {
@@ -479,6 +639,7 @@ pub fn enable_receive(
     max_input_bytes: u64,
     max_file_bytes: u64,
     max_changed_files: u64,
+    auto_integrate: bool,
 ) -> Result<()> {
     status(root, true)?;
     operation(
@@ -487,6 +648,7 @@ pub fn enable_receive(
             max_input_bytes,
             max_file_bytes,
             max_changed_files,
+            auto_integrate,
         },
     )?;
     Ok(())
@@ -839,11 +1001,13 @@ fn lease_owned(authority: &Authority, action: LeaseAction) -> Result<serde_json:
     };
     Ok(serde_json::json!({"schema_version":1,"lease":result}))
 }
-fn integrate_owned(
+fn integrate_owned_with_validation(
     authority: &mut Authority,
     id: &GenerationId,
     mode: &str,
     claims: &[crate::lease::LeaseClaim],
+    validate: impl FnMut(&mut Authority, &str) -> Result<crate::validator::ValidationResult>,
+    service: impl FnMut(&mut Authority, &'static str) -> Result<()>,
 ) -> Result<serde_json::Value> {
     ensure!(
         mode == "textual",
@@ -868,12 +1032,14 @@ fn integrate_owned(
         "dependency blocked; integrate the submitted parent before retrying this change"
     );
     let mut leases = lease_store(authority)?;
-    let mut result = serde_json::to_value(crate::landing::run_one(
+    let mut result = serde_json::to_value(crate::landing::run_one_servicing(
         authority,
         id,
         crate::landing::MergeMode::Textual,
         &mut leases,
         claims,
+        validate,
+        service,
     )?)?;
     result["schema_version"] = serde_json::json!(1);
     result["generation"] = serde_json::to_value(id)?;
@@ -998,8 +1164,13 @@ pub fn validator_recover(root: &Path, slot: usize, claim_id: &str) -> Result<std
 }
 
 pub fn stop(root: &Path) -> Result<Status> {
-    exchange(&local_dir(root)?, Action::Stop, IO_TIMEOUT)
-        .context("engine unavailable; stop never autostarts an engine")
+    let status = exchange(&local_dir(root)?, Action::Stop, IO_TIMEOUT)
+        .context("engine unavailable; stop never autostarts an engine")?;
+    ensure!(
+        status.state == "stopping",
+        "integration is active; retry stop after its outcome is recorded"
+    );
+    Ok(status)
 }
 
 fn read_frame<T: serde::de::DeserializeOwned>(
@@ -1088,6 +1259,7 @@ mod transport {
                 Err(error) => Err(error.into()),
             }
         }
+        pub fn complete(&self, _stream: &mut UnixStream) {}
     }
     pub fn connect(local: &Path, deadline: Instant) -> Result<UnixStream> {
         use std::os::{
@@ -1216,8 +1388,8 @@ mod transport {
 #[cfg(windows)]
 mod transport {
     use super::*;
+    use std::cell::Cell;
     use std::{
-        cell::Cell,
         hash::{Hash, Hasher},
         os::windows::{
             ffi::OsStrExt,
@@ -1281,13 +1453,9 @@ mod transport {
         }
         pub fn accept(&self) -> Result<Option<Stream>> {
             if self.connected.replace(false) {
-                // SAFETY: listener retains the original valid server handle.
-                // The previous response has been acknowledged or timed out.
-                // Reuse this instance even while a previous client closes its
-                // handle; creating another FIRST_PIPE_INSTANCE would race it.
-                unsafe {
-                    DisconnectNamedPipe(self.file.as_raw_handle());
-                }
+                // Defer releasing an unconsumed client until the next accept,
+                // preserving any reply bytes for clients that closed early.
+                unsafe { DisconnectNamedPipe(self.file.as_raw_handle()) };
             }
             // SAFETY: File owns a valid named pipe; nonblocking mode needs no OVERLAPPED.
             let connected =
@@ -1299,7 +1467,7 @@ mod transport {
             match error.raw_os_error().map(|code| code as u32) {
                 Some(ERROR_PIPE_CONNECTED) => {
                     self.connected.set(true);
-                    Ok(Some(Stream(self.file.try_clone()?)))
+                    Ok(Some(Stream(self.file.try_clone()?, true, false)))
                 }
                 Some(ERROR_PIPE_LISTENING) => Ok(None),
                 Some(ERROR_NO_DATA) => {
@@ -1313,8 +1481,28 @@ mod transport {
                 _ => Err(error.into()),
             }
         }
+        pub fn complete(&self, stream: &mut Stream) {
+            stream.2 = true;
+            self.connected.set(false);
+        }
     }
-    pub struct Stream(File);
+    // Only accepted server streams disconnect the instance. Client streams merely
+    // close their handle. Request handling waits for response consumption before drop.
+    pub struct Stream(File, bool, bool);
+    impl Drop for Stream {
+        fn drop(&mut self) {
+            if self.1 && self.2 {
+                // SAFETY: the stream owns a clone of the valid server handle.
+                // Release the sole instance now, even if no next accept runs soon.
+                unsafe {
+                    DisconnectNamedPipe(self.0.as_raw_handle());
+                    // PIPE_NOWAIT immediately makes the instance listen again;
+                    // no engine poll is needed before the next client connects.
+                    ConnectNamedPipe(self.0.as_raw_handle(), std::ptr::null_mut());
+                }
+            }
+        }
+    }
     fn map_nonblocking<T>(result: io::Result<T>) -> io::Result<T> {
         result.map_err(|error| {
             if error.raw_os_error() == Some(ERROR_NO_DATA as i32) {
@@ -1393,7 +1581,7 @@ mod transport {
             "set nonblocking pipe mode: {}",
             io::Error::last_os_error()
         );
-        Ok(Stream(file))
+        Ok(Stream(file, false, false))
     }
     #[cfg(test)]
     mod tests {
@@ -1432,10 +1620,10 @@ mod transport {
             server.write_all(b"y").unwrap();
             assert_eq!(client.read(&mut byte).unwrap(), 1);
             assert_eq!(byte, [b'y']);
+            listener.complete(&mut server);
             drop(server);
-            // Keep the old client alive deliberately. The listener resets and
-            // reuses its instance instead of racing FIRST_PIPE_INSTANCE.
-            assert!(listener.accept().unwrap().is_none());
+            // Keep the old client alive and connect BEFORE another accept.
+            // Dropping the consumed server stream must release the sole instance.
             let mut next = connect(temp.path(), Instant::now() + IO_TIMEOUT).unwrap();
             let mut server = accept(&listener);
             next.write_all(b"z").unwrap();

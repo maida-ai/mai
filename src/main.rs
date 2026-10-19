@@ -204,6 +204,8 @@ enum ReceiveAction {
         max_file_bytes: u64,
         #[arg(long)]
         max_changed_files: u64,
+        #[arg(long)]
+        auto_integrate: bool,
     },
 }
 #[derive(Subcommand)]
@@ -301,10 +303,17 @@ fn run(command: Action) -> Result<Value> {
                     max_input_bytes,
                     max_file_bytes,
                     max_changed_files,
+                    auto_integrate,
                 },
         } => {
-            engine::enable_receive(&project, max_input_bytes, max_file_bytes, max_changed_files)?;
-            json!({"schema_version": SCHEMA_VERSION, "registration_available": true, "max_input_bytes": max_input_bytes, "max_file_bytes": max_file_bytes, "max_changed_files": max_changed_files, "automatic_integration": false})
+            engine::enable_receive(
+                &project,
+                max_input_bytes,
+                max_file_bytes,
+                max_changed_files,
+                auto_integrate,
+            )?;
+            json!({"schema_version": SCHEMA_VERSION, "registration_available": true, "max_input_bytes": max_input_bytes, "max_file_bytes": max_file_bytes, "max_changed_files": max_changed_files, "automatic_integration": auto_integrate})
         }
         Action::Show {
             project,

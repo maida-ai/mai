@@ -322,6 +322,50 @@ fn run_one_inner(
     claims: &[LeaseClaim],
     mut checkpoint: impl FnMut(Checkpoint) -> Result<()>,
 ) -> Result<RunResult> {
+    run_one_servicing_inner(
+        authority,
+        id,
+        mode,
+        leases,
+        claims,
+        |authority, candidate| validator::run(authority.root(), candidate),
+        (&mut checkpoint, |_: &mut Authority, _: &'static str| Ok(())),
+    )
+}
+
+pub(crate) fn run_one_servicing(
+    authority: &mut Authority,
+    id: &GenerationId,
+    mode: MergeMode,
+    leases: &mut LeaseStore,
+    claims: &[LeaseClaim],
+    validate: impl FnMut(&mut Authority, &str) -> Result<validator::ValidationResult>,
+    service: impl FnMut(&mut Authority, &'static str) -> Result<()>,
+) -> Result<RunResult> {
+    run_one_servicing_inner(
+        authority,
+        id,
+        mode,
+        leases,
+        claims,
+        validate,
+        (|_| Ok(()), service),
+    )
+}
+
+fn run_one_servicing_inner(
+    authority: &mut Authority,
+    id: &GenerationId,
+    mode: MergeMode,
+    leases: &mut LeaseStore,
+    claims: &[LeaseClaim],
+    mut validate: impl FnMut(&mut Authority, &str) -> Result<validator::ValidationResult>,
+    callbacks: (
+        impl FnMut(Checkpoint) -> Result<()>,
+        impl FnMut(&mut Authority, &'static str) -> Result<()>,
+    ),
+) -> Result<RunResult> {
+    let (mut checkpoint, mut service) = callbacks;
     let mut store = StateStore::open(authority.state_path())?;
     let mut life = store.load_lifecycle()?;
     let submission = life.get(id).context("unknown generation")?;
@@ -344,6 +388,7 @@ fn run_one_inner(
         matches!(submission.state(), State::Queued | State::AwaitingApproval),
         "generation is not queued; reconcile interrupted attempts before retrying"
     );
+    let initial_submission = submission.clone();
     let agent = submission.agent().to_owned();
     let attempt = u64::try_from(submission.attempts().len())?
         .checked_add(1)
@@ -353,7 +398,44 @@ fn run_one_inner(
         git(authority, &["rev-parse", "--verify", &retained])? == submission.commit(),
         "retained submission reference changed; preserve state and investigate"
     );
-    let prepared = match prepare_candidate(authority, &life, id, mode) {
+    service(authority, "retained identity checked")?;
+    life = store.load_lifecycle()?;
+    ensure!(
+        life.get(id) == Some(&initial_submission),
+        "generation changed during preparation"
+    );
+    // Only immutable Git inputs and a lifecycle snapshot enter the worker. It never
+    // writes lifecycle, evidence, approvals or leases; the owner services receipts.
+    let root = authority.root().to_path_buf();
+    let preparation = std::thread::scope(|scope| {
+        let snapshot = &life;
+        let worker = scope.spawn(|| {
+            let started = std::time::Instant::now();
+            let result = (|| {
+                let reader = Authority::open(&root)?;
+                prepare_candidate(&reader, snapshot, id, mode)
+            })();
+            eprintln!(
+                "candidate preparation {} generation {} attempt {}: worker finished in {}ms (success={})",
+                id.change_id, id.generation, attempt, started.elapsed().as_millis(), result.is_ok()
+            );
+            result
+        });
+        while !worker.is_finished() {
+            service(authority, "preparing candidate")?;
+            std::thread::sleep(std::time::Duration::from_millis(10));
+        }
+        worker
+            .join()
+            .map_err(|_| anyhow::anyhow!("candidate preparation worker panicked"))?
+    });
+    service(authority, "candidate prepared")?;
+    life = store.load_lifecycle()?;
+    ensure!(
+        life.get(id) == Some(&initial_submission),
+        "generation changed during preparation"
+    );
+    let prepared = match preparation {
         Ok(candidate) => candidate,
         Err(error) if error.is::<MergeConflict>() => {
             life.reject(id, ReasonCode::Conflict, Diagnostics { conflict: Some(error.to_string()), next_action: Some("Resolve the conflict in your own workspace and submit a new change; dependent changes must be resubmitted against the replacement".into()), ..Diagnostics::default() })?;
@@ -394,6 +476,12 @@ fn run_one_inner(
         last.revision.checked_add(1).context("revision exhausted")?
     };
     let manifest = crate::manifest::compute(&authority.git_dir(), &prepared.trunk, &prepared.tree)?;
+    service(authority, "manifest computed")?;
+    life = store.load_lifecycle()?;
+    ensure!(
+        life.get(id) == Some(&initial_submission),
+        "generation changed during preparation"
+    );
     let units: Vec<_> = manifest
         .entries
         .iter()
@@ -433,6 +521,12 @@ fn run_one_inner(
         .output()?;
     ensure!(output.status.success(), "candidate commit creation failed");
     let candidate = String::from_utf8(output.stdout)?.trim().to_owned();
+    service(authority, "candidate commit created")?;
+    life = store.load_lifecycle()?;
+    ensure!(
+        life.get(id) == Some(&initial_submission),
+        "generation changed during preparation"
+    );
     let reference = format!(
         "refs/mai/candidates/{}/{}/{attempt}",
         id.change_id, id.generation
@@ -444,6 +538,12 @@ fn run_one_inner(
     ensure!(
         policy.binding.base == prepared.trunk && policy.binding.tree == prepared.tree,
         "candidate policy changed during preparation"
+    );
+    service(authority, "candidate policy loaded")?;
+    life = store.load_lifecycle()?;
+    ensure!(
+        life.get(id) == Some(&initial_submission),
+        "generation changed during preparation"
     );
     let approval = ApprovalStore::open(authority.root())?.decision(&policy.binding)?;
     ensure!(
@@ -490,7 +590,10 @@ fn run_one_inner(
         "attempt changed during preparation"
     );
     store.save_lifecycle(&mut life)?;
-    let result = validator::run(authority.root(), &candidate).context("validation interrupted; restart the engine to reconcile the retained attempt before retrying")?;
+    let result = validate(authority, &candidate).context("validation interrupted; restart the engine to reconcile the retained attempt before retrying")?;
+    // Receipt and lease operations may have run while validation was in flight.
+    // Resume from the current snapshot rather than overwriting those durable writes.
+    life = store.load_lifecycle()?;
     ensure!(
         result.binding == policy.binding,
         "validator result binding changed"
@@ -529,6 +632,8 @@ fn run_one_inner(
         return Ok(RunResult::Rejected { reason });
     }
     checkpoint(Checkpoint::EvidenceDurable)?;
+    service(authority, "evidence durable; final publication checks")?;
+    life = store.load_lifecycle()?;
     ensure!(
         git(authority, &["rev-parse", "refs/heads/trunk"])? == prepared.trunk,
         "trunk changed; restart and reconcile before retrying"
@@ -574,7 +679,9 @@ fn run_one_inner(
     )?;
     checkpoint(Checkpoint::TrunkPublished)?;
     drop(store);
-    authority.reconcile().context("trunk publication succeeded but metadata reconciliation failed; preserve state, restart the engine, and query this generation before retrying")?;
+    // Publication is already durable. Any servicing or reconciliation failure now
+    // leaves an uncertain result that must be queried/reconciled, never retried blindly.
+    authority.reconcile_servicing(|authority| service(authority, "reconciling published trunk")).context("trunk publication succeeded but metadata reconciliation failed; preserve state, restart the engine, and query this generation before retrying")?;
     Ok(RunResult::Landed {
         revision,
         commit: candidate,
@@ -771,6 +878,114 @@ mod crash_tests {
         }
         panic!("expected checkpoint exit: {result:?}");
     }
+    #[test]
+    fn serviced_receipts_survive_preparation_and_reconciliation_and_late_leases_fence() {
+        for late_lease in [false, true] {
+            let tmp = tempfile::tempdir().unwrap();
+            let source = tmp.path().join("source");
+            fs::create_dir(&source).unwrap();
+            source_git(&source, &["init"]);
+            fs::write(source.join("gate.sh"), "exit 0\n").unwrap();
+            fs::write(source.join("mai.toml"), POLICY).unwrap();
+            source_git(&source, &["add", "."]);
+            source_git(&source, &["commit", "-m", "policy"]);
+            let base = source_git(&source, &["rev-parse", "HEAD"]);
+            let mut a = Authority::init(&tmp.path().join("project"), Some(&source)).unwrap();
+            crate::receive::enable(&a, 1_000_000, 100_000, 100, true).unwrap();
+            fs::write(source.join("change"), "main").unwrap();
+            source_git(&source, &["add", "."]);
+            source_git(&source, &["commit", "-m", "main"]);
+            let submitted = source_git(&source, &["rev-parse", "HEAD"]);
+            source_git(&source, &["checkout", "-B", "receipts", &base]);
+            let mut commits = Vec::new();
+            for index in 0..9 {
+                fs::write(source.join("other"), index.to_string()).unwrap();
+                source_git(&source, &["add", "."]);
+                source_git(&source, &["commit", "-m", "receipt"]);
+                commits.push(source_git(&source, &["rev-parse", "HEAD"]));
+            }
+            for commit in [&submitted, commits.last().unwrap()] {
+                source_git(
+                    &a.git_dir(),
+                    &[
+                        std::ffi::OsString::from("fetch"),
+                        external_git_path(&source),
+                        std::ffi::OsString::from(commit),
+                    ],
+                );
+            }
+            let id = crate::receive::register(&a, "main", &submitted)
+                .unwrap()
+                .id()
+                .clone();
+            let mut store = StateStore::open(a.state_path()).unwrap();
+            let mut life = store.load_lifecycle().unwrap();
+            life.queue(&id).unwrap();
+            store.save_lifecycle(&mut life).unwrap();
+            let mut leases = a.lease_store().unwrap();
+            let mut receipts = Vec::new();
+            let mut phases = std::collections::BTreeSet::new();
+            let mut reconciliation_callbacks = 0;
+            let result = run_one_servicing(
+                &mut a,
+                &id,
+                MergeMode::Textual,
+                &mut leases,
+                &[],
+                |authority, candidate| validator::run(authority.root(), candidate),
+                |authority, phase| {
+                    if phase == "preparing candidate" {
+                        return Ok(());
+                    }
+                    let admit = if phase == "reconciling published trunk" {
+                        reconciliation_callbacks += 1;
+                        // Include admissions both before and after the reconciliation snapshot.
+                        reconciliation_callbacks <= 3
+                    } else {
+                        phases.insert(phase)
+                    };
+                    if admit {
+                        let receipt =
+                            crate::receive::register(authority, "other", &commits[receipts.len()])?;
+                        receipts.push(receipt);
+                    }
+                    if late_lease && phase == "evidence durable; final publication checks" {
+                        authority.lease_store()?.acquire(
+                            "file:change",
+                            "other",
+                            now_ms()?,
+                            60_000,
+                        )?;
+                    }
+                    Ok(())
+                },
+            )
+            .unwrap();
+            let current = store.load_lifecycle().unwrap();
+            assert_eq!(receipts.len(), if late_lease { 6 } else { 9 });
+            for receipt in &receipts {
+                assert_eq!(current.get(receipt.id()), Some(receipt));
+            }
+            if late_lease {
+                assert!(matches!(
+                    result,
+                    RunResult::LeaseBlocked {
+                        phase: LeaseBlockPhase::PostValidation,
+                        ..
+                    }
+                ));
+                assert_eq!(current.get(&id).unwrap().state(), &State::Queued);
+                assert_eq!(git(&a, &["rev-parse", "trunk"]).unwrap(), base);
+                assert!(store.landings().unwrap().is_empty());
+            } else {
+                assert!(matches!(result, RunResult::Landed { revision: 1, .. }));
+                assert_eq!(store.landings().unwrap().len(), 1);
+                a.reconcile().unwrap();
+                assert_eq!(store.load_lifecycle().unwrap().submissions().count(), 10);
+            }
+        }
+    }
+
     #[test]
     fn process_interruption_before_and_after_cas_reconciles_without_double_landing() {
         for stage in [

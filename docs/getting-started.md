@@ -1,6 +1,6 @@
 # Try two dependent changes through a trusted gate
 
-The old worktree prototype has been retired after scoped design acceptance. The foundation implements a versioned change lifecycle, SQLite persistence, repository validation, authority initialization, local engine serving, independent workspaces and manual trusted validation. Explicit receive and named-generation integration are available; this is not the full automatic integration queue. Use disposable evaluation repositories throughout MVP development.
+The old worktree prototype has been retired after scoped design acceptance. The foundation implements a versioned change lifecycle, SQLite persistence, repository validation, authority initialization, local engine serving, independent workspaces and manual trusted validation. Receive supports explicit named-generation integration by default and opt-in integration on receipt. Use disposable evaluation repositories; see [current delivery and limits](release-status.md).
 
 ## Build and verify
 
@@ -15,7 +15,7 @@ cargo run --locked -- --help
 cargo run --locked -- --version
 ```
 
-The version remains `mai 0.0.1`; authority and ordinary lease formats are now 2, with no migration from older disposable state. The current binary exposes initialization, engine administration, workspaces, manual validation, explicit receive/integration, submission inspection, ordinary leases, copy-based continuation and explicit Linux validator recovery; see the [CLI reference](cli.md) for the available commands. Retired commands such as `refresh`, `submit` and `github-sync` reject; there are no legacy aliases or data migrations. Old demos and benchmarks have been removed with the old engine, while experiment harnesses and reviewed evidence remain available.
+The version remains `mai 0.0.1`; authority and ordinary lease formats are now 2, with no migration from older disposable state. The current binary exposes initialization, engine administration, workspaces, manual validation, receive with explicit or opt-in automatic integration, submission inspection, ordinary leases, copy-based continuation and explicit Linux validator recovery; see the [CLI reference](cli.md) for the available commands. Retired commands such as `refresh`, `submit` and `github-sync` reject; there are no legacy aliases or data migrations. Old demos and benchmarks have been removed with the old engine, while experiment harnesses and reviewed evidence remain available.
 
 ## Run the example
 
@@ -73,7 +73,7 @@ Expected: initialization succeeds, status reports `registration_available: false
 
 ### 3. Enable receipt and submit a parent
 
-These limits are explicit example choices. Push acknowledges durable receipt, not acceptance.
+These limits are explicit example choices. This walkthrough uses the default explicit integration mode: push acknowledges durable receipt, not acceptance. Add `--auto-integrate` to the enable command to attempt gated textual integration during each receipt; in that mode, inspect each outcome instead of expecting the `received` states below.
 
 ```sh
 "$MAI_BIN" receive enable "$DEMO_ROOT/project" --max-input-bytes 10485760 --max-file-bytes 1048576 --max-changed-files 100 --json
@@ -106,7 +106,7 @@ Expected: both records are `received`; the child names the parent generation in 
 
 ### 5. Integrate parent, then child
 
-The current workflow requires an operator to select each generation explicitly. The gate checks the exact candidate before landing; the child maps onto the parent’s accepted squash.
+The default mode used here requires an operator to select each generation explicitly. The gate checks the exact candidate before landing; the child maps onto the parent’s accepted squash.
 
 ```sh
 "$MAI_BIN" integrate "$DEMO_ROOT/project" "alice-$PARENT" --mode textual --wait-seconds 60 --json
@@ -132,7 +132,7 @@ printf 'Disposable demo retained at %s\n' "$DEMO_ROOT"
 
 Expected: all three assertions succeed and the demo prints its retained directory. No bootstrap runs because this example declares none.
 
-This example selects textual integration explicitly and uses a tiny gate, not a recommended project policy. There is no automatic scheduler or in-place sync. For later clean unregistered commits, [copy-based continuation](continuation.md) replays only the suffix after an explicitly verified landed submission into a new workspace. Preserve the old clone. Try the [failed-gate and correction exercise](check-failure.md), or follow the [two-agent continuation/conflict/correction walkthrough](two-agent-workflow.md) to exercise the next part of the user loop. `stop` acknowledges a shutdown request; process exit can follow shortly afterward. Keep the disposable directory for inspection, then remove only that directory when finished. On an uncertain response, inspect the generation after the operation completes; timeout does not cancel integration. For opted-in Linux supervision, [explicit validator recovery](validator-recovery.md) can reclaim a covered interrupted slot from verified cleanup proof. Missing proof and worker death still require preserved-state diagnosis. See [receive and integration](receive.md), [manual validation](manual-validator.md) and [workspace recovery](workspaces.md).
+This example selects textual integration explicitly and uses a tiny gate, not a recommended project policy. For later clean unregistered commits, [copy-based continuation](continuation.md) replays only the suffix after an explicitly verified landed submission into a new workspace. Preserve the old clone. Try the [failed-gate and correction exercise](check-failure.md), or follow the [two-agent continuation/conflict/correction walkthrough](two-agent-workflow.md) to exercise the next part of the user loop. `stop` acknowledges a shutdown request; process exit can follow shortly afterward. Keep the disposable directory for inspection, then remove only that directory when finished. On an uncertain response, inspect the generation after the operation completes; timeout does not cancel integration. For opted-in Linux supervision, [explicit validator recovery](validator-recovery.md) can reclaim a covered interrupted slot from verified cleanup proof. Missing proof and worker death still require preserved-state diagnosis. See [receive and integration](receive.md), [manual validation](manual-validator.md) and [workspace recovery](workspaces.md).
 
 ## What is qualified here
 
