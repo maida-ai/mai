@@ -122,16 +122,23 @@ impl Fixture {
     }
     fn enable_mode(&self, auto_integrate: bool) {
         let mut args = vec![
-            "receive", "enable", "--max-input-bytes", "1048576",
-            "--max-file-bytes", "65536", "--max-changed-files", "16",
+            "receive",
+            "enable",
+            "--max-input-bytes",
+            "1048576",
+            "--max-file-bytes",
+            "65536",
+            "--max-changed-files",
+            "16",
         ];
-        if auto_integrate { args.push("--auto-integrate"); }
-        success(cli(
-            &self.root,
-            &args,
-        ));
+        if auto_integrate {
+            args.push("--auto-integrate");
+        }
+        success(cli(&self.root, &args));
     }
-    fn enable(&self) { self.enable_mode(false); }
+    fn enable(&self) {
+        self.enable_mode(false);
+    }
     fn commit(&self, name: &str) -> String {
         std::fs::write(self.client.join(name), name).unwrap();
         success(git(&self.client, &["add", name]));
@@ -175,12 +182,17 @@ fn automatic_integration_lands_with_trusted_policy() {
         }) {
             break rows;
         }
-        assert!(Instant::now() < deadline, "automatic integration did not land: {rows:?}");
+        assert!(
+            Instant::now() < deadline,
+            "automatic integration did not land: {rows:?}"
+        );
         thread::sleep(Duration::from_millis(25));
     };
     assert_eq!(submissions.len(), 1);
     let landed = match submissions[0].state() {
-        mai::lifecycle::State::Terminal { outcome: mai::lifecycle::Outcome::Landed { commit, .. } } => commit,
+        mai::lifecycle::State::Terminal {
+            outcome: mai::lifecycle::Outcome::Landed { commit, .. },
+        } => commit,
         state => panic!("expected landed terminal state, got {state:?}"),
     };
     let trunk = success(git(
@@ -203,7 +215,14 @@ fn concurrent_submissions_are_serially_registered_without_auto_mode() {
     let _owner = f.start();
     f.enable();
     let second = f._temp.path().join("second-client");
-    success(Command::new("git").args(["clone", "--no-local"]).arg(f.root.join("authority.git")).arg(&second).output().unwrap());
+    success(
+        Command::new("git")
+            .args(["clone", "--no-local"])
+            .arg(f.root.join("authority.git"))
+            .arg(&second)
+            .output()
+            .unwrap(),
+    );
     let first_commit = f.commit("first.txt");
     let second_commit = {
         std::fs::write(second.join("second.txt"), "second").unwrap();
@@ -215,16 +234,35 @@ fn concurrent_submissions_are_serially_registered_without_auto_mode() {
     let first_client = f.client.clone();
     let second_client = second.clone();
     let pushes = [
-        thread::spawn(move || git(&first_client, &["push", "-o", "agent=first", "origin", "HEAD:refs/for/main"])),
-        thread::spawn(move || git(&second_client, &["push", "-o", "agent=second", "origin", "HEAD:refs/for/main"])),
+        thread::spawn(move || {
+            git(
+                &first_client,
+                &["push", "-o", "agent=first", "origin", "HEAD:refs/for/main"],
+            )
+        }),
+        thread::spawn(move || {
+            git(
+                &second_client,
+                &["push", "-o", "agent=second", "origin", "HEAD:refs/for/main"],
+            )
+        }),
     ];
-    for push in pushes { success(push.join().unwrap()); }
-    let rows = StateStore::open(Authority::open(&root).unwrap().state_path()).unwrap().load_lifecycle().unwrap();
+    for push in pushes {
+        success(push.join().unwrap());
+    }
+    let rows = StateStore::open(Authority::open(&root).unwrap().state_path())
+        .unwrap()
+        .load_lifecycle()
+        .unwrap();
     let submissions: Vec<_> = rows.submissions().collect();
     assert_eq!(submissions.len(), 2);
     assert!(submissions.iter().any(|s| s.commit() == first_commit));
     assert!(submissions.iter().any(|s| s.commit() == second_commit));
-    assert!(submissions.iter().all(|s| matches!(s.state(), mai::lifecycle::State::Received)));
+    assert!(
+        submissions
+            .iter()
+            .all(|s| matches!(s.state(), mai::lifecycle::State::Received))
+    );
 }
 
 #[test]

@@ -219,25 +219,26 @@ pub fn serve(root: &Path) -> Result<()> {
                         )
                         .map(|()| None),
                         Action::Register { agent, commit } => {
-                            receive::register(&authority, &agent, &commit).and_then(|submission| {
-                                if receive::auto_integrate(&authority)?
-                                    && !matches!(
-                                        submission.state(),
-                                        crate::lifecycle::State::Terminal { .. }
-                                    )
-                                {
-                                    integrate_owned(
-                                        &mut authority,
-                                        submission.id(),
-                                        "textual",
-                                        &[],
-                                    )?;
-                                    receive::query(&authority, submission.id())
-                                } else {
-                                    Ok(submission)
-                                }
-                            })
-                            .and_then(|s| Ok(Some(serde_json::to_value(s)?)))
+                            receive::register(&authority, &agent, &commit)
+                                .and_then(|submission| {
+                                    if receive::auto_integrate(&authority)?
+                                        && !matches!(
+                                            submission.state(),
+                                            crate::lifecycle::State::Terminal { .. }
+                                        )
+                                    {
+                                        integrate_owned(
+                                            &mut authority,
+                                            submission.id(),
+                                            "textual",
+                                            &[],
+                                        )?;
+                                        receive::query(&authority, submission.id())
+                                    } else {
+                                        Ok(submission)
+                                    }
+                                })
+                                .and_then(|s| Ok(Some(serde_json::to_value(s)?)))
                         }
                         Action::Show { generation } => receive::query(&authority, &generation)
                             .and_then(|s| Ok(Some(serde_json::to_value(s)?))),
