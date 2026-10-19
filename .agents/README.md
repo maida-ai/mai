@@ -25,7 +25,8 @@ you ◀──────────────── report.md, PR on run/<id
 | `.agents/agent-rules.md` | you | Kit-only conduct, brief template, report format. Injected into every sub-agent's prompt by `spawn`; your own interactive sessions never see it. |
 | `.agents/executor.md` | you | The tech-lead role. Changes only through proposals you accept. |
 | `.agents/evaluator.md` | you | The independent evaluator role. |
-| `.agents/tiers.sh` | you | Which harness and model run each tier, the executor and the evaluator. |
+| `.agents/config.sh` | you | Settings: models and effort per tier, the evaluator's model, delegation depth, git identity patterns. |
+| `.agents/tiers.sh` | you | How each tier, the executor and the evaluator are launched (harness commands). |
 | `.agents/Dockerfile` | you | The container: Rust, git ≥ 2.40, gh, Node, Codex. |
 | `.agents/run` | you | Entry point: `doctor`, `start`, `auto`, `eval`. |
 | `.agents/spawn` | you | The only way agents start sub-agents. Logs every spawn and enforces depth. |
@@ -46,7 +47,7 @@ the hook is installed.
    that the token can push.
 3. In the repo:
    ```bash
-   printf 'runs/\n.worktrees/\n' >> .gitignore
+   printf 'runs/\n.worktrees/\n.agents/config.local.sh\n' >> .gitignore
    cp .agents/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
    chmod +x .agents/run .agents/spawn
    git add INTENT.md AGENTS.md CLAUDE.md .agents .gitignore && git commit -m "Agent kit"
@@ -196,6 +197,30 @@ Background, if a decision needs it: `report.md`, `evaluation.md`, `escalations.m
 `proposals.md`, `triage.md`, `scope.md`, `claim.md`, `spawns.jsonl`, `ledger.md`,
 `agents/*.log`, and `executor.log`/`postmortem.log` for `auto` runs.
 
+## Settings
+
+All settings live in `.agents/config.sh`. Precedence is environment, then
+`.agents/config.local.sh` (gitignored, yours only), then the defaults:
+
+```bash
+CHEAP_MODEL=some-model .agents/run auto <slug> "<directive>"     # one run
+echo ': "${CHEAP_EFFORT:=minimal}"' >> .agents/config.local.sh   # your machine
+```
+
+Each run records the values it actually used in `runs/<id>/config.txt`, so a result can
+always be traced to its models and settings.
+
+**Commit attribution.** `MAI_GIT_NAME` and `MAI_GIT_EMAIL` are patterns with `%role%`
+and `%id%`, e.g. `agents+%id%@agents.maida.ai`. They make history readable, but they're
+unauthenticated metadata: anyone can write any email into a commit, so a domain alone
+grants nothing on GitHub. What GitHub actually authorizes is the token that pushes. For
+real attribution and permissions: push with a bot identity (a machine user or GitHub
+App) instead of your personal token, so agent PRs and issue edits stop appearing as
+yours; and sign agent commits with that identity's key, so "Verified" means something
+and a ruleset can require it. GitHub links a commit to an account only by an email
+verified on that account, so per-agent addresses won't link; keep the per-agent detail
+in the name and use one verified address if you want commits linked to the bot.
+
 ## Adjusting the system
 
 | Symptom | Change |
@@ -204,8 +229,8 @@ Background, if a decision needs it: `report.md`, `evaluation.md`, `escalations.m
 | Right goal, bad process (scope creep, weak verification, didn't delegate) | `executor.md`, ideally from `proposals.md` |
 | Sub-agents misbehave the same way repeatedly | `.agents/agent-rules.md` |
 | A project convention you want everyone (you included) to follow | `AGENTS.md` |
-| Too expensive, or the cheap tier keeps failing | `tiers.sh`: change a tier's model |
-| Evaluator too lenient | `evaluator.md`; also move `run_evaluator` to a different vendor |
+| Too expensive, or the cheap tier keeps failing | `config.sh`: change a tier's model or effort |
+| Evaluator too lenient | `evaluator.md`; `EVAL_MODEL` in `config.sh`, ideally another vendor (`run_evaluator` in `tiers.sh`) |
 | A tool or environment problem | `Dockerfile`, then add a check to `doctor` in `run` |
 
 After editing any kit file: commit it, rebuild the image if you changed the Dockerfile

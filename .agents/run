@@ -15,6 +15,8 @@ set -euo pipefail
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/.." && pwd)
 # shellcheck source=/dev/null
+source "$here/config.sh"
+# shellcheck source=/dev/null
 source "$here/tiers.sh"
 usage() { sed -n '2,12p' "$0" | sed 's/^# //'; exit 2; }
 
@@ -111,7 +113,9 @@ if [[ -z ${MAI_IN_CONTAINER:-} ]]; then
     exit 2
   fi
   # Same path inside and out, so worktree paths and logs stay valid on the host.
-  common=(--rm --init -v "$root":"$root" -w "$root"
+  # Settings resolved here (environment, config.local.sh, defaults) go into the container.
+  cfg_env=(); for v in "${MAI_CONFIG_VARS[@]}"; do cfg_env+=(-e "$v"); done
+  common=(--rm --init -v "$root":"$root" -w "$root" "${cfg_env[@]}"
           -v mai-codex-home:/root/.codex ${auth[@]+"${auth[@]}"}
           -e OPENAI_API_KEY -e GH_TOKEN -e MAI_IN_CONTAINER=1)
   if [[ ${1:-} == stop ]]; then
@@ -195,7 +199,9 @@ doctor() {
   else
     warn "no GH_TOKEN: no issue grooming, no push, no PR"
   fi
-  git check-ignore -q runs/x && git check-ignore -q .worktrees/x && ok "runs/ and .worktrees/ ignored" || bad "add runs/ and .worktrees/ to .gitignore"
+  git check-ignore -q runs/x && git check-ignore -q .worktrees/x && git check-ignore -q .agents/config.local.sh \
+    && ok "runs/, .worktrees/, .agents/config.local.sh ignored" \
+    || bad "add runs/, .worktrees/ and .agents/config.local.sh to .gitignore"
   [[ -x $(git rev-parse --path-format=absolute --git-common-dir)/hooks/pre-commit ]] \
     && ok "pre-commit hook installed" || bad "pre-commit hook missing"
 
@@ -317,8 +323,7 @@ review_run() {
 executor_env() {
   export MAI_RUN_ID=$1 MAI_RUN_DIR="$root/runs/$1" MAI_WORKTREE_ROOT="$root/.worktrees"
   export MAI_AGENT_DEPTH=1 MAI_AGENT_ID=executor
-  export GIT_AUTHOR_NAME="mai-executor" GIT_AUTHOR_EMAIL="executor@agents.mai.local"
-  export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME" GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
+  mai_git_identity executor "$1"
   RUN_WT="$MAI_WORKTREE_ROOT/run-$1"
 }
 
@@ -363,6 +368,7 @@ setup_run() {
   mkdir -p "$MAI_RUN_DIR/briefs"
   [[ $base == run/* ]] && echo "${base#run/}" > "$MAI_RUN_DIR/supersedes.txt"
   printf '%s\n' "$2" > "$MAI_RUN_DIR/directive.txt"
+  local v; for v in "${MAI_CONFIG_VARS[@]}"; do printf '%s=%s\n' "$v" "${!v}"; done > "$MAI_RUN_DIR/config.txt"
   printf '%s\n%s\n' "$base" "$(git -C "$root" rev-parse "$base")" > "$MAI_RUN_DIR/base.txt"
   # --no-track: branching from origin/<b> would otherwise write upstream config to the
   # shared .git/config, which collides when two runs start at the same moment.

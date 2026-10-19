@@ -2,11 +2,7 @@
 # Each run_<tier> receives the composed prompt file as $1 and runs inside the
 # agent's worktree. Check flags against your installed CLI versions.
 
-# Two knobs per tier: model size and reasoning effort. Effort values depend on the model
-# (typically minimal | low | medium | high | xhigh); check what yours supports.
-CHEAP_MODEL="gpt-6-luna";  CHEAP_EFFORT="low"
-MID_MODEL="gpt-6-sol";     MID_EFFORT="medium"
-HIGH_MODEL="gpt-6-astra";  HIGH_EFFORT="high"
+# Model names and effort levels live in config.sh.
 
 # Agents must write to .git (worktrees, commits) and to runs/, which Codex's sandbox
 # blocks. The bypass is only acceptable inside the container; .agents/run enforces that
@@ -36,4 +32,4 @@ run_executor_batch() { codex exec $CODEX_FLAGS -m "$HIGH_MODEL" -c model_reasoni
 
 # Evaluator: should be a different vendor than the executor. Same-vendor is a known
 # weakness until a second provider is wired in here.
-run_evaluator() { codex exec $CODEX_FLAGS -m "$HIGH_MODEL" -c model_reasoning_effort="\"xhigh\"" "Read $1; it defines your role. $2"; }
+run_evaluator() { codex exec $CODEX_FLAGS -m "$EVAL_MODEL" -c model_reasoning_effort="\"$EVAL_EFFORT\"" "Read $1; it defines your role. $2"; }
