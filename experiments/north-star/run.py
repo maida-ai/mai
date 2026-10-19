@@ -6,7 +6,6 @@ import hashlib
 import json
 import os
 from pathlib import Path
-import shutil
 import signal
 import subprocess
 import time
@@ -152,7 +151,11 @@ def main():
             failures.append({"guardrail":"incomplete_queue_timing","expected_agents":a.agents,"timed_generations":len(intervals),"submitted_generations":len(expected_keys),"terminal_generations":len(timing_terminal)})
         for e in finals:
             state=e.get("state"); outcome=e.get("outcome") or {}; kind=outcome.get("kind") if isinstance(outcome,dict) else None
-            if state=="terminal" and kind=="landed": continue
+            if state=="terminal" and kind=="landed":
+                if not any(x["identity"]==e["id"] for x in landed):
+                    detail=json.loads(mai("show",project,e["id"]["change_id"],"--generation",str(e["id"]["generation"]),group="observation"))
+                    landed.append({"identity":e["id"],"submitted_commit":detail["commit"],"landed_commit":detail["state"]["outcome"]["commit"]})
+                continue
             row={"identity":e.get("id"),"state":state,"outcome":kind}
             (failures if state in ("rejected","cancelled") or kind in ("rejected","cancelled") else unfinished).append(row)
         trunk1=call("observation","final-trunk",["git","--git-dir",project/"authority.git","rev-parse","refs/heads/trunk"]).strip()
