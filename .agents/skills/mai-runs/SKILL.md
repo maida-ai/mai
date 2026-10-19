@@ -21,7 +21,7 @@ sandbox denies them, ask the user to approve `.agents/run`.
    to work on", use lead mode: "Act as lead for this cycle. Assess the repo against
    INTENT.md, pick the top N changes that most move the north-star metric, groom the
    issue tracker to match, and ship them."
-2. Pick a short slug (letters, digits, dashes). One slug per day; check `.agents/run list`.
+2. Pick a short slug (letters, digits, dashes). One slug per day; check `.agents/run status --all`.
 3. Show the user the slug, directive and budget. Launch only after they confirm.
 4. `.agents/run auto <slug> "<directive>"`. Setup and checks run in the foreground; if it
    fails, show the error and stop. Don't retry with a new slug to get around it.
@@ -30,7 +30,8 @@ sandbox denies them, ask the user to approve `.agents/run`.
 Don't use `.agents/run start` here: it opens another interactive session inside this one.
 
 ## Monitor
-- `.agents/run list` for all runs, `.agents/run status <run-id>` for one.
+- `.agents/run status` for running runs, dead ones and those awaiting review;
+  `--all` for history; `.agents/run status <run-id>` for one run in detail.
 - Summarize in at most 5 lines: phase, elapsed time, agents done / failed / running, and
   anything notable in the log tail. Don't paste raw output unless asked.
 - For detail, read `runs/<id>/executor.log` or `runs/<id>/agents/<agent-id>.log` and

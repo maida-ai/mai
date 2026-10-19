@@ -62,8 +62,9 @@ the hook is installed.
 .agents/run doctor                            # environment check; no model calls
 .agents/run start <slug> "<directive>"        # interactive: the executor's TUI, you can answer escalations
 .agents/run auto  <slug> "<directive>"        # unattended, in the background: executor → evaluator → post-mortem
-.agents/run status [run-id]                   # progress of a run (default: latest)
-.agents/run list                              # all runs with their phase
+.agents/run status                            # running runs, dead ones, and those awaiting review
+.agents/run status --all                      # every run
+.agents/run status <run-id>                   # one run in detail: agents, artifacts, log tail
 .agents/run stop <run-id>                     # stop a background run and clean up
 .agents/run review <run-id>                   # record your review (required before the next run)
 .agents/run rework <run-id> <slug>            # redo a reviewed run on top of its own branch
@@ -86,10 +87,15 @@ fails, the review sheet says so and the PR can't be marked ready.
 
 `auto` runs doctor, then starts a background container named `mai-<run-id>` and returns.
 
-- `.agents/run status` shows the phase (executor / evaluating / post-mortem / done), finished
-  agents with their status, agents still running and for how long, which artifacts exist,
-  and the tail of the executor's log. It reads files only, so it works on the host. Use
-  `watch -n 15 .agents/run status` for a live view.
+- `.agents/run status` lists runs that need attention, most urgent first:
+  `READY:review` (finished, waiting for you), `working` (container up), `dead` (an
+  unfinished step with no container; clean up with `stop`). STEP is the pipeline position:
+  1/5 executor, 2/5 evaluating, 3/5 post-mortem, 4/5 publishing, 5/5 needs-review. A run
+  is done only at READY; an executor saying "done" in its log means step 1 finished.
+  `--all` adds finished runs. `.agents/run status <run-id>` shows the pipeline with time
+  per step, failed agents, artifacts so far, and the log of the *current* step. All of it
+  reads files only, so it works on the host. `watch -n 15 .agents/run status` gives a
+  live view.
 - `tail -f runs/<id>/executor.log` for the executor's full output, `runs/<id>/agents/*.log`
   for any sub-agent.
 - `docker exec -it mai-<run-id> bash` gives a shell in the running container, including

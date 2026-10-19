@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 # .agents/run start <slug> "<directive>"   interactive executor session for a new run
 # .agents/run auto <slug> "<directive>"    unattended, in the background: executor, evaluator, post-mortem
-# .agents/run status [run-id]              progress of a run (default: latest); runs on the host
-# .agents/run list                         every run with its phase; runs on the host
+# .agents/run status [--all | <run-id>]    running runs and those awaiting review; --all for history; an id for details
 # .agents/run stop <run-id>                stop a background run and clean up after it
 # .agents/run review <run-id> [--skip "<reason>"]   record your review; required before the next run
 # .agents/run rework <run-id> <slug> ["<extra>"]   new unattended run on top of a reviewed run's branch
@@ -10,7 +9,7 @@
 # .agents/run publish <run-id>             push run/<id> and open a draft PR (also automatic at run end)
 # .agents/run sync                         fetch the latest default branch into origin/<branch>
 # .agents/run ci                           push the current run branch and wait for CI (for the executor)
-# .agents/run doctor                       check the environment; no model calls
+# .agents/run doctor                       check the environment and each tier's model (cached)
 set -euo pipefail
 
 here=$(cd "$(dirname "$0")" && pwd)
@@ -19,54 +18,155 @@ root=$(cd "$here/.." && pwd)
 source "$here/config.sh"
 # shellcheck source=/dev/null
 source "$here/tiers.sh"
-usage() { sed -n '2,13p' "$0" | sed 's/^# //'; exit 2; }
+usage() { sed -n '2,12p' "$0" | sed 's/^# //'; exit 2; }
 
-# Read-only view of a run, from the files it writes. Needs no container.
-status() {
-  local id=${1:-$(ls -1t "$root/runs" 2>/dev/null | head -n 1)}
-  local dir="$root/runs/$id"
-  [[ -n $id && -d $dir ]] || { echo "no runs yet" >&2; return 2; }
-  local cname="mai-$id" state="not running"
-  if command -v docker >/dev/null && docker ps --format '{{.Names}}' 2>/dev/null | grep -qx "$cname"; then
-    state="running ($cname)"
+# Every phase change is recorded with its time, so status can show the whole pipeline.
+set_phase() {  # set_phase <run-dir> <phase>
+  echo "$2" > "$1/phase"
+  printf '%s %s\n' "$(date +%s)" "$2" >> "$1/phases.log"
+}
+
+# Read-only views of runs, from the files they write. Need no container.
+running_containers() { command -v docker >/dev/null && docker ps --format '{{.Names}}' 2>/dev/null || true; }
+
+fmt_dur() { local m=$(( $1 / 60 )); (( m >= 60 )) && echo "$((m / 60))h$((m % 60))m" || echo "${m}m"; }
+
+PIPELINE=(executor evaluating post-mortem publishing needs-review)
+
+# What a run is doing, in one word, and which step it's on.
+run_state() {  # run_state <run-dir> <running-containers>  ->  sets STATE and STEP
+  local d=$1 id phase i; id=$(basename "$d")
+  if [[ ! -f $d/phase ]]; then STATE=legacy; STEP=-; return; fi
+  phase=$(cat "$d/phase"); STEP=$phase
+  for i in "${!PIPELINE[@]}"; do
+    [[ ${PIPELINE[$i]} == "$phase" ]] && STEP="$((i + 1))/${#PIPELINE[@]} $phase"
+  done
+  case $phase in
+    needs-review) STATE="READY:review" ;;
+    executor|evaluating|post-mortem|publishing|interactive)
+      if grep -qx "mai-$id" <<<"$2"; then STATE=working; else STATE=dead; fi ;;
+    *) STATE=$phase; STEP=- ;;
+  esac
+}
+
+agent_counts() {
+  python3 - "$1" <<'PY'
+import json, os, sys, glob
+d = sys.argv[1]; ok = bad = 0
+try:
+    for line in open(os.path.join(d, "spawns.jsonl")):
+        if json.loads(line)["status"] == "done": ok += 1
+        else: bad += 1
+except FileNotFoundError: pass
+print(f"{ok}ok {bad}bad {len(glob.glob(os.path.join(d, 'agents', '*.running')))}run")
+PY
+}
+
+# One row per run. Default: ready for review first, then working, then dead.
+status_table() {
+  local all=$1 d id running now start end rows=()
+  running=$(running_containers); now=$(date +%s)
+  for d in $(ls -1dt "$root"/runs/*/ 2>/dev/null); do
+    run_state "$d" "$running"
+    case $STATE in READY:review) rank=0 ;; working) rank=1 ;; dead) rank=2 ;; *) rank=3 ;; esac
+    [[ -z $all && $rank == 3 ]] && continue
+    start=$(stat -c %Y "$d/directive.txt" 2>/dev/null || echo "$now")
+    if [[ $rank == 1 || $rank == 2 ]]; then end=$now; else end=$(stat -c %Y "$d/phase" 2>/dev/null || echo "$now"); fi
+    rows+=("$rank|$(printf '%-30s %-13s %-17s %-7s %-15s %s' "$(basename "$d")" "$STATE" "$STEP" \
+      "$(fmt_dur $((end - start)))" "$(agent_counts "$d")" "$(head -n 1 "$d/directive.txt" 2>/dev/null | cut -c1-40)")")
+  done
+  printf '%-30s %-13s %-17s %-7s %-15s %s\n' RUN STATE STEP TIME AGENTS DIRECTIVE
+  if [[ ${#rows[@]} == 0 ]]; then
+    echo "(nothing running or ready for review; .agents/run status --all for history)"; return
   fi
-  local started; started=$(stat -c %Y "$dir/directive.txt" 2>/dev/null || echo 0)
-  echo "run      $id"
-  echo "phase    $(cat "$dir/phase" 2>/dev/null || echo interactive)   container: $state"
-  echo "elapsed  $(( ($(date +%s) - started) / 60 )) min"
-  echo "directive: $(head -c 160 "$dir/directive.txt")"
+  printf '%s\n' "${rows[@]}" | sort -s -t'|' -k1,1n | cut -d'|' -f2-
+}
+
+# Everything about one run.
+status_detail() {
+  local id=$1 dir="$root/runs/$1" now; now=$(date +%s)
+  [[ -d $dir ]] || { echo "no run $id" >&2; return 2; }
+  run_state "$dir" "$(running_containers)"
+  local start; start=$(stat -c %Y "$dir/directive.txt" 2>/dev/null || echo "$now")
+  echo "run        $id"
+  case $STATE in
+    READY:review) echo "state      READY: review runs/$id/review.md, then .agents/run review $id" ;;
+    working)      echo "state      working ($STEP); container mai-$id" ;;
+    dead)         echo "state      DEAD at $STEP: container gone. Clean up: .agents/run stop $id" ;;
+    *)            echo "state      $STATE" ;;
+  esac
+  # Pipeline with time per step, from phases.log.
+  if [[ -f $dir/phases.log ]]; then
+    python3 - "$dir/phases.log" "$now" "$STATE" <<'PY'
+import sys
+rows = [l.split() for l in open(sys.argv[1]) if l.strip()]
+now, state = int(sys.argv[2]), sys.argv[3]
+steps = ["executor", "evaluating", "post-mortem", "publishing", "needs-review"]
+seen = {p: int(t) for t, p in rows}
+order = [p for _, p in rows]
+parts = []
+for i, (t, p) in enumerate(rows):
+    nxt = int(rows[i + 1][0]) if i + 1 < len(rows) else None
+    if p in ("needs-review", "reviewed", "skipped", "stopped", "failed", "ended"):
+        parts.append(p); continue
+    dur = ((nxt or now) - int(t)) // 60
+    parts.append(f"{p} {dur}m" + ("" if nxt else (" (now)" if state == "working" else " (died here)")))
+for p in steps:
+    if p not in seen and steps.index(p) > max((steps.index(q) for q in order if q in steps), default=-1):
+        parts.append(p)
+print("pipeline   " + " > ".join(parts))
+PY
+  fi
+  echo "elapsed    $(fmt_dur $((now - start)))"
+  local rw=""; [[ -f $dir/supersedes.txt ]] && rw="  (rework of $(cat "$dir/supersedes.txt"))"
+  echo "base       $(head -n 1 "$dir/base.txt" 2>/dev/null || true)$rw"
+  echo "models     $( { grep -E '^(HIGH|EVAL|CHEAP)_MODEL=' "$dir/config.txt" 2>/dev/null || true; } | tr '\n' ' ')"
+  { grep -m1 '^SPEND:' "$dir/report.md" 2>/dev/null || true; } | sed 's/^SPEND: */spend      /'
+  local pr; pr=$( { grep -o 'https://[^ ]*' "$dir/publish.log" 2>/dev/null || true; } | tail -n 1)
+  if [[ -n $pr ]]; then echo "pr         $pr"; fi
+  echo "directive  $(head -c 200 "$dir/directive.txt")"
   echo
-  if [[ -f $dir/spawns.jsonl ]]; then
-    echo "finished agents:"
+  echo "agents     $(agent_counts "$dir")"
+  local f
+  for f in "$dir"/agents/*.running; do
+    [[ -e $f ]] || continue
+    echo "  running: $(basename "$f" .running)  $(fmt_dur $((now - $(stat -c %Y "$f"))))   log: runs/$id/agents/$(basename "$f" .running).log"
+  done
+  if [[ -f $dir/spawns.jsonl ]] && grep -qv '"status":"done"' "$dir/spawns.jsonl"; then
     python3 - "$dir/spawns.jsonl" <<'PY'
 import json, sys
 for line in open(sys.argv[1]):
     r = json.loads(line)
-    print(f"  {r['id']:<28} {r['role']:<11} {r['tier']:<5} {r['status']:<11} exit={r['exit']}")
+    if r["status"] != "done":
+        print(f"  {r['status']}: {r['id']} ({r['role']}, {r['tier']})  log: agents/{r['id']}.log")
 PY
   fi
-  local f any=""
-  for f in "$dir"/agents/*.running; do
-    [[ -e $f ]] || continue
-    [[ -z $any ]] && { echo "running agents:"; any=1; }
-    echo "  $(basename "$f" .running)  $(( ($(date +%s) - $(stat -c %Y "$f")) / 60 )) min"
-  done
-  for f in triage.md scope.md claim.md evaluation.md proposals.md escalations.md report.md; do
-    [[ -f $dir/$f ]] && printf '%s ' "$f"
+  printf 'artifacts  '
+  for f in triage.md scope.md claim.md pr.md evaluation.md decisions.md review.md report.md; do
+    [[ -s $dir/$f ]] && printf '%s ' "$f"
   done; echo
-  local log="$dir/executor.log"
-  [[ -f $dir/postmortem.log ]] && log="$dir/postmortem.log"
-  if [[ -f $log ]]; then echo; echo "tail of $(basename "$log"):"; tail -n 15 "$log" | sed 's/^/  /'; fi
+  # The log of the step the run is on now, not the last one that wrote output.
+  local log="" note=""
+  case $(cat "$dir/phase" 2>/dev/null) in
+    executor|interactive) log=executor.log ;;
+    evaluating)   log=evaluator.log; note="(the evaluator writes evaluation.md when it finishes; this is its error log)" ;;
+    post-mortem)  log=postmortem.log ;;
+    publishing)   log=publish.log ;;
+    needs-review) log=""; note="ready for your review: runs/$id/review.md" ;;
+  esac
+  [[ -n $note ]] && { echo; echo "$note"; }
+  if [[ -n $log ]]; then
+    echo; echo "tail of $log:"
+    if [[ -s $dir/$log ]]; then tail -n 15 "$dir/$log" | sed 's/^/  /'; else echo "  (no output yet)"; fi
+  fi
 }
 
-list_runs() {
-  local d id phase running
-  running=$(command -v docker >/dev/null && docker ps --format '{{.Names}}' 2>/dev/null || true)
-  for d in $(ls -1dt "$root"/runs/*/ 2>/dev/null); do
-    id=$(basename "$d"); phase=$(cat "$d/phase" 2>/dev/null || echo interactive)
-    grep -qx "mai-$id" <<<"$running" && phase="$phase (running)"
-    printf '%-32s %-24s %s\n' "$id" "$phase" "$(head -c 60 "$d/directive.txt" 2>/dev/null)"
-  done
+status() {
+  case ${1:-} in
+    "") status_table "" ;;
+    --all|-a) status_table all ;;
+    *) status_detail "$1" ;;
+  esac
 }
 
 # Kit agents may sync, check and read status; starting, stopping or publishing runs is
@@ -92,7 +192,7 @@ rework_directive() {
 }
 
 [[ ${1:-} == status ]] && { shift; status "$@"; exit $?; }
-[[ ${1:-} == list ]] && { list_runs; exit 0; }
+[[ ${1:-} == list ]] && { status_table all; exit 0; }   # kept as an alias
 
 # On the host, re-run this same command inside the container. Agents run with the
 # sandbox bypassed, which is only acceptable in a disposable box.
@@ -141,7 +241,7 @@ if [[ -z ${MAI_IN_CONTAINER:-} ]]; then
     cname="mai-$id"
     docker run -d --name "$cname" "${common[@]}" mai-agents "$here/run" execute "$id" >/dev/null
     echo "started $cname in the background"
-    echo "  progress:  .agents/run status $id     (or: watch -n 15 .agents/run status)"
+    echo "  progress:  .agents/run status         (details: .agents/run status $id)"
     echo "  phases:    docker logs -f $cname"
     echo "  inside:    docker exec -it $cname bash"
     echo "  stop:      docker stop $cname"
@@ -350,7 +450,7 @@ review_run() {
   if [[ ${2:-} == --skip ]]; then
     [[ -n ${3:-} ]] || { echo "--skip needs a reason" >&2; return 2; }
     printf '\nSKIPPED %s: %s\n' "$(date -u +%FT%TZ)" "$3" >> "$f"
-    echo skipped > "$dir/phase"; echo "review of $id skipped; reason recorded in runs/$id/review.md"
+    set_phase "$dir" skipped; echo "review of $id skipped; reason recorded in runs/$id/review.md"
     return 0
   fi
   open=$(awk '/^### /{h=$2} /^Decision: *$/{print h}' "$f" | tr '\n' ' ')
@@ -369,7 +469,7 @@ review_run() {
     return 1
   fi
   printf '\nREVIEWED %s\n' "$(date -u +%FT%TZ)" >> "$f"
-  echo reviewed > "$dir/phase"
+  set_phase "$dir" reviewed
   case $pr_decision in
     ready*)
       [[ -n ${GH_TOKEN:-} ]] && ( cd "$root" && gh pr ready "run/$id" ) && echo "PR marked ready; merge it on GitHub" ;;
@@ -579,23 +679,24 @@ evaluate() {
 
 execute_run() {
     cd "$RUN_WT"
-    echo executor > "$MAI_RUN_DIR/phase"
+    set_phase "$MAI_RUN_DIR" executor
     echo "executor running; log: $MAI_RUN_DIR/executor.log"
     run_executor_batch "$RUN_WT/.agents/executor.md" \
       "Unattended run: nobody will answer until it ends. $OPENING Directive: $DIRECTIVE" \
       > "$MAI_RUN_DIR/executor.log" 2>&1 || true
-    [[ -f $MAI_RUN_DIR/claim.md ]] || { finish_run "$MAI_RUN_ID"; echo "failed: no claim.md" > "$MAI_RUN_DIR/phase"; echo "executor wrote no claim.md; see executor.log" >&2; exit 1; }
-    echo "evaluating"; echo evaluating > "$MAI_RUN_DIR/phase"
+    [[ -f $MAI_RUN_DIR/claim.md ]] || { finish_run "$MAI_RUN_ID"; set_phase "$MAI_RUN_DIR" failed; echo "executor wrote no claim.md; see executor.log" >&2; exit 1; }
+    echo "evaluating"; set_phase "$MAI_RUN_DIR" evaluating
     ( evaluate "$MAI_RUN_ID" > /dev/null ) || true
-    echo "post-mortem"; echo post-mortem > "$MAI_RUN_DIR/phase"
+    echo "post-mortem"; set_phase "$MAI_RUN_DIR" post-mortem
     cd "$RUN_WT"
     run_executor_batch "$RUN_WT/.agents/executor.md" \
       "Unattended post-mortem for run $MAI_RUN_ID. Read $MAI_RUN_DIR/evaluation.md and claim.md, then follow 'After evaluation' in your role file. Don't change code." \
       > "$MAI_RUN_DIR/postmortem.log" 2>&1 || true
+    set_phase "$MAI_RUN_DIR" publishing
     finish_run "$MAI_RUN_ID"
     publish "$MAI_RUN_ID"
     build_review "$MAI_RUN_ID"
-    echo needs-review > "$MAI_RUN_DIR/phase"
+    set_phase "$MAI_RUN_DIR" needs-review
     echo "done. Review: runs/$MAI_RUN_ID/review.md, then .agents/run review $MAI_RUN_ID"
 }
 
@@ -606,15 +707,17 @@ case ${1:-} in
     doctor || { echo "doctor failed; fix the above before spending on models" >&2; exit 2; }
     setup_run "$2" "$3"
     cd "$RUN_WT"
+    set_phase "$MAI_RUN_DIR" interactive
     run_executor "$RUN_WT/.agents/executor.md" "Interactive run. $OPENING Directive: $3" || true
     finish_run "$MAI_RUN_ID"
     if [[ -f $MAI_RUN_DIR/claim.md ]]; then
+      set_phase "$MAI_RUN_DIR" publishing
       publish "$MAI_RUN_ID"
       build_review "$MAI_RUN_ID"
-      echo needs-review > "$MAI_RUN_DIR/phase"
+      set_phase "$MAI_RUN_DIR" needs-review
       echo "Review: runs/$MAI_RUN_ID/review.md, then .agents/run review $MAI_RUN_ID"
     else
-      echo ended > "$MAI_RUN_DIR/phase"
+      set_phase "$MAI_RUN_DIR" ended
     fi
     ;;
   auto)
@@ -649,7 +752,7 @@ case ${1:-} in
     [[ $# -eq 2 ]] || usage
     [[ -d $root/runs/$2 ]] || { echo "no run $2" >&2; exit 2; }
     finish_run "$2"
-    echo stopped > "$root/runs/$2/phase"
+    set_phase "$root/runs/$2" stopped
     echo "cleaned up $2; its branch run/$2 keeps whatever was committed"
     ;;
   ci)
