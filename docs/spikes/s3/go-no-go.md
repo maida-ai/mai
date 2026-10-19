@@ -1,6 +1,6 @@
 # S3 go/no-go decision
 
-Historical status — 2026-10-17: This report preserves the 2026-10-15 assessment against the original criteria. [ADR 0010](../../adr/0010-staged-mvp-qualification.md) and the [2026-10-16 corrected functional review](functional-qualification.md) subsequently accepted scoped S3 functional readiness and completed scoped M0. The original measurements, NO-GO wording and broader limitations below remain historical evidence; they do not reopen that accepted gate.
+Historical status — 2026-10-17: This report preserves the 2026-10-15 assessment against the original criteria. [historical ADR 0010](https://github.com/maida-ai/mai/blob/9ee6acc844acc3e8272ebd24d8301c6b4af6870c/docs/adr/0010-staged-mvp-qualification.md) and the [2026-10-16 corrected functional review](functional-qualification.md) subsequently accepted scoped S3 functional readiness and completed scoped M0. The original measurements, NO-GO wording and broader limitations below remain historical evidence; they do not reopen that accepted gate.
 
 **NO-GO for issue #53.** Observed TypeScript threshold failures, Rust cold-gate failures and the Windows unit failure prevent qualification; missing measurements are not passes.
 

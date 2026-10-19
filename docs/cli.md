@@ -1,43 +1,18 @@
 # CLI reference
 
-**MVP foundation layer.** The previous worktree engine has been retired. The version is `0.0.1`; unsupported commands exit 2. The binary supports `init PROJECT [--from SOURCE]`, `serve PROJECT --foreground`, `status PROJECT [--no-autostart]` and `stop PROJECT`, plus help and version. It also supports `workspace PROJECT AGENT DESTINATION [--skip-bootstrap]`, `validator run PROJECT CANDIDATE`, and `approve PROJECT CANDIDATE --actor ACTOR --reason REASON [--deny]`. See [workspaces](workspaces.md) and [manual validation](manual-validator.md) for their contracts. `--json` is a global option. Status autostarts a local engine by default; stop never autostarts. See the [engine guide](engine.md) and [authority startup contract](authority-startup.md) for outputs, readiness bounds and failure handling. Explicit trusted-local receive and named-generation integration are available as described below; automatic queue scheduling is not enabled.
+Run `mai --help` for the command list and `mai COMMAND --help` for command options. Commands are local and explicit: the binary does not run agents or schedule integrations automatically.
 
-## Explicit receive and integration
+## Main workflow
 
-`mai receive enable PROJECT --max-input-bytes N --max-file-bytes N --max-changed-files N` enables bounded admission. Push one commit with `git push -o agent=AGENT mai HEAD:refs/for/main`; success means received, not landed. `mai show PROJECT CHANGE [--generation 1]` returns its full typed durable record from a validated SQLite snapshot, including during a gate and while the engine is stopped. Its serialized response is bounded to 64 KiB; query exit 0 is not acceptance.
+- `mai init PROJECT [--from SOURCE]` initializes an authority.
+- `mai workspace PROJECT AGENT DESTINATION` creates an independent clone.
+- `mai receive enable PROJECT ...` enables bounded receive.
+- Push a committed change to `refs/for/main` to register a generation.
+- `mai show PROJECT CHANGE` and `mai queue PROJECT` inspect received work.
+- `mai integrate PROJECT CHANGE --mode textual` explicitly selects a generation for validation and integration.
 
-`mai integrate PROJECT CHANGE --mode textual [--generation 1] [--lease file:PATH=GENERATION] [--wait-seconds 600]` selects one generation through the engine. Repeat `--lease` for multiple exact claims. The mode must be selected explicitly. Results have `schema_version`, `generation` and `kind`: `landed` adds `revision`/`commit` (exit 0), `awaiting_approval` adds `candidate`/`reference` (exit 6), and `rejected` adds `reason` (exit 3). Infrastructure or uncertain transport errors use exit 5. Client timeout does not cancel integration; see [engine timing](engine.md).
+See [getting started](getting-started.md) for a complete walkthrough and [receive and integration](receive.md) for limits and results.
 
-Ordinary lease commands are `mai lease acquire PROJECT UNIT --owner AGENT --duration-ms N`, `renew PROJECT UNIT --owner AGENT --generation N --duration-ms N`, `release PROJECT UNIT --owner AGENT --generation N`, and `query PROJECT UNIT`. Units use canonical `file:` encoding. An active lease requires an exact current generation claim even for its owner; reacquisition after release creates a new generation. These commands require a running engine and do not autostart it. Release/expiry never rewrites work. There is no priority or preemption policy. See the [receive contract](receive.md) for restrictions and recovery.
+Other implemented commands cover engine status and shutdown, ordinary file leases, exact-generation waiting, manual validation and approval, validator recovery, and copy-based continuation. Their contracts are documented in [engine](engine.md), [manual validator](manual-validator.md), [validator recovery](validator-recovery.md), and [continuation](continuation.md).
 
-## Copy-based continuation
-
-`mai continue PROJECT SOURCE DESTINATION --change CHANGE --generation N [--skip-bootstrap]` verifies an exact landed generation and replays only its clean, unregistered linear local suffix into a new workspace based on a pinned accepted trunk. The source is preserved. An existing destination, stale boundary, dirty/untracked source, registered suffix or unsupported ancestry is refused. Interrupted and conflicting destinations remain available for inspection; retry uses a new path. This does not implement in-place sync or autostash. See [continuation](continuation.md) for prerequisites, bootstrap behavior and subsequent submission.
-
-## Versioned lifecycle contract
-
-The Rust `lifecycle` module defines schema version 1. A submission is identified by an immutable Change-Id and positive generation number, with immutable agent identity, lowercase nonzero SHA-1 commit and exact parent-generation dependencies. Change/agent identifiers contain 1–128 ASCII letters, digits, underscores or hyphens. Identical commit retries with identical metadata return the existing generation, including after snapshot restoration; conflicting metadata rejects.
-
-States are received, queued, dependency-blocked, awaiting-approval, validating and terminal. A queued update can be superseded; a validating generation finishes before a replacement proceeds. Dependencies never silently retarget. A failed, superseded or cancelled dependency rejects descendants; all parents must land before a dependent attempt begins. Approval and dependency blocking are distinct conditions.
-
-Each validation attempt has its own increasing number. Interrupting an attempt requeues the same generation without assigning a terminal outcome. Completion must identify the currently running attempt, so stale workers cannot complete a later attempt. Each generation has one immutable terminal outcome: landed, rejected, superseded or cancelled. Later validation, revert or recovery annotations append without rewriting that outcome.
-
-Rejected outcomes carry stable reasons: `invalid_submission`, `dependency_failed`, `conflict`, `check_failed`, `policy_denied` or `infrastructure`. Optional conflict, check, log-tail, candidate-ref and next-action diagnostics are each bounded to 4096 UTF-8 bytes. Oversized values reject rather than silently truncate. Candidate refs must be under `refs/mai/candidates/` and use safe ASCII components. Unknown schema versions, unknown fields and inconsistent snapshots refuse decoding; there are no migrations or compatibility readers.
-
-Stable process categories are success 0, invalid input 2, terminal rejection/supersession/cancellation 3, unavailable transport 4, infrastructure failure 5 and pending 6. Current commands use infrastructure exit 5 for infrastructure failures; manual validation also uses rejection exit 3 for failed checks/denied policy and pending exit 6 for required approval. Timeout, cancellation, cleanup failure and changed policy use exit 5. Structured operation results remain available on these nonzero exits. Versioned JSON is available for current commands. Initialization and engine status/stop encode `authority` as the platform-tagged base64 native-path object documented in the [engine guide](engine.md), preserving non-UTF-8 Unix paths and Windows UTF-16 units in both JSON and default output. Pure model transitions do not certify validation evidence, durable acknowledgment or Git CAS publication. Persistence and authority layers must enforce those separately.
-
-## Queue inspection and wait
-
-`mai queue PROJECT --limit 50 [--after CHANGE:GENERATION] --json` returns a bounded page of durable submission summaries, the total count and an exact-generation cursor when another page remains. Pages use deterministic change-ID then generation order for inspection; that order is not admission time, scheduling priority or an automatic integration queue. Limits are 1–100 and cursors must identify a retained generation. Summaries omit attempt and annotation history and cap dependency details; use `mai show` for full diagnostics. The serialized page is capped at 256 KiB. `mai queue` reads a validated SQLite snapshot and can inspect persisted records while the engine is stopped; SQLite may manage transient WAL sidecars during reads.
-
-`mai wait PROJECT CHANGE --generation 1 --timeout-seconds 600 --json` polls the validated durable lifecycle until that exact generation is terminal or the finite deadline expires. Its terminal state carries bounded gate diagnostics; use `mai show` for full record details. Exit 0 means landed, exit 3 means rejected, superseded or cancelled, and exit 5 means an infrastructure rejection. Timeout returns the last state observed before the deadline with exit 6 and does not alter the submission. The timeout bounds polling and SQLite lock waits; snapshot validation and serialization can extend wall time, so it is not a hard real-time guarantee. Missing generations and malformed or unavailable state are errors. `wait` does not start or contact the engine, cancel work or integrate a generation; while the engine is stopped it can only observe persisted state.
-
-Ordinary clones and explicit push receipt are implemented above; `submit`, `sync` and automatic integration remain planned. Current `status` reports engine readiness only. Explicit sync must preserve unsubmitted local work after squash landing. See [agent protocol](agents.md), [configuration](configuration.md) and [operations](operations.md).
-
-Differentiated priority and automated incident recovery remain deferred under [ADR 0010](adr/0010-staged-mvp-qualification.md) and RFC #93. They are not represented as enabled features or speculative fields in the current schema. The initial MVP uses a single-class dependency-aware queue.
-
-## Explicit validator recovery
-
-`mai validator inspect PROJECT --slot N --json` reconciles metadata and reports an occupied claim while holding exclusive authority ownership. `mai validator recover PROJECT --slot N --claim CLAIM_ID --json` verifies cleanup proof and performs idempotent quarantine/reclaim. Stop the owner first. This is an opt-in Linux feature, requires the original trusted `supervised-local-v1` execution contract, and never approves or lands a candidate. See [validator recovery](validator-recovery.md) for the operator sequence, current-policy checks, refusal cases and external-effect limits.
-
-[Getting started →](getting-started.md) · [All docs →](README.md)
+Submission does not mean landing. Integration requires an explicit command and the configured gate. See [current delivery and limits](release-status.md).

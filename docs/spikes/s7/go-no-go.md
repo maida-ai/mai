@@ -1,6 +1,6 @@
 # S7 go/no-go decision
 
-Historical status — 2026-10-17: This report preserves the 2026-10-15 fixture assessment against the original criteria, including its original M0 disposition. [ADR 0010](../../adr/0010-staged-mvp-qualification.md) subsequently completed scoped M0 and requires crash/failure qualification before each implemented correctness path is enabled; unimplemented S7 mechanisms are not blanket blockers. The original results, NO-GO wording and fixture limitations below remain historical evidence, not claims about current product recovery.
+Historical status — 2026-10-17: This report preserves the 2026-10-15 fixture assessment against the original criteria, including its original M0 disposition. [historical ADR 0010](https://github.com/maida-ai/mai/blob/9ee6acc844acc3e8272ebd24d8301c6b4af6870c/docs/adr/0010-staged-mvp-qualification.md) subsequently completed scoped M0 and requires crash/failure qualification before each implemented correctness path is enabled; unimplemented S7 mechanisms are not blanket blockers. The original results, NO-GO wording and fixture limitations below remain historical evidence, not claims about current product recovery.
 
 **NO-GO for issue #57.** Crash recovery passes for durable fixture records, but the operational dependency/priority semantics and competing bounded-recovery races required by #57 remain absent.
 
