@@ -19,15 +19,19 @@ framework is built into this experiment.
 `--integration explicit` is the baseline: the harness calls `integrate` once for each
 received generation. Each call counts as one operator surrogate intervention;
 read-only `show` calls are observations. The count is not measured human effort.
-`--integration observe` makes no integration calls and waits up to five minutes (or
-`--timeout`, if shorter) for an externally configured automatic engine. It measures
-that external setup only; this harness does not implement product automation.
+`--integration automatic` enables mai's opt-in `receive enable --auto-integrate`
+setting and observes the serial engine without operator integration calls. It waits
+up to five minutes (or `--timeout`, if shorter). `--integration observe` leaves mai's
+setting disabled and waits for an externally configured engine.
 
 The harness checks the fresh trunk and every landed commit against the trusted gate,
 retains all submitted commit OIDs, checks the expected module identities and content,
 and reports failed runners, rejected submissions, and unfinished queue entries.
-Queue pages are read until the CLI cursor is exhausted. Receipt-to-terminal timing is
-reported as unavailable because the current CLI does not expose receipt timestamps.
+Queue pages are read until the CLI cursor is exhausted. Automatic and observe modes
+poll every 250 ms during agent execution and integration. Because mai does not expose
+receipt timestamps, timing reports the observed receipt-to-terminal interval and a
+0–250 ms detection bound at each endpoint. Missing or nonterminal results fail the
+run.
 The output directory must not already exist. Logs, commands, provenance, queue data,
 authority and summary are retained even when a guardrail fails. Runner timeout defaults
 to 900 seconds and cleans up the runner's process group.

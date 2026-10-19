@@ -9,6 +9,7 @@ from pathlib import Path
 import shutil
 import signal
 import subprocess
+import threading
 import time
 
 
@@ -34,7 +35,7 @@ def main():
     p.add_argument("out", type=Path); p.add_argument("--mai", type=Path, required=True)
     p.add_argument("--agents", type=int, required=True); p.add_argument("--runner", type=Path, required=True)
     p.add_argument("--timeout", type=int, default=900)
-    p.add_argument("--integration", choices=("explicit", "observe"), default="explicit")
+    p.add_argument("--integration", choices=("explicit", "automatic", "observe"), default="explicit")
     a=p.parse_args()
     if not 1 <= a.agents <= 30: p.error("--agents must be between 1 and 30")
     if a.timeout < 1: p.error("--timeout must be positive")
@@ -71,7 +72,7 @@ def main():
             items.extend(page.get("items",[])); cursor=page.get("next_cursor")
             if not cursor: return items
 
-    summary={"schema_version":2,"baseline":1.0,"integration_mode":a.integration,"landed":landed,"attempted":0,"received":0,"failed":failures,"unfinished":unfinished,"operator_interventions_per_landed_change":None,"operator_surrogate_command_count":0,"operator_surrogate_commands":interventions,"guardrails":{},"measurement_note":"Synthetic task repository; fake-runner mechanics are not representative real-agent results. Explicit mode counts harness operator-surrogate integrate calls. Observe mode only waits for externally configured automatic integration; mai does not implement product automation here."}
+    summary={"schema_version":3,"baseline":1.0,"integration_mode":a.integration,"landed":landed,"attempted":0,"received":0,"failed":failures,"unfinished":unfinished,"operator_interventions_per_landed_change":None,"operator_surrogate_command_count":0,"operator_surrogate_commands":interventions,"guardrails":{},"measurement_note":"Synthetic task repository; fake-runner mechanics are not representative real-agent results. Queue timing uses polling observations because mai does not expose receipt timestamps."}
     try:
         source=out/"source"; source.mkdir(); call("setup","git-init",["git","-C",source,"init","-b","main"])
         git(source,"config","user.name","north-star"); git(source,"config","user.email","north-star@example.invalid")
@@ -79,8 +80,10 @@ def main():
         (source/"README.txt").write_text("North-star disposable synthetic agent task.\n")
         git(source,"add","."); git(source,"commit","-m","Seed trusted independent-agent gate")
         source_head_before=git(source,"rev-parse","HEAD")
-        project=out/"authority"; mai("init",project,"--from",source)
-        call("setup","receive-enable",[binary,"--json","receive","enable",project,"--max-input-bytes","10485760","--max-file-bytes","1048576","--max-changed-files","100"])
+        project=out/"authority"; mai("init",project,"--from",source); engine_owned=True
+        enable=[binary,"--json","receive","enable",project,"--max-input-bytes","10485760","--max-file-bytes","1048576","--max-changed-files","100"]
+        if a.integration=="automatic": enable.append("--auto-integrate")
+        call("setup","receive-enable",enable)
         trunk0=call("observation","baseline-trunk",["git","--git-dir",project/"authority.git","rev-parse","refs/heads/trunk"]).strip()
         baseline_gate=json.loads(mai("validator","run",project,trunk0,group="observation"))
         if baseline_gate.get("outcome")!="success": failures.append({"guardrail":"baseline_gate_failed","outcome":baseline_gate.get("outcome")})
@@ -91,10 +94,29 @@ def main():
         def agent(i,w):
             call("agents",f"agent-{i}",[runner,w,out/f"prompt-{i}.txt"],timeout=a.timeout,check=False)
         started=time.monotonic()
+        timing_stop=threading.Event(); timing_seen={}; timing_terminal={}; timing_last=None; timing_max_gap=0.0
+        def observe_timing():
+            nonlocal timing_last,timing_max_gap
+            while not timing_stop.is_set():
+                try:
+                    current=queue_all("timing-queue")
+                    observed=time.monotonic()
+                    if timing_last is not None: timing_max_gap=max(timing_max_gap,observed-timing_last)
+                    timing_last=observed
+                    for item in current:
+                        key=json.dumps(item.get("id"),sort_keys=True)
+                        timing_seen.setdefault(key,observed)
+                        if item.get("state")=="terminal": timing_terminal.setdefault(key,observed)
+                except Exception:
+                    pass
+                timing_stop.wait(0.25)
+        timing_thread=threading.Thread(target=observe_timing,daemon=True); timing_thread.start()
         with concurrent.futures.ThreadPoolExecutor(max_workers=a.agents) as pool:
             list(pool.map(lambda iw: agent(*iw),enumerate(workspaces,1)))
         agent_elapsed=time.monotonic()-started
         entries=queue_all("queue"); (out/"received.json").write_text(json.dumps(entries,indent=2)+"\n")
+        observed_entries=time.monotonic()
+        for item in entries: timing_seen.setdefault(json.dumps(item.get("id"),sort_keys=True),observed_entries)
         received=[e for e in entries if isinstance(e,dict) and e.get("state")=="received"]
         summary["received"]=len(received); summary["attempted"]=len(records["agents"])
         known={f"agent_{i}" for i in range(1,a.agents+1)}
@@ -123,9 +145,21 @@ def main():
             deadline=time.monotonic()+min(a.timeout,300)
             while time.monotonic()<deadline:
                 current=queue_all("observe-queue")
-                if all(e.get("state") in ("landed","rejected","cancelled") for e in current): break
-                time.sleep(1)
+                observed=time.monotonic()
+                for e in current:
+                    key=json.dumps(e.get("id"),sort_keys=True)
+                    timing_seen.setdefault(key,observed)
+                    if e.get("state")=="terminal": timing_terminal.setdefault(key,observed)
+                if all(e.get("state")=="terminal" for e in current): break
+                time.sleep(0.25)
+        timing_stop.set(); timing_thread.join(timeout=2)
         finals=queue_all("final-queue")
+        observed_finals=time.monotonic()
+        for item in finals:
+            if item.get("state")=="terminal": timing_terminal.setdefault(json.dumps(item.get("id"),sort_keys=True),observed_finals)
+        summary["queue_time"]={"method":"polling_observation","requested_poll_interval_s":0.25,"max_observed_poll_gap_s":timing_max_gap,"receipt_to_terminal_observed_s":{key:max(0.0,timing_terminal[key]-timing_seen[key]) for key in timing_terminal if key in timing_seen},"endpoint_detection_bound_s":[0,timing_max_gap],"complete":all(key in timing_terminal for key in timing_seen)}
+        if timing_seen and not summary["queue_time"]["complete"]:
+            failures.append({"guardrail":"incomplete_queue_timing","observed":len(timing_seen),"terminal":len(timing_terminal)})
         for e in finals:
             state=e.get("state"); outcome=e.get("outcome") or {}; kind=outcome.get("kind") if isinstance(outcome,dict) else None
             if state=="terminal" and kind=="landed": continue
@@ -151,7 +185,7 @@ def main():
         if any(not x["exists"] for x in retained): failures.append({"guardrail":"submitted_oid_not_retained"})
         failed_runners=[r["label"] for r in records["agents"] if r["exit"] != 0]
         failures.extend({"runner":name,"reason":"runner exited unsuccessfully"} for name in failed_runners)
-        summary.update({"landed":landed,"attempted":len(records["agents"]),"received":len(received),"agent_elapsed_s":agent_elapsed,"operator_surrogate_command_count":sum(len(x["commands"]) for x in interventions),"operator_interventions_per_landed_change":sum(len(x["commands"]) for x in interventions)/len(landed) if landed else None,"guardrails":{"baseline_gate":baseline_gate.get("outcome"),"fresh_final_gate":candidate.get("outcome"),"retained_source_oids":retained,"broken_trunk_landings":broken,"expected_modules":module_check},"queue_time":"unavailable; receipt time is not exposed by the current CLI"})
+        summary.update({"landed":landed,"attempted":len(records["agents"]),"received":len(received),"agent_elapsed_s":agent_elapsed,"operator_surrogate_command_count":sum(len(x["commands"]) for x in interventions),"operator_interventions_per_landed_change":sum(len(x["commands"]) for x in interventions)/len(landed) if landed else None,"guardrails":{"baseline_gate":baseline_gate.get("outcome"),"fresh_final_gate":candidate.get("outcome"),"retained_source_oids":retained,"broken_trunk_landings":broken,"expected_modules":module_check}})
     except Exception as ex:
         failures.append({"harness_error":str(ex)})
     finally:

@@ -51,6 +51,7 @@ enum Action {
         max_input_bytes: u64,
         max_file_bytes: u64,
         max_changed_files: u64,
+        auto_integrate: bool,
     },
     Register {
         agent: String,
@@ -208,16 +209,35 @@ pub fn serve(root: &Path) -> Result<()> {
                             max_input_bytes,
                             max_file_bytes,
                             max_changed_files,
+                            auto_integrate,
                         } => receive::enable(
                             &authority,
                             max_input_bytes,
                             max_file_bytes,
                             max_changed_files,
+                            auto_integrate,
                         )
                         .map(|()| None),
                         Action::Register { agent, commit } => {
-                            receive::register(&authority, &agent, &commit)
-                                .and_then(|s| Ok(Some(serde_json::to_value(s)?)))
+                            receive::register(&authority, &agent, &commit).and_then(|submission| {
+                                if receive::auto_integrate(&authority)?
+                                    && !matches!(
+                                        submission.state(),
+                                        crate::lifecycle::State::Terminal { .. }
+                                    )
+                                {
+                                    integrate_owned(
+                                        &mut authority,
+                                        submission.id(),
+                                        "textual",
+                                        &[],
+                                    )?;
+                                    receive::query(&authority, submission.id())
+                                } else {
+                                    Ok(submission)
+                                }
+                            })
+                            .and_then(|s| Ok(Some(serde_json::to_value(s)?)))
                         }
                         Action::Show { generation } => receive::query(&authority, &generation)
                             .and_then(|s| Ok(Some(serde_json::to_value(s)?))),
@@ -479,6 +499,7 @@ pub fn enable_receive(
     max_input_bytes: u64,
     max_file_bytes: u64,
     max_changed_files: u64,
+    auto_integrate: bool,
 ) -> Result<()> {
     status(root, true)?;
     operation(
@@ -487,6 +508,7 @@ pub fn enable_receive(
             max_input_bytes,
             max_file_bytes,
             max_changed_files,
+            auto_integrate,
         },
     )?;
     Ok(())

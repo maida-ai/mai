@@ -102,21 +102,18 @@ impl Fixture {
             thread::sleep(Duration::from_millis(25));
         }
     }
-    fn enable(&self) {
+    fn enable_mode(&self, auto_integrate: bool) {
+        let mut args = vec![
+            "receive", "enable", "--max-input-bytes", "1048576",
+            "--max-file-bytes", "65536", "--max-changed-files", "16",
+        ];
+        if auto_integrate { args.push("--auto-integrate"); }
         success(cli(
             &self.root,
-            &[
-                "receive",
-                "enable",
-                "--max-input-bytes",
-                "1048576",
-                "--max-file-bytes",
-                "65536",
-                "--max-changed-files",
-                "16",
-            ],
+            &args,
         ));
     }
+    fn enable(&self) { self.enable_mode(false); }
     fn commit(&self, name: &str) -> String {
         std::fs::write(self.client.join(name), name).unwrap();
         success(git(&self.client, &["add", name]));
@@ -138,6 +135,48 @@ impl Fixture {
             .cloned()
             .collect()
     }
+}
+
+#[test]
+fn automatic_integration_is_opt_in_and_registration_survives_engine_failure() {
+    let f = Fixture::new();
+    let _owner = f.start();
+    f.enable_mode(true);
+    f.commit("automatic.txt");
+    let _push = f.push(&["HEAD:refs/for/main"]);
+    let submissions = f.submissions();
+    assert_eq!(submissions.len(), 1);
+    assert!(!matches!(submissions[0].state(), mai::lifecycle::State::Received));
+}
+
+#[test]
+fn concurrent_submissions_are_serially_registered_without_auto_mode() {
+    let f = Fixture::new();
+    let _owner = f.start();
+    f.enable();
+    let second = f._temp.path().join("second-client");
+    success(Command::new("git").args(["clone", "--no-local"]).arg(f.root.join("authority.git")).arg(&second).output().unwrap());
+    let first_commit = f.commit("first.txt");
+    let second_commit = {
+        std::fs::write(second.join("second.txt"), "second").unwrap();
+        success(git(&second, &["add", "second.txt"]));
+        success(git(&second, &["commit", "-m", "second"]));
+        success(git(&second, &["rev-parse", "HEAD"]))
+    };
+    let root = f.root.clone();
+    let first_client = f.client.clone();
+    let second_client = second.clone();
+    let pushes = [
+        thread::spawn(move || git(&first_client, &["push", "-o", "agent=first", "origin", "HEAD:refs/for/main"])),
+        thread::spawn(move || git(&second_client, &["push", "-o", "agent=second", "origin", "HEAD:refs/for/main"])),
+    ];
+    for push in pushes { success(push.join().unwrap()); }
+    let rows = StateStore::open(Authority::open(&root).unwrap().state_path()).unwrap().load_lifecycle().unwrap();
+    let submissions: Vec<_> = rows.submissions().collect();
+    assert_eq!(submissions.len(), 2);
+    assert!(submissions.iter().any(|s| s.commit() == first_commit));
+    assert!(submissions.iter().any(|s| s.commit() == second_commit));
+    assert!(submissions.iter().all(|s| matches!(s.state(), mai::lifecycle::State::Received)));
 }
 
 #[test]
