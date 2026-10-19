@@ -56,6 +56,24 @@ the hook is installed.
    The first `run` command builds the image (a few minutes). Doctor must be all `ok`;
    a `warn` about GH_TOKEN only means issue and PR work is off.
 
+## The loop
+
+```bash
+.agents/run auto <slug> "<directive>"   # 1. launch; returns immediately
+.agents/run status                      # 2. wait until the run shows READY:review
+$EDITOR runs/<id>/review.md             # 3. answer the checks and decisions
+.agents/run review <id>                 # 4. record it; prints exactly what's next
+.agents/run merge <id>                  # 5a. if you decided ready: lands the PR
+.agents/run rework <id> <new-slug>      # 5b. if you decided rework: starts the follow-up run
+                                        # 5c. if you decided close: nothing more
+```
+
+No rebasing or pushing by hand: runs start from the latest default branch, the
+executor rebases before claiming, `merge` squash-merges through GitHub (CI and branch
+protection apply) and deletes the run's branch. Afterwards update your own checkout with
+`git switch main && git pull`. You commit and push only kit or INTENT.md edits you chose
+to make in step 3.
+
 ## Running
 
 ```bash
@@ -68,6 +86,7 @@ the hook is installed.
 .agents/run stop <run-id>                     # stop a background run and clean up
 .agents/run review <run-id>                   # record your review (required before the next run)
 .agents/run rework <run-id> <slug>            # redo a reviewed run on top of its own branch
+.agents/run merge <run-id>                    # land a run reviewed as ready
 .agents/run eval  <run-id>                    # evaluate a run started with `start`
 .agents/run publish <run-id>                  # push run/<id>, open or update its draft PR
 ```
@@ -199,7 +218,7 @@ decides what happens to it:
 
 | Decision | What `.agents/run review` does | Then |
 | --- | --- | --- |
-| `ready` | Marks the draft PR ready for review. | Merge it on GitHub (CI and branch protection apply). |
+| `ready` | Takes the PR out of draft. | `.agents/run merge <id>`, or merge on GitHub. Merge squashes, so the PR description becomes the commit message. |
 | `rework: <what>` | Prints the rework command. | `.agents/run rework <id> <slug>`: a new unattended run that starts *from* `run/<id>`, with your review as its brief. Its PR closes the old one as superseded. |
 | `close` | Closes the PR. | Nothing; the branch stays for reference. |
 

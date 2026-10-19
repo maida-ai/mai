@@ -5,6 +5,7 @@
 # .agents/run stop <run-id>                stop a background run and clean up after it
 # .agents/run review <run-id> [--skip "<reason>"]   record your review; required before the next run
 # .agents/run rework <run-id> <slug> ["<extra>"]   new unattended run on top of a reviewed run's branch
+# .agents/run merge <run-id>               land a run reviewed as ready: squash-merge its PR, remove its branch
 # .agents/run eval <run-id>                run the independent evaluator on a finished run
 # .agents/run publish <run-id>             push run/<id> and open a draft PR (also automatic at run end)
 # .agents/run sync                         fetch the latest default branch into origin/<branch>
@@ -18,7 +19,7 @@ root=$(cd "$here/.." && pwd)
 source "$here/config.sh"
 # shellcheck source=/dev/null
 source "$here/tiers.sh"
-usage() { sed -n '2,12p' "$0" | sed 's/^# //'; exit 2; }
+usage() { sed -n '2,13p' "$0" | sed 's/^# //'; exit 2; }
 
 # Every phase change is recorded with its time, so status can show the whole pipeline.
 set_phase() {  # set_phase <run-dir> <phase>
@@ -172,7 +173,7 @@ status() {
 # Kit agents may sync, check and read status; starting, stopping or publishing runs is
 # for people (or their interactive sessions), never for agents inside a run.
 case ${1:-} in
-  start|auto|stop|publish|prepare|execute|finish|review|rework)
+  start|auto|stop|publish|prepare|execute|finish|review|rework|merge)
     if [[ -n ${MAI_AGENT_ID:-} ]]; then
       echo "refused: agents inside a run can't use '.agents/run $1'" >&2; exit 2
     fi ;;
@@ -470,15 +471,41 @@ review_run() {
   fi
   printf '\nREVIEWED %s\n' "$(date -u +%FT%TZ)" >> "$f"
   set_phase "$dir" reviewed
+  echo "recorded your review of $id"
   case $pr_decision in
     ready*)
-      [[ -n ${GH_TOKEN:-} ]] && ( cd "$root" && gh pr ready "run/$id" ) && echo "PR marked ready; merge it on GitHub" ;;
+      [[ -n ${GH_TOKEN:-} ]] && ( cd "$root" && gh pr ready "run/$id" >/dev/null ) && echo "PR is out of draft"
+      echo "next: .agents/run merge $id   (or merge the PR on GitHub)" ;;
     rework*)
-      echo "next: .agents/run rework $id <slug>   (starts from run/$id with this review as the brief)" ;;
+      echo "next: .agents/run rework $id <new-slug>   (starts from this run's branch, with your review as the brief)" ;;
     close*)
-      [[ -n ${GH_TOKEN:-} ]] && ( cd "$root" && gh pr close "run/$id" --comment "Closed in review: $pr_decision" ) && echo "PR closed" ;;
+      [[ -n ${GH_TOKEN:-} ]] && ( cd "$root" && gh pr close "run/$id" --comment "Closed in review: $pr_decision" >/dev/null ) && echo "PR closed"
+      echo "next: nothing; the branch stays for reference" ;;
   esac
-  echo "reviewed $id. Apply what you accepted: INTENT.md Decisions, executor.md edits. Then commit and push."
+  echo "Only if one of your decisions changes a standing rule (a new line in INTENT.md"
+  echo "Decisions, an edit to .agents/executor.md): make that edit yourself, commit and push"
+  echo "before the next run. Otherwise there's nothing to commit."
+}
+
+# Land a reviewed run: squash-merge its PR (the PR description becomes the commit
+# message), then remove the run's branches. CI must be green; branch protection applies.
+merge_run() {
+  local id=$1 dir="$root/runs/$1" br="run/$1" f="$root/runs/$1/review.md" pr_decision
+  [[ -n ${GH_TOKEN:-} ]] || { echo "merging needs GH_TOKEN; or merge the PR on GitHub" >&2; return 2; }
+  [[ $(cat "$dir/phase" 2>/dev/null) == reviewed ]] || { echo "review $id first: .agents/run review $id" >&2; return 2; }
+  pr_decision=$(awk '/^### P1/{f=1} f&&/^Decision:/{sub(/^Decision: */,""); print; exit}' "$f")
+  [[ $pr_decision == ready* ]] || { echo "your review decided '$pr_decision', not ready" >&2; return 2; }
+  cd "$root"
+  if ! gh pr checks "$br" >/dev/null 2>&1; then
+    echo "CI isn't green on the PR yet: gh pr checks $br" >&2; return 1
+  fi
+  gh pr merge "$br" "--${MAI_MERGE_METHOD:-squash}" --delete-branch=false || return 1
+  local url; url="$(gh repo view --json url -q .url).git"
+  git push -q "$url" --delete "$br" 2>/dev/null || true
+  git branch -q -D "$br" 2>/dev/null || true
+  sync_base >/dev/null 2>&1 || true
+  set_phase "$dir" merged
+  echo "merged $id. Update your checkout: git switch main && git pull"
 }
 
 # Set up a run: env, run dir, and the executor's own worktree on branch run/<run-id>,
@@ -757,6 +784,10 @@ case ${1:-} in
     ;;
   ci)
     ci_run
+    ;;
+  merge)
+    [[ $# -eq 2 ]] || usage
+    merge_run "$2"
     ;;
   review)
     [[ $# -ge 2 ]] || usage
