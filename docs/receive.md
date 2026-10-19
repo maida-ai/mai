@@ -10,10 +10,12 @@ mai show PROJECT alice-COMMIT_OID --generation 1 --json
 ```
 
 Add `--auto-integrate` to the enable command to attempt textual integration of each
-registered submission through the serial engine during receipt. By default,
+registered submission through the serial engine after durable receipt. Receipt remains
+responsive while another submission runs its gate. By default,
 submissions remain received until `mai integrate` is run. Automatic
 integration uses the same gate and typed outcomes as explicit integration; inspect
-the record to distinguish landing, rejection and pending work. See
+the record to distinguish landing, rejection and pending work. Push diagnostics report
+pending receipt or the terminal outcome already known for an identical retry. See
 [current delivery and limits](release-status.md) for automatic integration limits.
 
 These numbers are explicit example choices, not recommended defaults. `max-input-bytes` bounds the received pack; file-size and changed-file limits bound admission. They do not establish a bound on total diff-parsing memory or latency. Inspect the result of enablement before accepting submissions; engine status reports `registration_available` from its receive configuration.
@@ -32,7 +34,7 @@ After a lost response, query the known identity or retry the identical commit; d
 
 Run `mai integrate PROJECT CHANGE --mode textual --generation 1 --wait-seconds 600` to integrate one named generation through the running engine. In the default mode, no integration starts automatically. Integrate pending parents first; a child maps its submitted parent to the accepted squash. Results distinguish `landed`, `awaiting_approval` and `rejected`; exact command syntax and lease claims are in the [CLI reference](cli.md). Protected changes return the exact prepared candidate for explicit trusted approval by a distinct actor, then rerun integration. Approval never substitutes for a passing gate.
 
-An active ordinary lease requires an exact `--lease file:PATH=GENERATION` claim even for its owner. Another owner's active lease blocks integration; lease generations fence stale claims. Lease operations require the live engine and use engine time. Client timeouts are not cancellations: the engine serializes integration with other requests, so inspect the submission after the operation ends rather than assuming a timed-out request had no effect.
+An active ordinary lease requires an exact `--lease file:PATH=GENERATION` claim even for its owner. Another owner's active lease blocks integration; lease generations fence stale claims. Lease operations require the live engine and use engine time. Client timeouts are not cancellations: the engine serializes integration attempts while continuing to accept receipts and lease operations during automatic gates. A concurrent integration or continuation request must be retried after the active attempt finishes. Inspect the submission rather than assuming a timed-out request had no effect.
 
 A stale or mismatched lease claim returns pending `lease_blocked`. A preflight denial leaves the generation queued without starting an attempt. If a lease expires after a successful gate but before publication, mai durably marks that exact attempt interrupted and returns the generation to queued; an explicit later integration with a current claim starts a new attempt and reruns the gate. Evidence from the blocked attempt is retained for diagnosis but cannot authorize landing.
 

@@ -322,6 +322,37 @@ fn run_one_inner(
     claims: &[LeaseClaim],
     mut checkpoint: impl FnMut(Checkpoint) -> Result<()>,
 ) -> Result<RunResult> {
+    run_one_servicing_inner(
+        authority,
+        id,
+        mode,
+        leases,
+        claims,
+        &mut checkpoint,
+        |authority, candidate| validator::run(authority.root(), candidate),
+    )
+}
+
+pub(crate) fn run_one_servicing(
+    authority: &mut Authority,
+    id: &GenerationId,
+    mode: MergeMode,
+    leases: &mut LeaseStore,
+    claims: &[LeaseClaim],
+    validate: impl FnMut(&mut Authority, &str) -> Result<validator::ValidationResult>,
+) -> Result<RunResult> {
+    run_one_servicing_inner(authority, id, mode, leases, claims, |_| Ok(()), validate)
+}
+
+fn run_one_servicing_inner(
+    authority: &mut Authority,
+    id: &GenerationId,
+    mode: MergeMode,
+    leases: &mut LeaseStore,
+    claims: &[LeaseClaim],
+    mut checkpoint: impl FnMut(Checkpoint) -> Result<()>,
+    mut validate: impl FnMut(&mut Authority, &str) -> Result<validator::ValidationResult>,
+) -> Result<RunResult> {
     let mut store = StateStore::open(authority.state_path())?;
     let mut life = store.load_lifecycle()?;
     let submission = life.get(id).context("unknown generation")?;
@@ -490,7 +521,10 @@ fn run_one_inner(
         "attempt changed during preparation"
     );
     store.save_lifecycle(&mut life)?;
-    let result = validator::run(authority.root(), &candidate).context("validation interrupted; restart the engine to reconcile the retained attempt before retrying")?;
+    let result = validate(authority, &candidate).context("validation interrupted; restart the engine to reconcile the retained attempt before retrying")?;
+    // Receipt and lease operations may have run while validation was in flight.
+    // Resume from the current snapshot rather than overwriting those durable writes.
+    life = store.load_lifecycle()?;
     ensure!(
         result.binding == policy.binding,
         "validator result binding changed"

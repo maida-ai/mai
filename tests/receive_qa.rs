@@ -75,7 +75,7 @@ impl Fixture {
         std::fs::write(seed.join("gate.sh"), gate).unwrap();
         std::fs::write(
             seed.join("mai.toml"),
-            "version=1\n[check]\nprogram=\"sh\"\nscript=\"gate.sh\"\ntimeout_ms=5000\noutput_tail_bytes=1024\n[validators]\nslots=1\nport_base=41000\nports_per_slot=10\n",
+            "version=1\n[check]\nprogram=\"sh\"\nscript=\"gate.sh\"\ntimeout_ms=20000\noutput_tail_bytes=1024\n[validators]\nslots=1\nport_base=41000\nports_per_slot=10\n",
         )
         .unwrap();
         success(git(&seed, &["add", "."]));
@@ -175,6 +175,175 @@ impl Fixture {
             .cloned()
             .collect()
     }
+}
+
+fn receipt(output: Output) -> String {
+    let diagnostics = String::from_utf8_lossy(&output.stderr).into_owned();
+    assert!(output.status.success(), "{diagnostics}");
+    assert!(
+        diagnostics.contains("pending; durable receipt only"),
+        "{diagnostics}"
+    );
+    assert!(!diagnostics.contains("not landed"), "{diagnostics}");
+    diagnostics
+}
+
+fn wait_terminal(f: &Fixture, count: usize, timeout: Duration) -> Vec<mai::lifecycle::Submission> {
+    let deadline = Instant::now() + timeout;
+    loop {
+        let rows = f.submissions();
+        if rows.len() == count && rows.iter().all(|s| s.state().is_terminal()) {
+            return rows;
+        }
+        assert!(
+            Instant::now() < deadline,
+            "terminal outcomes timed out: {rows:?}"
+        );
+        thread::sleep(Duration::from_millis(50));
+    }
+}
+
+// Each gate exceeds the former receipt deadline. Two immediate submissions per
+// agent also exercise the exact submitted-parent mapping while its gate runs.
+#[test]
+fn slow_gates_keep_three_agents_receiving_successive_work() {
+    concurrent_automatic_receipts(11, 2);
+}
+
+// Each gate fits within ten seconds, but the serial queue does not.
+#[test]
+fn cumulative_gates_do_not_delay_concurrent_receipts() {
+    concurrent_automatic_receipts(4, 1);
+}
+
+fn concurrent_automatic_receipts(seconds: u64, rounds: usize) {
+    let f = Fixture::with_gate(&format!(
+        "sleep {seconds}\nfor file in \"$MAI_CANDIDATE_ROOT\"/*.txt; do test -f \"$file\" || continue; test \"$(cat \"$file\")\" = \"$(basename \"$file\")\" || exit 1; done\n"
+    ));
+    let _owner = f.start();
+    f.enable_mode(true);
+    let clients = [
+        f.client.clone(),
+        f.clone_client("second"),
+        f.clone_client("third"),
+    ];
+    let started = Instant::now();
+    let pushes: Vec<_> = clients
+        .iter()
+        .cloned()
+        .enumerate()
+        .map(|(agent, client)| {
+            thread::spawn(move || {
+                let mut commits = Vec::new();
+                for round in 0..rounds {
+                    let name = format!("agent-{agent}-{round}.txt");
+                    std::fs::write(client.join(&name), &name).unwrap();
+                    success(git(&client, &["add", &name]));
+                    success(git(&client, &["commit", "-m", &name]));
+                    let commit = success(git(&client, &["rev-parse", "HEAD"]));
+                    let receipt_started = Instant::now();
+                    receipt(git(
+                        &client,
+                        &[
+                            "push",
+                            "-o",
+                            &format!("agent=agent-{agent}"),
+                            "origin",
+                            "HEAD:refs/for/main",
+                        ],
+                    ));
+                    assert!(
+                        receipt_started.elapsed() < Duration::from_secs(10),
+                        "receipt waited for a gate"
+                    );
+                    commits.push(commit);
+                }
+                commits
+            })
+        })
+        .collect();
+    let commits: Vec<_> = pushes.into_iter().flat_map(|p| p.join().unwrap()).collect();
+    assert!(
+        started.elapsed() < Duration::from_secs(10),
+        "concurrent receipts waited for serial gates"
+    );
+    let received = f.submissions();
+    assert_eq!(
+        received.len(),
+        3 * rounds,
+        "receipt must already be durable"
+    );
+    let waiting = received
+        .iter()
+        .find(|s| matches!(s.state(), mai::lifecycle::State::Received))
+        .or_else(|| received.iter().find(|s| !s.state().is_terminal()))
+        .unwrap();
+    let wait_started = Instant::now();
+    let pending = mai::engine::wait(&f.root, waiting.id().clone(), Duration::from_secs(1)).unwrap();
+    assert_eq!(pending["kind"], "pending");
+    assert!(wait_started.elapsed() < Duration::from_secs(3));
+    let rows = wait_terminal(
+        &f,
+        3 * rounds,
+        Duration::from_secs(seconds * 3 * rounds as u64 + 30),
+    );
+    let repo = f.root.join("authority.git");
+    let store = StateStore::open(Authority::open(&f.root).unwrap().state_path()).unwrap();
+    let evidence = store.evidence_all().unwrap();
+    assert_eq!(evidence.len(), rows.len());
+    for row in &rows {
+        assert!(commits.iter().any(|oid| oid == row.commit()));
+        let mai::lifecycle::State::Terminal {
+            outcome: mai::lifecycle::Outcome::Landed { commit, .. },
+        } = row.state()
+        else {
+            panic!("submission did not land: {row:?}");
+        };
+        let proof = evidence.iter().find(|e| &e.generation == row.id()).unwrap();
+        assert!(proof.passed);
+        assert_eq!(&proof.submitted_commit, row.commit());
+        assert_eq!(
+            success(git(&repo, &["rev-parse", &format!("{commit}^{{tree}}")])),
+            proof.candidate_tree
+        );
+        assert_eq!(
+            success(git(
+                &repo,
+                &["rev-parse", &mai::receive::retained_ref(row.id())]
+            )),
+            row.commit()
+        );
+    }
+    for agent in 0..3 {
+        for round in 0..rounds {
+            let name = format!("agent-{agent}-{round}.txt");
+            assert_eq!(
+                success(git(&repo, &["show", &format!("refs/heads/trunk:{name}")])),
+                name
+            );
+        }
+    }
+    // A retry observes the already persisted terminal outcome, not a generic receipt.
+    for (agent, client) in clients.iter().enumerate() {
+        let output = git(
+            client,
+            &[
+                "push",
+                "-o",
+                &format!("agent=agent-{agent}"),
+                "origin",
+                "HEAD:refs/for/main",
+            ],
+        );
+        let diagnostics = String::from_utf8_lossy(&output.stderr).into_owned();
+        assert!(output.status.success(), "{diagnostics}");
+        assert!(diagnostics.contains("landed"), "{diagnostics}");
+        assert!(
+            !diagnostics.contains("pending") && !diagnostics.contains("not landed"),
+            "{diagnostics}"
+        );
+    }
+    assert_eq!(f.submissions(), rows);
 }
 
 #[test]
@@ -285,6 +454,17 @@ fn automatic_gate_rejection_does_not_block_independent_landing() {
         } => commit,
         state => panic!("expected good submission landed, got {state:?}"),
     };
+    let retry = f.push(&["HEAD:refs/for/main"]);
+    let diagnostics = String::from_utf8_lossy(&retry.stderr).into_owned();
+    assert!(retry.status.success(), "{diagnostics}");
+    assert!(
+        diagnostics.contains("rejected") && diagnostics.contains("check_failed"),
+        "{diagnostics}"
+    );
+    assert!(
+        !diagnostics.contains("pending") && !diagnostics.contains("not landed"),
+        "{diagnostics}"
+    );
     let repo = f.root.join("authority.git");
     assert_eq!(
         success(git(&repo, &["rev-parse", "refs/heads/trunk"])),
@@ -374,7 +554,7 @@ fn acknowledged_submission_is_retained_and_survives_owner_death_once() {
         &f.root.join("authority.git"),
         &["rev-parse", "refs/heads/trunk"],
     ));
-    success(f.push(&["HEAD:refs/for/main"]));
+    receipt(f.push(&["HEAD:refs/for/main"]));
     let before = f.submissions();
     assert_eq!(before.len(), 1);
     assert_eq!(before[0].commit(), commit);

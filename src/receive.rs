@@ -446,8 +446,12 @@ fn run_hook(root: &Path, preflight: bool) -> Result<()> {
     })();
     match result {
         Ok(submission) => {
+            let outcome = match submission.state() {
+                crate::lifecycle::State::Terminal { outcome } => serde_json::to_string(outcome)?,
+                _ => "pending; durable receipt only".into(),
+            };
             eprintln!(
-                "mai received {} generation {}; not landed",
+                "mai received {} generation {}; {outcome}",
                 submission.id().change_id,
                 submission.id().generation
             );
